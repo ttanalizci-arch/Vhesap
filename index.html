@@ -707,6 +707,293 @@
         </div>
     </div>
 
+    <!-- Ödeme Planı Detay Modalı (iOS HIG Uyumlu Aşağıdan Açılan Sheet) -->
+    <div id="plan-modal" class="modal" onclick="closePlanOutside(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <!-- Sürükleme Tutamacı Çizgisi -->
+            <div id="sheet-handle" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
+            
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-amber-500">Ödeme Planı</h2>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Anapara + Faiz + Vergiler</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">PDF</span>
+                    </button>
+                    <button onclick="sharePlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden xs:inline">Paylaş</span>
+                    </button>
+                    <button onclick="closePlan()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tablo Alanı -->
+            <div class="flex-1 overflow-y-auto px-4 py-2 overscroll-contain pb-safe-bottom" style="-webkit-overflow-scrolling: touch;">
+                <table class="plan-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tarih</th>
+                            <th>Taksit</th>
+                            <th>Anapara</th>
+                            <th>Faiz</th>
+                            <th>Vergi</th>
+                            <th class="text-right">Bakiye</th>
+                        </tr>
+                    </thead>
+                    <tbody id="plan-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analiz Paneli Modalı (Tek Sayfa) -->
+    <div id="inflation-modal" class="modal" onclick="closeInflationOutside(event)">
+        <div class="modal-content !max-w-2xl" onclick="event.stopPropagation()">
+            <!-- Sürükleme Tutamacı Çizgisi -->
+            <div id="sheet-handle-inf" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
+            
+            <div class="flex justify-between items-center px-5 pb-3 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-amber-500 animate-spin-slow"></i> Analiz Paneli
+                    </h2>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Bütünleşik Reel Getiri ve Karar Destek Sistemi</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadInflationPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">Rapor</span>
+                    </button>
+                    <button onclick="shareInflationPlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden xs:inline">Paylaş</span>
+                    </button>
+                    <button onclick="closeInflation()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canlı Döviz Kurları Şeridi (Analiz Paneli Başına Sabitlendi) -->
+            <div class="px-5 py-2 bg-zinc-950/80 border-b border-zinc-900/60 flex items-center justify-between gap-3 overflow-x-auto whitespace-nowrap flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                <div class="flex items-center gap-4 text-xs font-semibold">
+                    <span class="text-zinc-500 text-[9px] uppercase font-extrabold tracking-wider flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Canlı Piyasa:
+                    </span>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">USD/TRY</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="usd-val">Yükleniyor...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">EUR/TRY</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="eur-val">Yükleniyor...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">ALTIN (GR)</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="gold-val">Yükleniyor...</span>
+                    </div>
+                </div>
+                <button onclick="fetchLiveRates()" class="text-zinc-500 hover:text-amber-500 p-1 rounded-lg transition-colors flex items-center justify-center" title="Kurları Yenile">
+                    <i id="rate-refresh-icon" class="fa-solid fa-arrows-rotate text-xs"></i>
+                </button>
+            </div>
+            
+            <!-- Analiz Gövdesi -->
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom scroll-area" style="-webkit-overflow-scrolling: touch;">
+                
+                <!-- Aktif Ürün Bilgilendirme Kartı -->
+                <div id="inf-product-tag" class="mb-4 bg-zinc-900/60 p-3.5 rounded-2xl border border-zinc-800/40 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="text-zinc-500 font-semibold">Mevcut Ürün:</span>
+                        <strong class="text-amber-500 ml-1.5 font-bold uppercase" id="inf-product-name">Kredi</strong>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 font-semibold">Tutar (Anapara):</span>
+                        <strong class="text-white ml-1.5 font-mono font-bold" id="inf-product-amount">0 TL</strong>
+                    </div>
+                </div>
+
+                <!-- Üçlü Sürgülü (Slider) İnteraktif Kontrol Merkezi -->
+                <div class="bg-zinc-900/60 p-4 rounded-2xl border border-zinc-800/40 mb-4 space-y-4">
+                    <!-- Sürgü 1: Enflasyon Beklentisi -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="label-text mb-0 font-bold text-amber-500"><i class="fa-solid fa-fire-flame-curved mr-1.5"></i> Kişisel Yıllık Enflasyon Beklentisi (%)</span>
+                            <span class="text-amber-500 font-extrabold font-mono text-xs sm:text-sm" id="inf-custom-slider-val">Yıllık %30,00 (Aylık %2,21)</span>
+                        </div>
+                        <input type="range" min="10" max="150" value="30" class="w-full h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-custom-slider" oninput="onCustomInflationChange(this.value)">
+                        <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold">
+                            <span>%10 (İyimser)</span>
+                            <span>%150 (Yüksek Enflasyon)</span>
+                        </div>
+                    </div>
+
+                    <!-- Sürgü 2: Alternatif Mevduat Faiz Oranı -->
+                    <div id="inf-deposit-slider-container">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="label-text mb-0 font-bold text-emerald-400"><i class="fa-solid fa-piggy-bank mr-1.5"></i> Alternatif Vadeli Mevduat Faiz Oranı (%)</span>
+                            <span class="text-emerald-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-deposit-slider-val">Yıllık %50,00 (Aylık %4,17)</span>
+                        </div>
+                        <input type="range" min="10" max="80" value="50" class="w-full accent-emerald-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-deposit-slider" oninput="onAlternativeDepositRateChange(this.value)">
+                        <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold">
+                            <span>%10</span>
+                            <span>%80 (Maksimum Faiz)</span>
+                        </div>
+                    </div>
+
+                    <!-- Sürgü 3: Aktif Ürün Faiz Oranı -->
+                    <div id="inf-product-interest-container">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="label-text mb-0 font-bold text-blue-400" id="inf-product-interest-label"><i class="fa-solid fa-percent mr-1.5"></i> Kredi Aylık Faiz Oranı (%)</span>
+                            <span class="text-blue-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-product-interest-val">Aylık %4,25 (Yıllık %51,00)</span>
+                        </div>
+                        <input type="range" min="0.5" max="10.0" step="0.05" value="4.25" class="w-full accent-blue-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-product-interest-slider" oninput="onProductInterestSliderChange(this.value)">
+                        <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold" id="inf-product-interest-bounds">
+                            <span>%0.50</span>
+                            <span>%10.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı) -->
+                <div class="bg-zinc-950/40 rounded-xl p-4 border border-zinc-800/30 space-y-3 mb-4">
+                    <span class="label-text text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-2 block">Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı)</span>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-zinc-400 font-semibold">Alternatif Net Mevduat Değeri (Vade Sonu)</span>
+                                <span class="text-emerald-400 font-mono font-bold" id="opp-chart-deposit-val">0 TL</span>
+                            </div>
+                            <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-lg transition-all duration-500" id="opp-chart-deposit-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-zinc-400 font-semibold">Kredi Toplam Geri Ödemesi (Nominal)</span>
+                                <span class="text-amber-500 font-mono font-bold" id="opp-chart-loan-val">0 TL</span>
+                            </div>
+                            <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-lg transition-all duration-500" id="opp-chart-loan-bar" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-zinc-400 font-semibold">Kredinin Satın Alma Gücü Yükü (Reel NBD)</span>
+                                <span class="text-blue-400 font-mono font-bold" id="opp-chart-real-loan-val">0 TL</span>
+                            </div>
+                            <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-lg transition-all duration-500" id="opp-chart-real-loan-bar" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulgular ve Finansal Durum Raporu -->
+                <div class="bg-gradient-to-br from-emerald-950/20 to-amber-950/20 p-5 rounded-2xl border border-emerald-500/10 shadow-lg mb-4">
+                    <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs tracking-wider uppercase mb-1">
+                        <i class="fa-solid fa-magnifying-glass-chart text-amber-500"></i> Analitik Bulgular ve Finansal Durum Raporu
+                    </div>
+                    <h3 class="text-md font-black text-white leading-snug mb-2" id="unified-decision-title">Bulgular Analiz Ediliyor...</h3>
+                    <p class="text-xs text-zinc-300 leading-relaxed" id="unified-decision-desc">
+                        Verdiğiniz parametre değerlerine göre anlık matematiksel durum tespiti ve analiz gerçekleştiriliyor...
+                    </p>
+                </div>
+
+                <!-- Bütünleşik Göstergeler Dikey Paneli -->
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    
+                    <!-- 1. Reel Faiz Maliyeti / Kazancı -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-percent text-red-400 mr-1.5"></i> Reel Faiz Maliyeti / Kazancı</span>
+                            <div class="text-lg font-bold font-mono text-white" id="card-real-interest">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-real-interest-sub">Enflasyondan arındırılmış net finansman maliyeti.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye (negatif) düşer. This indicates real financial relief under high inflation.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Kredi Gerçek Maliyeti (Reel NPV) -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Kredi Gerçek Maliyeti (Reel NPV)</span>
+                            <div class="text-lg font-bold font-mono text-white" id="card-real-credit-cost">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-real-credit-cost-sub">Anapara karşılığı cebinizden çıkacak reel değer.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Borcun Enflasyonla Erimesi -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi</span>
+                            <div class="text-lg font-black font-mono text-emerald-400" id="card-debt-erosion">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-debt-erosion-sub">Sabit borç ödemelerinin enflasyonda eriyen payı.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Aylık taksit ödemeleriniz sabit kalırken enflasyon sebebiyle paranın satın alma gücü sürekli düşer ve bütçenizdeki borç yükü reel olarak hafifler.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Mevduat Gerçek Kazancı (Reel NBD) -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-chart-line text-emerald-400 mr-1.5"></i> Mevduat Gerçek Kazancı (Reel NBD)</span>
+                            <div class="text-lg font-bold font-mono text-white" id="card-real-deposit-return">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-real-deposit-desc">Mevduatın vergi sonrası reel satın alma gücü değişimi.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Krediyi çekmeyip aynı anaparayı alternatif vadeli mevduata koysaydınız, vade sonundaki vergi (stopaj) düşülmüş net nominal birikiminizin, enflasyon beklentinize göre bugünkü satın alma gücü cinsinden karşılığıdır.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Detay Tablosunu Aç/Kapat Butonu -->
+                <button onclick="toggleInflationTable()" class="w-full py-3 bg-zinc-900 border border-zinc-800/80 hover:bg-zinc-850 rounded-xl text-xs font-bold text-zinc-400 flex items-center justify-center gap-2 transition-all">
+                    <span id="inf-table-toggle-text">AYLIK DETAYLI REEL ÖDEME TABLOSUNU GÖSTER</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" id="inf-table-toggle-icon"></i>
+                </button>
+
+                <!-- Aylık Enflasyon Detay Tablo Alanı -->
+                <div id="inf-table-container" class="hidden mt-4 border border-zinc-850 rounded-2xl overflow-hidden transition-all">
+                    <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+                        <table class="plan-table min-w-[500px]">
+                            <thead>
+                                <tr class="bg-zinc-950">
+                                    <th>No</th>
+                                    <th>Tarih</th>
+                                    <th>Nominal Ödeme</th>
+                                    <th id="inf-th-multiplier">Kümülatif Enflasyon</th>
+                                    <th id="inf-th-real">Reel Değer (NBD)</th>
+                                    <th class="text-right" id="inf-th-savings">Aşınma Payı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inf-table-body">
+                                <!-- JS Dinamik Dolduracak -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Uygulama Durumu
         let state = { 
@@ -756,7 +1043,7 @@
             fetchLiveRates(); // Döviz kurlarını ilk açılışta tetikler
         };
 
-        // Mobil Cihazlarda Klavye Görünürlüğü ve Viewport Yönetimi
+        // Mobil Cihazlarda Klavye Görünürlüğü, Viewport Yönetimi ve Otomatik Kapanma
         function setupVisualViewport() {
             if (window.visualViewport) {
                 const handler = () => {
@@ -806,6 +1093,19 @@
                     }, 200);
                 }
             });
+
+            // Ekranda klavye dışında boş bir alana tıklandığında/dokunulduğunda klavyeyi otomatik kapatma (blur)
+            const dismissKeyboard = (e) => {
+                const active = document.activeElement;
+                if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA')) {
+                    // Eğer dokunulan/tıklanan öğe aktif girdi alanı değilse ve buton, seçici, menü gibi etkileşimli nesne değilse
+                    if (e.target !== active && !active.contains(e.target) && !e.target.closest('input, select, textarea, button, [role="button"], .cursor-pointer, input[type="range"], .nav-btn, .ara-item, #sheet-handle, #sheet-handle-inf')) {
+                        active.blur();
+                    }
+                }
+            };
+            document.addEventListener('touchstart', dismissKeyboard, { passive: true });
+            document.addEventListener('mousedown', dismissKeyboard);
         }
 
         // CANLI DÖVİZ KURLARI ENTEGRASYON VE ÇEKME MOTORU
@@ -1003,7 +1303,8 @@
                         <span class="label-text">Aylık Faiz Oranı (%)</span>
                         <input type="text" id="val-faiz" inputmode="decimal" class="apple-input" value="4.25">
                     </div>
-                </div>`;
+                </div>
+                <div id="vade-warning" class="info-badge mb-3 hidden"></div>`;
 
             if(!isEkHesap) {
                 html += `
@@ -1202,9 +1503,17 @@
                 }
             }
 
-            id('val-vade').value = v;
-            const limitEl = id('info-limit');
+            const vadeInput = id('val-vade');
+            if (vadeInput) {
+                vadeInput.max = v;
+                vadeInput.placeholder = `Azami ${v}`;
+                let currentVal = parseInt(vadeInput.value) || 0;
+                if (!vadeInput.value || currentVal === 0) {
+                    vadeInput.value = v;
+                }
+            }
             
+            const limitEl = id('info-limit');
             if (o === 0 && d > 0) {
                 limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Bireysel kasko limiti aşılmıştır.</span>`;
             } else if (d > 0) {
@@ -1212,15 +1521,72 @@
             } else {
                 limitEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> Lütfen araç kasko/fatura değerini giriniz.`;
             }
+            validateVade();
         }
 
+        // Bireysel ve Taşıt Kredisi için Esnek Vade Sınır Denetleyicisi
         function validateVade() {
+            const warningEl = id('vade-warning');
+            if (!warningEl) return;
+
+            let hasWarning = false;
+            let warningText = '';
+
             if(state.sub === 'ihtiyac') {
                 const t = getRawVal('val-tutar');
                 let max = 36;
                 if(t > 250000) max = 12;
                 else if(t > 125000) max = 24;
-                id('val-vade').value = max;
+                
+                const vadeInput = id('val-vade');
+                if (vadeInput) {
+                    vadeInput.placeholder = `Örn: ${max}`;
+                    let currentVal = parseInt(vadeInput.value) || 0;
+                    if (currentVal > max) {
+                        hasWarning = true;
+                        warningText = `<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> BDDK Yönetmeliği uyarınca bu tutar için azami vade ${max} aydır. Hesaplamaya devam edebilirsiniz.`;
+                    }
+                }
+            } else if (state.sub === 'tasit' || state.sub === 'ticari-tasit') {
+                const d = getRawVal('val-deger');
+                let max = 48;
+                if (state.main === 'ticari') {
+                    max = 60;
+                } else {
+                    const turEl = id('val-arac-turu');
+                    const tur = turEl ? turEl.value : 'icten';
+                    if (tur === 'elektrikli') {
+                        if(d <= 2500000) max = 48;
+                        else if(d <= 5000000) max = 36;
+                        else if(d <= 6500000) max = 24;
+                        else if(d <= 7500000) max = 12;
+                        else max = 0;
+                    } else {
+                        if(d <= 400000) max = 48;
+                        else if(d <= 800000) max = 36;
+                        else if(d <= 1200000) max = 24;
+                        else if(d <= 2000000) max = 12;
+                        else max = 0;
+                    }
+                }
+                const vadeInput = id('val-vade');
+                if (vadeInput) {
+                    let currentVal = parseInt(vadeInput.value) || 0;
+                    if (currentVal > max && max > 0) {
+                        hasWarning = true;
+                        warningText = `<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Taşıt kredisi kurallarına göre bu değer için azami vade ${max} aydır. Hesaplamaya devam edebilirsiniz.`;
+                    }
+                }
+            }
+
+            if (hasWarning) {
+                warningEl.innerHTML = warningText;
+                warningEl.classList.remove('hidden');
+                warningEl.style.backgroundColor = 'rgba(245, 158, 11, 0.08)';
+                warningEl.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+                warningEl.style.color = '#f59e0b';
+            } else {
+                warningEl.classList.add('hidden');
             }
         }
 
@@ -1621,6 +1987,7 @@
             recalculateInflationAnalysis();
         }
 
+        // Analiz panelindeki sürgüyle eş zamanlı olarak ana formdaki faiz alanını günceller
         function onProductInterestSliderChange(value) {
             const isMevduatProduct = (state.main === 'mevduat');
             const valText = id('inf-product-interest-val');
