@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-H0WX0KCEM6');
+    </script>
+
+    <meta charset="UTF-8">
+    <!-- iOS için tam uyumlu ve ölçeklenmeyi önleyen viewport tanımı -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vhesap - Profesyonel Finans Paneli</title>
+    <!-- Tailwind CSS ve FontAwesome CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- PDF Oluşturma Kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --apple-bg: #09090b;
+            --apple-card: rgba(24, 24, 27, 0.7);
+            --apple-yellow: #f59e0b;
+            --apple-yellow-hover: #d97706;
+            --apple-gray: #71717a;
+            --apple-border: rgba(245, 158, 11, 0.15);
+            --apple-glow: rgba(245, 158, 11, 0.25);
+        }
+
+        /* iOS Bounce ve Çift Kaydırma Çubuğu Engelleme Kilidi */
+        html, body {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%; /* iOS yan döndürmede font büyümesini önler */
+        }
+
+        body {
+            background-color: var(--apple-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #f4f4f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* iOS Safari Form Elemanları Sürüm Sıfırlama */
+        input, select, textarea, button {
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            touch-action: manipulation; /* Tıklama gecikmesini önler */
+        }
+
+        /* Saf CSS ile Kusursuz Apple Tarzı Chevron */
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .select-wrapper::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 7px;
+            height: 7px;
+            border-right: 2px solid var(--apple-yellow);
+            border-bottom: 2px solid var(--apple-yellow);
+            pointer-events: none;
+            transition: transform 0.2s ease;
+        }
+
+        /* Mobil Uyumlu Esnek Apple Konteyner */
+        .apple-container {
+            background: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        @media (min-width: 641px) {
+            .apple-container {
+                height: 850px;
+                max-height: 95vh;
+                border-radius: 36px;
+                border: 1px solid var(--apple-border);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        /* Dikey Olarak En Fazla 5'te 1 Yer Kaplayacak Şekilde Küçültülmüş Menü Yapısı */
+        .main-nav {
+            display: flex;
+            background: rgba(39, 39, 42, 0.4);
+            margin: 4px 16px;
+            padding: 3px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 6px 4px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--apple-gray);
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn.active {
+            background: var(--apple-yellow);
+            color: #000000;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+        }
+
+        /* Akıcı Momentum Kaydırma Alanı */
+        .scroll-area {
+            flex: 1;
+            padding: 8px 16px 40px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* iOS için pürüzsüz kaydırma */
+        }
+        .scroll-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+        }
+
+        .input-card {
+            background: var(--apple-card);
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-card:focus-within {
+            border-color: var(--apple-yellow);
+            box-shadow: 0 0 15px var(--apple-glow);
+            transform: translateY(-1px);
+        }
+
+        /* iOS Auto-Zoom Engelleyici: 16px Alt Sınırı */
+        .apple-input, .apple-select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--apple-yellow);
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+            padding: 4px 0;
+            transition: color 0.2s ease;
+        }
+
+        .apple-select option {
+            background: #18181b;
+            color: #f4f4f5;
+        }
+
+        .label-text {
+            color: var(--apple-gray);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            display: block;
+            font-weight: 700;
+        }
+
+        /* Apple Premium Aksiyon Butonu */
+        .action-btn {
+            background: linear-gradient(135deg, var(--apple-yellow) 0%, #d97706 100%);
+            width: 100%;
+            min-height: 50px;
+            padding: 14px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 14px;
+            margin-top: 12px;
+            color: #000000;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px -10px rgba(245, 158, 11, 0.35);
+        }
+        .action-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        /* Apple Tam Sayfa Sheet Görünümlü Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .modal-content {
+            background: #121214;
+            height: 100%;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+            padding-top: env(safe-area-inset-top);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* Ödeme Planı Tablo Tasarımı */
+        .plan-table {
+            width: 100%;
+            font-size: 12px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .plan-table th { 
+            color: #a1a1aa; 
+            text-align: center; 
+            padding: 12px 6px; 
+            border-bottom: 2px solid #27272a;
+            text-transform: uppercase;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: #121214;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .plan-table td { 
+            padding: 12px 6px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03); 
+            text-align: center;
+        }
+
+        .plan-table tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.01); }
+
+        .col-taksit { color: var(--apple-yellow); font-weight: 700; }
+        .col-ana { color: #10b981; font-weight: 600; }
+        .col-faiz { color: #f43f5e; }
+        .col-vergi { color: #3b82f6; }
+        .col-bak { color: #a1a1aa; font-style: italic; }
+        .col-date { color: #ffffff; font-weight: 500; }
+
+        .info-badge {
+            font-size: 11px;
+            background: rgba(245, 158, 11, 0.04);
+            color: var(--apple-yellow);
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(245, 158, 11, 0.08);
+        }
+
+        .ara-item { 
+            background: rgba(255, 255, 255, 0.01); 
+            padding: 12px; 
+            border-radius: 14px; 
+            margin-bottom: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 13px; 
+            border: 1px solid rgba(255, 255, 255, 0.03); 
+        }
+
+        /* iOS Safari Alt Boşluk */
+        .pb-safe-bottom {
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+        }
+
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 15s linear infinite;
+        }
+
+        /* Apple Tarzı Range Slider Özelleştirmesi */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #27272a;
+            height: 6px;
+            border-radius: 9999px;
+            outline: none;
+            transition: background 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--apple-yellow);
+            cursor: pointer;
+            border: 2px solid #09090b;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.3);
+        }
+        input[type="range"].accent-emerald-500::-webkit-slider-thumb {
+            background: #10b981;
+        }
+        input[type="range"].accent-blue-500::-webkit-slider-thumb {
+            background: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="apple-container" id="main-container">
+        <div class="flex flex-col h-full w-full overflow-hidden">
+            
+            <!-- Üst Başlık Bölümü (Dikey Boyut Küçültüldü ve Sadeleştirildi) -->
+            <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
+                <div class="flex items-baseline gap-2.5">
+                    <h1 class="text-2xl font-extrabold tracking-tight text-amber-500">Vhesap</h1>
+                    <span class="text-[10px] text-amber-200/50 font-bold tracking-wider uppercase">Gelişmiş Hesaplama Sistemi</span>
+                </div>
+            </div>
+
+            <!-- Ana Tab Gezgini -->
+            <div class="main-nav">
+                <button class="nav-btn active" id="btn-bireysel" onclick="switchTab('bireysel')">Bireysel</button>
+                <button class="nav-btn" id="btn-ticari" onclick="switchTab('ticari')">Ticari</button>
+                <button class="nav-btn" id="btn-mevduat" onclick="switchTab('mevduat')">Mevduat</button>
+            </div>
+
+            <!-- Alt Menü Gezgini (Dikey Alan ve Buton Marjları Optimize Edildi) -->
+            <div id="sub-nav" class="flex px-5 gap-4 overflow-x-auto py-1 scroll-smooth border-b border-zinc-900/40 flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;"></div>
+
+            <!-- Ana Form Alanı -->
+            <div class="scroll-area flex-1">
+                <div id="form-content" class="mt-1"></div>
+
+                <!-- Sonuç Bölümü -->
+                <div id="results" class="hidden mt-6 pb-12">
+                    <div class="bg-zinc-900/40 rounded-3xl p-5 border border-amber-500/10 shadow-lg">
+                        <h3 class="text-center text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
+                        <div id="result-rows" class="space-y-3.5"></div>
+                        
+                        <!-- Premium İkili Aksiyon Menüsü -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="plan-trigger" class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/15 rounded-2xl text-amber-500 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
+                                <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
+                            </button>
+                            <button id="inflation-trigger" class="w-full py-3.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/15 rounded-2xl text-emerald-400 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openInflationAnalysis()">
+                                <i class="fa-solid fa-chart-line"></i> ANALİZ PANELİ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Ödeme Planı Detay Modalı (iOS HIG Uyumlu Aşağıdan Açılan Sheet) -->
+    <div id="plan-modal" class="modal" onclick="closePlanOutside(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <!-- Sürükleme Tutamacı Çizgisi -->
+            <div id="sheet-handle" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
+            
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-amber-500">Ödeme Planı</h2>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Anapara + Faiz + Vergiler</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">PDF</span>
+                    </button>
+                    <button onclick="sharePlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden xs:inline">Paylaş</span>
+                    </button>
+                    <button onclick="closePlan()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tablo Alanı -->
+            <div class="flex-1 overflow-y-auto px-4 py-2 overscroll-contain pb-safe-bottom" style="-webkit-overflow-scrolling: touch;">
+                <table class="plan-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tarih</th>
+                            <th>Taksit</th>
+                            <th>Anapara</th>
+                            <th>Faiz</th>
+                            <th>Vergi</th>
+                            <th class="text-right">Bakiye</th>
+                        </tr>
+                    </thead>
+                    <tbody id="plan-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analiz Paneli Modalı (Tek Sayfa) -->
+    <div id="inflation-modal" class="modal" onclick="closeInflationOutside(event)">
+        <div class="modal-content !max-w-2xl" onclick="event.stopPropagation()">
+            <!-- Sürükleme Tutamacı Çizgisi -->
+            <div id="sheet-handle-inf" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
+            
+            <div class="flex justify-between items-center px-5 pb-3 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-nodes text-amber-500 animate-spin-slow"></i> Analiz Paneli
+                    </h2>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Bütünleşik Reel Getiri ve Karar Destek Sistemi</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadInflationPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">Rapor</span>
+                    </button>
+                    <button onclick="shareInflationPlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden xs:inline">Paylaş</span>
+                    </button>
+                    <button onclick="closeInflation()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canlı Döviz Kurları Şeridi (Analiz Paneli Başına Sabitlendi) -->
+            <div class="px-5 py-2 bg-zinc-950/80 border-b border-zinc-900/60 flex items-center justify-between gap-3 overflow-x-auto whitespace-nowrap flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                <div class="flex items-center gap-4 text-xs font-semibold">
+                    <span class="text-zinc-500 text-[9px] uppercase font-extrabold tracking-wider flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Canlı Piyasa:
+                    </span>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">USD/TRY</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="usd-val">Yükleniyor...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">EUR/TRY</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="eur-val">Yükleniyor...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">ALTIN (GR)</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="gold-val">Yükleniyor...</span>
+                    </div>
+                </div>
+                <button onclick="fetchLiveRates()" class="text-zinc-500 hover:text-amber-500 p-1 rounded-lg transition-colors flex items-center justify-center" title="Kurları Yenile">
+                    <i id="rate-refresh-icon" class="fa-solid fa-arrows-rotate text-xs"></i>
+                </button>
+            </div>
+            
+            <!-- Analiz Gövdesi -->
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom scroll-area" style="-webkit-overflow-scrolling: touch;">
+                
+                <!-- Aktif Ürün Bilgilendirme Kartı -->
+                <div id="inf-product-tag" class="mb-4 bg-zinc-900/60 p-3.5 rounded-2xl border border-zinc-800/40 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="text-zinc-500 font-semibold">Mevcut Ürün:</span>
+                        <strong class="text-amber-500 ml-1.5 font-bold uppercase" id="inf-product-name">Kredi</strong>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 font-semibold">Tutar (Anapara):</span>
+                        <strong class="text-white ml-1.5 font-mono font-bold" id="inf-product-amount">0 TL</strong>
+                    </div>
+                </div>
+
+                <!-- Üçlü Sürgülü (Slider) İnteraktif Kontrol Merkezi -->
+                <div class="bg-zinc-900/60 p-4 rounded-2xl border border-zinc-800/40 mb-4 space-y-4">
+                    <!-- Sürgü 1: Enflasyon Beklentisi -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="label-text mb-0 font-bold text-amber-500"><i class="fa-solid fa-fire-flame-curved mr-1.5"></i> Kişisel Yıllık Enflasyon Beklentisi (%)</span>
+                            <span class="text-amber-500 font-extrabold font-mono text-xs sm:text-sm" id="inf-custom-slider-val">Yıllık %30,00 (Aylık %2,21)</span>
+                        </div>
+                        <input type="range" min="10" max="150" value="30" class="w-full h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-custom-slider" oninput="onCustomInflationChange(this.value)">
+                        <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold">
+                            <span>%10 (İyimser)</span>
+                            <span>%150 (Yüksek Enflasyon)</span>
+                        </div>
+                    </div>
+
+                    <!-- Sürgü 2: Alternatif Mevduat Faiz Oranı -->
+                    <div id="inf-deposit-slider-container">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="label-text mb-0 font-bold text-emerald-400"><i class="fa-solid fa-piggy-bank mr-1.5"></i> Alternatif Vadeli Mevduat Faiz Oranı (%)</span>
+                            <span class="text-emerald-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-deposit-slider-val">Yıllık %50,00 (Aylık %4,17)</span>
+                        </div>
+                        <input type="range" min="10" max="80" value="50" class="w-full accent-emerald-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-deposit-slider" oninput="onAlternativeDepositRateChange(this.value)">
+                        <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold">
+                            <span>%10</span>
+                            <span>%80 (Maksimum Faiz)</span>
+                        </div>
+                    </div>
+
+                    <!-- Sürgü 3: Aktif Ürün Faiz Oranı -->
+                    <div id="inf-product-interest-container">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="label-text mb-0 font-bold text-blue-400" id="inf-product-interest-label"><i class="fa-solid fa-percent mr-1.5"></i> Kredi Aylık Faiz Oranı (%)</span>
+                            <span class="text-blue-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-product-interest-val">Aylık %4,25 (Yıllık %51,00)</span>
+                        </div>
+                        <input type="range" min="0.5" max="10.0" step="0.05" value="4.25" class="w-full accent-blue-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-product-interest-slider" oninput="onProductInterestSliderChange(this.value)">
+                        <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold" id="inf-product-interest-bounds">
+                            <span>%0.50</span>
+                            <span>%10.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı) -->
+                <div class="bg-zinc-950/40 rounded-xl p-4 border border-zinc-800/30 space-y-3 mb-4">
+                    <span class="label-text text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-2 block">Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı)</span>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-zinc-400 font-semibold">Alternatif Net Mevduat Değeri (Vade Sonu)</span>
+                                <span class="text-emerald-400 font-mono font-bold" id="opp-chart-deposit-val">0 TL</span>
+                            </div>
+                            <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-lg transition-all duration-500" id="opp-chart-deposit-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-zinc-400 font-semibold">Kredi Toplam Geri Ödemesi (Nominal)</span>
+                                <span class="text-amber-500 font-mono font-bold" id="opp-chart-loan-val">0 TL</span>
+                            </div>
+                            <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-lg transition-all duration-500" id="opp-chart-loan-bar" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-zinc-400 font-semibold">Kredinin Satın Alma Gücü Yükü (Reel NBD)</span>
+                                <span class="text-blue-400 font-mono font-bold" id="opp-chart-real-loan-val">0 TL</span>
+                            </div>
+                            <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-lg transition-all duration-500" id="opp-chart-real-loan-bar" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulgular ve Finansal Durum Raporu -->
+                <div class="bg-gradient-to-br from-emerald-950/20 to-amber-950/20 p-5 rounded-2xl border border-emerald-500/10 shadow-lg mb-4">
+                    <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs tracking-wider uppercase mb-1">
+                        <i class="fa-solid fa-magnifying-glass-chart text-amber-500"></i> Analitik Bulgular ve Finansal Durum Raporu
+                    </div>
+                    <h3 class="text-md font-black text-white leading-snug mb-2" id="unified-decision-title">Bulgular Analiz Ediliyor...</h3>
+                    <p class="text-xs text-zinc-300 leading-relaxed" id="unified-decision-desc">
+                        Verdiğiniz parametre değerlerine göre anlık matematiksel durum tespiti ve analiz gerçekleştiriliyor...
+                    </p>
+                </div>
+
+                <!-- Bütünleşik Göstergeler Dikey Paneli -->
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    
+                    <!-- 1. Reel Faiz Maliyeti / Kazancı -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-percent text-red-400 mr-1.5"></i> Reel Faiz Maliyeti / Kazancı</span>
+                            <div class="text-lg font-bold font-mono text-white" id="card-real-interest">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-real-interest-sub">Enflasyondan arındırılmış net finansman maliyeti.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye (negatif) düşer. This indicates real financial relief under high inflation.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Kredi Gerçek Maliyeti (Reel NPV) -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Kredi Gerçek Maliyeti (Reel NPV)</span>
+                            <div class="text-lg font-bold font-mono text-white" id="card-real-credit-cost">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-real-credit-cost-sub">Anapara karşılığı cebinizden çıkacak reel değer.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Borcun Enflasyonla Erimesi -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi</span>
+                            <div class="text-lg font-black font-mono text-emerald-400" id="card-debt-erosion">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-debt-erosion-sub">Sabit borç ödemelerinin enflasyonda eriyen payı.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Aylık taksit ödemeleriniz sabit kalırken enflasyon sebebiyle paranın satın alma gücü sürekli düşer ve bütçenizdeki borç yükü reel olarak hafifler.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Mevduat Gerçek Kazancı (Reel NBD) -->
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-chart-line text-emerald-400 mr-1.5"></i> Mevduat Gerçek Kazancı (Reel NBD)</span>
+                            <div class="text-lg font-bold font-mono text-white" id="card-real-deposit-return">0 TL</div>
+                        </div>
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
+                            <p class="text-[9px] text-zinc-500" id="card-real-deposit-desc">Mevduatın vergi sonrası reel satın alma gücü değişimi.</p>
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                                <strong>Anlamı Nedir?</strong> Krediyi çekmeyip aynı anaparayı alternatif vadeli mevduata koysaydınız, vade sonundaki vergi (stopaj) düşülmüş net nominal birikiminizin, enflasyon beklentinize göre bugünkü satın alma gücü cinsinden karşılığıdır.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Detay Tablosunu Aç/Kapat Butonu -->
+                <button onclick="toggleInflationTable()" class="w-full py-3 bg-zinc-900 border border-zinc-800/80 hover:bg-zinc-850 rounded-xl text-xs font-bold text-zinc-400 flex items-center justify-center gap-2 transition-all">
+                    <span id="inf-table-toggle-text">AYLIK DETAYLI REEL ÖDEME TABLOSUNU GÖSTER</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" id="inf-table-toggle-icon"></i>
+                </button>
+
+                <!-- Aylık Enflasyon Detay Tablo Alanı -->
+                <div id="inf-table-container" class="hidden mt-4 border border-zinc-850 rounded-2xl overflow-hidden transition-all">
+                    <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+                        <table class="plan-table min-w-[500px]">
+                            <thead>
+                                <tr class="bg-zinc-950">
+                                    <th>No</th>
+                                    <th>Tarih</th>
+                                    <th>Nominal Ödeme</th>
+                                    <th id="inf-th-multiplier">Kümülatif Enflasyon</th>
+                                    <th id="inf-th-real">Reel Değer (NBD)</th>
+                                    <th class="text-right" id="inf-th-savings">Aşınma Payı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inf-table-body">
+                                <!-- JS Dinamik Dolduracak -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Uygulama Durumu
+        let state = { 
+            main: 'bireysel', 
+            sub: 'ihtiyac', 
+            lastCalc: null, 
+            lastPrincipal: 0, // Analizör için anapara tutarını hafızada tutar
+            araOdemeler: [],
+            inflationScenario: 'custom',
+            customInflationAnnual: 30,
+            inflationTableVisible: false,
+            alternativeDepositRate: 50 // Alternatif vadeli mevduat faiz oranı (%)
+        };
+        
+        const menuConfig = {
+            bireysel: [
+                {id: 'ihtiyac', n: 'İhtiyaç'}, 
+                {id: 'konut', n: 'Konut'}, 
+                {id: 'tasit', n: 'Taşıt'}, 
+                {id: 'ekhesap', n: 'Ek Hesap'}
+            ],
+            ticari: [
+                {id: 'ticari-kredi', n: 'Ticari Kredi'}, 
+                {id: 'ticari-tasit', n: 'Taşıt'}, 
+                {id: 'ticari-ekhesap', n: 'Ek Hesap'}
+            ]
+        };
+
+        const resmiTatiller = ["01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-29"];
+
+        // Özel Enflasyon Oranı Altyapısı
+        const inflationPresets = {
+            'custom': {
+                name: 'Kişisel Enflasyon Beklentisi Oranı',
+                short: 'Özel Oran',
+                getRates: function(annualRate) {
+                    const r = parseFloat(annualRate) / 100;
+                    const monthlyRate = Math.pow(1 + r, 1/12) - 1;
+                    return Array(120).fill(monthlyRate);
+                }
+            }
+        };
+
+        window.onload = () => {
+            switchTab('bireysel');
+            setupVisualViewport();
+            fetchLiveRates(); // Döviz kurlarını ilk açılışta tetikler
+        };
+
+        // Mobil Cihazlarda Klavye Görünürlüğü ve Viewport Yönetimi
+        function setupVisualViewport() {
+            if (window.visualViewport) {
+                const handler = () => {
+                    const height = window.visualViewport.height;
+                    const offsetTop = window.visualViewport.offsetTop;
+                    
+                    if (offsetTop > 0) {
+                        window.scrollTo(0, 0);
+                    }
+                    
+                    const keyboardHeight = window.innerHeight - height;
+                    const scrollArea = document.querySelector('.scroll-area');
+                    
+                    if (scrollArea) {
+                        if (keyboardHeight > 100) {
+                            scrollArea.style.paddingBottom = (keyboardHeight + 40) + 'px';
+                        } else {
+                            scrollArea.style.paddingBottom = '40px';
+                        }
+                    }
+                    
+                    const active = document.activeElement;
+                    if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT')) {
+                        setTimeout(() => {
+                            active.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 50);
+                    }
+                };
+                window.visualViewport.addEventListener('resize', handler);
+                window.visualViewport.addEventListener('scroll', handler);
+                handler();
+            }
+
+            document.addEventListener('focusout', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                        document.body.scrollTop = 0;
+                    }, 100);
+                }
+            });
+
+            document.addEventListener('focusin', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+                    setTimeout(() => {
+                        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 200);
+                }
+            });
+        }
+
+        // CANLI DÖVİZ KURLARI ENTEGRASYON VE ÇEKME MOTORU
+        async function fetchLiveRates() {
+            const refreshIcon = document.getElementById('rate-refresh-icon');
+            if (refreshIcon) refreshIcon.classList.add('animate-spin');
+            
+            try {
+                // Herhangi bir anahtar gerektirmeyen, son derece hızlı ve CORS korumalı ücretsiz API portalı
+                const response = await fetch('https://open.er-api.com/v6/latest/USD');
+                if (!response.ok) throw new Error('API bağlantı hatası.');
+                
+                const data = await response.json();
+                
+                const tryRate = data.rates.TRY;
+                const eurRate = data.rates.EUR;
+                
+                // USD bazlı oranları Türk Lirası (TRY) karşılığına normalize etme
+                const usdToTry = tryRate;
+                const eurToTry = tryRate / eurRate;
+
+                // Ons Altın Fiyatını Altın API Portalı üzerinden Çekme
+                let goldToTry = 0;
+                try {
+                    const responseGold = await fetch('https://api.gold-api.com/price/XAU');
+                    if (responseGold.ok) {
+                        const dataGold = await responseGold.json();
+                        const xauUsd = dataGold.price; // Ons Altın USD Fiyatı
+                        // Gram Altın TL formülü: (Ons / 31.1034768) * USD_TRY
+                        goldToTry = (xauUsd / 31.1034768) * usdToTry;
+                    }
+                } catch (goldErr) {
+                    console.error("Altın verisi çekilemedi:", goldErr);
+                }
+                
+                document.getElementById('usd-val').innerText = usdToTry.toFixed(4) + ' ₺';
+                document.getElementById('eur-val').innerText = eurToTry.toFixed(4) + ' ₺';
+                document.getElementById('gold-val').innerText = goldToTry > 0 ? (goldToTry.toFixed(2) + ' ₺') : 'Yüklenemedi';
+                
+                showToast("Döviz kurları ve altın başarıyla güncellendi.", "success");
+            } catch (error) {
+                console.error("Döviz kurları çekilirken hata oluştu:", error);
+                document.getElementById('usd-val').innerText = 'Hata';
+                document.getElementById('eur-val').innerText = 'Hata';
+                document.getElementById('gold-val').innerText = 'Hata';
+                showToast("Kurlar alınamadı. Lütfen daha sonra tekrar deneyiniz.", "error");
+            } finally {
+                if (refreshIcon) {
+                    setTimeout(() => {
+                        refreshIcon.classList.remove('animate-spin');
+                    }, 500);
+                }
+            }
+        }
+
+        function switchTab(tabId) {
+            state.main = tabId;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.id === `btn-${tabId}`);
+            });
+            
+            const subNav = document.getElementById('sub-nav');
+            if (tabId === 'mevduat') {
+                subNav.classList.add('hidden');
+                renderMevduat();
+            } else {
+                subNav.classList.remove('hidden');
+                state.sub = menuConfig[tabId][0].id;
+                renderSubNav();
+                renderForm();
+            }
+            hideResults();
+        }
+
+        // Alt Gezinti Gezgini Butonları Dikey Olarak En Az Yeri Kaplayacak Şekilde Yeniden Tasarlandı
+        function renderSubNav() {
+            const subNav = document.getElementById('sub-nav');
+            const items = menuConfig[state.main] || [];
+            subNav.innerHTML = items.map(m => `
+                <button class="whitespace-nowrap text-xs font-semibold pb-1.5 border-b-2 transition-all duration-200 ${state.sub === m.id ? 'border-amber-500 text-amber-500' : 'border-transparent text-zinc-500'}" 
+                onclick="switchSub('${m.id}')">${m.n}</button>
+            `).join('');
+        }
+
+        function switchSub(subId) {
+            state.sub = subId;
+            state.araOdemeler = []; 
+            renderSubNav();
+            renderForm();
+            hideResults();
+        }
+
+        // Faiz Oranı Değişimini Dinamik Gösteren Metot
+        function onMainInterestChange(val) {
+            const display = id('val-faiz-display');
+            if (display) {
+                if (state.main === 'mevduat') {
+                    display.innerText = `%${parseFloat(val).toFixed(0)}`;
+                } else {
+                    display.innerText = `%${parseFloat(val).toFixed(2)}`;
+                }
+            }
+        }
+
+        function renderForm() {
+            const container = document.getElementById('form-content');
+            let html = '';
+            const isEkHesap = state.sub.includes('ekhesap');
+
+            if(state.sub === 'konut') {
+                html += `
+                    <div class="input-card">
+                        <span class="label-text">Konut Ekspertiz Değeri (TL)</span>
+                        <input type="text" id="val-deger" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); updateKonutUI()">
+                        <div id="info-limit" class="info-badge">
+                            <i class="fa-solid fa-circle-info"></i> Lütfen gayrimenkul değerini giriniz.
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="input-card mb-0">
+                            <span class="label-text">Mülkiyet Durumu</span>
+                            <div class="select-wrapper">
+                                <select id="val-mulkiyet" class="apple-select" onchange="updateKonutUI()">
+                                    <option value="ilk">İlk Kez Alacak</option>
+                                    <option value="diger">2. veya Sonrası (Evi Var)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-card mb-0">
+                            <span class="label-text">Konut Durumu</span>
+                            <div class="select-wrapper">
+                                <select id="val-durum" class="apple-select" onchange="updateKonutUI()">
+                                    <option value="sifir">Sıfır Konut</option>
+                                    <option value="ikinci">İkinci El</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-card">
+                        <span class="label-text">Enerji Kimlik Belgesi (EKB)</span>
+                        <div class="select-wrapper">
+                            <select id="val-ekb" class="apple-select" onchange="updateKonutUI()">
+                                <option value="A">A Sınıfı</option>
+                                <option value="B">B Sınıfı</option>
+                                <option value="C">Diğer (C ve Altı)</option>
+                            </select>
+                        </div>
+                    </div>`;
+            } else if(state.sub === 'tasit' || state.sub === 'ticari-tasit') {
+                if (state.sub === 'tasit') {
+                    html += `
+                        <div class="input-card">
+                            <span class="label-text">Araç Yakıt/Motor Türü</span>
+                            <div class="select-wrapper">
+                                <select id="val-arac-turu" class="apple-select" onchange="updateTasitUI()">
+                                    <option value="icten">İçten Yanmalı</option>
+                                    <option value="elektrikli">Tam Elektrikli</option>
+                                </select>
+                            </div>
+                        </div>`;
+                }
+                
+                html += `
+                    <div class="input-card">
+                        <span class="label-text">${state.main === 'ticari' ? 'Araç Fatura / Kasko Değeri (TL)' : 'Kasko Değeri (TL)'}</span>
+                        <input type="text" id="val-deger" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); updateTasitUI()">
+                        <div id="info-limit" class="info-badge">
+                            <i class="fa-solid fa-circle-info"></i> Lütfen araç kasko/fatura değerini giriniz.
+                        </div>
+                    </div>`;
+            }
+
+            html += `
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="input-card mb-0">
+                        <span class="label-text">${isEkHesap ? 'Kullanım Tarihi' : 'Kullandırım Tarihi'}</span>
+                        <input type="date" id="date-start" class="apple-input text-base" value="${new Date().toISOString().split('T')[0]}" onchange="onDateChange()">
+                    </div>
+                    <div class="input-card mb-0">
+                        <span class="label-text">${isEkHesap ? 'Ödeme Tarihi' : 'İlk Taksit Tarihi'}</span>
+                        <input type="date" id="date-first" class="apple-input text-base" value="${new Date(Date.now() + 86400000*30).toISOString().split('T')[0]}" onchange="onDateChange()">
+                    </div>
+                </div>
+                ${isEkHesap ? '<div id="info-holiday" class="info-badge mb-3 hidden"></div>' : ''}
+                <div class="input-card">
+                    <span class="label-text">Talep Edilen Tutar (TL)</span>
+                    <input type="text" id="val-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); validateVade()">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="input-card">
+                        <span class="label-text">${isEkHesap ? 'Faiz Gün Sayısı' : 'Vade (Ay)'}</span>
+                        <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="${isEkHesap ? 30 : 12}" ${isEkHesap ? 'readonly' : ''} oninput="validateVade()">
+                    </div>
+                    <div class="input-card">
+                        <span class="label-text">Aylık Faiz Oranı (%)</span>
+                        <input type="text" id="val-faiz" inputmode="decimal" class="apple-input" value="4.25">
+                    </div>
+                </div>`;
+
+            if(!isEkHesap) {
+                html += `
+                <div class="input-card mt-3 border border-amber-500/10">
+                    <div class="flex items-center justify-between mb-3">
+                         <span class="label-text mb-0 font-bold text-amber-200"><i class="fa-solid fa-coins mr-1"></i> Ara Ödemeler (Opsiyonel)</span>
+                    </div>
+
+                    <div id="ara-odeme-list" class="mb-3"></div>
+
+                    <div id="ara-odeme-form" class="pt-3 border-t border-zinc-850/60">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div>
+                                <span class="label-text">Tarih</span>
+                                <input type="date" id="val-ara-date" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}">
+                            </div>
+                            <div>
+                                <span class="label-text">Tutar (TL)</span>
+                                <input type="text" id="val-ara-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" placeholder="0" oninput="mask(this)">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ara-tur" value="vade" class="peer hidden" checked>
+                                <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                    VADE AZALSIN
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="ara-tur" value="taksit" class="peer hidden">
+                                <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                    TAKSİT DÜŞSÜN
+                                </div>
+                            </label>
+                        </div>
+                        <button onclick="addAraOdeme()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-850 rounded-lg text-xs font-bold text-white transition-all">+ Listeye Ekle</button>
+                    </div>
+                </div>`;
+            }
+
+            html += `<button class="action-btn" onclick="calculate()">HESAPLA</button>`;
+            
+            container.innerHTML = html;
+            if(isEkHesap) onDateChange();
+            if(!isEkHesap) renderAraOdemeList();
+        }
+
+        function renderAraOdemeList() {
+            const listEl = id('ara-odeme-list');
+            if(!listEl) return;
+            if(state.araOdemeler.length === 0) {
+                listEl.innerHTML = '<div class="text-[10px] text-zinc-600 italic text-center py-2">Kayıtlı ara ödeme bulunmuyor.</div>';
+                return;
+            }
+            state.araOdemeler.sort((a,b) => new Date(a.date) - new Date(b.date));
+            listEl.innerHTML = state.araOdemeler.map((o, i) => `
+                <div class="ara-item">
+                    <div class="flex flex-col">
+                        <span class="text-white font-bold">${o.dateTr}</span>
+                        <span class="text-amber-500 font-mono font-bold">${format(o.tutar)}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] uppercase px-2 py-1 rounded bg-zinc-900 text-zinc-400">${o.tur === 'vade' ? 'Vade Azalt' : 'Taksit Düş'}</span>
+                        <button onclick="removeAraOdeme(${i})" class="text-rose-500 hover:text-rose-400 w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addAraOdeme() {
+            const dateVal = id('val-ara-date').value;
+            const tutarVal = getRawVal('val-ara-tutar');
+            const turVal = document.querySelector('input[name="ara-tur"]:checked').value;
+
+            if(tutarVal <= 0) return showToast("Lütfen geçerli bir ara ödeme tutarı giriniz.");
+            
+            const start = new Date(id('date-start').value);
+            const araDate = new Date(dateVal);
+            if(araDate <= start) return showToast("Ara ödeme tarihi kredi kullanım tarihinden sonra olmalıdır.");
+
+            state.araOdemeler.push({
+                date: dateVal,
+                dateTr: araDate.toLocaleDateString('tr-TR'),
+                tutar: tutarVal,
+                tur: turVal
+            });
+            
+            id('val-ara-tutar').value = '';
+            renderAraOdemeList();
+        }
+
+        function removeAraOdeme(index) {
+            state.araOdemeler.splice(index, 1);
+            renderAraOdemeList();
+        }
+
+        function renderMevduat() {
+            document.getElementById('form-content').innerHTML = `
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="input-card mb-0">
+                        <span class="label-text">Başlangıç (Valör)</span>
+                        <input type="date" id="date-start" class="apple-input text-base" value="${new Date().toISOString().split('T')[0]}" onchange="onDateChangeMevduat()">
+                    </div>
+                    <div class="input-card mb-0">
+                        <span class="label-text">Bitiş (Vade Sonu)</span>
+                        <input type="date" id="date-first" class="apple-input text-base" value="${new Date(Date.now() + 86400000*32).toISOString().split('T')[0]}" onchange="onDateChangeMevduat()">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <span class="label-text">Mevduat Anapara (TL)</span>
+                    <input type="text" id="val-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this)">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="input-card">
+                        <span class="label-text">Gün Sayısı</span>
+                        <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="32" oninput="updateMevduatStopaj()">
+                    </div>
+                    <div class="input-card">
+                        <span class="label-text">Yıllık Faiz Oranı (%)</span>
+                        <input type="text" id="val-faiz" inputmode="decimal" class="apple-input" value="50">
+                    </div>
+                </div>
+                <div id="info-stopaj" class="info-badge mb-4 text-center justify-center font-bold">Uygulanan Stopaj Oranı: %17,50</div>
+                <button class="action-btn" onclick="calculateMevduat()">GETİRİ HESAPLA</button>`;
+        }
+
+        function isTatil(date) {
+            const gun = date.getDay();
+            if (gun === 0 || gun === 6) return true;
+            const ayGun = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            return resmiTatiller.includes(ayGun);
+        }
+
+        function sonrakilsGunu(date) {
+            let next = new Date(date);
+            next.setDate(next.getDate() + 1);
+            while (isTatil(next)) { next.setDate(next.getDate() + 1); }
+            return next;
+        }
+
+        // BDDK 2026 Konut Kredisi Sınırları Entegrasyonu
+        function updateKonutUI() {
+            const d = getRawVal('val-deger');
+            const m = id('val-mulkiyet').value; 
+            let oran = 0;
+            
+            if (d <= 5000000) {
+                oran = 0.70;
+            } else if (d <= 7000000) {
+                oran = 0.50;
+            } else {
+                oran = 0; 
+            }
+
+            if (m === 'diger') {
+                oran = oran * 0.25;
+            }
+
+            const azami = d * oran;
+            const limitEl = id('info-limit');
+            
+            if (oran === 0 && d > 0) {
+                limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> 7 Milyon TL üzeri konut kredisi sınırlandırılmıştır.</span>`;
+            } else if (d > 0) {
+                limitEl.innerHTML = `<i class="fa-solid fa-house-circle-check text-emerald-500"></i> Azami Kredi: ${format(azami)} (%${(oran*100).toFixed(1)})`;
+            } else {
+                limitEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> Lütfen gayrimenkul değerini giriniz.`;
+            }
+        }
+
+        // BDDK 2026 Taşıt Kredisi Sınırları Entegrasyonu
+        function updateTasitUI() {
+            const d = getRawVal('val-deger');
+            let o = 0, v = 48;
+            
+            if (state.main === 'ticari') {
+                o = 0.8; 
+                v = 60;  
+            } 
+            else {
+                const turEl = id('val-arac-turu');
+                const tur = turEl ? turEl.value : 'icten';
+                
+                if (tur === 'elektrikli') {
+                    if(d <= 2500000) { o = 0.7; v = 48; }
+                    else if(d <= 5000000) { o = 0.5; v = 36; }
+                    else if(d <= 6500000) { o = 0.3; v = 24; }
+                    else if(d <= 7500000) { o = 0.2; v = 12; }
+                    else { o = 0; v = 0; }
+                } else {
+                    if(d <= 400000) { o = 0.7; v = 48; }
+                    else if(d <= 800000) { o = 0.5; v = 36; }
+                    else if(d <= 1200000) { o = 0.3; v = 24; }
+                    else if(d <= 2000000) { o = 0.2; v = 12; }
+                    else { o = 0; v = 0; }
+                }
+            }
+
+            id('val-vade').value = v;
+            const limitEl = id('info-limit');
+            
+            if (o === 0 && d > 0) {
+                limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Bireysel kasko limiti aşılmıştır.</span>`;
+            } else if (d > 0) {
+                limitEl.innerHTML = `<i class="fa-solid fa-car text-emerald-500"></i> Azami Kredi: ${format(d*o)} | Azami Vade: ${v} Ay`;
+            } else {
+                limitEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> Lütfen araç kasko/fatura değerini giriniz.`;
+            }
+        }
+
+        function validateVade() {
+            if(state.sub === 'ihtiyac') {
+                const t = getRawVal('val-tutar');
+                let max = 36;
+                if(t > 250000) max = 12;
+                else if(t > 125000) max = 24;
+                id('val-vade').value = max;
+            }
+        }
+
+        function onDateChange() {
+            const ds = id('date-start'), df = id('date-first');
+            if(!ds || !df) return;
+            if(state.sub.includes('ekhesap')) {
+                const start = new Date(ds.value), originalEnd = new Date(df.value);
+                let isTatilGunu = isTatil(originalEnd);
+                let faizBitisTarihi = sonrakilsGunu(originalEnd);
+                const diff = Math.ceil((faizBitisTarihi - start) / (1000 * 60 * 60 * 24));
+                id('val-vade').value = diff > 0 ? diff : 0;
+                
+                const holidayInfo = id('info-holiday');
+                if(holidayInfo) {
+                    holidayInfo.classList.toggle('hidden', !isTatilGunu);
+                    if(isTatilGunu) {
+                        holidayInfo.innerHTML = `<i class="fa-solid fa-calendar-day"></i> Tatil; Faiz ${faizBitisTarihi.toLocaleDateString('tr-TR')} tarihine kadar işler.`;
+                    }
+                }
+            }
+        }
+
+        function onDateChangeMevduat() {
+            const start = new Date(id('date-start').value), end = new Date(id('date-first').value);
+            const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            id('val-vade').value = diff > 0 ? diff : 0;
+            updateMevduatStopaj();
+        }
+
+        function calculate() {
+            if(state.sub.includes('ekhesap')) return calculateEkHesap();
+            
+            const T = getRawVal('val-tutar');
+            const initialV = parseInt(id('val-vade').value);
+            
+            // iOS Türkçe Virgüllü Klavye Giriş Güvenliği
+            const faizStr = id('val-faiz').value.replace(',', '.');
+            const F = parseFloat(faizStr) / 100;
+            
+            if(T <= 0) return showToast("Lütfen geçerli bir kredi tutarı giriniz.");
+            if(initialV <= 0) return showToast("Lütfen geçerli bir vade süresi belirtiniz.");
+            if(isNaN(F) || F < 0) return showToast("Lütfen geçerli bir faiz oranı giriniz.");
+
+            const dStart = new Date(id('date-start').value);
+            const dFirst = new Date(id('date-first').value);
+            
+            let kkdfo = 0.15, bsmvo = 0.15;
+            
+            if(state.main === 'ticari') { kkdfo = 0; bsmvo = 0.05; }
+            if(state.sub === 'konut') { kkdfo = 0; bsmvo = 0; }
+            
+            const brutFaizOrani = F * (1 + kkdfo + bsmvo);
+            
+            let taksitNormal = brutFaizOrani > 0 ? 
+                (T * brutFaizOrani * Math.pow(1 + brutFaizOrani, initialV)) / (Math.pow(1 + brutFaizOrani, initialV) - 1) 
+                : T / initialV;
+            
+            let bak = T, plan = [], totalF = 0, totalK = 0, totalB = 0;
+            let prevDate = new Date(dStart);
+            
+            let sortedAra = [...state.araOdemeler].sort((a,b) => new Date(a.date) - new Date(b.date));
+            let araIndex = 0;
+
+            let i = 1;
+            let maxIter = initialV * 2; 
+
+            // Güvenli amortisman döngüsü
+            while (bak > 0.01 && i <= maxIter) {
+                let tDate = new Date(dFirst);
+                tDate.setMonth(tDate.getMonth() + (i - 1));
+                
+                let wasAraOdemeThisPeriod = false;
+                let hasVadeAdjustment = false;
+                let targetRemainingTerms = 0;
+
+                while(araIndex < sortedAra.length) {
+                    let nextAra = sortedAra[araIndex];
+                    let araDateObj = new Date(nextAra.date);
+                    
+                    if (araDateObj >= prevDate && araDateObj < tDate) {
+                        wasAraOdemeThisPeriod = true;
+                        
+                        let timeDiff = Math.abs(araDateObj.getTime() - prevDate.getTime());
+                        let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24)); 
+                        
+                        let f_ara_net = (bak * F / 30) * gunFarki; 
+                        let k_ara = f_ara_net * kkdfo;
+                        let b_ara = f_ara_net * bsmvo;
+                        let toplamKesinti = f_ara_net + k_ara + b_ara;
+                        
+                        let anaparaDusumu = nextAra.tutar - toplamKesinti;
+                        
+                        if(anaparaDusumu > 0) {
+                            bak -= anaparaDusumu;
+                            totalF += f_ara_net; totalK += k_ara; totalB += b_ara;
+                            
+                            plan.push({ 
+                                i: 'ARA', 
+                                date: araDateObj.toLocaleDateString('tr-TR'), 
+                                rawDate: new Date(araDateObj),
+                                taksit: nextAra.tutar, 
+                                ana: anaparaDusumu, 
+                                f: f_ara_net, 
+                                k: k_ara + b_ara, 
+                                bak: Math.max(0, bak) 
+                            });
+                            
+                            prevDate = new Date(araDateObj);
+
+                            if (nextAra.tur === 'vade') {
+                                hasVadeAdjustment = true;
+                            } else if (nextAra.tur === 'taksit') {
+                                let kalanVade = initialV - (i - 1);
+                                if (kalanVade > 0) {
+                                    taksitNormal = brutFaizOrani > 0 ? 
+                                        (bak * brutFaizOrani * Math.pow(1 + brutFaizOrani, kalanVade)) / (Math.pow(1 + brutFaizOrani, kalanVade) - 1) 
+                                        : (bak / kalanVade);
+                                }
+                            }
+                        }
+                        araIndex++;
+                    } else {
+                        break; 
+                    }
+                }
+
+                if (hasVadeAdjustment) {
+                    if (brutFaizOrani > 0 && taksitNormal > bak * brutFaizOrani) {
+                        let N_rem = Math.log(taksitNormal / (taksitNormal - bak * brutFaizOrani)) / Math.log(1 + brutFaizOrani);
+                        let originalRemaining = initialV - (i - 1);
+                        targetRemainingTerms = Math.max(1, Math.min(originalRemaining, Math.round(N_rem)));
+                    } else {
+                        let originalRemaining = initialV - (i - 1);
+                        targetRemainingTerms = Math.max(1, Math.min(originalRemaining, Math.round(bak / (taksitNormal || 1))));
+                    }
+                }
+
+                let gunFarkiNormal = 30; 
+                
+                if (i === 1 || wasAraOdemeThisPeriod) {
+                    let timeDiffNormal = Math.abs(tDate.getTime() - prevDate.getTime());
+                    gunFarkiNormal = Math.round(timeDiffNormal / (1000 * 3600 * 24));
+                }
+                
+                let f = (bak * F / 30) * gunFarkiNormal;
+                let k = f * kkdfo;
+                let b = f * bsmvo;
+                let actual_gross_interest = f + k + b;
+
+                let ana = 0;
+                let currentTaksit = 0;
+
+                if (hasVadeAdjustment) {
+                    let N_new = targetRemainingTerms;
+                    ana = bak; 
+                    if (N_new > 1) {
+                        if (brutFaizOrani > 0) {
+                            let presentValue = taksitNormal * (1 - Math.pow(1 + brutFaizOrani, -(N_new - 1))) / brutFaizOrani;
+                            ana = bak - presentValue;
+                        } else {
+                            ana = bak - taksitNormal * (N_new - 1);
+                        }
+                    }
+                    ana = Math.max(0, Math.min(bak, ana));
+                    currentTaksit = ana + actual_gross_interest;
+                } else {
+                    let std_gross_interest = bak * brutFaizOrani; 
+                    let std_principal = taksitNormal - std_gross_interest; 
+                    
+                    if (bak <= std_principal + 0.1 || i === initialV) {
+                        std_principal = bak;
+                    }
+                    ana = std_principal;
+                    currentTaksit = std_principal + actual_gross_interest;
+                }
+
+                bak -= ana;
+                totalF += f; totalK += k; totalB += b;
+                
+                plan.push({ 
+                    i, 
+                    date: tDate.toLocaleDateString('tr-TR'), 
+                    rawDate: new Date(tDate),
+                    taksit: currentTaksit, 
+                    ana, 
+                    f, 
+                    k: k + b, 
+                    bak: Math.max(0, bak) 
+                });
+                
+                prevDate = new Date(tDate);
+                i++;
+            }
+
+            state.lastCalc = plan;
+            state.lastPrincipal = T;
+            
+            let totalOdenen = plan.reduce((acc, curr) => acc + curr.taksit, 0);
+            
+            showResults([
+                { l: "İlk Taksit Tutarı", v: format(plan.find(p => typeof p.i === 'number')?.taksit || 0), h: true },
+                { l: "Toplam Net Faiz", v: format(totalF) },
+                { l: "Vergi Toplamı (BSMV+KKDF)", v: format(totalK + totalB) },
+                { l: "Toplam Geri Ödeme", v: format(totalOdenen) }
+            ]);
+            id('plan-trigger').style.display = 'flex';
+        }
+
+        function calculateEkHesap() {
+            const T = getRawVal('val-tutar');
+            const G = parseInt(id('val-vade').value);
+            
+            const faizStr = id('val-faiz').value.replace(',', '.');
+            const F = parseFloat(faizStr) / 100;
+            
+            if(T <= 0) return showToast("Lütfen geçerli bir kullanım tutarı giriniz.");
+            
+            let kkdfo = 0.15, bsmvo = 0.15;
+            if(state.main === 'ticari') { kkdfo = 0; bsmvo = 0.05; }
+            
+            const f = (T * F * G) / 30;
+            const k = f * kkdfo, b = f * bsmvo;
+
+            const ds = id('date-start'), df = id('date-first');
+            const end = new Date(df.value);
+            
+            state.lastCalc = [{
+                i: 1,
+                date: end.toLocaleDateString('tr-TR'),
+                rawDate: new Date(end),
+                taksit: T + f + k + b,
+                ana: T,
+                f: f,
+                k: k + b,
+                bak: 0
+            }];
+            state.lastPrincipal = T;
+            
+            showResults([
+                { l: "Toplam Borç", v: format(T + f + k + b), h: true },
+                { l: "Net Faiz Tutarı", v: format(f) },
+                { l: "KKDF Tutarı (%"+(kkdfo*100)+")", v: format(k) },
+                { l: "BSMV Tutarı (%"+(bsmvo*100)+")", v: format(b) },
+                { l: "Kullanım Günü", v: G + " Gün" }
+            ]);
+            id('plan-trigger').style.display = 'none';
+        }
+
+        function updateMevduatStopaj() {
+            const v = parseInt(id('val-vade').value);
+            let s = 17.5;
+            if(v > 365) s = 10; else if(v > 180) s = 15;
+            const stopajEl = id('info-stopaj');
+            if(stopajEl) stopajEl.innerText = `Uygulanan Stopaj Oranı: %${s.toFixed(2)}`;
+            return s/100;
+        }
+
+        function calculateMevduat() {
+            const T = getRawVal('val-tutar');
+            const G = parseInt(id('val-vade').value);
+            
+            const faizStr = id('val-faiz').value.replace(',', '.');
+            const F = parseFloat(faizStr) / 100;
+            
+            if(T <= 0) return showToast("Lütfen anapara tutarı giriniz.");
+            if(G <= 0) return showToast("Lütfen geçerli bir gün sayısı belirtiniz.");
+
+            const stopaj = updateMevduatStopaj();
+            const brut = (T * F * G) / 365;
+            const vergi = brut * stopaj;
+
+            const ds = id('date-start'), df = id('date-first');
+            const end = new Date(df.value);
+            
+            state.lastCalc = [{
+                i: 1,
+                date: end.toLocaleDateString('tr-TR'),
+                rawDate: new Date(end),
+                taksit: T + brut - vergi, 
+                ana: T,
+                f: brut - vergi, 
+                k: vergi, 
+                bak: 0
+            }];
+            state.lastPrincipal = T;
+            
+            showResults([
+                { l: "Net Faiz Getirisi", v: format(brut - vergi), h: true },
+                { l: "Brüt Faiz Getirisi", v: format(brut) },
+                { l: "Stopaj Vergisi Kesintisi", v: format(vergi) },
+                { l: "Vade Sonu Kümülatif Bakiye", v: format(T + brut - vergi) }
+            ]);
+            id('plan-trigger').style.display = 'none';
+        }
+
+        function id(i) { return document.getElementById(i); }
+        
+        function getRawVal(i) { 
+            const el = id(i); 
+            if (!el) return 0;
+            let valStr = el.value.replace(/\./g, '').replace(',', '.');
+            return parseFloat(valStr) || 0; 
+        }
+        
+        function format(n) { 
+            return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(n); 
+        }
+        
+        function mask(e) { 
+            let v = e.value.replace(/\D/g, ""); 
+            e.value = v ? new Intl.NumberFormat('tr-TR').format(v) : ""; 
+        }
+        
+        function hideResults() { 
+            id('results').classList.add('hidden'); 
+        }
+        
+        function showResults(data) {
+            id('result-rows').innerHTML = data.map(d => `
+                <div class="flex justify-between items-center ${d.h ? 'bg-amber-500/10 p-4 rounded-2xl border border-amber-500/25' : 'px-1'}">
+                    <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">${d.l}</span>
+                    <span class="font-bold ${d.h ? 'text-amber-500 text-lg font-extrabold' : 'text-amber-100'}">${d.v}</span>
+                </div>
+            `).join('');
+            
+            id('results').classList.remove('hidden');
+            
+            setTimeout(() => {
+                id('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function openPlan() {
+            if(!state.lastCalc) return;
+            id('plan-body').innerHTML = state.lastCalc.map(r => `
+                <tr class="transition-all hover:bg-zinc-800/30">
+                    <td class="text-zinc-600 font-bold text-xs">${r.i}</td>
+                    <td class="col-date">${r.date}</td>
+                    <td class="col-taksit">${format(r.taksit)}</td>
+                    <td class="col-ana">${format(r.ana)}</td>
+                    <td class="col-faiz">${format(r.f)}</td>
+                    <td class="col-vergi">${format(r.k)}</td>
+                    <td class="col-bak text-right">${format(r.bak)}</td>
+                </tr>
+            `).join('');
+            
+            const modalContent = document.querySelector('#plan-modal .modal-content');
+            modalContent.style.transform = ''; 
+            id('plan-modal').style.display = 'flex';
+        }
+
+        function closePlan() { 
+            const modalContent = document.querySelector('#plan-modal .modal-content');
+            modalContent.style.transform = 'translateY(100%)'; 
+            
+            setTimeout(() => {
+                id('plan-modal').style.display = 'none'; 
+                modalContent.style.transform = ''; 
+            }, 300); 
+        }
+
+        function closePlanOutside(event) {
+            if (event.target.id === 'plan-modal') {
+                closePlan();
+            }
+        }
+
+        function getMonthDifference(dStart, dEnd) {
+            if (!dStart || !dEnd) return 0;
+            const start = new Date(dStart);
+            const end = new Date(dEnd);
+            const yearsDiff = end.getFullYear() - start.getFullYear();
+            const monthsDiff = end.getMonth() - start.getMonth();
+            const daysDiff = end.getDate() - start.getDate();
+            return (yearsDiff * 12) + monthsDiff + (daysDiff / 30.4375);
+        }
+
+        function onCustomInflationChange(value) {
+            state.customInflationAnnual = value;
+            const infAnnual = parseFloat(value);
+            const infMonthly = (Math.pow(1 + infAnnual / 100, 1 / 12) - 1) * 100;
+            const annualStr = infAnnual.toFixed(2).replace('.', ',');
+            const monthlyStr = infMonthly.toFixed(2).replace('.', ',');
+            
+            id('inf-custom-slider-val').innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+            recalculateInflationAnalysis();
+        }
+
+        function onAlternativeDepositRateChange(value) {
+            state.alternativeDepositRate = value;
+            const depAnnual = parseFloat(value);
+            const depMonthly = depAnnual / 12;
+            const annualStr = depAnnual.toFixed(2).replace('.', ',');
+            const monthlyStr = depMonthly.toFixed(2).replace('.', ',');
+            
+            id('inf-deposit-slider-val').innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+            recalculateInflationAnalysis();
+        }
+
+        function onProductInterestSliderChange(value) {
+            const isMevduatProduct = (state.main === 'mevduat');
+            const valText = id('inf-product-interest-val');
+            
+            if (valText) {
+                if (isMevduatProduct) {
+                    valText.innerText = `%${parseFloat(value).toFixed(0)}`;
+                } else {
+                    const monthly = parseFloat(value);
+                    const annual = monthly * 12;
+                    const monthlyStr = monthly.toFixed(2).replace('.', ',');
+                    const annualStr = annual.toFixed(2).replace('.', ',');
+                    valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                }
+            }
+            
+            const mainFaizInput = id('val-faiz');
+            if (mainFaizInput) {
+                mainFaizInput.value = value;
+            }
+            
+            if (isMevduatProduct) {
+                calculateMevduat();
+            } else if (state.sub.includes('ekhesap')) {
+                calculateEkHesap();
+            } else {
+                calculate();
+            }
+            
+            recalculateInflationAnalysis();
+        }
+
+        function toggleInflationTable() {
+            state.inflationTableVisible = !state.inflationTableVisible;
+            const container = id('inf-table-container');
+            const textEl = id('inf-table-toggle-text');
+            const iconEl = id('inf-table-toggle-icon');
+            
+            if (state.inflationTableVisible) {
+                container.classList.remove('hidden');
+                textEl.innerText = "AYLIK DETAYLI REEL ÖDEME TABLOSUNU GİZLE";
+                iconEl.classList.add('rotate-180');
+            } else {
+                container.classList.add('hidden');
+                textEl.innerText = "AYLIK DETAYLI REEL ÖDEME TABLOSUNU GÖSTER";
+                iconEl.classList.remove('rotate-180');
+            }
+        }
+
+        function recalculateInflationAnalysis() {
+            if (!state.lastCalc || state.lastCalc.length === 0) {
+                runDefaultSimulation();
+                return;
+            }
+            
+            const principal = state.lastPrincipal || 0;
+            const isMevduatProduct = (state.main === 'mevduat');
+            const isEkHesap = state.sub.includes('ekhesap');
+            
+            const dStart = new Date(id('date-start').value);
+            const dFirst = new Date(id('date-first').value);
+            
+            const annualInflation = parseFloat(state.customInflationAnnual) / 100;
+            const annualDepositRate = parseFloat(state.alternativeDepositRate) / 100;
+            
+            let termMonths = parseInt(id('val-vade')?.value) || 12;
+            if (isMevduatProduct) {
+                termMonths = Math.max(1, Math.round(termMonths / 30));
+            }
+            const termDays = Math.ceil(termMonths * 30.4375);
+            
+            const monthlyInflation = Math.pow(1 + annualInflation, 1/12) - 1;
+            
+            let totalNominal = 0;
+            let totalReal = 0;
+            const tableData = [];
+            
+            state.lastCalc.forEach(p => {
+                const nominal = p.taksit;
+                totalNominal += nominal;
+                
+                const pDate = p.rawDate ? new Date(p.rawDate) : parseLocaleDate(p.date);
+                const months = Math.max(0, getMonthDifference(dStart, pDate));
+                
+                const multiplier = Math.pow(1 + monthlyInflation, months);
+                const realVal = nominal / multiplier;
+                totalReal += realVal;
+                
+                tableData.push({
+                    i: p.i,
+                    date: p.date,
+                    nominal: nominal,
+                    multiplier: multiplier,
+                    real: realVal,
+                    saving: nominal - realVal
+                });
+            });
+            
+            const debtErosion = totalNominal - totalReal;
+            const realCreditCost = totalReal - principal;
+            const realInterestPaid = totalReal - principal; 
+            
+            let taxRate = 0.175; 
+            if (termDays > 365) taxRate = 0.10;
+            else if (termDays > 180) taxRate = 0.15;
+            
+            const grossDepositInterest = (principal * annualDepositRate * termDays) / 365;
+            const taxDeduction = grossDepositInterest * taxRate;
+            const netDepositInterest = grossDepositInterest - taxDeduction;
+            const finalDepositNominal = principal + netDepositInterest;
+            
+            const finalDepositReal = finalDepositNominal / Math.pow(1 + annualInflation, termMonths / 12);
+            const purchasingPowerChange = finalDepositReal - principal;
+
+            const nominalDecisionNPV = finalDepositNominal - totalNominal;
+            const realDecisionNPV = finalDepositReal - totalReal;
+            
+            const infProductName = id('inf-product-name');
+            if (infProductName) infProductName.innerText = isMevduatProduct ? "VADELİ MEVDUAT" : (isEkHesap ? "EK HESAP" : "TAKSİTLİ KREDİ");
+            
+            const infProductAmount = id('inf-product-amount');
+            if (infProductAmount) infProductAmount.innerText = format(principal);
+            
+            // Kart 1: Reel Faiz
+            const realIntEl = id('card-real-interest');
+            if (realIntEl) realIntEl.innerText = format(realInterestPaid);
+            const interestSub = id('card-real-interest-sub');
+            if (interestSub) {
+                if (realInterestPaid < 0) {
+                    if (realIntEl) realIntEl.className = "text-lg font-bold font-mono text-emerald-400";
+                    interestSub.innerHTML = `<span class="text-emerald-500 font-semibold"><i class="fa-solid fa-arrow-down-long"></i> Negatif Reel Faiz!</span> Enflasyon faizi eritti.`;
+                } else {
+                    if (realIntEl) realIntEl.className = "text-lg font-bold font-mono text-rose-500";
+                    interestSub.innerHTML = `<span class="text-rose-500 font-semibold"><i class="fa-solid fa-arrow-up-long"></i> Pozitif Reel Faiz.</span> Gerçek borç yükünüz.`;
+                }
+            }
+
+            // Kart 2: Kredi Gerçek Maliyeti (Reel NPV)
+            const realCostEl = id('card-real-credit-cost');
+            if (realCostEl) realCostEl.innerText = format(totalReal);
+            
+            const realCreditCostSub = id('card-real-credit-cost-sub');
+            if (realCreditCostSub) {
+                realCreditCostSub.innerText = `Anapara ${format(principal)} karşılığı cebinizden çıkacak reel değer.`;
+            }
+
+            // Kart 3: Borcun Enflasyonla Erimesi
+            const cardDebtErosion = id('card-debt-erosion');
+            if (cardDebtErosion) cardDebtErosion.innerText = format(debtErosion);
+            
+            const cardDebtErosionSub = id('card-debt-erosion-sub');
+            if (cardDebtErosionSub) {
+                cardDebtErosionSub.innerText = `Sabit borç ödemelerinin enflasyonda eriyen payı.`;
+            }
+
+            // Kart 4: Mevduat Gerçek Kazancı
+            const depReturnEl = id('card-real-deposit-return');
+            if (depReturnEl) depReturnEl.innerText = format(finalDepositReal);
+            const depDescEl = id('card-real-deposit-desc');
+            if (depDescEl) {
+                if (purchasingPowerChange >= 0) {
+                    depDescEl.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-trend-up"></i> ${format(purchasingPowerChange)}</span> net reel büyüme.`;
+                } else {
+                    depDescEl.innerHTML = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-trend-down"></i> ${format(purchasingPowerChange)}</span> satın alma gücü kaybı.`;
+                }
+            }
+
+            // Bulgular Raporu
+            const decisionTitleEl = id('unified-decision-title');
+            const decisionDescEl = id('unified-decision-desc');
+            
+            if (decisionTitleEl && decisionDescEl) {
+                if (isMevduatProduct) {
+                    if (purchasingPowerChange >= 0) {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Pozitif Reel Getiri Durumu";
+                        decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
+                        decisionDescEl.innerText = `Yıllık %${state.alternativeDepositRate} vadeli mevduat faiz oranının, %${state.customInflationAnnual} enflasyon beklentisinin üzerinde kaldığı hesaplanmıştır. Bu doğrultuda birikimleriniz enflasyon karşısında değerini korumaktadır. Vade sonu net nominal birikim tutarı ${format(finalDepositNominal)} olurken, bugünkü para değeri cinsinden net satın alma gücü artışı ${format(purchasingPowerChange)} seviyesindedir.`;
+                    } else {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Negatif Reel Getiri (Aşınma) Durumu";
+                        decisionTitleEl.className = "text-lg font-black text-amber-500 leading-snug mb-2";
+                        decisionDescEl.innerText = `Öngördüğünüz %${state.customInflationAnnual} yıllık enflasyon oranının, %${state.alternativeDepositRate} vadeli mevduat faiz oranının üzerinde gerçekleşmesi beklenmektedir. Bu durum, paranızın nominal olarak artmasına rağmen satın alma gücünün reel bazda eriyeceğini doğrulamaktadır. Vade sonundaki net reel kaybın ${format(Math.abs(purchasingPowerChange))} seviyesinde gerçekleşeceği hesaplanmıştır.`;
+                    }
+                } else {
+                    if (realDecisionNPV > 0 && realCreditCost < 0) {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Negatif Reel Maliyetli Kredi ve Arbitraj";
+                        decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
+                        decisionDescEl.innerText = `%${state.customInflationAnnual} enflasyon beklentisi altında kredinizin reel Net Bugün Değer maliyeti negatiftir. Sabit taksitlerin enflasyon karşısındaki aşınma hızı, ödeyeceğiniz nominal faiz yükünden daha hızlı gerçekleşmektedir. Kredi geri ödeme bütçesi ile alternatif mevduat getirisi kıyaslandığında, vade sonunda net ${format(nominalDecisionNPV)} (Bugünkü reel Net Bugün Değer ile ${format(realDecisionNPV)}) tutarında pozitif bir finansal fark oluştuğu tespit edilmiştir.`;
+                    } else if (realDecisionNPV > 0) {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Pozitif Arbitraj Marjı Durumu";
+                        decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
+                        decisionDescEl.innerText = `Kredinin nominal faiz yükü, vadeli mevduatın net getiri oranının altında seyretmektedir. Yapılan Net Bugün Değer (NPV) karşılaştırması doğrultusunda, kredinin toplam nominal geri ödeme maliyeti ile mevduat getirisi arasında nominal bazda net ${format(nominalDecisionNPV)} değerinde pozitif bir farkın mevcut olduğu gözlemlenmiştir. Kredinin reel Net Bugün Değer karşılığı ${format(totalReal)} seviyesindedir.`;
+                    } else {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Pozitif Reel Maliyet ve Enflasyon Aşınması Dengesi";
+                        decisionTitleEl.className = "text-lg font-black text-amber-500 leading-snug mb-2";
+                        decisionDescEl.innerText = `Kredinin nominal borç geri ödeme tutarının, alternatif mevduat getirisinden yüksek olduğu gözlemlenmiştir. Kredinin enflasyondan arındırılmış bugünkü satın alma gücü yükü ${format(totalReal)} seviyesindedir. Borcun enflasyonla erimesinden elde edilen kazanç ${format(debtErosion)} olmakla birlikte, bu kazanç mevduat getirisiyle karşılaştırıldığında bütçede ${format(Math.abs(realDecisionNPV))} seviyesinde bir nominal fark oluşturmaktadır.`;
+                    }
+                }
+            }
+
+            // Grafikleri Eşitleme
+            const oppChartDepositVal = id('opp-chart-deposit-val');
+            if (oppChartDepositVal) oppChartDepositVal.innerText = format(finalDepositNominal);
+            
+            const oppChartLoanVal = id('opp-chart-loan-val');
+            if (oppChartLoanVal) oppChartLoanVal.innerText = format(totalNominal);
+            
+            const oppChartRealLoanVal = id('opp-chart-real-loan-val');
+            if (oppChartRealLoanVal) oppChartRealLoanVal.innerText = format(totalReal);
+            
+            const maxVal = Math.max(finalDepositNominal, totalNominal, totalReal);
+            
+            const oppChartDepositBar = id('opp-chart-deposit-bar');
+            if (oppChartDepositBar) oppChartDepositBar.style.width = ((finalDepositNominal / maxVal) * 100) + '%';
+            
+            const oppChartLoanBar = id('opp-chart-loan-bar');
+            if (oppChartLoanBar) oppChartLoanBar.style.width = ((totalNominal / maxVal) * 100) + '%';
+            
+            const oppChartRealLoanBar = id('opp-chart-real-loan-bar');
+            if (oppChartRealLoanBar) oppChartRealLoanBar.style.width = ((totalReal / maxVal) * 100) + '%';
+
+            // Aylık Detay Tablosunu Doldurma
+            const infTableBody = id('inf-table-body');
+            if (infTableBody) {
+                infTableBody.innerHTML = tableData.map(r => `
+                    <tr class="transition-all hover:bg-zinc-800/30">
+                        <td class="text-zinc-600 font-bold text-xs">${r.i}</td>
+                        <td class="col-date">${r.date}</td>
+                        <td class="text-white font-mono font-bold">${format(r.nominal)}</td>
+                        <td class="text-amber-500 font-mono font-medium">%${((r.multiplier - 1) * 100).toFixed(2)}</td>
+                        <td class="col-ana font-mono">${format(r.real)}</td>
+                        <td class="col-taksit font-mono text-right text-emerald-400">+${format(r.saving)}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function parseLocaleDate(dateStr) {
+            if (!dateStr) return new Date();
+            const parts = dateStr.split('.');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return new Date(dateStr);
+        }
+
+        function runDefaultSimulation() {
+            id('val-tutar').value = "150.000";
+            if (id('val-deger')) id('val-deger').value = "500.000";
+            id('val-faiz').value = "4.25";
+            id('val-vade').value = "12";
+            
+            showToast("Simülasyon kredisi otomatik hesaplanarak kokpite aktarıldı.", "success");
+            calculate();
+            recalculateInflationAnalysis();
+        }
+
+        function openInflationAnalysis() {
+            if (!state.lastCalc || state.lastCalc.length === 0) {
+                if (state.main === 'mevduat') {
+                    id('val-tutar').value = "100.000";
+                    id('val-faiz').value = "50";
+                    id('val-vade').value = "32";
+                    calculateMevduat();
+                } else if (state.sub.includes('ekhesap')) {
+                    id('val-tutar').value = "20.000";
+                    id('val-faiz').value = "5.00";
+                    calculateEkHesap();
+                } else {
+                    id('val-tutar').value = "150.000";
+                    id('val-faiz').value = "4.25";
+                    id('val-vade').value = "12";
+                    calculate();
+                }
+            }
+            
+            // Analiz Paneli Sürgülerinin Dinamik İlklendirilmesi
+            const mainFaizVal = parseFloat(id('val-faiz')?.value.replace(',', '.')) || (state.main === 'mevduat' ? 50 : 4.25);
+            const isMevduatProduct = (state.main === 'mevduat');
+            
+            const slider = id('inf-product-interest-slider');
+            const label = id('inf-product-interest-label');
+            const bounds = id('inf-product-interest-bounds');
+            const valText = id('inf-product-interest-val');
+            
+            if (slider && label && bounds && valText) {
+                if (isMevduatProduct) {
+                    label.innerHTML = `<i class="fa-solid fa-percent mr-1.5"></i> Mevduat Yıllık Faiz Oranı (%)`;
+                    slider.min = "5";
+                    slider.max = "90";
+                    slider.step = "1";
+                    slider.value = mainFaizVal;
+                    valText.innerText = `%${parseFloat(mainFaizVal).toFixed(0)}`;
+                    bounds.innerHTML = `<span>%5</span><span>%90</span>`;
+                    id('inf-deposit-slider-container').classList.add('hidden');
+                } else {
+                    label.innerHTML = `<i class="fa-solid fa-percent mr-1.5"></i> Kredi Aylık Faiz Oranı (%)`;
+                    slider.min = "0.5";
+                    slider.max = "10.0";
+                    slider.step = "0.05";
+                    slider.value = mainFaizVal;
+                    const monthly = parseFloat(mainFaizVal);
+                    const annual = monthly * 12;
+                    const monthlyStr = monthly.toFixed(2).replace('.', ',');
+                    const annualStr = annual.toFixed(2).replace('.', ',');
+                    valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                    bounds.innerHTML = `<span>%0.50</span><span>%10.00</span>`;
+                    id('inf-deposit-slider-container').classList.remove('hidden');
+                }
+            }
+
+            const customInfSlider = id('inf-custom-slider');
+            if (customInfSlider) {
+                customInfSlider.value = state.customInflationAnnual;
+                const infAnnual = parseFloat(state.customInflationAnnual);
+                const infMonthly = (Math.pow(1 + infAnnual / 100, 1 / 12) - 1) * 100;
+                id('inf-custom-slider-val').innerText = `Yıllık %${infAnnual.toFixed(2).replace('.', ',')} (Aylık %${infMonthly.toFixed(2).replace('.', ',')})`;
+            }
+
+            const depositSlider = id('inf-deposit-slider');
+            if (depositSlider) {
+                depositSlider.value = state.alternativeDepositRate;
+                const depAnnual = parseFloat(state.alternativeDepositRate);
+                const depMonthly = depAnnual / 12;
+                id('inf-deposit-slider-val').innerText = `Yıllık %${depAnnual.toFixed(2).replace('.', ',')} (Aylık %${depMonthly.toFixed(2).replace('.', ',')})`;
+            }
+            
+            recalculateInflationAnalysis();
+            fetchLiveRates(); // Panel her açıldığında canlı kurları tazelemeye zorla (Görünürlük Garantisi)
+            
+            const modalContent = document.querySelector('#inflation-modal .modal-content');
+            modalContent.style.transform = ''; 
+            id('inflation-modal').style.display = 'flex';
+        }
+
+        function closeInflation() {
+            const modalContent = document.querySelector('#inflation-modal .modal-content');
+            modalContent.style.transform = 'translateY(100%)'; 
+            
+            setTimeout(() => {
+                id('inflation-modal').style.display = 'none'; 
+                modalContent.style.transform = ''; 
+            }, 300); 
+        }
+
+        function closeInflationOutside(event) {
+            if (event.target.id === 'inflation-modal') {
+                closeInflation();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupModalGestures('#plan-modal');
+            setupModalGestures('#inflation-modal');
+        });
+
+        function setupModalGestures(modalSelector) {
+            const modal = document.querySelector(modalSelector);
+            if (!modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            const scrollArea = modal.querySelector('.scroll-area, .overflow-y-auto');
+            
+            let touchStartY = 0;
+            let currentY = 0;
+            
+            modalContent.addEventListener('touchstart', (e) => {
+                if (scrollArea && scrollArea.scrollTop > 0) return; 
+                touchStartY = e.touches[0].clientY;
+                modalContent.style.transition = 'none'; 
+            }, { passive: true });
+
+            modalContent.addEventListener('touchmove', (e) => {
+                if ((scrollArea && scrollArea.scrollTop > 0) || touchStartY === 0) return;
+                
+                currentY = e.touches[0].clientY;
+                const diff = currentY - touchStartY;
+                
+                if (diff > 0) { 
+                    modalContent.style.transform = `translateY(${diff}px)`;
+                }
+            }, { passive: true });
+
+            modalContent.addEventListener('touchend', (e) => {
+                if (touchStartY === 0) return;
+                
+                modalContent.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                const diff = currentY - touchStartY;
+                
+                if (diff > 120) {
+                    if (modalSelector === '#plan-modal') closePlan();
+                    else closeInflation();
+                } else {
+                    modalContent.style.transform = 'translateY(0)'; 
+                }
+                
+                touchStartY = 0;
+                currentY = 0;
+            });
+        }
+
+        function showToast(message, type = 'error') {
+            const existing = id('apple-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'apple-toast';
+            
+            toast.style.position = 'fixed';
+            toast.style.top = '24px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translate(-50%, -20px)';
+            toast.style.opacity = '0';
+            toast.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+            toast.style.zIndex = '9999';
+            toast.style.padding = '14px 20px';
+            toast.style.borderRadius = '16px';
+            toast.style.fontSize = '13px';
+            toast.style.fontWeight = '700';
+            toast.style.display = 'flex';
+            toast.style.alignItems = 'center';
+            toast.style.gap = '10px';
+            toast.style.boxShadow = '0 20px 40px rgba(0,0,0,0.5)';
+            toast.style.backdropFilter = 'blur(15px)';
+            toast.style.webkitBackdropFilter = 'blur(15px)';
+
+            if (type === 'error') {
+                toast.style.backgroundColor = 'rgba(244, 63, 94, 0.15)';
+                toast.style.border = '1px solid rgba(244, 63, 94, 0.3)';
+                toast.style.color = '#fda4af';
+                toast.innerHTML = `<i class="fa-solid fa-circle-exclamation text-rose-500"></i> <span>${message}</span>`;
+            } else {
+                toast.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                toast.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+                toast.style.color = '#a7f3d0';
+                toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> <span>${message}</span>`;
+            }
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transform = 'translate(-50%, 0)';
+                toast.style.opacity = '1';
+            }, 20);
+
+            setTimeout(() => {
+                toast.style.transform = 'translate(-50%, -20px)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 350);
+            }, 4500);
+        }
+
+        function downloadPDF() {
+            if(!state.lastCalc) return showToast("Aktif bir ödeme planı bulunamadı.", "error");
+            if (typeof html2pdf === 'undefined') {
+                return showToast("PDF kütüphanesi yüklenemedi.", "error");
+            }
+
+            const element = document.createElement('div');
+            element.style.padding = '35px';
+            element.style.color = '#111';
+            element.style.backgroundColor = '#fff';
+            element.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            
+            const loanAmount = format(getRawVal('val-tutar'));
+            const totalRepayment = format(state.lastCalc.reduce((acc, curr) => acc + curr.taksit, 0));
+            const monthlyPayment = format(state.lastCalc.find(p => typeof p.i === 'number')?.taksit || 0);
+
+            element.innerHTML = `
+                <div style="border-bottom: 3px solid #f59e0b; padding-bottom: 18px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h1 style="margin: 0; color: #f59e0b; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">VHESAP</h1>
+                        <p style="margin: 4px 0 0 0; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Detaylı Geri Ödeme Planı</p>
+                    </div>
+                    <div style="text-align: right; font-size: 11px; color: #555;">
+                        <strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}<br>
+                        <strong>Sistem Sürümü:</strong> 2026.1
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 18px; margin-bottom: 30px; font-size: 13px; line-height: 1.6;">
+                    <div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Kredi Kategorisi:</strong> <span style="text-transform: capitalize;">${state.main === 'bireysel' ? 'Bireysel' : 'Ticari'} Kredi</span></div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Kredi Alt Türü:</strong> <span style="text-transform: uppercase;">${state.sub}</span></div>
+                        <div><strong style="color: #444;">Aylık Faiz Oranı:</strong> %${id('val-faiz').value}</div>
+                    </div>
+                    <div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Talep Edilen Kredi:</strong> ${loanAmount}</div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Aylık Ödeme (İlk Taksit):</strong> ${monthlyPayment}</div>
+                        <div><strong style="color: #444;">Toplam Geri Ödeme:</strong> ${totalRepayment}</div>
+                    </div>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center;">
+                    <thead>
+                        <tr style="background-color: #111; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">No</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Tarih</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Taksit Tutarı</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Anapara</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Faiz</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Vergiler (BSMV+KKDF)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Kalan Bakiye</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${state.lastCalc.map(r => `
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">${r.i}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; color: #333;">${r.date}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; font-weight: 800; color: #f59e0b; font-size: 12px;">${format(r.taksit)}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; color: #10b981; font-weight: 600;">${format(r.ana)}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; color: #ef4444;">${format(r.f)}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; color: #3b82f6;">${format(r.k)}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; font-style: italic; color: #6b7280; font-weight: 500;">${format(r.bak)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            const options = {
+                margin:       [10, 10, 10, 10],
+                filename:     `Vhesap_Odeme_Plani_${Date.now()}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            showToast("PDF Hazırlanıyor...", "success");
+            html2pdf().from(element).set(options).save();
+        }
+
+        function downloadInflationPDF() {
+            if(!state.lastCalc) return showToast("Aktif bir hesaplama bulunamadı.", "error");
+            if (typeof html2pdf === 'undefined') {
+                return showToast("PDF kütüphanesi yüklenemedi.", "error");
+            }
+
+            const element = document.createElement('div');
+            element.style.padding = '35px';
+            element.style.color = '#111';
+            element.style.backgroundColor = '#fff';
+            element.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            
+            const principalStr = format(state.lastPrincipal);
+            const nominalLoanStr = id('opp-chart-loan-val').innerText;
+            const realLoanStr = id('opp-chart-real-loan-val').innerText;
+            const erosionStr = id('card-debt-erosion').innerText;
+            const realIntStr = id('card-real-interest').innerText;
+            const realDepStr = id('card-real-deposit-return').innerText;
+            const decisionTitle = id('unified-decision-title').innerText;
+            const decisionDesc = id('unified-decision-desc').innerText;
+
+            const infAnnual = parseFloat(state.customInflationAnnual);
+            const infMonthly = (Math.pow(1 + infAnnual / 100, 1 / 12) - 1) * 100;
+            const infStr = `Yıllık %${infAnnual.toFixed(2).replace('.', ',')} (Aylık %${infMonthly.toFixed(2).replace('.', ',')})`;
+
+            const depAnnual = parseFloat(state.alternativeDepositRate);
+            const depMonthly = depAnnual / 12;
+            const depStr = `Yıllık %${depAnnual.toFixed(2).replace('.', ',')} (Aylık %${depMonthly.toFixed(2).replace('.', ',')})`;
+
+            element.innerHTML = `
+                <div style="border-bottom: 3px solid #10b981; padding-bottom: 18px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h1 style="margin: 0; color: #10b981; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">VHESAP</h1>
+                        <p style="margin: 4px 0 0 0; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Gelişmiş Analiz Paneli Raporu</p>
+                    </div>
+                    <div style="text-align: right; font-size: 11px; color: #555;">
+                        <strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}<br>
+                        <strong>Analiz Sürümü:</strong> v2.3
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 25px; font-size: 13px; line-height: 1.6; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 18px;">
+                    <div style="font-weight: bold; font-size: 14px; color: #111; margin-bottom: 10px; border-bottom: 1px solid #e9ecef; padding-bottom: 6px;">Analiz Parametreleri</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <strong>Anapara Değeri:</strong> ${principalStr}<br>
+                            <strong>Kredi Nominal Borcu:</strong> ${nominalLoanStr}<br>
+                            <strong>Kredi Vade/Gün:</strong> ${id('val-vade').value} Ay
+                        </div>
+                        <div>
+                            <strong>Simüle Edilen Enflasyon:</strong> ${infStr}<br>
+                            <strong>Simüle Edilen Vadeli Faiz Oranı:</strong> ${depStr}<br>
+                            <strong>Analiz Altyapısı:</strong> Net Bugün Değer (NPV)
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background-color: #f0fdf4; border: 1px solid #a7f3d0; border-radius: 12px; padding: 18px; margin-bottom: 25px;">
+                    <h3 style="margin: 0 0 8px 0; color: #047857; font-size: 14px; font-weight: bold;">${decisionTitle}</h3>
+                    <p style="margin: 0; font-size: 12px; color: #065f46; line-height: 1.5;">${decisionDesc}</p>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h3 style="font-size: 14px; font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 15px; color: #333;">Bütünleşik Finansal Göstergeler Raporu</h3>
+                    
+                    <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 12px; color: #444;">1. REEL FAİZ MALİYETİ / KAZANCI:</strong>
+                            <span style="font-size: 14px; font-weight: bold; color: #111;">${realIntStr}</span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
+                            Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye düşer. Bu durum, borçlunun reel olarak faiz ödemediği, aksine enflasyon nedeniyle borçlanırken reel kazanç sağladığı anlamına gelir.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 12px; color: #444;">2. KREDİ GERÇEK MALİYETİ (REEL NPV):</strong>
+                            <span style="font-size: 14px; font-weight: bold; color: #111;">${realLoanStr}</span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
+                            Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir. Bu hesaplama, krediyle satın aldığınız ürün veya hizmetin, gelecekteki değersizleşen taksitler göz önüne alındığında gerçekte bugün kaç TL'ye karşılık geldiğini gösterir.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 12px; color: #444;">3. BORCUN ENFLASYONLA ERİMESİ:</strong>
+                            <span style="font-size: 14px; font-weight: bold; color: #059669;">${erosionStr}</span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
+                            Aylık taksit ödemeleriniz kredi vadesi boyunca sabit kalırken enflasyon sebebiyle paranın satın alma gücü sürekli düşer. Dolayısıyla her ay ödediğiniz aynı nominal tutar, reel olarak hanehalkı bütçenizde giderek daha az bir ağırlık taşır. Bu aradaki eriyen miktar, enflasyonist ortamlarda borçlu lehine oluşan doğrudan satın alma gücü koruması kazancıdır.
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 12px; color: #444;">4. MEVDUAT GERÇEK KAZANCI (REEL NBD):</strong>
+                            <span style="font-size: 14px; font-weight: bold; color: #111;">${realDepStr}</span>
+                        </div>
+                        <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
+                            Krediyi çekmeyip aynı anaparayı alternatif vadeli mevduata koysaydınız, vade sonundaki vergi (stopaj) düşülmüş net nominal birikiminizin, enflasyon beklentinize göre bugünkü satın alma gücü cinsinden karşılığıdır. Bu değer başlangıç anaparasından düşükse, mevduat faizinin enflasyonun altında kaldığı ve paranın reel değer kaybettiği anlamına gelir.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #888; border-top: 1px solid #eee; padding-top: 20px;">
+                    Vhesap Analiz Paneli Karşılaştırma ve Karar Destek Raporu. Resmi teklif niteliği taşımaz. © 2026
+                </div>
+            `;
+            
+            const options = {
+                margin:       [10, 10, 10, 10],
+                filename:     `Vhesap_Analiz_Raporu_${Date.now()}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            showToast("Bütünleşik Yatırım Raporu PDF'i Hazırlanıyor...", "success");
+            html2pdf().from(element).set(options).save().then(() => {
+                showToast("Analiz raporu başarıyla indirildi!", "success");
+            }).catch(err => {
+                console.error("PDF Kaydetme Hatası:", err);
+                showToast("Rapor PDF'i oluşturulurken teknik hata oluştu.", "error");
+            });
+        }
+
+        function sharePlan() {
+            if(!state.lastCalc) return showToast("Aktif bir ödeme planı bulunamadı.", "error");
+            const loanAmount = format(getRawVal('val-tutar'));
+            const totalRepayment = format(state.lastCalc.reduce((acc, curr) => acc + curr.taksit, 0));
+            const shareText = `📊 Vhesap Kredi Ödeme Planı Özetim:\n` +
+                              `🔹 Kredi Tutarı: ${loanAmount}\n` +
+                              `🔹 Vade Süresi: ${id('val-vade').value} Ay\n` +
+                              `🔹 Toplam Geri Ödeme: ${totalRepayment}\n` +
+                              `Detaylı finansal analizler için Vhesap mobil panelini kullanabilirsiniz! 🚀`;
+            copyShareText(shareText);
+        }
+
+        function shareInflationPlan() {
+            if(!state.lastCalc) return showToast("Aktif bir analiz bulunamadı.", "error");
+            
+            const principalStr = format(state.lastPrincipal);
+            const erosionStr = id('card-debt-erosion').innerText;
+            const realIntStr = id('card-real-interest').innerText;
+            const decisionTitle = id('unified-decision-title').innerText;
+            
+            let shareText = `📊 Vhesap Enflasyon & Yatırım Karar Analizim:\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `🔹 Kredi Tutarı: ${principalStr}\n` +
+                            `📈 Enflasyon Beklentim: %${state.customInflationAnnual}\n` +
+                            `💰 Alternatif Mevduat Faiz Beklentim: %${state.alternativeDepositRate}\n` +
+                            `💸 Borcumun Enflasyonla Erimesi: ${erosionStr}\n` +
+                            `⚡ Gerçek Reel Faiz Maliyeti: ${realIntStr}\n` +
+                            `🧠 Analiz Paneli Sonucu: ${decisionTitle}\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `Paranızı ve borçlarınızı korumak için hemen analiz edin! 🚀`;
+            copyShareText(shareText);
+        }
+        
+        function copyShareText(text) {
+            const tempInput = document.createElement("textarea");
+            tempInput.value = text;
+            tempInput.style.position = "fixed";
+            tempInput.style.top = "0";
+            tempInput.style.left = "0";
+            tempInput.style.opacity = "0";
+            document.body.appendChild(tempInput);
+            tempInput.focus();
+            tempInput.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast("Özet başarıyla kopyalandı!", "success");
+                } else {
+                    showToast("Kopyalama başarısız.", "error");
+                }
+            } catch (err) {
+                showToast("Panoya kopyalama esnasında hata oluştu.", "error");
+            }
+            document.body.removeChild(tempInput);
+        }
+    </script>
+</body>
+</html>
