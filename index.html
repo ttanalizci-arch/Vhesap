@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="tr" class="h-full">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-H0WX0KCEM6');
+    </script>
+
     <meta charset="UTF-8">
     <!-- iOS için tam uyumlu ve ölçeklenmeyi önleyen viewport tanımı -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -14,11 +24,12 @@
     <style>
         :root {
             --apple-bg: #09090b;
-            --apple-card: #18181b;
+            --apple-card: rgba(24, 24, 27, 0.7);
             --apple-yellow: #f59e0b;
             --apple-yellow-hover: #d97706;
             --apple-gray: #71717a;
             --apple-border: rgba(245, 158, 11, 0.15);
+            --apple-glow: rgba(245, 158, 11, 0.25);
         }
 
         /* iOS Bounce ve Çift Kaydırma Çubuğu Engelleme Kilidi */
@@ -37,7 +48,7 @@
 
         body {
             background-color: var(--apple-bg);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #f4f4f5;
             display: flex;
             justify-content: center;
@@ -66,7 +77,7 @@
             position: absolute;
             right: 16px;
             top: 50%;
-            transform: translateY(-60%) rotate(45deg);
+            transform: translateY(-50%) rotate(45deg);
             width: 7px;
             height: 7px;
             border-right: 2px solid var(--apple-yellow);
@@ -77,7 +88,7 @@
 
         /* Mobil Uyumlu Esnek Apple Konteyner */
         .apple-container {
-            background: rgba(24, 24, 27, 0.85);
+            background: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             width: 100%;
@@ -102,26 +113,28 @@
             }
         }
 
+        /* Dikey Olarak En Fazla 5'te 1 Yer Kaplayacak Şekilde Küçültülmüş Menü Yapısı */
         .main-nav {
             display: flex;
-            background: rgba(39, 39, 42, 0.6);
-            margin: 8px 16px;
-            padding: 4px;
-            border-radius: 14px;
+            background: rgba(39, 39, 42, 0.4);
+            margin: 4px 16px;
+            padding: 3px;
+            border-radius: 12px;
             flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .nav-btn {
             flex: 1;
-            padding: 10px 4px;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 6px 4px;
+            border-radius: 9px;
+            font-size: 12px;
             font-weight: 600;
             text-align: center;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--apple-gray);
-            min-height: 40px;
+            min-height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -136,7 +149,7 @@
         /* Akıcı Momentum Kaydırma Alanı */
         .scroll-area {
             flex: 1;
-            padding: 10px 16px 40px;
+            padding: 8px 16px 40px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch; /* iOS için pürüzsüz kaydırma */
         }
@@ -149,15 +162,17 @@
         }
 
         .input-card {
-            background: rgba(39, 39, 42, 0.4);
+            background: var(--apple-card);
             border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: border-color 0.2s ease;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .input-card:focus-within {
             border-color: var(--apple-yellow);
+            box-shadow: 0 0 15px var(--apple-glow);
+            transform: translateY(-1px);
         }
 
         /* iOS Auto-Zoom Engelleyici: 16px Alt Sınırı */
@@ -169,7 +184,8 @@
             font-size: 16px;
             font-weight: 600;
             outline: none;
-            padding: 6px 0;
+            padding: 4px 0;
+            transition: color 0.2s ease;
         }
 
         .apple-select option {
@@ -179,10 +195,10 @@
 
         .label-text {
             color: var(--apple-gray);
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 4px;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
             display: block;
             font-weight: 700;
         }
@@ -191,14 +207,14 @@
         .action-btn {
             background: linear-gradient(135deg, var(--apple-yellow) 0%, #d97706 100%);
             width: 100%;
-            min-height: 52px;
+            min-height: 50px;
             padding: 14px;
             border-radius: 16px;
             font-weight: 800;
-            font-size: 15px;
-            margin-top: 15px;
+            font-size: 14px;
+            margin-top: 12px;
             color: #000000;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 1px;
             display: flex;
@@ -207,7 +223,7 @@
             box-shadow: 0 10px 20px -10px rgba(245, 158, 11, 0.35);
         }
         .action-btn:active {
-            transform: scale(0.97);
+            transform: scale(0.98);
             opacity: 0.9;
         }
 
@@ -215,9 +231,9 @@
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             display: none;
             flex-direction: column;
@@ -232,7 +248,8 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform;
@@ -284,20 +301,20 @@
 
         .info-badge {
             font-size: 11px;
-            background: rgba(245, 158, 11, 0.06);
+            background: rgba(245, 158, 11, 0.04);
             color: var(--apple-yellow);
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 12px;
             font-weight: 600;
-            margin-top: 8px;
+            margin-top: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border: 1px solid rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.08);
         }
 
         .ara-item { 
-            background: rgba(255, 255, 255, 0.02); 
+            background: rgba(255, 255, 255, 0.01); 
             padding: 12px; 
             border-radius: 14px; 
             margin-bottom: 8px; 
@@ -305,7 +322,7 @@
             justify-content: space-between; 
             align-items: center; 
             font-size: 13px; 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.03); 
         }
 
         /* iOS Safari Alt Boşluk */
@@ -321,32 +338,36 @@
             animation: spin-slow 15s linear infinite;
         }
 
-        /* Mobil Sıkışma ve Taşma Önleme Kuralları */
-        @media (max-width: 640px) {
-            .plan-table {
-                font-size: 11px;
-                min-width: 580px; /* Tablonun büzüşmesini engeller, kaydırmayı zorunlu kılar */
-            }
-            .plan-table th, .plan-table td {
-                padding: 10px 4px; /* Mobilde daha sıkı hücre dolgusu */
-            }
-            .modal-content h2 {
-                font-size: 1.15rem !important; /* Başlık boyutunu dengeler */
-            }
-            .modal-content p {
-                font-size: 10px !important;
-            }
-            .label-text {
-                font-size: 10px !important;
-                letter-spacing: 0.5px !important;
-            }
-            .input-card {
-                padding: 12px 14px !important;
-            }
-            .info-badge {
-                font-size: 10px !important;
-                padding: 8px 12px !important;
-            }
+        /* Apple Tarzı Range Slider Özelleştirmesi */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #27272a;
+            height: 6px;
+            border-radius: 9999px;
+            outline: none;
+            transition: background 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--apple-yellow);
+            cursor: pointer;
+            border: 2px solid #09090b;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.3);
+        }
+        input[type="range"].accent-emerald-500::-webkit-slider-thumb {
+            background: #10b981;
+        }
+        input[type="range"].accent-blue-500::-webkit-slider-thumb {
+            background: #3b82f6;
         }
     </style>
 </head>
@@ -355,19 +376,12 @@
     <div class="apple-container" id="main-container">
         <div class="flex flex-col h-full w-full overflow-hidden">
             
-            <!-- Üst Başlık Bölümü (İnteraktif Analiz Paneli Tetikleyicisi Yapıldı) -->
-            <div class="flex justify-between items-center px-5 pt-5 pb-2 flex-shrink-0">
-                <div>
+            <!-- Üst Başlık Bölümü (Dikey Boyut Küçültüldü ve Sadeleştirildi) -->
+            <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
+                <div class="flex items-baseline gap-2.5">
                     <h1 class="text-2xl font-extrabold tracking-tight text-amber-500">Vhesap</h1>
-                    <p class="text-[10px] text-amber-200/50 font-bold tracking-widest uppercase mt-0.5">Gelişmiş Hesaplama Sistemi</p>
+                    <span class="text-[10px] text-amber-200/50 font-bold tracking-wider uppercase">Gelişmiş Hesaplama Sistemi</span>
                 </div>
-                <button onclick="openInflationAnalysis()" class="w-10 h-10 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-amber-500/20 hover:border-amber-500/40 flex items-center justify-center transition-all duration-200 relative group" title="Analiz Paneli">
-                    <i class="fa-solid fa-calculator text-amber-500 text-lg group-hover:scale-110 transition-transform"></i>
-                    <span class="absolute -top-1 -right-1 flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                    </span>
-                </button>
             </div>
 
             <!-- Ana Tab Gezgini -->
@@ -377,25 +391,25 @@
                 <button class="nav-btn" id="btn-mevduat" onclick="switchTab('mevduat')">Mevduat</button>
             </div>
 
-            <!-- Alt Menü Gezgini (Kredi Alt Türleri) -->
-            <div id="sub-nav" class="flex px-5 gap-4 overflow-x-auto py-2.5 scroll-smooth border-b border-zinc-900 flex-shrink-0" style="-webkit-overflow-scrolling: touch;"></div>
+            <!-- Alt Menü Gezgini (Dikey Alan ve Buton Marjları Optimize Edildi) -->
+            <div id="sub-nav" class="flex px-5 gap-4 overflow-x-auto py-1 scroll-smooth border-b border-zinc-900/40 flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;"></div>
 
             <!-- Ana Form Alanı -->
             <div class="scroll-area flex-1">
-                <div id="form-content" class="mt-2"></div>
+                <div id="form-content" class="mt-1"></div>
 
                 <!-- Sonuç Bölümü -->
                 <div id="results" class="hidden mt-6 pb-12">
-                    <div class="bg-zinc-900/60 rounded-3xl p-5 border border-amber-500/10 shadow-lg">
+                    <div class="bg-zinc-900/40 rounded-3xl p-5 border border-amber-500/10 shadow-lg">
                         <h3 class="text-center text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
                         <div id="result-rows" class="space-y-3.5"></div>
                         
                         <!-- Premium İkili Aksiyon Menüsü -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
-                            <button id="plan-trigger" class="w-full py-4 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-amber-500 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
+                            <button id="plan-trigger" class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/15 rounded-2xl text-amber-500 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
                                 <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
                             </button>
-                            <button id="inflation-trigger" class="w-full py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openInflationAnalysis()">
+                            <button id="inflation-trigger" class="w-full py-3.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/15 rounded-2xl text-emerald-400 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openInflationAnalysis()">
                                 <i class="fa-solid fa-chart-line"></i> ANALİZ PANELİ
                             </button>
                         </div>
@@ -412,45 +426,40 @@
             <!-- Sürükleme Tutamacı Çizgisi -->
             <div id="sheet-handle" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
             
-            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-900 flex-shrink-0">
-                <div class="pr-2 max-w-[50%] sm:max-w-none">
-                    <h2 class="text-xl font-bold text-amber-500 truncate">Ödeme Planı</h2>
-                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5 truncate">Anapara + Faiz + Vergiler</p>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-amber-500">Ödeme Planı</h2>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Anapara + Faiz + Vergiler</p>
                 </div>
-                <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <button onclick="downloadPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
-                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden sm:inline">PDF</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">PDF</span>
                     </button>
-                    <button onclick="sharePlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
-                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden sm:inline">Paylaş</span>
+                    <button onclick="sharePlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden xs:inline">Paylaş</span>
                     </button>
-                    <button onclick="closePlan()" class="bg-zinc-800 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                    <button onclick="closePlan()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
             
-            <!-- Tablo Alanı (Kaydırma Yönlendirmesi eklendi) -->
+            <!-- Tablo Alanı -->
             <div class="flex-1 overflow-y-auto px-4 py-2 overscroll-contain pb-safe-bottom" style="-webkit-overflow-scrolling: touch;">
-                <div class="sm:hidden text-right text-[9px] text-zinc-500 font-bold mb-1 tracking-wider uppercase">
-                    <i class="fa-solid fa-angles-left animate-pulse"></i> Tabloyu Kaydırın <i class="fa-solid fa-angles-right animate-pulse"></i>
-                </div>
-                <div class="overflow-x-auto w-full border border-zinc-900 rounded-2xl">
-                    <table class="plan-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tarih</th>
-                                <th>Taksit</th>
-                                <th>Anapara</th>
-                                <th>Faiz</th>
-                                <th>Vergi</th>
-                                <th class="text-right">Bakiye</th>
-                            </tr>
-                        </thead>
-                        <tbody id="plan-body"></tbody>
-                    </table>
-                </div>
+                <table class="plan-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tarih</th>
+                            <th>Taksit</th>
+                            <th>Anapara</th>
+                            <th>Faiz</th>
+                            <th>Vergi</th>
+                            <th class="text-right">Bakiye</th>
+                        </tr>
+                    </thead>
+                    <tbody id="plan-body"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -461,31 +470,55 @@
             <!-- Sürükleme Tutamacı Çizgisi -->
             <div id="sheet-handle-inf" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
             
-            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-900 flex-shrink-0">
-                <div class="pr-2 max-w-[50%] sm:max-w-none">
-                    <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2 truncate">
+            <div class="flex justify-between items-center px-5 pb-3 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">
                         <i class="fa-solid fa-circle-nodes text-amber-500 animate-spin-slow"></i> Analiz Paneli
                     </h2>
-                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5 truncate">Reel Getiri ve Karar Destek Sistemi</p>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Bütünleşik Reel Getiri ve Karar Destek Sistemi</p>
                 </div>
-                <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <button onclick="downloadInflationPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
-                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden sm:inline">Rapor</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadInflationPDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">Rapor</span>
                     </button>
-                    <button onclick="shareInflationPlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
-                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden sm:inline">Paylaş</span>
+                    <button onclick="shareInflationPlan()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i> <span class="hidden xs:inline">Paylaş</span>
                     </button>
-                    <button onclick="closeInflation()" class="bg-zinc-800 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                    <button onclick="closeInflation()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
+            </div>
+
+            <!-- Canlı Döviz Kurları Şeridi (Analiz Paneli Başına Sabitlendi) -->
+            <div class="px-5 py-2 bg-zinc-950/80 border-b border-zinc-900/60 flex items-center justify-between gap-3 overflow-x-auto whitespace-nowrap flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                <div class="flex items-center gap-4 text-xs font-semibold">
+                    <span class="text-zinc-500 text-[9px] uppercase font-extrabold tracking-wider flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Canlı Piyasa:
+                    </span>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">USD/TRY</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="usd-val">Yükleniyor...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">EUR/TRY</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="eur-val">Yükleniyor...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-zinc-300">
+                        <span class="text-zinc-500 font-bold text-[10px]">ALTIN (GR)</span>
+                        <span class="font-mono font-bold text-amber-500 text-xs" id="gold-val">Yükleniyor...</span>
+                    </div>
+                </div>
+                <button onclick="fetchLiveRates()" class="text-zinc-500 hover:text-amber-500 p-1 rounded-lg transition-colors flex items-center justify-center" title="Kurları Yenile">
+                    <i id="rate-refresh-icon" class="fa-solid fa-arrows-rotate text-xs"></i>
+                </button>
             </div>
             
             <!-- Analiz Gövdesi -->
             <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom scroll-area" style="-webkit-overflow-scrolling: touch;">
                 
-                <!-- Aktif Ürün Bilgilendirme Kartı (Flex-Wrap ile Esnetildi) -->
-                <div id="inf-product-tag" class="mb-4 bg-zinc-900/80 p-3.5 rounded-2xl border border-zinc-800 flex flex-wrap gap-2 justify-between items-center text-xs">
+                <!-- Aktif Ürün Bilgilendirme Kartı -->
+                <div id="inf-product-tag" class="mb-4 bg-zinc-900/60 p-3.5 rounded-2xl border border-zinc-800/40 flex justify-between items-center text-xs">
                     <div>
                         <span class="text-zinc-500 font-semibold">Mevcut Ürün:</span>
                         <strong class="text-amber-500 ml-1.5 font-bold uppercase" id="inf-product-name">Kredi</strong>
@@ -496,15 +529,15 @@
                     </div>
                 </div>
 
-                <!-- Üçlü Sürgülü (Slider) İnteraktif Kontrol Merkezi (Flex-Wrap ile Esnetildi) -->
-                <div class="bg-zinc-900/80 p-4 rounded-2xl border border-zinc-800 mb-4 space-y-4">
+                <!-- Üçlü Sürgülü (Slider) İnteraktif Kontrol Merkezi -->
+                <div class="bg-zinc-900/60 p-4 rounded-2xl border border-zinc-800/40 mb-4 space-y-4">
                     <!-- Sürgü 1: Enflasyon Beklentisi -->
                     <div>
-                        <div class="flex flex-wrap justify-between items-center gap-y-1 mb-1.5">
+                        <div class="flex justify-between items-center mb-1">
                             <span class="label-text mb-0 font-bold text-amber-500"><i class="fa-solid fa-fire-flame-curved mr-1.5"></i> Kişisel Yıllık Enflasyon Beklentisi (%)</span>
                             <span class="text-amber-500 font-extrabold font-mono text-xs sm:text-sm" id="inf-custom-slider-val">Yıllık %30,00 (Aylık %2,21)</span>
                         </div>
-                        <input type="range" min="10" max="150" value="30" class="w-full accent-amber-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-custom-slider" oninput="onCustomInflationChange(this.value)">
+                        <input type="range" min="10" max="150" value="30" class="w-full h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-custom-slider" oninput="onCustomInflationChange(this.value)">
                         <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold">
                             <span>%10 (İyimser)</span>
                             <span>%150 (Yüksek Enflasyon)</span>
@@ -513,7 +546,7 @@
 
                     <!-- Sürgü 2: Alternatif Mevduat Faiz Oranı -->
                     <div id="inf-deposit-slider-container">
-                        <div class="flex flex-wrap justify-between items-center gap-y-1 mb-1.5">
+                        <div class="flex justify-between items-center mb-1">
                             <span class="label-text mb-0 font-bold text-emerald-400"><i class="fa-solid fa-piggy-bank mr-1.5"></i> Alternatif Vadeli Mevduat Faiz Oranı (%)</span>
                             <span class="text-emerald-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-deposit-slider-val">Yıllık %50,00 (Aylık %4,17)</span>
                         </div>
@@ -526,7 +559,7 @@
 
                     <!-- Sürgü 3: Aktif Ürün Faiz Oranı -->
                     <div id="inf-product-interest-container">
-                        <div class="flex flex-wrap justify-between items-center gap-y-1 mb-1.5">
+                        <div class="flex justify-between items-center mb-1">
                             <span class="label-text mb-0 font-bold text-blue-400" id="inf-product-interest-label"><i class="fa-solid fa-percent mr-1.5"></i> Kredi Aylık Faiz Oranı (%)</span>
                             <span class="text-blue-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-product-interest-val">Aylık %4,25 (Yıllık %51,00)</span>
                         </div>
@@ -539,11 +572,11 @@
                 </div>
 
                 <!-- Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı) -->
-                <div class="bg-zinc-950/60 rounded-xl p-4 border border-zinc-800/40 space-y-3 mb-4">
+                <div class="bg-zinc-950/40 rounded-xl p-4 border border-zinc-800/30 space-y-3 mb-4">
                     <span class="label-text text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-2 block">Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı)</span>
                     <div class="space-y-3">
                         <div>
-                            <div class="flex flex-wrap justify-between gap-y-0.5 text-[11px] mb-1">
+                            <div class="flex justify-between text-[11px] mb-1">
                                 <span class="text-zinc-400 font-semibold">Alternatif Net Mevduat Değeri (Vade Sonu)</span>
                                 <span class="text-emerald-400 font-mono font-bold" id="opp-chart-deposit-val">0 TL</span>
                             </div>
@@ -552,7 +585,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex flex-wrap justify-between gap-y-0.5 text-[11px] mb-1">
+                            <div class="flex justify-between text-[11px] mb-1">
                                 <span class="text-zinc-400 font-semibold">Kredi Toplam Geri Ödemesi (Nominal)</span>
                                 <span class="text-amber-500 font-mono font-bold" id="opp-chart-loan-val">0 TL</span>
                             </div>
@@ -561,7 +594,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex flex-wrap justify-between gap-y-0.5 text-[11px] mb-1">
+                            <div class="flex justify-between text-[11px] mb-1">
                                 <span class="text-zinc-400 font-semibold">Kredinin Satın Alma Gücü Yükü (Reel NBD)</span>
                                 <span class="text-blue-400 font-mono font-bold" id="opp-chart-real-loan-val">0 TL</span>
                             </div>
@@ -573,7 +606,7 @@
                 </div>
 
                 <!-- Bulgular ve Finansal Durum Raporu -->
-                <div class="bg-gradient-to-br from-emerald-950/40 to-amber-950/40 p-5 rounded-2xl border border-emerald-500/20 shadow-lg mb-4">
+                <div class="bg-gradient-to-br from-emerald-950/20 to-amber-950/20 p-5 rounded-2xl border border-emerald-500/10 shadow-lg mb-4">
                     <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs tracking-wider uppercase mb-1">
                         <i class="fa-solid fa-magnifying-glass-chart text-amber-500"></i> Analitik Bulgular ve Finansal Durum Raporu
                     </div>
@@ -587,57 +620,57 @@
                 <div class="grid grid-cols-1 gap-4 mb-4">
                     
                     <!-- 1. Reel Faiz Maliyeti / Kazancı -->
-                    <div class="bg-zinc-900/60 rounded-2xl p-4 border border-zinc-800/80 flex flex-col justify-between">
-                        <div class="flex flex-wrap justify-between items-center gap-y-1.5 gap-x-2 mb-1.5">
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
                             <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-percent text-red-400 mr-1.5"></i> Reel Faiz Maliyeti / Kazancı</span>
                             <div class="text-lg font-bold font-mono text-white" id="card-real-interest">0 TL</div>
                         </div>
-                        <div class="border-t border-zinc-800/60 pt-2 mt-2">
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-real-interest-sub">Enflasyondan arındırılmış net finansman maliyeti.</p>
                             <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
-                                <strong>Anlamı Nedir?</strong> Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye (negatif) düşer. Bu durum, borçlunun reel olarak faiz ödemediği, aksine enflasyon nedeniyle borçlanırken reel kazanç sağladığı anlamına gelir.
+                                <strong>Anlamı Nedir?</strong> Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye (negatif) düşer. This indicates real financial relief under high inflation.
                             </p>
                         </div>
                     </div>
 
                     <!-- 2. Kredi Gerçek Maliyeti (Reel NPV) -->
-                    <div class="bg-zinc-900/60 rounded-2xl p-4 border border-zinc-800/80 flex flex-col justify-between">
-                        <div class="flex flex-wrap justify-between items-center gap-y-1.5 gap-x-2 mb-1.5">
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
                             <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Kredi Gerçek Maliyeti (Reel NPV)</span>
                             <div class="text-lg font-bold font-mono text-white" id="card-real-credit-cost">0 TL</div>
                         </div>
-                        <div class="border-t border-zinc-800/60 pt-2 mt-2">
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-real-credit-cost-sub">Anapara karşılığı cebinizden çıkacak reel değer.</p>
                             <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
-                                <strong>Anlamı Nedir?</strong> Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir. Bu hesaplama, krediyle satın aldığınız ürün veya hizmetin, gelecekteki değersizleşen taksitler göz önüne alındığında gerçekte bugün kaç TL'ye karşılık geldiğini gösterir.
+                                <strong>Anlamı Nedir?</strong> Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir.
                             </p>
                         </div>
                     </div>
 
                     <!-- 3. Borcun Enflasyonla Erimesi -->
-                    <div class="bg-zinc-900/60 rounded-2xl p-4 border border-zinc-800/80 flex flex-col justify-between">
-                        <div class="flex flex-wrap justify-between items-center gap-y-1.5 gap-x-2 mb-1.5">
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
                             <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi</span>
                             <div class="text-lg font-black font-mono text-emerald-400" id="card-debt-erosion">0 TL</div>
                         </div>
-                        <div class="border-t border-zinc-800/60 pt-2 mt-2">
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-debt-erosion-sub">Sabit borç ödemelerinin enflasyonda eriyen payı.</p>
                             <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
-                                <strong>Anlamı Nedir?</strong> Paranın satın alma gücü sürekli düşerken aylık taksitler sabit kalır. Dolayısıyla her ay ödediğiniz aynı nominal tutar, reel olarak bütçenizde giderek daha az bir yük oluşturur. Bu aradaki eriyen miktar, enflasyonist ortamlarda borçlu lehine oluşan satın alma gücü koruması kazancıdır.
+                                <strong>Anlamı Nedir?</strong> Aylık taksit ödemeleriniz sabit kalırken enflasyon sebebiyle paranın satın alma gücü sürekli düşer ve bütçenizdeki borç yükü reel olarak hafifler.
                             </p>
                         </div>
                     </div>
 
                     <!-- 4. Mevduat Gerçek Kazancı (Reel NBD) -->
-                    <div class="bg-zinc-900/60 rounded-2xl p-4 border border-zinc-800/80 flex flex-col justify-between">
-                        <div class="flex flex-wrap justify-between items-center gap-y-1.5 gap-x-2 mb-1.5">
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-1.5">
                             <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-chart-line text-emerald-400 mr-1.5"></i> Mevduat Gerçek Kazancı (Reel NBD)</span>
                             <div class="text-lg font-bold font-mono text-white" id="card-real-deposit-return">0 TL</div>
                         </div>
-                        <div class="border-t border-zinc-800/60 pt-2 mt-2">
+                        <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-real-deposit-desc">Mevduatın vergi sonrası reel satın alma gücü değişimi.</p>
                             <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
-                                <strong>Anlamı Nedir?</strong> Krediyi çekmeyip aynı anaparayı alternatif mevduata koysaydınız, vade sonundaki vergi düşülmüş net birikiminizin enflasyon beklentinize göre bugünkü satın alma gücü cinsinden karşılığıdır. Değer başlangıç anaparasından düşükse, mevduat faizinin enflasyonun altında kaldığını gösterir.
+                                <strong>Anlamı Nedir?</strong> Krediyi çekmeyip aynı anaparayı alternatif vadeli mevduata koysaydınız, vade sonundaki vergi (stopaj) düşülmüş net nominal birikiminizin, enflasyon beklentinize göre bugünkü satın alma gücü cinsinden karşılığıdır.
                             </p>
                         </div>
                     </div>
@@ -645,18 +678,15 @@
                 </div>
 
                 <!-- Detay Tablosunu Aç/Kapat Butonu -->
-                <button onclick="toggleInflationTable()" class="w-full py-3 bg-zinc-900 border border-zinc-850 hover:bg-zinc-800/80 rounded-xl text-xs font-bold text-zinc-400 flex items-center justify-center gap-2 transition-all">
+                <button onclick="toggleInflationTable()" class="w-full py-3 bg-zinc-900 border border-zinc-800/80 hover:bg-zinc-850 rounded-xl text-xs font-bold text-zinc-400 flex items-center justify-center gap-2 transition-all">
                     <span id="inf-table-toggle-text">AYLIK DETAYLI REEL ÖDEME TABLOSUNU GÖSTER</span>
                     <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" id="inf-table-toggle-icon"></i>
                 </button>
 
-                <!-- Aylık Enflasyon Detay Tablosu (Mobil Kaydırılabilirlik Eklendi) -->
+                <!-- Aylık Enflasyon Detay Tablo Alanı -->
                 <div id="inf-table-container" class="hidden mt-4 border border-zinc-850 rounded-2xl overflow-hidden transition-all">
-                    <div class="sm:hidden text-right text-[9px] text-zinc-500 font-bold p-2 bg-zinc-950/40 border-b border-zinc-900 tracking-wider uppercase">
-                        <i class="fa-solid fa-angles-left animate-pulse"></i> Tabloyu Kaydırın <i class="fa-solid fa-angles-right animate-pulse"></i>
-                    </div>
-                    <div class="overflow-x-auto w-full">
-                        <table class="plan-table">
+                    <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+                        <table class="plan-table min-w-[500px]">
                             <thead>
                                 <tr class="bg-zinc-950">
                                     <th>No</th>
@@ -664,7 +694,7 @@
                                     <th>Nominal Ödeme</th>
                                     <th id="inf-th-multiplier">Kümülatif Enflasyon</th>
                                     <th id="inf-th-real">Reel Değer (NBD)</th>
-                                    <th class="text-right" id="inf-th-savings">Enflasyon Aşınma Payı</th>
+                                    <th class="text-right" id="inf-th-savings">Aşınma Payı</th>
                                 </tr>
                             </thead>
                             <tbody id="inf-table-body">
@@ -723,6 +753,7 @@
         window.onload = () => {
             switchTab('bireysel');
             setupVisualViewport();
+            fetchLiveRates(); // Döviz kurlarını ilk açılışta tetikler
         };
 
         // Mobil Cihazlarda Klavye Görünürlüğü ve Viewport Yönetimi
@@ -777,6 +808,59 @@
             });
         }
 
+        // CANLI DÖVİZ KURLARI ENTEGRASYON VE ÇEKME MOTORU
+        async function fetchLiveRates() {
+            const refreshIcon = document.getElementById('rate-refresh-icon');
+            if (refreshIcon) refreshIcon.classList.add('animate-spin');
+            
+            try {
+                // Herhangi bir anahtar gerektirmeyen, son derece hızlı ve CORS korumalı ücretsiz API portalı
+                const response = await fetch('https://open.er-api.com/v6/latest/USD');
+                if (!response.ok) throw new Error('API bağlantı hatası.');
+                
+                const data = await response.json();
+                
+                const tryRate = data.rates.TRY;
+                const eurRate = data.rates.EUR;
+                
+                // USD bazlı oranları Türk Lirası (TRY) karşılığına normalize etme
+                const usdToTry = tryRate;
+                const eurToTry = tryRate / eurRate;
+
+                // Ons Altın Fiyatını Altın API Portalı üzerinden Çekme
+                let goldToTry = 0;
+                try {
+                    const responseGold = await fetch('https://api.gold-api.com/price/XAU');
+                    if (responseGold.ok) {
+                        const dataGold = await responseGold.json();
+                        const xauUsd = dataGold.price; // Ons Altın USD Fiyatı
+                        // Gram Altın TL formülü: (Ons / 31.1034768) * USD_TRY
+                        goldToTry = (xauUsd / 31.1034768) * usdToTry;
+                    }
+                } catch (goldErr) {
+                    console.error("Altın verisi çekilemedi:", goldErr);
+                }
+                
+                document.getElementById('usd-val').innerText = usdToTry.toFixed(4) + ' ₺';
+                document.getElementById('eur-val').innerText = eurToTry.toFixed(4) + ' ₺';
+                document.getElementById('gold-val').innerText = goldToTry > 0 ? (goldToTry.toFixed(2) + ' ₺') : 'Yüklenemedi';
+                
+                showToast("Döviz kurları ve altın başarıyla güncellendi.", "success");
+            } catch (error) {
+                console.error("Döviz kurları çekilirken hata oluştu:", error);
+                document.getElementById('usd-val').innerText = 'Hata';
+                document.getElementById('eur-val').innerText = 'Hata';
+                document.getElementById('gold-val').innerText = 'Hata';
+                showToast("Kurlar alınamadı. Lütfen daha sonra tekrar deneyiniz.", "error");
+            } finally {
+                if (refreshIcon) {
+                    setTimeout(() => {
+                        refreshIcon.classList.remove('animate-spin');
+                    }, 500);
+                }
+            }
+        }
+
         function switchTab(tabId) {
             state.main = tabId;
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -796,11 +880,12 @@
             hideResults();
         }
 
+        // Alt Gezinti Gezgini Butonları Dikey Olarak En Az Yeri Kaplayacak Şekilde Yeniden Tasarlandı
         function renderSubNav() {
             const subNav = document.getElementById('sub-nav');
             const items = menuConfig[state.main] || [];
             subNav.innerHTML = items.map(m => `
-                <button class="whitespace-nowrap text-sm font-semibold pb-2 border-b-2 transition-all duration-200 ${state.sub === m.id ? 'border-amber-500 text-amber-500' : 'border-transparent text-zinc-500'}" 
+                <button class="whitespace-nowrap text-xs font-semibold pb-1.5 border-b-2 transition-all duration-200 ${state.sub === m.id ? 'border-amber-500 text-amber-500' : 'border-transparent text-zinc-500'}" 
                 onclick="switchSub('${m.id}')">${m.n}</button>
             `).join('');
         }
@@ -834,7 +919,7 @@
                 html += `
                     <div class="input-card">
                         <span class="label-text">Konut Ekspertiz Değeri (TL)</span>
-                        <input type="text" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); updateKonutUI()">
+                        <input type="text" id="val-deger" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); updateKonutUI()">
                         <div id="info-limit" class="info-badge">
                             <i class="fa-solid fa-circle-info"></i> Lütfen gayrimenkul değerini giriniz.
                         </div>
@@ -886,7 +971,7 @@
                 html += `
                     <div class="input-card">
                         <span class="label-text">${state.main === 'ticari' ? 'Araç Fatura / Kasko Değeri (TL)' : 'Kasko Değeri (TL)'}</span>
-                        <input type="text" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); updateTasitUI()">
+                        <input type="text" id="val-deger" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); updateTasitUI()">
                         <div id="info-limit" class="info-badge">
                             <i class="fa-solid fa-circle-info"></i> Lütfen araç kasko/fatura değerini giriniz.
                         </div>
@@ -907,29 +992,29 @@
                 ${isEkHesap ? '<div id="info-holiday" class="info-badge mb-3 hidden"></div>' : ''}
                 <div class="input-card">
                     <span class="label-text">Talep Edilen Tutar (TL)</span>
-                    <input type="text" id="val-tutar" class="apple-input" placeholder="0" oninput="mask(this); validateVade()">
+                    <input type="text" id="val-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); validateVade()">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="input-card">
                         <span class="label-text">${isEkHesap ? 'Faiz Gün Sayısı' : 'Vade (Ay)'}</span>
-                        <input type="number" id="val-vade" class="apple-input" value="${isEkHesap ? 30 : 12}" ${isEkHesap ? 'readonly' : ''} oninput="validateVade()">
+                        <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="${isEkHesap ? 30 : 12}" ${isEkHesap ? 'readonly' : ''} oninput="validateVade()">
                     </div>
                     <div class="input-card">
                         <span class="label-text">Aylık Faiz Oranı (%)</span>
-                        <input type="text" id="val-faiz" class="apple-input" value="4.25">
+                        <input type="text" id="val-faiz" inputmode="decimal" class="apple-input" value="4.25">
                     </div>
                 </div>`;
 
             if(!isEkHesap) {
                 html += `
-                <div class="input-card mt-3 border border-amber-500/20">
+                <div class="input-card mt-3 border border-amber-500/10">
                     <div class="flex items-center justify-between mb-3">
                          <span class="label-text mb-0 font-bold text-amber-200"><i class="fa-solid fa-coins mr-1"></i> Ara Ödemeler (Opsiyonel)</span>
                     </div>
 
                     <div id="ara-odeme-list" class="mb-3"></div>
 
-                    <div id="ara-odeme-form" class="pt-3 border-t border-zinc-850">
+                    <div id="ara-odeme-form" class="pt-3 border-t border-zinc-850/60">
                         <div class="grid grid-cols-2 gap-2 mb-3">
                             <div>
                                 <span class="label-text">Tarih</span>
@@ -937,24 +1022,24 @@
                             </div>
                             <div>
                                 <span class="label-text">Tutar (TL)</span>
-                                <input type="text" id="val-ara-tutar" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" placeholder="0" oninput="mask(this)">
+                                <input type="text" id="val-ara-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" placeholder="0" oninput="mask(this)">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 mb-3">
                             <label class="cursor-pointer">
                                 <input type="radio" name="ara-tur" value="vade" class="peer hidden" checked>
-                                <div class="py-2 px-1 rounded-xl bg-zinc-900 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
                                     VADE AZALSIN
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="ara-tur" value="taksit" class="peer hidden">
-                                <div class="py-2 px-1 rounded-xl bg-zinc-900 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
                                     TAKSİT DÜŞSÜN
                                 </div>
                             </label>
                         </div>
-                        <button onclick="addAraOdeme()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-800 rounded-lg text-xs font-bold text-white transition-all">+ Listeye Ekle</button>
+                        <button onclick="addAraOdeme()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-850 rounded-lg text-xs font-bold text-white transition-all">+ Listeye Ekle</button>
                     </div>
                 </div>`;
             }
@@ -1029,16 +1114,16 @@
                 </div>
                 <div class="input-card">
                     <span class="label-text">Mevduat Anapara (TL)</span>
-                    <input type="text" id="val-tutar" class="apple-input" placeholder="0" oninput="mask(this)">
+                    <input type="text" id="val-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this)">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="input-card">
                         <span class="label-text">Gün Sayısı</span>
-                        <input type="number" id="val-vade" class="apple-input" value="32" oninput="updateMevduatStopaj()">
+                        <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="32" oninput="updateMevduatStopaj()">
                     </div>
                     <div class="input-card">
                         <span class="label-text">Yıllık Faiz Oranı (%)</span>
-                        <input type="text" id="val-faiz" class="apple-input" value="50">
+                        <input type="text" id="val-faiz" inputmode="decimal" class="apple-input" value="50">
                     </div>
                 </div>
                 <div id="info-stopaj" class="info-badge mb-4 text-center justify-center font-bold">Uygulanan Stopaj Oranı: %17,50</div>
@@ -1081,7 +1166,7 @@
             const limitEl = id('info-limit');
             
             if (oran === 0 && d > 0) {
-                limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> 7 Milyon TL üzeri (veya mevcut ev sahipleri için ilgili sınırlara göre) konut kredisi sınırlandırılmıştır.</span>`;
+                limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> 7 Milyon TL üzeri konut kredisi sınırlandırılmıştır.</span>`;
             } else if (d > 0) {
                 limitEl.innerHTML = `<i class="fa-solid fa-house-circle-check text-emerald-500"></i> Azami Kredi: ${format(azami)} (%${(oran*100).toFixed(1)})`;
             } else {
@@ -1121,7 +1206,7 @@
             const limitEl = id('info-limit');
             
             if (o === 0 && d > 0) {
-                limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Bireysel kredi için kasko limiti aşılmıştır.</span>`;
+                limitEl.innerHTML = `<span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Bireysel kasko limiti aşılmıştır.</span>`;
             } else if (d > 0) {
                 limitEl.innerHTML = `<i class="fa-solid fa-car text-emerald-500"></i> Azami Kredi: ${format(d*o)} | Azami Vade: ${v} Ay`;
             } else {
@@ -1153,7 +1238,7 @@
                 if(holidayInfo) {
                     holidayInfo.classList.toggle('hidden', !isTatilGunu);
                     if(isTatilGunu) {
-                        holidayInfo.innerHTML = `<i class="fa-solid fa-calendar-day"></i> Tatil; Faiz ${faizBitisTarihi.toLocaleDateString('tr-TR')} (İlk iş günü) tarihine kadar işler.`;
+                        holidayInfo.innerHTML = `<i class="fa-solid fa-calendar-day"></i> Tatil; Faiz ${faizBitisTarihi.toLocaleDateString('tr-TR')} tarihine kadar işler.`;
                     }
                 }
             }
@@ -1469,7 +1554,6 @@
             }, 100);
         }
 
-        // Kredi Ödeme Planını Aç/Kapat
         function openPlan() {
             if(!state.lastCalc) return;
             id('plan-body').innerHTML = state.lastCalc.map(r => `
@@ -1504,10 +1588,6 @@
                 closePlan();
             }
         }
-
-        // ==================================================
-        // KONSOLİDE ENFLASYON & YATIRIM KOKPİTİ MOTORU (TEK SAYFA)
-        // ==================================================
 
         function getMonthDifference(dStart, dEnd) {
             if (!dStart || !dEnd) return 0;
@@ -1659,11 +1739,12 @@
             const realDecisionNPV = finalDepositReal - totalReal;
             
             const infProductName = id('inf-product-name');
-            if (infProductName) infProductName.innerText = isMevduatProduct ? "VADELİ MEVDUAT" : (isEkHesap ? "EK HESAP / OVERDRAFT" : "TAKSİTLİ KREDİ");
+            if (infProductName) infProductName.innerText = isMevduatProduct ? "VADELİ MEVDUAT" : (isEkHesap ? "EK HESAP" : "TAKSİTLİ KREDİ");
             
             const infProductAmount = id('inf-product-amount');
             if (infProductAmount) infProductAmount.innerText = format(principal);
             
+            // Kart 1: Reel Faiz
             const realIntEl = id('card-real-interest');
             if (realIntEl) realIntEl.innerText = format(realInterestPaid);
             const interestSub = id('card-real-interest-sub');
@@ -1677,6 +1758,7 @@
                 }
             }
 
+            // Kart 2: Kredi Gerçek Maliyeti (Reel NPV)
             const realCostEl = id('card-real-credit-cost');
             if (realCostEl) realCostEl.innerText = format(totalReal);
             
@@ -1685,14 +1767,16 @@
                 realCreditCostSub.innerText = `Anapara ${format(principal)} karşılığı cebinizden çıkacak reel değer.`;
             }
 
+            // Kart 3: Borcun Enflasyonla Erimesi
             const cardDebtErosion = id('card-debt-erosion');
             if (cardDebtErosion) cardDebtErosion.innerText = format(debtErosion);
             
             const cardDebtErosionSub = id('card-debt-erosion-sub');
             if (cardDebtErosionSub) {
-                cardDebtErosionSub.innerText = `Sabit ödemeler sayesinde kazandığınız satın alma gücü.`;
+                cardDebtErosionSub.innerText = `Sabit borç ödemelerinin enflasyonda eriyen payı.`;
             }
 
+            // Kart 4: Mevduat Gerçek Kazancı
             const depReturnEl = id('card-real-deposit-return');
             if (depReturnEl) depReturnEl.innerText = format(finalDepositReal);
             const depDescEl = id('card-real-deposit-desc');
@@ -1704,6 +1788,7 @@
                 }
             }
 
+            // Bulgular Raporu
             const decisionTitleEl = id('unified-decision-title');
             const decisionDescEl = id('unified-decision-desc');
             
@@ -1720,7 +1805,7 @@
                     }
                 } else {
                     if (realDecisionNPV > 0 && realCreditCost < 0) {
-                        decisionTitleEl.innerText = "Finansal Bulgular: Negatif Reel Maliyetli Kredi ve Pozitif Arbitraj";
+                        decisionTitleEl.innerText = "Finansal Bulgular: Negatif Reel Maliyetli Kredi ve Arbitraj";
                         decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
                         decisionDescEl.innerText = `%${state.customInflationAnnual} enflasyon beklentisi altında kredinizin reel Net Bugün Değer maliyeti negatiftir. Sabit taksitlerin enflasyon karşısındaki aşınma hızı, ödeyeceğiniz nominal faiz yükünden daha hızlı gerçekleşmektedir. Kredi geri ödeme bütçesi ile alternatif mevduat getirisi kıyaslandığında, vade sonunda net ${format(nominalDecisionNPV)} (Bugünkü reel Net Bugün Değer ile ${format(realDecisionNPV)}) tutarında pozitif bir finansal fark oluştuğu tespit edilmiştir.`;
                     } else if (realDecisionNPV > 0) {
@@ -1787,7 +1872,7 @@
             id('val-faiz').value = "4.25";
             id('val-vade').value = "12";
             
-            showToast("Simülasyon kredisi (150.000 TL, 12 Ay) otomatik hesaplanarak kokpite aktarıldı.", "success");
+            showToast("Simülasyon kredisi otomatik hesaplanarak kokpite aktarıldı.", "success");
             calculate();
             recalculateInflationAnalysis();
         }
@@ -1811,6 +1896,7 @@
                 }
             }
             
+            // Analiz Paneli Sürgülerinin Dinamik İlklendirilmesi
             const mainFaizVal = parseFloat(id('val-faiz')?.value.replace(',', '.')) || (state.main === 'mevduat' ? 50 : 4.25);
             const isMevduatProduct = (state.main === 'mevduat');
             
@@ -1862,6 +1948,7 @@
             }
             
             recalculateInflationAnalysis();
+            fetchLiveRates(); // Panel her açıldığında canlı kurları tazelemeye zorla (Görünürlük Garantisi)
             
             const modalContent = document.querySelector('#inflation-modal .modal-content');
             modalContent.style.transform = ''; 
@@ -1883,10 +1970,6 @@
                 closeInflation();
             }
         }
-
-        // ==========================================
-        // GESTURE & VIEWPORT VE DIŞA AKTARMA PATERNİ
-        // ==========================================
 
         document.addEventListener('DOMContentLoaded', () => {
             setupModalGestures('#plan-modal');
