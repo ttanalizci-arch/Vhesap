@@ -382,6 +382,11 @@
                     <h1 class="text-2xl font-extrabold tracking-tight text-amber-500">Vhesap</h1>
                     <span class="text-[10px] text-amber-200/50 font-bold tracking-wider uppercase">Gelişmiş Hesaplama Sistemi</span>
                 </div>
+                <!-- Portföy/Paket Butonu -->
+                <button onclick="openPackageModal()" class="relative p-2.5 bg-zinc-900/60 hover:bg-zinc-800 border border-zinc-800/40 rounded-xl transition-all duration-200 flex items-center justify-center text-amber-500" title="Paketim / Portföyüm">
+                    <i class="fa-solid fa-briefcase text-lg"></i>
+                    <span id="package-badge" class="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-zinc-950 scale-0 transition-transform duration-300">0</span>
+                </button>
             </div>
 
             <!-- Ana Tab Gezgini -->
@@ -404,8 +409,13 @@
                         <h3 class="text-center text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
                         <div id="result-rows" class="space-y-3.5"></div>
                         
+                        <!-- Pakete Ekleme Premium Butonu -->
+                        <button id="add-to-package-btn" class="w-full py-3.5 mt-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-black text-xs tracking-wide rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md" onclick="addToPackage()">
+                            <i class="fa-solid fa-folder-plus"></i> BU HESABI PORTFÖYÜME EKLE
+                        </button>
+
                         <!-- Premium İkili Aksiyon Menüsü -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                             <button id="plan-trigger" class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/15 rounded-2xl text-amber-500 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
                                 <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
                             </button>
@@ -563,7 +573,7 @@
                             <span class="label-text mb-0 font-bold text-blue-400" id="inf-product-interest-label"><i class="fa-solid fa-percent mr-1.5"></i> Kredi Faiz Oranı (%)</span>
                             <span class="text-blue-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-product-interest-val">Aylık %4,25 (Yıllık %51,00)</span>
                         </div>
-                        <input type="range" min="0.5" max="10.0" step="0.05" value="4.25" class="w-full accent-blue-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-product-interest-slider" oninput="onProductInterestSliderChange(this.value)">
+                        <input type="range" min="0.5" max="120.0" step="0.05" value="4.25" class="w-full accent-blue-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-product-interest-slider" oninput="onProductInterestSliderChange(this.value)">
                         <div class="flex justify-between text-[9px] text-zinc-600 mt-0.5 font-bold" id="inf-product-interest-bounds">
                             <span>%0.50</span>
                             <span>%10.00</span>
@@ -586,7 +596,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-[11px] mb-1">
-                                <span class="text-zinc-400 font-semibold">Kredi Toplam Geri Ödemesi (Nominal)</span>
+                                <span class="text-zinc-400 font-semibold" id="opp-chart-loan-label">Kredi Toplam Geri Ödemesi (Nominal)</span>
                                 <span class="text-amber-500 font-mono font-bold" id="opp-chart-loan-val">0 TL</span>
                             </div>
                             <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
@@ -595,7 +605,7 @@
                         </div>
                         <div>
                             <div class="flex justify-between text-[11px] mb-1">
-                                <span class="text-zinc-400 font-semibold">Kredinin Satın Alma Gücü Yükü (Reel NBD)</span>
+                                <span class="text-zinc-400 font-semibold" id="opp-chart-real-loan-label">Kredinin Satın Alma Gücü Yükü (Reel NBD)</span>
                                 <span class="text-blue-400 font-mono font-bold" id="opp-chart-real-loan-val">0 TL</span>
                             </div>
                             <div class="w-full bg-zinc-850 h-3 rounded-lg overflow-hidden">
@@ -636,12 +646,12 @@
                     <!-- 2. Kredi Gerçek Maliyeti (Reel NPV) -->
                     <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-1.5">
-                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Kredi Gerçek Maliyeti (Reel NPV)</span>
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider" id="card-real-credit-cost-label"><i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Kredi Gerçek Maliyeti (Reel NPV)</span>
                             <div class="text-lg font-bold font-mono text-white" id="card-real-credit-cost">0 TL</div>
                         </div>
                         <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-real-credit-cost-sub">Anapara karşılığı cebinizden çıkacak reel değer.</p>
-                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed" id="card-real-credit-cost-explanation">
                                 <strong>Anlamı Nedir?</strong> Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir.
                             </p>
                         </div>
@@ -650,12 +660,12 @@
                     <!-- 3. Borcun Enflasyonla Erimesi -->
                     <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-1.5">
-                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi</span>
+                            <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider" id="card-debt-erosion-label"><i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi</span>
                             <div class="text-lg font-size font-black font-mono text-emerald-400" id="card-debt-erosion">0 TL</div>
                         </div>
                         <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-debt-erosion-sub">Sabit borç ödemelerinin enflasyonda eriyen payı.</p>
-                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed">
+                            <p class="text-[10px] text-zinc-400 mt-1.5 leading-relaxed" id="card-debt-erosion-explanation">
                                 <strong>Anlamı Nedir?</strong> Aylık taksit ödemeleriniz sabit kalırken enflasyon sebebiyle paranın satın alma gücü sürekli düşer ve bütçenizdeki borç yükü reel olarak hafifler.
                             </p>
                         </div>
@@ -707,6 +717,83 @@
         </div>
     </div>
 
+    <!-- Paket / Portföy Detay Modalı -->
+    <div id="package-modal" class="modal" onclick="closePackageOutside(event)">
+        <div class="modal-content !max-w-2xl" onclick="event.stopPropagation()">
+            <!-- Sürükleme Tutamacı -->
+            <div id="sheet-handle-pkg" class="w-12 h-1.5 bg-zinc-600 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
+            
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-900/60 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-amber-500 flex items-center gap-2">
+                        <i class="fa-solid fa-briefcase"></i> Finansal Paketim / Portföyüm
+                    </h2>
+                    <p class="text-[10px] text-zinc-500 uppercase tracking-tighter mt-0.5">Farklı Ürünlerin Birleşik Toplam Analizi</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadPackagePDF()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> <span class="hidden xs:inline">PDF Raporu</span>
+                    </button>
+                    <button onclick="clearPackage()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-trash-can"></i> <span class="hidden xs:inline">Hepsini Sil</span>
+                    </button>
+                    <button onclick="closePackageModal()" class="bg-zinc-850 w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-all">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Portföy İçeriği ve Toplam Kartlar -->
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom scroll-area" style="-webkit-overflow-scrolling: touch;">
+                
+                <!-- Paket Boş Durumu -->
+                <div id="package-empty-state" class="flex flex-col items-center justify-center py-12 text-center">
+                    <div class="w-16 h-16 bg-zinc-900/50 rounded-full flex items-center justify-center border border-zinc-800/40 mb-4 text-zinc-600">
+                        <i class="fa-solid fa-folder-open text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-sm mb-1">Paketinizde Ürün Bulunmuyor</h3>
+                    <p class="text-xs text-zinc-500 max-w-xs leading-relaxed">Yukarıdaki hesaplamaları yaptıktan sonra sonuç bölümündeki "BU HESABI PORTFÖYÜME EKLE" butonunu kullanarak paketinizi oluşturabilirsiniz.</p>
+                </div>
+
+                <!-- Paket Dolu Durumu -->
+                <div id="package-filled-state" class="hidden space-y-5">
+                    
+                    <!-- Toplam Özet Kartı -->
+                    <div class="bg-gradient-to-br from-amber-500/10 to-emerald-500/10 p-5 rounded-3xl border border-amber-500/15 shadow-xl grid grid-cols-2 gap-4">
+                        <div class="col-span-2 border-b border-zinc-800/40 pb-2.5 mb-1">
+                            <span class="text-[9px] uppercase font-extrabold tracking-wider text-zinc-400">Bütünleşik Paket Özeti</span>
+                            <h3 class="text-white font-black text-md mt-0.5" id="pkg-summary-title">Yükleniyor...</h3>
+                        </div>
+                        <div class="bg-zinc-950/40 p-3 rounded-2xl border border-zinc-900/60">
+                            <span class="text-[9px] text-zinc-500 font-bold block uppercase tracking-wider">Top. Çekilen/Anapara</span>
+                            <span class="text-sm font-black text-white font-mono block mt-1" id="pkg-total-principal">0 ₺</span>
+                        </div>
+                        <div class="bg-zinc-950/40 p-3 rounded-2xl border border-zinc-900/60">
+                            <span class="text-[9px] text-zinc-500 font-bold block uppercase tracking-wider">Top. Ödeme (Net Hacim)</span>
+                            <span class="text-sm font-black text-emerald-400 font-mono block mt-1" id="pkg-total-net">0 ₺</span>
+                        </div>
+                        <div class="bg-zinc-950/40 p-3 rounded-2xl border border-zinc-900/60">
+                            <span class="text-[9px] text-zinc-500 font-bold block uppercase tracking-wider">Top. Faiz/İskonto Kesintisi</span>
+                            <span class="text-sm font-black text-rose-500 font-mono block mt-1" id="pkg-total-interest">0 ₺</span>
+                        </div>
+                        <div class="bg-zinc-950/40 p-3 rounded-2xl border border-zinc-900/60">
+                            <span class="text-[9px] text-zinc-500 font-bold block uppercase tracking-wider">Top. Geri Ödeme / Tahsilat</span>
+                            <span class="text-sm font-black text-amber-500 font-mono block mt-1" id="pkg-total-repayment">0 ₺</span>
+                        </div>
+                    </div>
+
+                    <!-- Eklenen Ürünler Listesi -->
+                    <div class="space-y-3">
+                        <span class="label-text text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Portföydeki Ürünler</span>
+                        <div id="package-items-list" class="space-y-2.5">
+                            <!-- JS Dinamik Dolduracak -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Uygulama Durumu
         let state = { 
@@ -721,9 +808,12 @@
             alternativeDepositRate: 50, // Alternatif vadeli mevduat faiz oranı (%)
             faizTipi: 'aylik', // 'aylik' veya 'yillik'
             hasAraOdemeler: false,
-            hasOdemesiz: false
+            hasOdemesiz: false,
+            package: [], // Sepet/Portföy verilerini tutar
+            currentSummary: null // Aktif hesaplamanın standartlaştırılmış özetini tutar
         };
         
+        // Yeniden tasarlanan ticari menü konfigürasyonu
         const menuConfig = {
             bireysel: [
                 {id: 'ihtiyac', n: 'İhtiyaç'}, 
@@ -732,9 +822,10 @@
                 {id: 'ekhesap', n: 'Ek Hesap'}
             ],
             ticari: [
-                {id: 'ticari-kredi', n: 'Ticari Kredi'}, 
-                {id: 'ticari-tasit', n: 'Taşıt'}, 
-                {id: 'ticari-ekhesap', n: 'Ek Hesap'}
+                {id: 'taksitli-kredi', n: 'Taksitli Kredi'}, 
+                {id: 'rotatif', n: 'Rotatif'}, 
+                {id: 'spot', n: 'Spot'}, 
+                {id: 'iskonto', n: 'İskonto'}
             ]
         };
 
@@ -754,10 +845,23 @@
         };
 
         window.onload = () => {
+            // Gizlilik ve üyeliksiz yapı gereği kalıntı yerel disk verilerini baştan temizle
+            try {
+                localStorage.removeItem('vhesap_portfolio_2026');
+            } catch(e) {}
+
             switchTab('bireysel');
             setupVisualViewport();
             fetchLiveRates(); // Döviz kurlarını ilk açılışta tetikler
         };
+
+        // Oturum Kapatıldığında Portföyü Tamamen Sil
+        window.addEventListener('beforeunload', () => {
+            try {
+                sessionStorage.removeItem('vhesap_portfolio_2026');
+                localStorage.removeItem('vhesap_portfolio_2026');
+            } catch(e) {}
+        });
 
         // Mobil Cihazlarda Klavye Görünürlüğü ve Viewport Yönetimi
         function setupVisualViewport() {
@@ -927,12 +1031,14 @@
             id('val-faiz').value = newVal.toFixed(2).replace('.', ',');
             
             // Buton aktiflik sınıflarını güncelle
-            id('faiz-tip-aylik').className = tip === 'aylik' ? 
-                "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
-                "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
-            id('faiz-tip-yillik').className = tip === 'yillik' ? 
-                "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
-                "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
+            if (id('faiz-tip-aylik') && id('faiz-tip-yillik')) {
+                id('faiz-tip-aylik').className = tip === 'aylik' ? 
+                    "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
+                    "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
+                id('faiz-tip-yillik').className = tip === 'yillik' ? 
+                    "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
+                    "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
+            }
                 
             validateVade();
         }
@@ -966,7 +1072,30 @@
         function renderForm() {
             const container = document.getElementById('form-content');
             let html = '';
+            
             const isEkHesap = state.sub.includes('ekhesap');
+            const isDayBased = isEkHesap || ['rotatif', 'spot', 'iskonto'].includes(state.sub);
+
+            // Bilgilendirici Ticari Kartlar
+            if (state.sub === 'rotatif') {
+                html += `
+                    <div class="info-badge mb-3 flex flex-col items-start gap-1.5 !bg-amber-500/5 !border-amber-500/20">
+                        <span class="font-bold text-amber-500 flex items-center gap-1.5 text-xs"><i class="fa-solid fa-arrows-spin"></i> Rotatif Kredi (Revolving)</span>
+                        <span class="text-zinc-400 text-[11px] leading-relaxed">Limitten dilediğiniz kadar kullanıp geri ödeme yapabildiğiniz esnek bir kredi türüdür. Gün bazlı değişken faiz işletilir, faizler genellikle 3 aylık dönemlerde tahsil edilir.</span>
+                    </div>`;
+            } else if (state.sub === 'spot') {
+                html += `
+                    <div class="info-badge mb-3 flex flex-col items-start gap-1.5 !bg-amber-500/5 !border-amber-500/20">
+                        <span class="font-bold text-amber-500 flex items-center gap-1.5 text-xs"><i class="fa-solid fa-calendar-check"></i> Spot Kredi</span>
+                        <span class="text-zinc-400 text-[11px] leading-relaxed">Kısa vadeli nakit ihtiyaçları için sabit faizli tek seferlik kredi türüdür. Vade sonunda anapara, biriken net faiz, banka komisyonu ve %5 BSMV tek seferde toplu (balon) ödenir.</span>
+                    </div>`;
+            } else if (state.sub === 'iskonto') {
+                html += `
+                    <div class="info-badge mb-3 flex flex-col items-start gap-1.5 !bg-amber-500/5 !border-amber-500/20">
+                        <span class="font-bold text-amber-500 flex items-center gap-1.5 text-xs"><i class="fa-solid fa-file-invoice-dollar"></i> İskonto Kredisi</span>
+                        <span class="text-zinc-400 text-[11px] leading-relaxed">Vadesi gelmemiş ticari alacakların (çek/senet) iskonto faizi ve komisyon kesilerek peşin nakde çevrilmesidir. Faiz, masraflar ve komisyon başlangıçta peşin kesilir.</span>
+                    </div>`;
+            }
 
             if(state.sub === 'konut') {
                 html += `
@@ -998,23 +1127,19 @@
                             </div>
                         </div>
                     </div>`;
-            } else if(state.sub === 'tasit' || state.sub === 'ticari-tasit') {
-                if (state.sub === 'tasit') {
-                    html += `
-                        <div class="input-card">
-                            <span class="label-text">Araç Yakıt/Motor Türü</span>
-                            <div class="select-wrapper">
-                                <select id="val-arac-turu" class="apple-select" onchange="updateTasitUI()">
-                                    <option value="icten">İçten Yanmalı</option>
-                                    <option value="elektrikli">Tam Elektrikli</option>
-                                </select>
-                            </div>
-                        </div>`;
-                }
-                
+            } else if(state.sub === 'tasit') {
                 html += `
                     <div class="input-card">
-                        <span class="label-text">${state.main === 'ticari' ? 'Araç Fatura / Kasko Değeri (TL)' : 'Kasko Değeri (TL)'}</span>
+                        <span class="label-text">Araç Yakıt/Motor Türü</span>
+                        <div class="select-wrapper">
+                            <select id="val-arac-turu" class="apple-select" onchange="updateTasitUI()">
+                                    <option value="icten">İçten Yanmalı</option>
+                                    <option value="elektrikli">Tam Elektrikli</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-card">
+                        <span class="label-text">Kasko Değeri (TL)</span>
                         <input type="text" id="val-deger" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); updateTasitUI()">
                         <div id="info-limit" class="info-badge">
                             <i class="fa-solid fa-circle-info"></i> Lütfen araç kasko/fatura değerini giriniz.
@@ -1022,45 +1147,84 @@
                     </div>`;
             }
 
+            // Etiket Dinamik Ayarlamaları
+            let labelStart = "Kullandırım Tarihi";
+            let labelEnd = "İlk Taksit Tarihi";
+            let labelTutar = "Talep Edilen Tutar (TL)";
+            
+            if (state.sub === 'rotatif') {
+                labelStart = "Limit Kullanım Tarihi";
+                labelEnd = "Dönem Sonu / Kapatma Tarihi";
+                labelTutar = "Kullanılacak Limit Tutarı (TL)";
+            } else if (state.sub === 'spot') {
+                labelStart = "Kredi Kullanım Tarihi";
+                labelEnd = "Vade Sonu / Kapatma Tarihi";
+                labelTutar = "Kredi Tutarı (TL)";
+            } else if (state.sub === 'iskonto') {
+                labelStart = "Temlik / İskonto Tarihi";
+                labelEnd = "Çek / Senet Vade Tarihi";
+                labelTutar = "Çek / Senet Nominal Değeri (TL)";
+            } else if (isEkHesap) {
+                labelStart = "Kullanım Tarihi";
+                labelEnd = "Ödeme Tarihi";
+            }
+
             const isAylik = state.faizTipi === 'aylik';
-            const faizTutarText = isAylik ? "4.25" : "51.00";
+            let defaultFaizText = isAylik ? "4.25" : "51.00";
+            
+            if (['rotatif', 'spot', 'iskonto'].includes(state.sub)) {
+                defaultFaizText = "55,00"; // Ticari yıllık referans faiz başlangıcı
+                state.faizTipi = 'yillik';
+            }
 
             html += `
                 <div class="grid grid-cols-2 gap-3 mb-3">
                     <div class="input-card mb-0">
-                        <span class="label-text">${isEkHesap ? 'Kullanım Tarihi' : 'Kullandırım Tarihi'}</span>
+                        <span class="label-text">${labelStart}</span>
                         <input type="date" id="date-start" class="apple-input text-base" value="${new Date().toISOString().split('T')[0]}" onchange="onDateChange()">
                     </div>
                     <div class="input-card mb-0">
-                        <span class="label-text">${isEkHesap ? 'Ödeme Tarihi' : 'İlk Taksit Tarihi'}</span>
-                        <input type="date" id="date-first" class="apple-input text-base" value="${new Date(Date.now() + 86400000*30).toISOString().split('T')[0]}" onchange="onDateChange()">
+                        <span class="label-text">${labelEnd}</span>
+                        <input type="date" id="date-first" class="apple-input text-base" value="${new Date(Date.now() + 86400000 * (['rotatif', 'spot', 'iskonto'].includes(state.sub) ? 90 : 30)).toISOString().split('T')[0]}" onchange="onDateChange()">
                     </div>
                 </div>
-                ${isEkHesap ? '<div id="info-holiday" class="info-badge mb-3 hidden"></div>' : ''}
+                ${isDayBased ? '<div id="info-holiday" class="info-badge mb-3 hidden"></div>' : ''}
                 <div class="input-card">
-                    <span class="label-text">Talep Edilen Tutar (TL)</span>
+                    <span class="label-text">${labelTutar}</span>
                     <input type="text" id="val-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input" placeholder="0" oninput="mask(this); validateVade()">
-                </div>
+                </div>`;
+
+            // Banka Komisyon Oranı Giriş Alanı (İskonto, Rotatif, Spot için)
+            if (['iskonto', 'rotatif', 'spot'].includes(state.sub)) {
+                html += `
+                <div class="input-card">
+                    <span class="label-text">Banka Komisyon Oranı (%)</span>
+                    <input type="text" id="val-komisyon" inputmode="decimal" class="apple-input" value="1,00">
+                </div>`;
+            }
+
+            html += `
                 <div class="grid grid-cols-2 gap-3">
                     <div class="input-card">
-                        <span class="label-text">${isEkHesap ? 'Faiz Gün Sayısı' : 'Vade (Ay)'}</span>
-                        <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="${isEkHesap ? 30 : 12}" ${isEkHesap ? 'readonly' : ''} oninput="validateVade()">
+                        <span class="label-text">${isDayBased ? 'Faiz Gün Sayısı' : 'Vade (Ay)'}</span>
+                        <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="${isDayBased ? 90 : 12}" ${isDayBased ? 'readonly' : ''} oninput="validateVade()">
                     </div>
                     <div class="input-card">
-                        <span class="label-text">Faiz Oranı (%)</span>
+                        <span class="label-text">${['rotatif', 'spot', 'iskonto'].includes(state.sub) ? 'Yıllık Faiz Oranı (%)' : 'Faiz Oranı (%)'}</span>
                         <div class="flex items-center justify-between gap-1 mt-0.5">
-                            <input type="text" id="val-faiz" inputmode="decimal" class="apple-input flex-1 min-w-[50px]" value="${faizTutarText}">
+                            <input type="text" id="val-faiz" inputmode="decimal" class="apple-input flex-1 min-w-[50px]" value="${defaultFaizText}">
+                            ${['rotatif', 'spot', 'iskonto'].includes(state.sub) ? '' : `
                             <div class="flex bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 flex-shrink-0">
                                 <button id="faiz-tip-aylik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${isAylik ? 'bg-amber-500 text-black' : 'text-zinc-400'} transition-all" onclick="setFaizTipi('aylik')">AYLIK</button>
                                 <button id="faiz-tip-yillik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${!isAylik ? 'bg-amber-500 text-black' : 'text-zinc-400'} transition-all" onclick="setFaizTipi('yillik')">YILLIK</button>
-                            </div>
+                            </div>`}
                         </div>
                     </div>
                 </div>
                 <div id="vade-warning" class="info-badge mb-3 hidden"></div>`;
 
-            if(!isEkHesap) {
-                // Ödemesiz Dönem Modülü (Collapsible Switch)
+            if(!isDayBased) {
+                // Ödemesiz Dönem Modülü
                 html += `
                 <div class="input-card mt-3 border border-zinc-800/40">
                     <label class="flex items-center justify-between cursor-pointer py-1">
@@ -1095,7 +1259,7 @@
                     </div>
                 </div>`;
 
-                // Ara Ödemeler Modülü (Collapsible Switch)
+                // Ara Ödemeler Modülü
                 html += `
                 <div class="input-card mt-3 border border-zinc-800/40">
                     <label class="flex items-center justify-between cursor-pointer py-1">
@@ -1143,8 +1307,8 @@
             html += `<button class="action-btn" onclick="calculate()">HESAPLA</button>`;
             
             container.innerHTML = html;
-            if(isEkHesap) onDateChange();
-            if(!isEkHesap) renderAraOdemeList();
+            if(isDayBased) onDateChange();
+            if(!isDayBased) renderAraOdemeList();
         }
 
         function renderAraOdemeList() {
@@ -1277,7 +1441,7 @@
             } else {
                 if (d <= 5000000) {
                     if (ekb === 'AB') oran = 0.225;
-                    else if (ekb === 'C', m === 'diger') oran = 0.20;
+                    else if (ekb === 'C') oran = 0.20;
                     else oran = 0.175;
                 } else if (d <= 7000000) {
                     if (ekb === 'AB') oran = 0.20;
@@ -1326,27 +1490,21 @@
             const d = getRawVal('val-deger');
             let o = 0, v = 48;
             
-            if (state.main === 'ticari') {
-                o = 0.8; 
-                v = 60;  
-            } 
-            else {
-                const turEl = id('val-arac-turu');
-                const tur = turEl ? turEl.value : 'icten';
-                
-                if (tur === 'elektrikli') {
-                    if(d <= 2500000) { o = 0.7; v = 48; }
-                    else if(d <= 5000000) { o = 0.5; v = 36; }
-                    else if(d <= 6500000) { o = 0.3; v = 24; }
-                    else if(d <= 7500000) { o = 0.2; v = 12; }
-                    else { o = 0; v = 0; }
-                } else {
-                    if(d <= 400000) { o = 0.7; v = 48; }
-                    else if(d <= 800000) { o = 0.5; v = 36; }
-                    else if(d <= 1200000) { o = 0.3; v = 24; }
-                    else if(d <= 2000000) { o = 0.2; v = 12; }
-                    else { o = 0; v = 0; }
-                }
+            const turEl = id('val-arac-turu');
+            const tur = turEl ? turEl.value : 'icten';
+            
+            if (tur === 'elektrikli') {
+                if(d <= 2500000) { o = 0.7; v = 48; }
+                else if(d <= 5000000) { o = 0.5; v = 36; }
+                else if(d <= 6500000) { o = 0.3; v = 24; }
+                else if(d <= 7500000) { o = 0.2; v = 12; }
+                else { o = 0; v = 0; }
+            } else {
+                if(d <= 400000) { o = 0.7; v = 48; }
+                else if(d <= 800000) { o = 0.5; v = 36; }
+                else if(d <= 1200000) { o = 0.3; v = 24; }
+                else if(d <= 2000000) { o = 0.2; v = 12; }
+                else { o = 0; v = 0; }
             }
 
             const vadeInput = id('val-vade');
@@ -1400,27 +1558,23 @@
                         warningText = `<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> BDDK Yönetmeliği uyarınca bu tutar için azami vade ${max} aydır. Hesaplamaya devam edebilirsiniz.`;
                     }
                 }
-            } else if (state.sub === 'tasit' || state.sub === 'ticari-tasit') {
+            } else if (state.sub === 'tasit') {
                 const d = getRawVal('val-deger');
                 let max = 48;
-                if (state.main === 'ticari') {
-                    max = 60;
+                const turEl = id('val-arac-turu');
+                const tur = turEl ? turEl.value : 'icten';
+                if (tur === 'elektrikli') {
+                    if(d <= 2500000) max = 48;
+                    else if(d <= 5000000) max = 36;
+                    else if(d <= 6500000) max = 24;
+                    else if(d <= 7500000) max = 12;
+                    else max = 0;
                 } else {
-                    const turEl = id('val-arac-turu');
-                    const tur = turEl ? turEl.value : 'icten';
-                    if (tur === 'elektrikli') {
-                        if(d <= 2500000) max = 48;
-                        else if(d <= 5000000) max = 36;
-                        else if(d <= 6500000) max = 24;
-                        else if(d <= 7500000) max = 12;
-                        else max = 0;
-                    } else {
-                        if(d <= 400000) max = 48;
-                        else if(d <= 800000) max = 36;
-                        else if(d <= 1200000) max = 24;
-                        else if(d <= 2000000) max = 12;
-                        else max = 0;
-                    }
+                    if(d <= 400000) max = 48;
+                    else if(d <= 800000) max = 36;
+                    else if(d <= 1200000) max = 24;
+                    else if(d <= 2000000) max = 12;
+                    else max = 0;
                 }
                 const vadeInput = id('val-vade');
                 if (vadeInput) {
@@ -1446,7 +1600,9 @@
         function onDateChange() {
             const ds = id('date-start'), df = id('date-first');
             if(!ds || !df) return;
-            if(state.sub.includes('ekhesap')) {
+            
+            const isDayBased = state.sub.includes('ekhesap') || ['rotatif', 'spot', 'iskonto'].includes(state.sub);
+            if(isDayBased) {
                 const start = new Date(ds.value), originalEnd = new Date(df.value);
                 let isTatilGunu = isTatil(originalEnd);
                 let faizBitisTarihi = sonrakilsGunu(originalEnd);
@@ -1472,6 +1628,9 @@
 
         function calculate() {
             if(state.sub.includes('ekhesap')) return calculateEkHesap();
+            if(state.sub === 'rotatif') return calculateRotatif();
+            if(state.sub === 'spot') return calculateSpot();
+            if(state.sub === 'iskonto') return calculateIskonto();
             
             const T = getRawVal('val-tutar');
             const initialV = parseInt(id('val-vade').value);
@@ -1569,7 +1728,7 @@
                     }
 
                     if (t < G) {
-                        // ÖDEMESİZ DÖNEM SÜRECİ (Taksit ödemesiz veya sadece faiz ödemeli aylar)
+                        // ÖDEMESİZ DÖNEM SÜRECİ
                         let timeDiff = Math.abs(tDate.getTime() - prevDate.getTime());
                         let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24));
 
@@ -1607,11 +1766,7 @@
                             });
                         }
                     } else if (t === G) {
-                        // Kullanıcı talebine göre anapara, net bileşik faiz ve vergi formülleri:
-                        // anapara = T * brutFaizOrani * ((1 + brutFaizOrani)^initialV) / (((1 + brutFaizOrani)^initialV) - 1)
-                        // faiz = T * (((1 + F)^G) - 1) [ilk-taksit ise kümülatif net faiz, faiz-odemeli ise o ayın faizi]
-                        // vergi = faiz * (kkdfo + bsmvo) (kredi türüne göre otomatik)
-                        
+                        // İlk ödemesiz dönemin bitişinde net faiz ve vergi ödemeleri:
                         let principalG = brutFaizOrani > 0 ? 
                             (T * brutFaizOrani * Math.pow(1 + brutFaizOrani, initialV)) / (Math.pow(1 + brutFaizOrani, initialV) - 1) 
                             : T / initialV;
@@ -1647,7 +1802,7 @@
                             bak: Math.max(0, bak)
                         });
                     } else {
-                        // G. AYDAN SONRAKİ NORMAL AMORTİSMAN VADE SÜRECİ (N - G Kalan Süre)
+                        // G. AYDAN SONRAKİ NORMAL AMORTİSMAN VADE SÜRECİ
                         let kalanVade = initialV - t + 1;
                         let pmt_new = brutFaizOrani > 0 ? 
                             (bak * brutFaizOrani * Math.pow(1 + brutFaizOrani, kalanVade)) / (Math.pow(1 + brutFaizOrani, kalanVade) - 1) 
@@ -1779,15 +1934,6 @@
 
                     if (hasVadeAdjustment) {
                         let N_new = targetRemainingTerms;
-                        ana = bak; 
-                        if (N_new > 1) {
-                            if (brutFaizOrani > 0) {
-                                let presentValue = taksitNormal * (1 - Math.pow(1 + brutFaizOrani, -(N_new - 1))) / brutFaizOrani;
-                                ana = bak - presentValue;
-                            } else {
-                                ana = bak - taksitNormal * (N_new - 1);
-                            }
-                        }
                         ana = Math.max(0, Math.min(bak, ana));
                         currentTaksit = ana + actual_gross_interest;
                     } else {
@@ -1824,18 +1970,213 @@
             state.lastPrincipal = T;
             
             let totalOdenen = plan.reduce((acc, curr) => acc + curr.taksit, 0);
-            
-            // İlk ödemeyi ve ödemesiz dönemleri düzgün listelemek için ilk taksiti bulalım
             const ilkTaksitObj = plan.find(p => typeof p.i === 'number' && p.taksit > 0);
             const ilkTaksitTutar = ilkTaksitObj ? format(ilkTaksitObj.taksit) : format(0);
+
+            // Paket Birleştirme Özeti İçin Durum Ataması
+            let displaySub = state.sub;
+            if(displaySub === 'ihtiyac') displaySub = "İhtiyaç Kredisi";
+            else if(displaySub === 'konut') displaySub = "Konut Kredisi";
+            else if(displaySub === 'tasit') displaySub = "Taşıt Kredisi";
+            else if(displaySub === 'taksitli-kredi') displaySub = "Taksitli Kredi";
+
+            state.currentSummary = {
+                name: displaySub,
+                tutar: T,
+                netPayout: T,
+                netFaiz: totalF,
+                vergi: totalK + totalB,
+                toplamOdenen: totalOdenen,
+                vade: initialV + " Ay",
+                faizOrani: "%" + id('val-faiz').value + " (" + (state.faizTipi === 'aylik' ? 'Aylık' : 'Yıllık') + ")"
+            };
 
             showResults([
                 { l: "İlk Taksit Tutarı", v: ilkTaksitTutar, h: true },
                 { l: "Toplam Net Faiz", v: format(totalF) },
-                { l: "Vergi Toplamı (BSMV+KKDF)", v: format(totalK + totalB) },
+                { l: "Vergi Toplamı (BSMV)", v: format(totalK + totalB) },
                 { l: "Toplam Geri Ödeme", v: format(totalOdenen) }
             ]);
             id('plan-trigger').style.display = 'flex';
+        }
+
+        // ROTATİF KREDİ HESAPLAMA MOTORU (KOMİSYON DAHİL)
+        function calculateRotatif() {
+            const T = getRawVal('val-tutar');
+            const G = parseInt(id('val-vade').value);
+            const faizStr = id('val-faiz').value.replace(',', '.');
+            const F = parseFloat(faizStr) / 100; // Yıllık oran
+
+            const komisyonStr = id('val-komisyon')?.value.replace(',', '.') || "0.00";
+            const C = parseFloat(komisyonStr) / 100; // Komisyon oranı
+
+            if(T <= 0) return showToast("Lütfen geçerli bir kullanılan limit tutarı giriniz.");
+            if(G <= 0) return showToast("Lütfen geçerli bir gün sayısı belirtiniz.");
+            if(isNaN(F) || F < 0) return showToast("Lütfen geçerli bir faiz oranı giriniz.");
+            if(isNaN(C) || C < 0) return showToast("Lütfen geçerli bir komisyon oranı giriniz.");
+
+            const bsmvo = 0.05; // Ticari BSMV %5. KKDF ticari kredilerde %0'dır.
+            
+            // Ticari rotatif faiz ve komisyon hesaplama formülü (Baz 360 gün)
+            const f = (T * F * G) / 360;
+            const c = T * C; // Banka komisyonu
+            const b = (f + c) * bsmvo; // BSMV faiz + komisyon üzerinden alınır.
+
+            const end = new Date(id('date-first').value);
+
+            state.lastCalc = [{
+                i: 1,
+                date: end.toLocaleDateString('tr-TR'),
+                rawDate: new Date(end),
+                taksit: f + c + b, // Rotatif kredi dönemsel ödeme faiz, komisyon ve vergi yüküdür
+                ana: T, // Limit bakiyesi
+                f: f + c,
+                k: b,
+                bak: T
+            }];
+            state.lastPrincipal = T;
+
+            state.currentSummary = {
+                name: "Rotatif Kredi",
+                tutar: T,
+                netPayout: T,
+                netFaiz: f + c,
+                vergi: b,
+                toplamOdenen: T + f + c + b,
+                vade: G + " Gün",
+                faizOrani: "Yıllık %" + faizStr + " (Kom: %" + komisyonStr + ")"
+            };
+
+            showResults([
+                { l: "Ödenecek Faiz + Komisyon + Vergi (Dönem Sonu)", v: format(f + c + b), h: true },
+                { l: "Net Faiz Yükü (Günlük)", v: format(f) },
+                { l: "Banka Komisyonu (%"+komisyonStr+")", v: format(c) },
+                { l: "BSMV Vergisi Kesintisi (%5)", v: format(b) },
+                { l: "Toplam Kapatma Tutarı (Anapara Dahil)", v: format(T + f + c + b) },
+                { l: "Limit Kullanım Süresi", v: G + " Gün" }
+            ]);
+            id('plan-trigger').style.display = 'none'; // Amortisman tablosu yok
+        }
+
+        // SPOT KREDİ HESAPLAMA MOTORU (KOMİSYON DAHİL)
+        function calculateSpot() {
+            const T = getRawVal('val-tutar');
+            const G = parseInt(id('val-vade').value);
+            const faizStr = id('val-faiz').value.replace(',', '.');
+            const F = parseFloat(faizStr) / 100;
+
+            const komisyonStr = id('val-komisyon')?.value.replace(',', '.') || "0.00";
+            const C = parseFloat(komisyonStr) / 100; // Komisyon oranı
+
+            if(T <= 0) return showToast("Lütfen geçerli bir kredi tutarı giriniz.");
+            if(G <= 0) return showToast("Lütfen geçerli bir gün sayısı belirtiniz.");
+            if(isNaN(F) || F < 0) return showToast("Lütfen geçerli bir faiz oranı giriniz.");
+            if(isNaN(C) || C < 0) return showToast("Lütfen geçerli bir komisyon oranı giriniz.");
+
+            const bsmvo = 0.05;
+            
+            const f = (T * F * G) / 360;
+            const c = T * C; // Banka komisyonu
+            const b = (f + c) * bsmvo; // BSMV faiz + komisyon üzerinden alınır.
+
+            const end = new Date(id('date-first').value);
+
+            state.lastCalc = [{
+                i: 1,
+                date: end.toLocaleDateString('tr-TR'),
+                rawDate: new Date(end),
+                taksit: T + f + c + b, // Vade sonu toplu ödeme tutarı
+                ana: T,
+                f: f + c,
+                k: b,
+                bak: 0
+            }];
+            state.lastPrincipal = T;
+
+            state.currentSummary = {
+                name: "Spot Kredi",
+                tutar: T,
+                netPayout: T,
+                netFaiz: f + c,
+                vergi: b,
+                toplamOdenen: T + f + c + b,
+                vade: G + " Gün",
+                faizOrani: "Yıllık %" + faizStr + " (Kom: %" + komisyonStr + ")"
+            };
+
+            showResults([
+                { l: "Vade Sonu Toplam Geri Ödeme", v: format(T + f + c + b), h: true },
+                { l: "Kredi Anapara Tutarı", v: format(T) },
+                { l: "Net Faiz Tutarı (Spot)", v: format(f) },
+                { l: "Banka Komisyonu (%"+komisyonStr+")", v: format(c) },
+                { l: "BSMV Vergisi Kesintisi (%5)", v: format(b) },
+                { l: "Kredi Vadesi", v: G + " Gün" }
+            ]);
+            id('plan-trigger').style.display = 'none';
+        }
+
+        // İSKONTO KREDİSİ HESAPLAMA MOTORU
+        function calculateIskonto() {
+            const T = getRawVal('val-tutar'); // Çek/senet nominal tutarı
+            const G = parseInt(id('val-vade').value);
+            const faizStr = id('val-faiz').value.replace(',', '.');
+            const F = parseFloat(faizStr) / 100; // Yıllık iskonto oranı
+            
+            const komisyonStr = id('val-komisyon')?.value.replace(',', '.') || "1.00";
+            const C = parseFloat(komisyonStr) / 100; // Komisyon oranı
+
+            if(T <= 0) return showToast("Lütfen geçerli bir çek/senet nominal değeri giriniz.");
+            if(G <= 0) return showToast("Lütfen geçerli bir gün sayısı belirtiniz.");
+            if(isNaN(F) || F < 0) return showToast("Lütfen geçerli bir iskonto oranı giriniz.");
+            if(isNaN(C) || C < 0) return showToast("Lütfen geçerli bir komisyon oranı giriniz.");
+
+            const bsmvo = 0.05;
+
+            // Banka peşin iskonto kesintileri
+            const f = (T * F * G) / 360; // İskonto net faiz tutarı
+            const c = T * C; // Banka komisyonu
+            const b = (f + c) * bsmvo; // Faiz ve komisyondan alınan toplam %5 BSMV
+
+            const kesinti = f + c + b;
+            const netPayout = T - kesinti; // Müşterinin eline geçen peşin tutar
+
+            // Gerçek efektif yıllık finansman maliyeti hesabı (Efektif maliyet oranı)
+            const efektifOran = netPayout > 0 ? (kesinti / netPayout) * (360 / G) * 100 : 0;
+
+            const end = new Date(id('date-first').value);
+
+            state.lastCalc = [{
+                i: 1,
+                date: end.toLocaleDateString('tr-TR'),
+                rawDate: new Date(end),
+                taksit: T, // Çekin vade sonundaki tahsilat tutarı (Bankaya ödenecek / borçludan tahsil edilecek nominal değer)
+                ana: netPayout, 
+                f: f + c, 
+                k: b,
+                bak: 0
+            }];
+            state.lastPrincipal = netPayout;
+
+            state.currentSummary = {
+                name: "İskonto Kredisi",
+                tutar: T,
+                netPayout: netPayout,
+                netFaiz: f + c,
+                vergi: b,
+                toplamOdenen: T,
+                vade: G + " Gün",
+                faizOrani: "Yıllık %" + faizStr + " (Kom: %" + komisyonStr + ")"
+            };
+
+            showResults([
+                { l: "Elinize Geçecek Peşin Net Tutar (Ödeme)", v: format(netPayout), h: true },
+                { l: "Evrak Nominal Değeri (Çek/Senet)", v: format(T) },
+                { l: "Net İskonto Tutarı (Faiz)", v: format(f) },
+                { l: "Banka Komisyon Kesintisi (%"+komisyonStr+")", v: format(c) },
+                { l: "Toplam Vergi Kesintisi (BSMV)", v: format(b) },
+                { l: "Efektif Yıllık Finansal Maliyet", v: "%" + efektifOran.toFixed(2).replace('.', ','), h: false }
+            ]);
+            id('plan-trigger').style.display = 'none';
         }
 
         function calculateEkHesap() {
@@ -1871,6 +2212,17 @@
             }];
             state.lastPrincipal = T;
             
+            state.currentSummary = {
+                name: "Ek Hesap",
+                tutar: T,
+                netPayout: T,
+                netFaiz: f,
+                vergi: k + b,
+                toplamOdenen: T + f + k + b,
+                vade: G + " Gün",
+                faizOrani: "%" + faizStr + " (Aylık)"
+            };
+
             showResults([
                 { l: "Toplam Borç", v: format(T + f + k + b), h: true },
                 { l: "Net Faiz Tutarı", v: format(f) },
@@ -1918,6 +2270,17 @@
                 bak: 0
             }];
             state.lastPrincipal = T;
+
+            state.currentSummary = {
+                name: "Vadeli Mevduat",
+                tutar: T,
+                netPayout: T,
+                netFaiz: brut - vergi, // Net Faiz Getirisi
+                vergi: vergi,
+                toplamOdenen: T + brut - vergi,
+                vade: G + " Gün",
+                faizOrani: "Yıllık %" + faizStr
+            };
             
             showResults([
                 { l: "Net Faiz Getirisi", v: format(brut - vergi), h: true },
@@ -1926,6 +2289,242 @@
                 { l: "Vade Sonu Kümülatif Bakiye", v: format(T + brut - vergi) }
             ]);
             id('plan-trigger').style.display = 'none';
+        }
+
+        // PORTFÖY / PAKET KONTROL MERKEZİ (Dinamik Sepet İşlemleri)
+        function addToPackage() {
+            if (!state.currentSummary) {
+                return showToast("Lütfen önce bir hesaplama gerçekleştirin.", "error");
+            }
+            
+            state.package.push({
+                id: Date.now(),
+                ...state.currentSummary
+            });
+            
+            // Gizlilik gereği oturum bazlı depoda tutulur (Sayfa kapandığında uçar)
+            try {
+                sessionStorage.setItem('vhesap_portfolio_2026', JSON.stringify(state.package));
+            } catch (e) {}
+
+            updatePackageUI();
+            showToast(`${state.currentSummary.name} portföyünüze başarıyla eklendi.`, "success");
+        }
+
+        function removePackageItem(itemId) {
+            state.package = state.package.filter(item => item.id !== itemId);
+            try {
+                sessionStorage.setItem('vhesap_portfolio_2026', JSON.stringify(state.package));
+            } catch (e) {}
+            updatePackageUI();
+            showToast("Ürün portföyden silindi.", "success");
+        }
+
+        function clearPackage() {
+            state.package = [];
+            try {
+                sessionStorage.setItem('vhesap_portfolio_2026', JSON.stringify(state.package));
+            } catch (e) {}
+            updatePackageUI();
+            showToast("Portföy tamamen temizlendi.", "success");
+        }
+
+        function updatePackageUI() {
+            const badge = id('package-badge');
+            const count = state.package.length;
+            if (badge) {
+                badge.innerText = count;
+                if (count > 0) {
+                    badge.classList.remove('scale-0');
+                    badge.classList.add('scale-100');
+                    badge.animate([
+                        { transform: 'scale(1)' },
+                        { transform: 'scale(1.3)' },
+                        { transform: 'scale(1)' }
+                    ], { duration: 200 });
+                } else {
+                    badge.classList.remove('scale-100');
+                    badge.classList.add('scale-0');
+                }
+            }
+
+            const emptyState = id('package-empty-state');
+            const filledState = id('package-filled-state');
+            
+            if (emptyState && filledState) {
+                if (count === 0) {
+                    emptyState.classList.remove('hidden');
+                    filledState.classList.add('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                    filledState.classList.remove('hidden');
+                    
+                    let sumPrincipal = 0;
+                    let sumNetPayout = 0;
+                    let sumInterest = 0;
+                    let sumRepayment = 0;
+                    
+                    state.package.forEach(item => {
+                        sumPrincipal += item.tutar;
+                        sumNetPayout += item.netPayout;
+                        sumInterest += item.netFaiz;
+                        sumRepayment += item.toplamOdenen;
+                    });
+                    
+                    id('pkg-summary-title').innerText = `${count} Farklı Finansal Ürünün Birleşik Paket Analizi`;
+                    id('pkg-total-principal').innerText = format(sumPrincipal);
+                    id('pkg-total-net').innerText = format(sumNetPayout);
+                    id('pkg-total-interest').innerText = format(sumInterest);
+                    id('pkg-total-repayment').innerText = format(sumRepayment);
+                    
+                    const listEl = id('package-items-list');
+                    if (listEl) {
+                        listEl.innerHTML = state.package.map(item => `
+                            <div class="bg-zinc-900/60 border border-zinc-800/40 p-4 rounded-2xl flex justify-between items-center transition-all hover:border-zinc-700/60">
+                                <div class="flex-1 space-y-1 pr-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-black text-amber-500 uppercase tracking-wide">${item.name}</span>
+                                        <span class="text-[9px] bg-zinc-800 text-zinc-400 font-bold px-1.5 py-0.5 rounded">${item.vade}</span>
+                                    </div>
+                                    <div class="text-[10px] text-zinc-400 flex items-center gap-2 font-semibold">
+                                        <span>Anapara/Değer: <strong class="text-white font-mono">${format(item.tutar)}</strong></span>
+                                        <span class="text-zinc-600">•</span>
+                                        <span>Detay: <strong class="text-amber-200/95 font-mono">${item.faizOrani}</strong></span>
+                                    </div>
+                                    <div class="text-[10px] text-zinc-500 font-medium leading-tight">
+                                        Ödeme (Net): <span class="text-emerald-400 font-mono font-bold">${format(item.netPayout)}</span> | 
+                                        Geri Ödeme: <span class="text-amber-400 font-mono font-bold">${format(item.toplamOdenen)}</span>
+                                    </div>
+                                </div>
+                                <button onclick="removePackageItem(${item.id})" class="text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 w-9 h-9 rounded-xl flex items-center justify-center transition-all flex-shrink-0" title="Paketten Çıkar">
+                                    <i class="fa-solid fa-trash-can text-sm"></i>
+                                </button>
+                            </div>
+                        `).join('');
+                    }
+                }
+            }
+        }
+
+        function openPackageModal() {
+            updatePackageUI();
+            const modalContent = document.querySelector('#package-modal .modal-content');
+            modalContent.style.transform = ''; 
+            id('package-modal').style.display = 'flex';
+        }
+
+        function closePackageModal() {
+            const modalContent = document.querySelector('#package-modal .modal-content');
+            modalContent.style.transform = 'translateY(100%)'; 
+            setTimeout(() => {
+                id('package-modal').style.display = 'none'; 
+                modalContent.style.transform = ''; 
+            }, 300); 
+        }
+
+        function closePackageOutside(event) {
+            if (event.target.id === 'package-modal') {
+                closePackageModal();
+            }
+        }
+
+        function downloadPackagePDF() {
+            if (state.package.length === 0) return showToast("Paketinizde indirilecek ürün bulunmuyor.", "error");
+            if (typeof html2pdf === 'undefined') {
+                return showToast("PDF kütüphanesi yüklenemedi.", "error");
+            }
+
+            const element = document.createElement('div');
+            element.style.padding = '35px';
+            element.style.color = '#111';
+            element.style.backgroundColor = '#fff';
+            element.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            
+            let sumPrincipal = 0;
+            let sumNetPayout = 0;
+            let sumInterest = 0;
+            let sumRepayment = 0;
+            
+            state.package.forEach(item => {
+                sumPrincipal += item.tutar;
+                sumNetPayout += item.netPayout;
+                sumInterest += item.netFaiz;
+                sumRepayment += item.toplamOdenen;
+            });
+
+            element.innerHTML = `
+                <div style="border-bottom: 3px solid #f59e0b; padding-bottom: 18px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h1 style="margin: 0; color: #f59e0b; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">VHESAP</h1>
+                        <p style="margin: 4px 0 0 0; color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Portföy / Paket Birleşik Finansal Raporu</p>
+                    </div>
+                    <div style="text-align: right; font-size: 11px; color: #555;">
+                        <strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}<br>
+                        <strong>Ürün Sayısı:</strong> ${state.package.length} Adet
+                    </div>
+                </div>
+                
+                <div style="background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+                    <h3 style="margin: 0 0 12px 0; color: #333; font-size: 15px; font-weight: bold; border-bottom: 1px solid #e9ecef; padding-bottom: 6px;">Bütünleşik Paket Portföy Özeti</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 13px;">
+                        <div>
+                            <strong>Toplam Anapara/Değer:</strong> ${format(sumPrincipal)}<br>
+                            <strong>Toplam Alınan Net Ödeme (Ödeme):</strong> <span style="color: #10b981; font-weight: bold;">${format(sumNetPayout)}</span>
+                        </div>
+                        <div>
+                            <strong>Toplam Faiz / İskonto Yükü:</strong> <span style="color: #ef4444; font-weight: bold;">${format(sumInterest)}</span><br>
+                            <strong>Toplam Borç Geri Ödemesi:</strong> <span style="color: #f59e0b; font-weight: bold;">${format(sumRepayment)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background-color: #111; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Ürün Adı</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Vade</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Faiz Oranı / Detayı</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700; text-align: right;">Anapara/Değer</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700; text-align: right;">Net Ödeme</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700; text-align: right;">Faiz / Masraf</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700; text-align: right;">Geri Ödeme</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${state.package.map(item => `
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #f59e0b;">${item.name}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; color: #333;">${item.vade}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; color: #555;">${item.faizOrani}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; text-align: right;">${format(item.tutar)}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; color: #10b981; font-weight: 600; text-align: right;">${format(item.netPayout)}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; color: #ef4444; text-align: right;">${format(item.netFaiz)}</td>
+                                <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #333; text-align: right;">${format(item.toplamOdenen)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #888; border-top: 1px solid #eee; padding-top: 20px;">
+                    Vhesap Gelişmiş Paket / Portföy Birleşik Analiz Raporu. Resmi teklif niteliği taşımaz. © 2026
+                </div>
+            `;
+            
+            const options = {
+                margin:       [10, 10, 10, 10],
+                filename:     `Vhesap_Portfoy_Birlesik_Rapor_${Date.now()}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            showToast("Bütünleşik Portföy PDF Raporu Hazırlanıyor...", "success");
+            html2pdf().from(element).set(options).save().then(() => {
+                showToast("Portföy birleşik raporu başarıyla indirildi!", "success");
+            }).catch(err => {
+                console.error("PDF Kaydetme Hatası:", err);
+                showToast("Rapor PDF'i oluşturulurken teknik hata oluştu.", "error");
+            });
         }
 
         function id(i) { return document.getElementById(i); }
@@ -2034,11 +2633,14 @@
 
         function onProductInterestSliderChange(value) {
             const isMevduatProduct = (state.main === 'mevduat');
+            const isShortTermCommercial = ['rotatif', 'spot', 'iskonto'].includes(state.sub);
             const valText = id('inf-product-interest-val');
             
             if (valText) {
                 if (isMevduatProduct) {
                     valText.innerText = `%${parseFloat(value).toFixed(0)}`;
+                } else if (isShortTermCommercial) {
+                    valText.innerText = `Yıllık %${parseFloat(value).toFixed(2).replace('.', ',')}`;
                 } else {
                     const monthly = parseFloat(value);
                     const annual = monthly * 12;
@@ -2055,15 +2657,17 @@
             
             const mainFaizInput = id('val-faiz');
             if (mainFaizInput) {
-                if (state.faizTipi === 'yillik' && !isMevduatProduct) {
-                    mainFaizInput.value = (parseFloat(value) * 12).toFixed(2).replace('.', ',');
-                } else {
-                    mainFaizInput.value = parseFloat(value).toFixed(2).replace('.', ',');
-                }
+                mainFaizInput.value = parseFloat(value).toFixed(2).replace('.', ',');
             }
             
             if (isMevduatProduct) {
                 calculateMevduat();
+            } else if (state.sub === 'rotatif') {
+                calculateRotatif();
+            } else if (state.sub === 'spot') {
+                calculateSpot();
+            } else if (state.sub === 'iskonto') {
+                calculateIskonto();
             } else if (state.sub.includes('ekhesap')) {
                 calculateEkHesap();
             } else {
@@ -2100,6 +2704,7 @@
             const principal = state.lastPrincipal || 0;
             const isMevduatProduct = (state.main === 'mevduat');
             const isEkHesap = state.sub.includes('ekhesap');
+            const isShortTermCommercial = ['rotatif', 'spot', 'iskonto'].includes(state.sub);
             
             const dStart = new Date(id('date-start').value);
             
@@ -2107,7 +2712,7 @@
             const annualDepositRate = parseFloat(state.alternativeDepositRate) / 100;
             
             let termMonths = parseInt(id('val-vade')?.value) || 12;
-            if (isMevduatProduct) {
+            if (isMevduatProduct || isShortTermCommercial) {
                 termMonths = Math.max(1, Math.round(termMonths / 30));
             }
             const termDays = Math.ceil(termMonths * 30.4375);
@@ -2140,7 +2745,14 @@
             });
             
             const debtErosion = totalNominal - totalReal;
-            const realInterestPaid = totalReal - principal; 
+            
+            // İskonto kredisinde gerçek maliyet başlangıçta peşin kesilen faiz ve masraflardır (Tanımsız değişken hatası düzeltildi).
+            let realInterestPaid = totalReal - principal; 
+            if (state.sub === 'iskonto') {
+                const T = totalNominal;
+                const netPayout = principal;
+                realInterestPaid = T - netPayout; 
+            }
             
             let taxRate = 0.175; 
             if (termDays > 365) taxRate = 0.10;
@@ -2157,8 +2769,45 @@
             const nominalDecisionNPV = finalDepositNominal - totalNominal;
             const realDecisionNPV = finalDepositReal - totalReal;
             
+            // UI Etiketlerini Dinamik Özelleştirme (İskonto ve Spot Modu İçin)
+            const loanLabel = id('opp-chart-loan-label');
+            const realLoanLabel = id('opp-chart-real-loan-label');
+            const realCreditCostLabel = id('card-real-credit-cost-label');
+            const realCreditCostSub = id('card-real-credit-cost-sub');
+            const realCreditCostExplanation = id('card-real-credit-cost-explanation');
+            const debtErosionLabel = id('card-debt-erosion-label');
+            const debtErosionSub = id('card-debt-erosion-sub');
+            const debtErosionExplanation = id('card-debt-erosion-explanation');
+
+            if (state.sub === 'iskonto') {
+                if (loanLabel) loanLabel.innerText = "Çek/Senet Nominal Bedeli";
+                if (realLoanLabel) realLoanLabel.innerText = "Evrak Vade Sonu Satın Alma Gücü";
+                if (realCreditCostLabel) realCreditCostLabel.innerHTML = `<i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Çekin Reel Satın Alma Gücü Yükü`;
+                if (realCreditCostSub) realCreditCostSub.innerText = `Nominal çek bedelinin vadedeki enflasyon arındırılmış satın alma gücü karşılığı.`;
+                if (realCreditCostExplanation) realCreditCostExplanation.innerHTML = `<strong>Anlamı Nedir?</strong> Gelecekte tahsil edilecek ${format(totalNominal)} tutarındaki nominal çekin, enflasyon karşısında değer kaybetmesiyle bankaya teslim ettiğiniz gerçek reel değerdir.`;
+                if (debtErosionLabel) debtErosionLabel.innerHTML = `<i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Alacağın Enflasyonla Erimesi`;
+                if (debtErosionSub) debtErosionSub.innerText = `Alacağınızın vadesine kadar geçecek sürede enflasyonda eriyen payı.`;
+                if (debtErosionExplanation) debtErosionExplanation.innerHTML = `<strong>Anlamı Nedir?</strong> Sabit alacak bedelleriniz tahsilat gününü beklerken enflasyon sebebiyle erimeye uğrar. Erken nakde çevrim yapmak bu kaybın bir kısmını absorbe etmenizi sağlar.`;
+            } else {
+                if (loanLabel) loanLabel.innerText = "Kredi Toplam Geri Ödemesi (Nominal)";
+                if (realLoanLabel) realLoanLabel.innerText = "Kredinin Satın Alma Gücü Yükü (Reel NBD)";
+                if (realCreditCostLabel) realCreditCostLabel.innerHTML = `<i class="fa-solid fa-receipt text-blue-400 mr-1.5"></i> Kredi Gerçek Maliyeti (Reel NPV)`;
+                if (realCreditCostSub) realCreditCostSub.innerText = `Anapara karşılığı cebinizden çıkacak reel değer.`;
+                if (realCreditCostExplanation) realCreditCostExplanation.innerHTML = `<strong>Anlamı Nedir?</strong> Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücüne (Net Bugün Değer - NPV) indirgenmiş toplam değeridir.`;
+                if (debtErosionLabel) debtErosionLabel.innerHTML = `<i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi`;
+                if (debtErosionSub) debtErosionSub.innerText = `Sabit borç ödemelerinin enflasyonda eriyen payı.`;
+                if (debtErosionExplanation) debtErosionExplanation.innerHTML = `<strong>Anlamı Nedir?</strong> Aylık taksit ödemeleriniz sabit kalırken enflasyon sebebiyle paranın satın alma gücü sürekli düşer ve bütçenizdeki borç yükü reel olarak hafifler.`;
+            }
+
             const infProductName = id('inf-product-name');
-            if (infProductName) infProductName.innerText = isMevduatProduct ? "VADELİ MEVDUAT" : (isEkHesap ? "EK HESAP" : "TAKSİTLİ KREDİ");
+            if (infProductName) {
+                if (isMevduatProduct) infProductName.innerText = "VADELİ MEVDUAT";
+                else if (state.sub === 'rotatif') infProductName.innerText = "ROTATİF KREDİ";
+                else if (state.sub === 'spot') infProductName.innerText = "SPOT KREDİ";
+                else if (state.sub === 'iskonto') infProductName.innerText = "İSKONTO KREDİSİ";
+                else if (isEkHesap) infProductName.innerText = "EK HESAP";
+                else infProductName.innerText = "TAKSİTLİ KREDİ";
+            }
             
             const infProductAmount = id('inf-product-amount');
             if (infProductAmount) infProductAmount.innerText = format(principal);
@@ -2169,7 +2818,7 @@
             if (interestSub) {
                 if (realInterestPaid < 0) {
                     if (realIntEl) realIntEl.className = "text-lg font-bold font-mono text-emerald-400";
-                    interestSub.innerHTML = `<span class="text-emerald-500 font-semibold"><i class="fa-solid fa-arrow-down-long"></i> Negatif Reel Faiz!</span> Enflasyon faizi eritti.`;
+                    interestSub.innerHTML = `<span class="text-emerald-500 font-semibold"><i class="fa-solid fa-arrow-down-long"></i> Negatif Reel Maliyet!</span> Enflasyon faizi eritti.`;
                 } else {
                     if (realIntEl) realIntEl.className = "text-lg font-bold font-mono text-rose-500";
                     interestSub.innerHTML = `<span class="text-rose-500 font-semibold"><i class="fa-solid fa-arrow-up-long"></i> Pozitif Reel Faiz.</span> Gerçek borç yükünüz.`;
@@ -2178,19 +2827,9 @@
 
             const realCostEl = id('card-real-credit-cost');
             if (realCostEl) realCostEl.innerText = format(totalReal);
-            
-            const realCreditCostSub = id('card-real-credit-cost-sub');
-            if (realCreditCostSub) {
-                realCreditCostSub.innerText = `Anapara ${format(principal)} karşılığı cebinizden çıkacak reel değer.`;
-            }
 
             const cardDebtErosion = id('card-debt-erosion');
             if (cardDebtErosion) cardDebtErosion.innerText = format(debtErosion);
-            
-            const cardDebtErosionSub = id('card-debt-erosion-sub');
-            if (cardDebtErosionSub) {
-                cardDebtErosionSub.innerText = `Sabit borç ödemelerinin enflasyonda eriyen payı.`;
-            }
 
             const depReturnEl = id('card-real-deposit-return');
             if (depReturnEl) depReturnEl.innerText = format(finalDepositReal);
@@ -2216,6 +2855,16 @@
                         decisionTitleEl.innerText = "Finansal Bulgular: Negatif Reel Getiri (Aşınma) Durumu";
                         decisionTitleEl.className = "text-lg font-black text-amber-500 leading-snug mb-2";
                         decisionDescEl.innerText = `Öngördüğünüz %${state.customInflationAnnual} yıllık enflasyon oranının, %${state.alternativeDepositRate} vadeli mevduat faiz oranının üzerinde gerçekleşmesi beklenmektedir. Bu durum, paranızın nominal olarak artmasına rağmen satın alma gücünün reel bazda eriyeceğini doğrulamaktadır. Vade sonundaki net reel kaybın ${format(Math.abs(purchasingPowerChange))} seviyesinde gerçekleşeceği hesaplanmıştır.`;
+                    }
+                } else if (state.sub === 'iskonto') {
+                    if (realDecisionNPV > 0) {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Arbitraj Avantajı ve Erken Likidite";
+                        decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
+                        decisionDescEl.innerText = `%${state.customInflationAnnual} enflasyon beklentisi altında çek/senet alacağınızı kırdırıp elde edeceğiniz ${format(principal)} tutarındaki nakit parayı alternatif mevduatta nemalandırmak finansal açıdan daha avantajlıdır. Vade sonundaki tahsilat yükü ile mevduat getirisi karşılaştırıldığında bütçenizde ${format(nominalDecisionNPV)} tutarında net bir arbitraj kâr marjı yakalayabileceğiniz hesaplanmıştır.`;
+                    } else {
+                        decisionTitleEl.innerText = "Finansal Bulgular: Peşin Finansman Yükü ve Değer Kaybı";
+                        decisionTitleEl.className = "text-lg font-black text-amber-500 leading-snug mb-2";
+                        decisionDescEl.innerText = `İskonto kredisi kesinti tutarlarının yüksek efektif maliyet oranı sebebiyle, alacağınızı erkenden nakde çevirmek yerine vadesine kadar elinizde tutmanız daha kârlı gözükmektedir. Kırdırarak elinize geçen parayı nemalandırmak, peşin kesilen faiz ve komisyon masraflarını amorti etmemekte ve bütçenizde ${format(Math.abs(realDecisionNPV))} seviyesinde bir reel kayba neden olmaktadır.`;
                     }
                 } else {
                     if (realDecisionNPV > 0 && realInterestPaid < 0) {
@@ -2298,6 +2947,22 @@
                     id('val-faiz').value = "50";
                     id('val-vade').value = "32";
                     calculateMevduat();
+                } else if (state.sub === 'rotatif') {
+                    id('val-tutar').value = "500.000";
+                    id('val-faiz').value = "55,00";
+                    state.faizTipi = 'yillik';
+                    calculateRotatif();
+                } else if (state.sub === 'spot') {
+                    id('val-tutar').value = "500.000";
+                    id('val-faiz').value = "52,00";
+                    state.faizTipi = 'yillik';
+                    calculateSpot();
+                } else if (state.sub === 'iskonto') {
+                    id('val-tutar').value = "500.000";
+                    id('val-faiz').value = "48,00";
+                    state.faizTipi = 'yillik';
+                    if (id('val-komisyon')) id('val-komisyon').value = "1,00";
+                    calculateIskonto();
                 } else if (state.sub.includes('ekhesap')) {
                     id('val-tutar').value = "20.000";
                     id('val-faiz').value = "5.00";
@@ -2313,6 +2978,7 @@
             
             const mainFaizVal = parseFloat(id('val-faiz')?.value.replace(',', '.')) || (state.main === 'mevduat' ? 50 : 4.25);
             const isMevduatProduct = (state.main === 'mevduat');
+            const isShortTermCommercial = ['rotatif', 'spot', 'iskonto'].includes(state.sub);
             
             const slider = id('inf-product-interest-slider');
             const label = id('inf-product-interest-label');
@@ -2329,6 +2995,15 @@
                     valText.innerText = `%${parseFloat(mainFaizVal).toFixed(0)}`;
                     bounds.innerHTML = `<span>%5</span><span>%90</span>`;
                     id('inf-deposit-slider-container').classList.add('hidden');
+                } else if (isShortTermCommercial) {
+                    label.innerHTML = `<i class="fa-solid fa-percent mr-1.5"></i> Kredi Yıllık Faiz Oranı (%)`;
+                    slider.min = "10";
+                    slider.max = "120";
+                    slider.step = "1";
+                    slider.value = mainFaizVal;
+                    valText.innerText = `Yıllık %${mainFaizVal.toFixed(2).replace('.', ',')}`;
+                    bounds.innerHTML = `<span>%10</span><span>%120</span>`;
+                    id('inf-deposit-slider-container').classList.remove('hidden');
                 } else {
                     label.innerHTML = `<i class="fa-solid fa-percent mr-1.5"></i> Kredi Aylık Faiz Oranı (%)`;
                     slider.min = "0.5";
@@ -2399,6 +3074,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupModalGestures('#plan-modal');
             setupModalGestures('#inflation-modal');
+            setupModalGestures('#package-modal');
+            
+            // Portföyü oturum hafızasından (sessionStorage) güvenle yükleme
+            try {
+                const storedPackage = sessionStorage.getItem('vhesap_portfolio_2026');
+                if (storedPackage) {
+                    state.package = JSON.parse(storedPackage);
+                    updatePackageUI();
+                }
+            } catch(e) {
+                console.error("Portföy verisi yüklenemedi:", e);
+            }
         });
 
         function setupModalGestures(modalSelector) {
@@ -2435,6 +3122,7 @@
                 
                 if (diff > 120) {
                     if (modalSelector === '#plan-modal') closePlan();
+                    else if (modalSelector === '#package-modal') closePackageModal();
                     else closeInflation();
                 } else {
                     modalContent.style.transform = 'translateY(0)'; 
@@ -2532,9 +3220,9 @@
                         <div><strong style="color: #444;">Faiz Oranı:</strong> %${id('val-faiz').value} (${state.faizTipi === 'aylik' ? 'Aylık' : 'Yıllık'})</div>
                     </div>
                     <div>
-                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Talep Edilen Kredi:</strong> ${loanAmount}</div>
-                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Aylık Ödeme (İlk Taksit):</strong> ${monthlyPayment}</div>
-                        <div><strong style="color: #444;">Toplam Geri Ödeme:</strong> ${totalRepayment}</div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #444;">Talep Edilen Kredi / Tutar:</strong> ${loanAmount}</div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #444;">İlk Taksit / Dönem Sonu Ödeme:</strong> ${monthlyPayment}</div>
+                        <div><strong style="color: #444;">Toplam Geri Ödeme / Tahsilat:</strong> ${totalRepayment}</div>
                     </div>
                 </div>
 
@@ -2546,7 +3234,7 @@
                             <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Taksit Tutarı</th>
                             <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Anapara</th>
                             <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Faiz</th>
-                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Vergiler (BSMV+KKDF)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Vergiler (BSMV)</th>
                             <th style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">Kalan Bakiye</th>
                         </tr>
                     </thead>
@@ -2623,13 +3311,13 @@
                     <div style="font-weight: bold; font-size: 14px; color: #111; margin-bottom: 10px; border-bottom: 1px solid #e9ecef; padding-bottom: 6px;">Analiz Parametreleri</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div>
-                            <strong>Anapara Değeri:</strong> ${principalStr}<br>
-                            <strong>Kredi Nominal Borcu:</strong> ${nominalLoanStr}<br>
-                            <strong>Kredi Vade/Gün:</strong> ${id('val-vade').value} Ay
+                            <strong>Finansman Tutarı:</strong> ${principalStr}<br>
+                            <strong>Nominal Geri Ödeme / Alacak:</strong> ${nominalLoanStr}<br>
+                            <strong>Vade / Gün Sayısı:</strong> ${id('val-vade').value} Gün/Ay
                         </div>
                         <div>
                             <strong>Simüle Edilen Enflasyon:</strong> ${infStr}<br>
-                            <strong>Simüle Edilen Vadeli Faiz Oranı:</strong> ${depStr}<br>
+                            <strong>Simüle Edilen Alternatif Faiz Oranı:</strong> ${depStr}<br>
                             <strong>Analiz Altyapısı:</strong> Net Bugün Değer (NPV)
                         </div>
                     </div>
@@ -2649,37 +3337,37 @@
                             <span style="font-size: 14px; font-weight: bold; color: #111;">${realIntStr}</span>
                         </div>
                         <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
-                            Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye düşer. Bu durum yüksek enflasyonda reel borç hafiflemesini doğrular.
+                            Nominal faiz yükünden enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyettir. Enflasyon oranı nominal faizden yüksek çıktığında bu değer eksiye düşer ve bütçe arbitrajı sunar.
                         </p>
                     </div>
 
                     <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="font-size: 12px; color: #444;">2. KREDİ GERÇEK MALİYETİ (REEL NPV):</strong>
+                            <strong style="font-size: 12px; color: #444;">2. GERÇEK REEL SATIN ALMA GÜCÜ YÜKÜ (NPV):</strong>
                             <span style="font-size: 14px; font-weight: bold; color: #111;">${realLoanStr}</span>
                         </div>
                         <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
-                            Gelecekte ödeyeceğiniz tüm taksit tutarlarının, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücü karşılığıdır.
+                            Gelecekte cebinizden çıkacak veya tahsil edilecek tüm nakitlerin, belirlediğiniz enflasyon beklentisine göre bugünkü satın alma gücü karşılığıdır.
                         </p>
                     </div>
 
                     <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="font-size: 12px; color: #444;">3. BORCUN ENFLASYONLA ERİMESİ:</strong>
+                            <strong style="font-size: 12px; color: #444;">3. ENFLASYONUN PARAYI/BORCU ERİTME PAYI:</strong>
                             <span style="font-size: 14px; font-weight: bold; color: #059669;">${erosionStr}</span>
                         </div>
                         <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
-                            Aylık taksit ödemeleriniz sabit kalırken enflasyon sebebiyle bütçenizdeki borç yükünün reel olarak hafifleyen payıdır.
+                            Vadeyi beklerken enflasyon sebebiyle paranın satın alma gücündeki reel erimenin parasal boyutudur.
                         </p>
                     </div>
 
                     <div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <strong style="font-size: 12px; color: #444;">4. MEVDUAT GERÇEK KAZANCI (REEL NBD):</strong>
+                            <strong style="font-size: 12px; color: #444;">4. ALTERNATİF MEVDUAT REEL DEĞERİ (VADE SONU):</strong>
                             <span style="font-size: 14px; font-weight: bold; color: #111;">${realDepStr}</span>
                         </div>
                         <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
-                            Krediyi çekmeyip alternatif mevduata koysaydınız vade sonundaki net birikiminizin bugünkü satın alma gücü cinsinden karşılığıdır.
+                            Krediyi çekmeyip aynı parayı alternatif mevduata koysaydınız veya alacağı erkenden kırdırıp mevduata yatırsaydınız, vade sonundaki vergi sonrası birikiminizin bugünkü reel satın alma gücüdür.
                         </p>
                     </div>
                 </div>
@@ -2711,9 +3399,9 @@
             const loanAmount = format(getRawVal('val-tutar'));
             const totalRepayment = format(state.lastCalc.reduce((acc, curr) => acc + curr.taksit, 0));
             const shareText = `📊 Vhesap Kredi Ödeme Planı Özetim:\n` +
-                              `🔹 Kredi Tutarı: ${loanAmount}\n` +
-                              `🔹 Vade Süresi: ${id('val-vade').value} Ay\n` +
-                              `🔹 Toplam Geri Ödeme: ${totalRepayment}\n` +
+                              `🔹 Kredi/Alacak Tutarı: ${loanAmount}\n` +
+                              `🔹 Vade Süresi: ${id('val-vade').value} Gün/Ay\n` +
+                              `🔹 Toplam Ödeme / Tahsilat: ${totalRepayment}\n` +
                               `Detaylı finansal analizler için Vhesap mobil panelini kullanabilirsiniz! 🚀`;
             copyShareText(shareText);
         }
@@ -2728,10 +3416,10 @@
             
             let shareText = `📊 Vhesap Enflasyon & Yatırım Karar Analizim:\n` +
                             `━━━━━━━━━━━━━━━━━━━━━\n` +
-                            `🔹 Kredi Tutarı: ${principalStr}\n` +
+                            `🔹 Finansal Değer: ${principalStr}\n` +
                             `📈 Enflasyon Beklentim: %${state.customInflationAnnual}\n` +
                             `💰 Alternatif Mevduat Faiz Beklentim: %${state.alternativeDepositRate}\n` +
-                            `💸 Borcumun Enflasyonla Erimesi: ${erosionStr}\n` +
+                            `💸 Enflasyonla Erime Kaybı/Kazancı: ${erosionStr}\n` +
                             `⚡ Gerçek Reel Faiz Maliyeti: ${realIntStr}\n` +
                             `🧠 Analiz Paneli Sonucu: ${decisionTitle}\n` +
                             `━━━━━━━━━━━━━━━━━━━━━\n` +
