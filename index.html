@@ -376,7 +376,7 @@
     <div class="apple-container" id="main-container">
         <div class="flex flex-col h-full w-full overflow-hidden">
             
-            <!-- Üst Başlık Bölümü (Dikey Boyut Küçültüldü ve Sadeleştirildi) -->
+            <!-- Üst Başlık Bölümü -->
             <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
                 <div class="flex items-baseline gap-2.5">
                     <h1 class="text-2xl font-extrabold tracking-tight text-amber-500">Vhesap</h1>
@@ -391,7 +391,7 @@
                 <button class="nav-btn" id="btn-mevduat" onclick="switchTab('mevduat')">Mevduat</button>
             </div>
 
-            <!-- Alt Menü Gezgini (Dikey Alan ve Buton Marjları Optimize Edildi) -->
+            <!-- Alt Menü Gezgini -->
             <div id="sub-nav" class="flex px-5 gap-4 overflow-x-auto py-1 scroll-smooth border-b border-zinc-900/40 flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;"></div>
 
             <!-- Ana Form Alanı -->
@@ -420,7 +420,7 @@
         </div>
     </div>
 
-    <!-- Ödeme Planı Detay Modalı (iOS HIG Uyumlu Aşağıdan Açılan Sheet) -->
+    <!-- Ödeme Planı Detay Modalı -->
     <div id="plan-modal" class="modal" onclick="closePlanOutside(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <!-- Sürükleme Tutamacı Çizgisi -->
@@ -464,7 +464,7 @@
         </div>
     </div>
 
-    <!-- Analiz Paneli Modalı (Tek Sayfa) -->
+    <!-- Analiz Paneli Modalı -->
     <div id="inflation-modal" class="modal" onclick="closeInflationOutside(event)">
         <div class="modal-content !max-w-2xl" onclick="event.stopPropagation()">
             <!-- Sürükleme Tutamacı Çizgisi -->
@@ -490,7 +490,7 @@
                 </div>
             </div>
 
-            <!-- Canlı Döviz Kurları Şeridi (Analiz Paneli Başına Sabitlendi) -->
+            <!-- Canlı Döviz Kurları Şeridi -->
             <div class="px-5 py-2 bg-zinc-950/80 border-b border-zinc-900/60 flex items-center justify-between gap-3 overflow-x-auto whitespace-nowrap flex-shrink-0" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
                 <div class="flex items-center gap-4 text-xs font-semibold">
                     <span class="text-zinc-500 text-[9px] uppercase font-extrabold tracking-wider flex items-center gap-1.5">
@@ -560,7 +560,7 @@
                     <!-- Sürgü 3: Aktif Ürün Faiz Oranı -->
                     <div id="inf-product-interest-container">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="label-text mb-0 font-bold text-blue-400" id="inf-product-interest-label"><i class="fa-solid fa-percent mr-1.5"></i> Kredi Aylık Faiz Oranı (%)</span>
+                            <span class="label-text mb-0 font-bold text-blue-400" id="inf-product-interest-label"><i class="fa-solid fa-percent mr-1.5"></i> Kredi Faiz Oranı (%)</span>
                             <span class="text-blue-400 font-extrabold font-mono text-xs sm:text-sm" id="inf-product-interest-val">Aylık %4,25 (Yıllık %51,00)</span>
                         </div>
                         <input type="range" min="0.5" max="10.0" step="0.05" value="4.25" class="w-full accent-blue-500 h-2 bg-zinc-800 rounded-lg cursor-pointer" id="inf-product-interest-slider" oninput="onProductInterestSliderChange(this.value)">
@@ -571,7 +571,7 @@
                     </div>
                 </div>
 
-                <!-- Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı) -->
+                <!-- Finansal Kıyaslama Grafiği -->
                 <div class="bg-zinc-950/40 rounded-xl p-4 border border-zinc-800/30 space-y-3 mb-4">
                     <span class="label-text text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-2 block">Finansal Kıyaslama Grafiği (Zaman Karşılaştırmalı)</span>
                     <div class="space-y-3">
@@ -651,7 +651,7 @@
                     <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/40 flex flex-col justify-between">
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider"><i class="fa-solid fa-circle-arrow-down text-emerald-400 mr-1.5"></i> Borcun Enflasyonla Erimesi</span>
-                            <div class="text-lg font-black font-mono text-emerald-400" id="card-debt-erosion">0 TL</div>
+                            <div class="text-lg font-size font-black font-mono text-emerald-400" id="card-debt-erosion">0 TL</div>
                         </div>
                         <div class="border-t border-zinc-800/40 pt-2 mt-2">
                             <p class="text-[9px] text-zinc-500" id="card-debt-erosion-sub">Sabit borç ödemelerinin enflasyonda eriyen payı.</p>
@@ -718,7 +718,10 @@
             inflationScenario: 'custom',
             customInflationAnnual: 30,
             inflationTableVisible: false,
-            alternativeDepositRate: 50 // Alternatif vadeli mevduat faiz oranı (%)
+            alternativeDepositRate: 50, // Alternatif vadeli mevduat faiz oranı (%)
+            faizTipi: 'aylik', // 'aylik' veya 'yillik'
+            hasAraOdemeler: false,
+            hasOdemesiz: false
         };
         
         const menuConfig = {
@@ -756,7 +759,7 @@
             fetchLiveRates(); // Döviz kurlarını ilk açılışta tetikler
         };
 
-        // Mobil Cihazlarda Klavye Görünürlüğü, Viewport Yönetimi ve Otomatik Kapanma
+        // Mobil Cihazlarda Klavye Görünürlüğü ve Viewport Yönetimi
         function setupVisualViewport() {
             if (window.visualViewport) {
                 const handler = () => {
@@ -807,11 +810,11 @@
                 }
             });
 
-            // Ekranda klavye dışında boş bir alana tıklandığında/dokunulduğunda klavyeyi otomatik kapatma (blur)
+            // Klavyeyi otomatik kapatma (blur) tetikleyicisi
             const dismissKeyboard = (e) => {
                 const active = document.activeElement;
                 if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA')) {
-                    if (e.target !== active && !active.contains(e.target) && !e.target.closest('input, select, textarea, button, [role="button"], .cursor-pointer, input[type="range"], .nav-btn, .ara-item, #sheet-handle, #sheet-handle-inf')) {
+                    if (e.target !== active && !active.contains(e.target) && !e.target.closest('input, select, textarea, button, [role="button"], .cursor-pointer, input[type="range"], .nav-btn, .ara-item, #sheet-handle, #sheet-handle-inf, .peer')) {
                         active.blur();
                     }
                 }
@@ -820,7 +823,7 @@
             document.addEventListener('mousedown', dismissKeyboard);
         }
 
-        // CANLI DÖVİZ KURLARI ENTEGRASYON VE ÇEKME MOTORU
+        // CANLI DÖVİZ KURLARI ENTEGRASYONU VE ÇEKME MOTORU
         async function fetchLiveRates() {
             const refreshIcon = document.getElementById('rate-refresh-icon');
             if (refreshIcon) refreshIcon.classList.add('animate-spin');
@@ -834,7 +837,6 @@
                 const tryRate = data.rates.TRY;
                 const eurRate = data.rates.EUR;
                 
-                // USD bazlı oranları Türk Lirası (TRY) karşılığına normalize etme
                 const usdToTry = tryRate;
                 const eurToTry = tryRate / eurRate;
 
@@ -845,7 +847,6 @@
                     if (responseGold.ok) {
                         const dataGold = await responseGold.json();
                         const xauUsd = dataGold.price; // Ons Altın USD Fiyatı
-                        // Gram Altın TL formülü: (Ons / 31.1034768) * USD_TRY
                         goldToTry = (xauUsd / 31.1034768) * usdToTry;
                     }
                 } catch (goldErr) {
@@ -903,18 +904,61 @@
         function switchSub(subId) {
             state.sub = subId;
             state.araOdemeler = []; 
+            state.hasAraOdemeler = false;
+            state.hasOdemesiz = false;
             renderSubNav();
             renderForm();
             hideResults();
         }
 
-        function onMainInterestChange(val) {
-            const display = id('val-faiz-display');
-            if (display) {
-                if (state.main === 'mevduat') {
-                    display.innerText = `%${parseFloat(val).toFixed(0)}`;
+        // Faiz tipi geçiş butonu entegrasyonu
+        function setFaizTipi(tip) {
+            const currentFaiz = parseFloat(id('val-faiz').value.replace(',', '.')) || 0;
+            if (state.faizTipi === tip) return;
+            
+            let newVal = currentFaiz;
+            if (tip === 'yillik' && state.faizTipi === 'aylik') {
+                newVal = currentFaiz * 12;
+            } else if (tip === 'aylik' && state.faizTipi === 'yillik') {
+                newVal = currentFaiz / 12;
+            }
+            
+            state.faizTipi = tip;
+            id('val-faiz').value = newVal.toFixed(2).replace('.', ',');
+            
+            // Buton aktiflik sınıflarını güncelle
+            id('faiz-tip-aylik').className = tip === 'aylik' ? 
+                "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
+                "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
+            id('faiz-tip-yillik').className = tip === 'yillik' ? 
+                "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
+                "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
+                
+            validateVade();
+        }
+
+        function toggleAraOdemeCollapse(checked) {
+            state.hasAraOdemeler = checked;
+            const container = id('ara-odemeler-container');
+            if (container) {
+                if (checked) {
+                    container.classList.remove('hidden');
                 } else {
-                    display.innerText = `%${parseFloat(val).toFixed(2)}`;
+                    container.classList.add('hidden');
+                    state.araOdemeler = [];
+                    renderAraOdemeList();
+                }
+            }
+        }
+
+        function toggleOdemesizCollapse(checked) {
+            state.hasOdemesiz = checked;
+            const container = id('odemesiz-donem-container');
+            if (container) {
+                if (checked) {
+                    container.classList.remove('hidden');
+                } else {
+                    container.classList.add('hidden');
                 }
             }
         }
@@ -978,6 +1022,9 @@
                     </div>`;
             }
 
+            const isAylik = state.faizTipi === 'aylik';
+            const faizTutarText = isAylik ? "4.25" : "51.00";
+
             html += `
                 <div class="grid grid-cols-2 gap-3 mb-3">
                     <div class="input-card mb-0">
@@ -1000,47 +1047,95 @@
                         <input type="number" id="val-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input" value="${isEkHesap ? 30 : 12}" ${isEkHesap ? 'readonly' : ''} oninput="validateVade()">
                     </div>
                     <div class="input-card">
-                        <span class="label-text">Aylık Faiz Oranı (%)</span>
-                        <input type="text" id="val-faiz" inputmode="decimal" class="apple-input" value="4.25">
+                        <span class="label-text">Faiz Oranı (%)</span>
+                        <div class="flex items-center justify-between gap-1 mt-0.5">
+                            <input type="text" id="val-faiz" inputmode="decimal" class="apple-input flex-1 min-w-[50px]" value="${faizTutarText}">
+                            <div class="flex bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 flex-shrink-0">
+                                <button id="faiz-tip-aylik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${isAylik ? 'bg-amber-500 text-black' : 'text-zinc-400'} transition-all" onclick="setFaizTipi('aylik')">AYLIK</button>
+                                <button id="faiz-tip-yillik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${!isAylik ? 'bg-amber-500 text-black' : 'text-zinc-400'} transition-all" onclick="setFaizTipi('yillik')">YILLIK</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="vade-warning" class="info-badge mb-3 hidden"></div>`;
 
             if(!isEkHesap) {
+                // Ödemesiz Dönem Modülü (Collapsible Switch)
                 html += `
-                <div class="input-card mt-3 border border-amber-500/10">
-                    <div class="flex items-center justify-between mb-3">
-                         <span class="label-text mb-0 font-bold text-amber-200"><i class="fa-solid fa-coins mr-1"></i> Ara Ödemeler (Opsiyonel)</span>
+                <div class="input-card mt-3 border border-zinc-800/40">
+                    <label class="flex items-center justify-between cursor-pointer py-1">
+                        <span class="label-text mb-0 font-bold text-amber-200 flex items-center gap-2">
+                            <i class="fa-solid fa-hourglass-start text-amber-500"></i> Ödemesiz Dönem (Opsiyonel)
+                        </span>
+                        <input type="checkbox" id="toggle-odemesiz-donem" class="hidden peer" ${state.hasOdemesiz ? 'checked' : ''} onchange="toggleOdemesizCollapse(this.checked)">
+                        <div class="w-9 h-5 bg-zinc-800 peer-checked:bg-amber-500 rounded-full relative transition-all duration-300 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-zinc-400 peer-checked:after:bg-black after:w-4 after:h-4 after:rounded-full after:transition-all peer-checked:after:translate-x-4"></div>
+                    </label>
+                    <div id="odemesiz-donem-container" class="${state.hasOdemesiz ? '' : 'hidden'} mt-3 pt-3 border-t border-zinc-800/60 space-y-3">
+                        <div>
+                            <span class="label-text">Ödemesiz Dönem Süresi (Ay)</span>
+                            <input type="number" id="val-odemesiz-vade" inputmode="numeric" pattern="[0-9]*" class="apple-input bg-zinc-900 rounded-lg px-2.5 py-1.5" value="6" min="1">
+                        </div>
+                        <div>
+                            <span class="label-text">Faiz Tahakkuk Tipi</span>
+                            <div class="grid grid-cols-2 gap-2 mt-1">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="odemesiz-tahakkuk" value="ilk-taksit" class="peer hidden" checked>
+                                    <div class="py-2.5 px-1.5 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                        İLK TAKSİTTE AL
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="odemesiz-tahakkuk" value="faiz-odemeli" class="peer hidden">
+                                    <div class="py-2.5 px-1.5 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                        FAİZ ÖDEMELİ
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
                     </div>
+                </div>`;
 
-                    <div id="ara-odeme-list" class="mb-3"></div>
+                // Ara Ödemeler Modülü (Collapsible Switch)
+                html += `
+                <div class="input-card mt-3 border border-zinc-800/40">
+                    <label class="flex items-center justify-between cursor-pointer py-1">
+                        <span class="label-text mb-0 font-bold text-amber-200 flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-amber-500"></i> Ara Ödemeler (Opsiyonel)
+                        </span>
+                        <input type="checkbox" id="toggle-ara-odemeler" class="hidden peer" ${state.hasAraOdemeler ? 'checked' : ''} onchange="toggleAraOdemeCollapse(this.checked)">
+                        <div class="w-9 h-5 bg-zinc-800 peer-checked:bg-amber-500 rounded-full relative transition-all duration-300 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-zinc-400 peer-checked:after:bg-black after:w-4 after:h-4 after:rounded-full after:transition-all peer-checked:after:translate-x-4"></div>
+                    </label>
 
-                    <div id="ara-odeme-form" class="pt-3 border-t border-zinc-850/60">
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div>
-                                <span class="label-text">Tarih</span>
-                                <input type="date" id="val-ara-date" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}">
-                            </div>
-                            <div>
-                                <span class="label-text">Tutar (TL)</span>
-                                <input type="text" id="val-ara-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" placeholder="0" oninput="mask(this)">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <label class="cursor-pointer">
-                                <input type="radio" name="ara-tur" value="vade" class="peer hidden" checked>
-                                <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
-                                    VADE AZALSIN
+                    <div id="ara-odemeler-container" class="${state.hasAraOdemeler ? '' : 'hidden'} mt-3 pt-3 border-t border-zinc-800/60">
+                        <div id="ara-odeme-list" class="mb-3"></div>
+
+                        <div id="ara-odeme-form" class="pt-3 border-t border-zinc-850/60">
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div>
+                                    <span class="label-text">Tarih</span>
+                                    <input type="date" id="val-ara-date" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}">
                                 </div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="ara-tur" value="taksit" class="peer hidden">
-                                <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
-                                    TAKSİT DÜŞSÜN
+                                <div>
+                                    <span class="label-text">Tutar (TL)</span>
+                                    <input type="text" id="val-ara-tutar" inputmode="numeric" pattern="[0-9]*" class="apple-input text-base bg-zinc-900 rounded-lg px-2 py-1" placeholder="0" oninput="mask(this)">
                                 </div>
-                            </label>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="ara-tur" value="vade" class="peer hidden" checked>
+                                    <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                        VADE AZALSIN
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="ara-tur" value="taksit" class="peer hidden">
+                                    <div class="py-2 px-1 rounded-xl bg-zinc-900/50 border border-transparent peer-checked:border-amber-500 peer-checked:text-amber-500 text-zinc-400 text-[10px] font-bold text-center transition-all">
+                                        TAKSİT DÜŞSÜN
+                                    </div>
+                                </label>
+                            </div>
+                            <button onclick="addAraOdeme()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-850 rounded-lg text-xs font-bold text-white transition-all">+ Listeye Ekle</button>
                         </div>
-                        <button onclick="addAraOdeme()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-850 rounded-lg text-xs font-bold text-white transition-all">+ Listeye Ekle</button>
                     </div>
                 </div>`;
             }
@@ -1145,11 +1240,11 @@
             return next;
         }
 
-        // BDDK 2026 Güncel Konut Kredisi Sınırları Entegrasyonu (A-B EKB, C EKB ve DİĞER Kırılımlı Matrix)
+        // BDDK 2026 Güncel Konut Kredisi Sınırları Entegrasyonu
         function updateKonutUI() {
             const d = getRawVal('val-deger');
-            const m = id('val-mulkiyet').value; // 'ilk' veya 'diger'
-            const ekb = id('val-ekb').value; // 'AB', 'C', 'diger'
+            const m = id('val-mulkiyet').value;
+            const ekb = id('val-ekb').value;
             let oran = 0;
 
             if (d <= 0) {
@@ -1157,7 +1252,6 @@
                 return;
             }
 
-            // BDDK Güncel Konut Kredisi Oran Matrisi Uygulaması
             if (m === 'ilk') {
                 if (d <= 5000000) {
                     if (ekb === 'AB') oran = 0.90;
@@ -1175,15 +1269,15 @@
                     if (ekb === 'AB') oran = 0.50;
                     else if (ekb === 'C') oran = 0.40;
                     else oran = 0.30;
-                } else { // 20 Milyon TL Üzeri
+                } else {
                     if (ekb === 'AB') oran = 0.40;
                     else if (ekb === 'C') oran = 0.30;
                     else oran = 0.20;
                 }
-            } else { // İkinci ve Daha Sonrası Konutunu Alacak Müşteriler (Oranlar 1/4 Sınırına Tabi Tutuluyor)
+            } else {
                 if (d <= 5000000) {
                     if (ekb === 'AB') oran = 0.225;
-                    else if (ekb === 'C') oran = 0.20;
+                    else if (ekb === 'C', m === 'diger') oran = 0.20;
                     else oran = 0.175;
                 } else if (d <= 7000000) {
                     if (ekb === 'AB') oran = 0.20;
@@ -1197,7 +1291,7 @@
                     if (ekb === 'AB') oran = 0.125;
                     else if (ekb === 'C') oran = 0.10;
                     else oran = 0.075;
-                } else { // 20 Milyon TL Üzeri
+                } else {
                     if (ekb === 'AB') oran = 0.10;
                     else if (ekb === 'C') oran = 0.075;
                     else oran = 0.05;
@@ -1218,7 +1312,6 @@
             `;
         }
 
-        // Hesaplanmış konut kredi limitini otomatik olarak talep edilen tutar hanesine maskeli olarak yerleştirir
         function applyMaxKonutLimit(val) {
             const input = id('val-tutar');
             if (input) {
@@ -1284,7 +1377,7 @@
             validateVade();
         }
 
-        // Bireysel ve Taşıt Kredisi için Esnek Vade Sınır Denetleyicisi
+        // Vade Sınır Denetleyicisi
         function validateVade() {
             const warningEl = id('vade-warning');
             if (!warningEl) return;
@@ -1383,9 +1476,11 @@
             const T = getRawVal('val-tutar');
             const initialV = parseInt(id('val-vade').value);
             
-            // iOS Türkçe Virgüllü Klavye Giriş Güvenliği
             const faizStr = id('val-faiz').value.replace(',', '.');
-            const F = parseFloat(faizStr) / 100;
+            let F = parseFloat(faizStr) / 100;
+            if (state.faizTipi === 'yillik') {
+                F = F / 12; // Yıllık oranı aylık faiz çarpanına normalize ediyoruz.
+            }
             
             if(T <= 0) return showToast("Lütfen geçerli bir kredi tutarı giriniz.");
             if(initialV <= 0) return showToast("Lütfen geçerli bir vade süresi belirtiniz.");
@@ -1399,147 +1494,330 @@
             if(state.main === 'ticari') { kkdfo = 0; bsmvo = 0.05; }
             if(state.sub === 'konut') { kkdfo = 0; bsmvo = 0; }
             
-            const brutFaizOrani = F * (1 + kkdfo + bsmvo);
-            
-            let taksitNormal = brutFaizOrani > 0 ? 
-                (T * brutFaizOrani * Math.pow(1 + brutFaizOrani, initialV)) / (Math.pow(1 + brutFaizOrani, initialV) - 1) 
-                : T / initialV;
-            
-            let bak = T, plan = [], totalF = 0, totalK = 0, totalB = 0;
+            const brutFaizOrani = F * (1 + kkdfo + bsmvo); // i (Tüm vergi yükü eklenmiş brüt aylık oran)
+
+            // Ödemesiz Dönem Bilgileri
+            const hasOdemesiz = id('toggle-odemesiz-donem') && id('toggle-odemesiz-donem').checked;
+            let G = 0;
+            let odemesizTipi = 'ilk-taksit';
+
+            if (hasOdemesiz) {
+                G = parseInt(id('val-odemesiz-vade').value) || 0;
+                odemesizTipi = document.querySelector('input[name="odemesiz-tahakkuk"]:checked')?.value || 'ilk-taksit';
+
+                if (G >= initialV) {
+                    return showToast("Ödemesiz dönem toplam vadeden küçük olmalıdır.", "error");
+                }
+            }
+
+            let plan = [];
+            let totalF = 0, totalK = 0, totalB = 0;
             let prevDate = new Date(dStart);
-            
             let sortedAra = [...state.araOdemeler].sort((a,b) => new Date(a.date) - new Date(b.date));
             let araIndex = 0;
 
-            let i = 1;
-            let maxIter = initialV * 2; 
-
-            // Güvenli amortisman döngüsü
-            while (bak > 0.01 && i <= maxIter) {
-                let tDate = new Date(dFirst);
-                tDate.setMonth(tDate.getMonth() + (i - 1));
+            if (hasOdemesiz && G > 0) {
+                // AHMET'İN BİLEŞİK FAİZLİ ÖDEMESİZ DÖNEM MATEMATİKSEL MODELİ (V2.5)
+                const PMT_std = brutFaizOrani > 0 ? 
+                    (T * brutFaizOrani * Math.pow(1 + brutFaizOrani, initialV)) / (Math.pow(1 + brutFaizOrani, initialV) - 1) 
+                    : T / initialV;
+                const A1 = PMT_std - (T * brutFaizOrani); // Standart ilk taksitin içindeki anapara payı
                 
-                let wasAraOdemeThisPeriod = false;
-                let hasVadeAdjustment = false;
-                let targetRemainingTerms = 0;
+                let bak = T;
 
-                while(araIndex < sortedAra.length) {
-                    let nextAra = sortedAra[araIndex];
-                    let araDateObj = new Date(nextAra.date);
-                    
-                    if (araDateObj >= prevDate && araDateObj < tDate) {
-                        wasAraOdemeThisPeriod = true;
+                for (let t = 1; t <= initialV; t++) {
+                    let tDate = new Date(dFirst);
+                    tDate.setMonth(tDate.getMonth() + (t - 1));
+
+                    // Bu taksit döneminden önce kalan herhangi bir ara ödemeyi işleme alıyoruz
+                    while (araIndex < sortedAra.length) {
+                        let nextAra = sortedAra[araIndex];
+                        let araDateObj = new Date(nextAra.date);
                         
-                        let timeDiff = Math.abs(araDateObj.getTime() - prevDate.getTime());
-                        let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24)); 
-                        
-                        let f_ara_net = (bak * F / 30) * gunFarki; 
-                        let k_ara = f_ara_net * kkdfo;
-                        let b_ara = f_ara_net * bsmvo;
-                        let toplamKesinti = f_ara_net + k_ara + b_ara;
-                        
-                        let anaparaDusumu = nextAra.tutar - toplamKesinti;
-                        
-                        if(anaparaDusumu > 0) {
-                            bak -= anaparaDusumu;
-                            totalF += f_ara_net; totalK += k_ara; totalB += b_ara;
+                        if (araDateObj >= prevDate && araDateObj < tDate) {
+                            let timeDiff = Math.abs(araDateObj.getTime() - prevDate.getTime());
+                            let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24)); 
                             
-                            plan.push({ 
-                                i: 'ARA', 
-                                date: araDateObj.toLocaleDateString('tr-TR'), 
-                                rawDate: new Date(araDateObj),
-                                taksit: nextAra.tutar, 
-                                ana: anaparaDusumu, 
-                                f: f_ara_net, 
-                                k: k_ara + b_ara, 
-                                bak: Math.max(0, bak) 
+                            let f_ara_net = (bak * F / 30) * gunFarki; 
+                            let k_ara = f_ara_net * kkdfo;
+                            let b_ara = f_ara_net * bsmvo;
+                            let toplamKesinti = f_ara_net + k_ara + b_ara;
+                            
+                            let anaparaDusumu = nextAra.tutar - toplamKesinti;
+                            
+                            if (anaparaDusumu > 0) {
+                                bak -= anaparaDusumu;
+                                totalF += f_ara_net; totalK += k_ara; totalB += b_ara;
+                                
+                                plan.push({ 
+                                    i: 'ARA', 
+                                    date: araDateObj.toLocaleDateString('tr-TR'), 
+                                    rawDate: new Date(araDateObj),
+                                    taksit: nextAra.tutar, 
+                                    ana: anaparaDusumu, 
+                                    f: f_ara_net, 
+                                    k: k_ara + b_ara, 
+                                    bak: Math.max(0, bak) 
+                                });
+                                
+                                prevDate = new Date(araDateObj);
+                            }
+                            araIndex++;
+                        } else {
+                            break; 
+                        }
+                    }
+
+                    if (t < G) {
+                        // ÖDEMESİZ DÖNEM SÜRECİ (Taksit ödemesiz veya sadece faiz ödemeli aylar)
+                        let timeDiff = Math.abs(tDate.getTime() - prevDate.getTime());
+                        let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24));
+
+                        if (odemesizTipi === 'faiz-odemeli') {
+                            // FAİZ ÖDEMELİ: Sadece dönemsel faiz tahsilatı yapılır
+                            let f_net = (bak * F / 30) * gunFarki;
+                            let k = f_net * kkdfo;
+                            let b = f_net * bsmvo;
+                            let f_brut = f_net + k + b;
+
+                            totalF += f_net; totalK += k; totalB += b;
+
+                            plan.push({
+                                i: t,
+                                date: tDate.toLocaleDateString('tr-TR'),
+                                rawDate: new Date(tDate),
+                                taksit: f_brut,
+                                ana: 0,
+                                f: f_net,
+                                k: k + b,
+                                bak: bak
                             });
-                            
-                            prevDate = new Date(araDateObj);
+                        } else {
+                            // İLK TAKSİTTE AL: Taksit ödenmez, borç biriken faizle kümülatif büyür
+                            let compoundedBak = T * Math.pow(1 + brutFaizOrani, t);
+                            plan.push({
+                                i: t,
+                                date: tDate.toLocaleDateString('tr-TR'),
+                                rawDate: new Date(tDate),
+                                taksit: 0,
+                                ana: 0,
+                                f: 0,
+                                k: 0,
+                                bak: compoundedBak
+                            });
+                        }
+                    } else if (t === G) {
+                        // Kullanıcı talebine göre anapara, net bileşik faiz ve vergi formülleri:
+                        // anapara = T * brutFaizOrani * ((1 + brutFaizOrani)^initialV) / (((1 + brutFaizOrani)^initialV) - 1)
+                        // faiz = T * (((1 + F)^G) - 1) [ilk-taksit ise kümülatif net faiz, faiz-odemeli ise o ayın faizi]
+                        // vergi = faiz * (kkdfo + bsmvo) (kredi türüne göre otomatik)
+                        
+                        let principalG = brutFaizOrani > 0 ? 
+                            (T * brutFaizOrani * Math.pow(1 + brutFaizOrani, initialV)) / (Math.pow(1 + brutFaizOrani, initialV) - 1) 
+                            : T / initialV;
+                        
+                        let f_net = 0;
+                        if (odemesizTipi === 'ilk-taksit') {
+                            f_net = T * (Math.pow(1 + F, G) - 1);
+                        } else {
+                            let timeDiff = Math.abs(tDate.getTime() - prevDate.getTime());
+                            let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24));
+                            f_net = (bak * F / 30) * gunFarki;
+                        }
+                        
+                        let k = f_net * kkdfo;
+                        let b = f_net * bsmvo;
+                        let vergiG = k + b;
+                        
+                        let taksitG = principalG + f_net + vergiG;
+                        
+                        totalF += f_net; 
+                        totalK += k; 
+                        totalB += b;
+                        bak -= principalG;
 
-                            if (nextAra.tur === 'vade') {
-                                hasVadeAdjustment = true;
-                            } else if (nextAra.tur === 'taksit') {
-                                let kalanVade = initialV - (i - 1);
-                                if (kalanVade > 0) {
-                                    taksitNormal = brutFaizOrani > 0 ? 
-                                        (bak * brutFaizOrani * Math.pow(1 + brutFaizOrani, kalanVade)) / (Math.pow(1 + brutFaizOrani, kalanVade) - 1) 
-                                        : (bak / kalanVade);
+                        plan.push({
+                            i: t,
+                            date: tDate.toLocaleDateString('tr-TR'),
+                            rawDate: new Date(tDate),
+                            taksit: taksitG,
+                            ana: principalG,
+                            f: f_net,
+                            k: vergiG,
+                            bak: Math.max(0, bak)
+                        });
+                    } else {
+                        // G. AYDAN SONRAKİ NORMAL AMORTİSMAN VADE SÜRECİ (N - G Kalan Süre)
+                        let kalanVade = initialV - t + 1;
+                        let pmt_new = brutFaizOrani > 0 ? 
+                            (bak * brutFaizOrani * Math.pow(1 + brutFaizOrani, kalanVade)) / (Math.pow(1 + brutFaizOrani, kalanVade) - 1) 
+                            : bak / kalanVade;
+
+                        let timeDiff = Math.abs(tDate.getTime() - prevDate.getTime());
+                        let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24));
+
+                        let f_net = (bak * F / 30) * gunFarki;
+                        let k = f_net * kkdfo;
+                        let b = f_net * bsmvo;
+                        let interest_gross = f_net + k + b;
+
+                        let ana = pmt_new - interest_gross;
+                        if (t === initialV || bak <= ana + 0.1) {
+                            ana = bak;
+                        }
+
+                        totalF += f_net; totalK += k; totalB += b;
+                        bak -= ana;
+
+                        plan.push({
+                            i: t,
+                            date: tDate.toLocaleDateString('tr-TR'),
+                            rawDate: new Date(tDate),
+                            taksit: ana + interest_gross,
+                            ana: ana,
+                            f: f_net,
+                            k: k + b,
+                            bak: Math.max(0, bak)
+                        });
+                    }
+                    prevDate = new Date(tDate);
+                }
+            } else {
+                // STANDART AMORTİSMAN PLANI (Ödemesiz Olmayan Durum)
+                let taksitNormal = brutFaizOrani > 0 ? 
+                    (T * brutFaizOrani * Math.pow(1 + brutFaizOrani, initialV)) / (Math.pow(1 + brutFaizOrani, initialV) - 1) 
+                    : T / initialV;
+                
+                let bak = T;
+                let i = 1;
+                let maxIter = initialV * 2; 
+
+                while (bak > 0.01 && i <= maxIter) {
+                    let tDate = new Date(dFirst);
+                    tDate.setMonth(tDate.getMonth() + (i - 1));
+                    
+                    let wasAraOdemeThisPeriod = false;
+                    let hasVadeAdjustment = false;
+                    let targetRemainingTerms = 0;
+
+                    while(araIndex < sortedAra.length) {
+                        let nextAra = sortedAra[araIndex];
+                        let araDateObj = new Date(nextAra.date);
+                        
+                        if (araDateObj >= prevDate && araDateObj < tDate) {
+                            wasAraOdemeThisPeriod = true;
+                            
+                            let timeDiff = Math.abs(araDateObj.getTime() - prevDate.getTime());
+                            let gunFarki = Math.round(timeDiff / (1000 * 3600 * 24)); 
+                            
+                            let f_ara_net = (bak * F / 30) * gunFarki; 
+                            let k_ara = f_ara_net * kkdfo;
+                            let b_ara = f_ara_net * bsmvo;
+                            let toplamKesinti = f_ara_net + k_ara + b_ara;
+                            
+                            let anaparaDusumu = nextAra.tutar - toplamKesinti;
+                            
+                            if(anaparaDusumu > 0) {
+                                bak -= anaparaDusumu;
+                                totalF += f_ara_net; totalK += k_ara; totalB += b_ara;
+                                
+                                plan.push({ 
+                                    i: 'ARA', 
+                                    date: araDateObj.toLocaleDateString('tr-TR'), 
+                                    rawDate: new Date(araDateObj),
+                                    taksit: nextAra.tutar, 
+                                    ana: anaparaDusumu, 
+                                    f: f_ara_net, 
+                                    k: k_ara + b_ara, 
+                                    bak: Math.max(0, bak) 
+                                });
+                                
+                                prevDate = new Date(araDateObj);
+
+                                if (nextAra.tur === 'vade') {
+                                    hasVadeAdjustment = true;
+                                } else if (nextAra.tur === 'taksit') {
+                                    let kalanVade = initialV - (i - 1);
+                                    if (kalanVade > 0) {
+                                        taksitNormal = brutFaizOrani > 0 ? 
+                                            (bak * brutFaizOrani * Math.pow(1 + brutFaizOrani, kalanVade)) / (Math.pow(1 + brutFaizOrani, kalanVade) - 1) 
+                                            : (bak / kalanVade);
+                                    }
                                 }
                             }
-                        }
-                        araIndex++;
-                    } else {
-                        break; 
-                    }
-                }
-
-                if (hasVadeAdjustment) {
-                    if (brutFaizOrani > 0 && taksitNormal > bak * brutFaizOrani) {
-                        let N_rem = Math.log(taksitNormal / (taksitNormal - bak * brutFaizOrani)) / Math.log(1 + brutFaizOrani);
-                        let originalRemaining = initialV - (i - 1);
-                        targetRemainingTerms = Math.max(1, Math.min(originalRemaining, Math.round(N_rem)));
-                    } else {
-                        let originalRemaining = initialV - (i - 1);
-                        targetRemainingTerms = Math.max(1, Math.min(originalRemaining, Math.round(bak / (taksitNormal || 1))));
-                    }
-                }
-
-                let gunFarkiNormal = 30; 
-                
-                if (i === 1 || wasAraOdemeThisPeriod) {
-                    let timeDiffNormal = Math.abs(tDate.getTime() - prevDate.getTime());
-                    gunFarkiNormal = Math.round(timeDiffNormal / (1000 * 3600 * 24));
-                }
-                
-                let f = (bak * F / 30) * gunFarkiNormal;
-                let k = f * kkdfo;
-                let b = f * bsmvo;
-                let actual_gross_interest = f + k + b;
-
-                let ana = 0;
-                let currentTaksit = 0;
-
-                if (hasVadeAdjustment) {
-                    let N_new = targetRemainingTerms;
-                    ana = bak; 
-                    if (N_new > 1) {
-                        if (brutFaizOrani > 0) {
-                            let presentValue = taksitNormal * (1 - Math.pow(1 + brutFaizOrani, -(N_new - 1))) / brutFaizOrani;
-                            ana = bak - presentValue;
+                            araIndex++;
                         } else {
-                            ana = bak - taksitNormal * (N_new - 1);
+                            break; 
                         }
                     }
-                    ana = Math.max(0, Math.min(bak, ana));
-                    currentTaksit = ana + actual_gross_interest;
-                } else {
-                    let std_gross_interest = bak * brutFaizOrani; 
-                    let std_principal = taksitNormal - std_gross_interest; 
-                    
-                    if (bak <= std_principal + 0.1 || i === initialV) {
-                        std_principal = bak;
-                    }
-                    ana = std_principal;
-                    currentTaksit = std_principal + actual_gross_interest;
-                }
 
-                bak -= ana;
-                totalF += f; totalK += k; totalB += b;
-                
-                plan.push({ 
-                    i, 
-                    date: tDate.toLocaleDateString('tr-TR'), 
-                    rawDate: new Date(tDate),
-                    taksit: currentTaksit, 
-                    ana, 
-                    f, 
-                    k: k + b, 
-                    bak: Math.max(0, bak) 
-                });
-                
-                prevDate = new Date(tDate);
-                i++;
+                    if (hasVadeAdjustment) {
+                        if (brutFaizOrani > 0 && taksitNormal > bak * brutFaizOrani) {
+                            let N_rem = Math.log(taksitNormal / (taksitNormal - bak * brutFaizOrani)) / Math.log(1 + brutFaizOrani);
+                            let originalRemaining = initialV - (i - 1);
+                            targetRemainingTerms = Math.max(1, Math.min(originalRemaining, Math.round(N_rem)));
+                        } else {
+                            let originalRemaining = initialV - (i - 1);
+                            targetRemainingTerms = Math.max(1, Math.min(originalRemaining, Math.round(bak / (taksitNormal || 1))));
+                        }
+                    }
+
+                    let gunFarkiNormal = 30; 
+                    
+                    if (i === 1 || wasAraOdemeThisPeriod) {
+                        let timeDiffNormal = Math.abs(tDate.getTime() - prevDate.getTime());
+                        gunFarkiNormal = Math.round(timeDiffNormal / (1000 * 3600 * 24));
+                    }
+                    
+                    let f = (bak * F / 30) * gunFarkiNormal;
+                    let k = f * kkdfo;
+                    let b = f * bsmvo;
+                    let actual_gross_interest = f + k + b;
+
+                    let ana = 0;
+                    let currentTaksit = 0;
+
+                    if (hasVadeAdjustment) {
+                        let N_new = targetRemainingTerms;
+                        ana = bak; 
+                        if (N_new > 1) {
+                            if (brutFaizOrani > 0) {
+                                let presentValue = taksitNormal * (1 - Math.pow(1 + brutFaizOrani, -(N_new - 1))) / brutFaizOrani;
+                                ana = bak - presentValue;
+                            } else {
+                                ana = bak - taksitNormal * (N_new - 1);
+                            }
+                        }
+                        ana = Math.max(0, Math.min(bak, ana));
+                        currentTaksit = ana + actual_gross_interest;
+                    } else {
+                        let std_gross_interest = bak * brutFaizOrani; 
+                        let std_principal = taksitNormal - std_gross_interest; 
+                        
+                        if (bak <= std_principal + 0.1 || i === initialV) {
+                            std_principal = bak;
+                        }
+                        ana = std_principal;
+                        currentTaksit = std_principal + actual_gross_interest;
+                    }
+
+                    bak -= ana;
+                    totalF += f; totalK += k; totalB += b;
+                    
+                    plan.push({ 
+                        i, 
+                        date: tDate.toLocaleDateString('tr-TR'), 
+                        rawDate: new Date(tDate),
+                        taksit: currentTaksit, 
+                        ana, 
+                        f, 
+                        k: k + b, 
+                        bak: Math.max(0, bak) 
+                    });
+                    
+                    prevDate = new Date(tDate);
+                    i++;
+                }
             }
 
             state.lastCalc = plan;
@@ -1547,8 +1825,12 @@
             
             let totalOdenen = plan.reduce((acc, curr) => acc + curr.taksit, 0);
             
+            // İlk ödemeyi ve ödemesiz dönemleri düzgün listelemek için ilk taksiti bulalım
+            const ilkTaksitObj = plan.find(p => typeof p.i === 'number' && p.taksit > 0);
+            const ilkTaksitTutar = ilkTaksitObj ? format(ilkTaksitObj.taksit) : format(0);
+
             showResults([
-                { l: "İlk Taksit Tutarı", v: format(plan.find(p => typeof p.i === 'number')?.taksit || 0), h: true },
+                { l: "İlk Taksit Tutarı", v: ilkTaksitTutar, h: true },
                 { l: "Toplam Net Faiz", v: format(totalF) },
                 { l: "Vergi Toplamı (BSMV+KKDF)", v: format(totalK + totalB) },
                 { l: "Toplam Geri Ödeme", v: format(totalOdenen) }
@@ -1561,7 +1843,10 @@
             const G = parseInt(id('val-vade').value);
             
             const faizStr = id('val-faiz').value.replace(',', '.');
-            const F = parseFloat(faizStr) / 100;
+            let F = parseFloat(faizStr) / 100;
+            if (state.faizTipi === 'yillik') {
+                F = F / 12;
+            }
             
             if(T <= 0) return showToast("Lütfen geçerli bir kullanım tutarı giriniz.");
             
@@ -1759,13 +2044,22 @@
                     const annual = monthly * 12;
                     const monthlyStr = monthly.toFixed(2).replace('.', ',');
                     const annualStr = annual.toFixed(2).replace('.', ',');
-                    valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                    
+                    if (state.faizTipi === 'yillik') {
+                        valText.innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+                    } else {
+                        valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                    }
                 }
             }
             
             const mainFaizInput = id('val-faiz');
             if (mainFaizInput) {
-                mainFaizInput.value = value;
+                if (state.faizTipi === 'yillik' && !isMevduatProduct) {
+                    mainFaizInput.value = (parseFloat(value) * 12).toFixed(2).replace('.', ',');
+                } else {
+                    mainFaizInput.value = parseFloat(value).toFixed(2).replace('.', ',');
+                }
             }
             
             if (isMevduatProduct) {
@@ -1796,7 +2090,7 @@
             }
         }
 
-        // NPV ve Enflasyon Arındırma Motoru
+        // Net Bugün Değer (NPV) ve Enflasyon Arındırma Analizörü
         function recalculateInflationAnalysis() {
             if (!state.lastCalc || state.lastCalc.length === 0) {
                 runDefaultSimulation();
@@ -1869,7 +2163,6 @@
             const infProductAmount = id('inf-product-amount');
             if (infProductAmount) infProductAmount.innerText = format(principal);
             
-            // Kart 1: Reel Faiz
             const realIntEl = id('card-real-interest');
             if (realIntEl) realIntEl.innerText = format(realInterestPaid);
             const interestSub = id('card-real-interest-sub');
@@ -1883,7 +2176,6 @@
                 }
             }
 
-            // Kart 2: Kredi Gerçek Maliyeti (Reel NPV)
             const realCostEl = id('card-real-credit-cost');
             if (realCostEl) realCostEl.innerText = format(totalReal);
             
@@ -1892,7 +2184,6 @@
                 realCreditCostSub.innerText = `Anapara ${format(principal)} karşılığı cebinizden çıkacak reel değer.`;
             }
 
-            // Kart 3: Borcun Enflasyonla Erimesi
             const cardDebtErosion = id('card-debt-erosion');
             if (cardDebtErosion) cardDebtErosion.innerText = format(debtErosion);
             
@@ -1901,7 +2192,6 @@
                 cardDebtErosionSub.innerText = `Sabit borç ödemelerinin enflasyonda eriyen payı.`;
             }
 
-            // Kart 4: Mevduat Gerçek Kazancı
             const depReturnEl = id('card-real-deposit-return');
             if (depReturnEl) depReturnEl.innerText = format(finalDepositReal);
             const depDescEl = id('card-real-deposit-desc');
@@ -1964,7 +2254,7 @@
             const oppChartRealLoanBar = id('opp-chart-real-loan-bar');
             if (oppChartRealLoanBar) oppChartRealLoanBar.style.width = ((totalReal / maxVal) * 100) + '%';
 
-            // Aylık Detay Tablosunu Doldurma
+            // Aylık Detay Tablosu
             const infTableBody = id('inf-table-body');
             if (infTableBody) {
                 infTableBody.innerHTML = tableData.map(r => `
@@ -1990,9 +2280,10 @@
         }
 
         function runDefaultSimulation() {
-            id('val-tutar').value = "150.000";
-            if (id('val-deger')) id('val-deger').value = "500.000";
-            id('val-faiz').value = "4.25";
+            id('val-tutar').value = "1.000.000";
+            if (id('val-deger')) id('val-deger').value = "2.000.000";
+            id('val-faiz').value = "56,00";
+            state.faizTipi = 'yillik';
             id('val-vade').value = "12";
             
             showToast("Simülasyon kredisi otomatik hesaplanarak kokpite aktarıldı.", "success");
@@ -2012,8 +2303,9 @@
                     id('val-faiz').value = "5.00";
                     calculateEkHesap();
                 } else {
-                    id('val-tutar').value = "150.000";
-                    id('val-faiz').value = "4.25";
+                    id('val-tutar').value = "1.000.000";
+                    id('val-faiz').value = "56,00";
+                    state.faizTipi = 'yillik';
                     id('val-vade').value = "12";
                     calculate();
                 }
@@ -2042,12 +2334,23 @@
                     slider.min = "0.5";
                     slider.max = "10.0";
                     slider.step = "0.05";
-                    slider.value = mainFaizVal;
-                    const monthly = parseFloat(mainFaizVal);
+                    
+                    let monthlyVal = mainFaizVal;
+                    if (state.faizTipi === 'yillik') {
+                        monthlyVal = mainFaizVal / 12;
+                    }
+                    
+                    slider.value = monthlyVal;
+                    const monthly = parseFloat(monthlyVal);
                     const annual = monthly * 12;
                     const monthlyStr = monthly.toFixed(2).replace('.', ',');
                     const annualStr = annual.toFixed(2).replace('.', ',');
-                    valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                    
+                    if (state.faizTipi === 'yillik') {
+                        valText.innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+                    } else {
+                        valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                    }
                     bounds.innerHTML = `<span>%0.50</span><span>%10.00</span>`;
                     id('inf-deposit-slider-container').classList.remove('hidden');
                 }
@@ -2070,7 +2373,7 @@
             }
             
             recalculateInflationAnalysis();
-            fetchLiveRates(); // Panel her açıldığında canlı kurları tazelemeye zorla
+            fetchLiveRates(); 
             
             const modalContent = document.querySelector('#inflation-modal .modal-content');
             modalContent.style.transform = ''; 
@@ -2207,7 +2510,8 @@
             
             const loanAmount = format(getRawVal('val-tutar'));
             const totalRepayment = format(state.lastCalc.reduce((acc, curr) => acc + curr.taksit, 0));
-            const monthlyPayment = format(state.lastCalc.find(p => typeof p.i === 'number')?.taksit || 0);
+            const firstInstallment = state.lastCalc.find(p => typeof p.i === 'number' && p.taksit > 0);
+            const monthlyPayment = firstInstallment ? format(firstInstallment.taksit) : format(0);
 
             element.innerHTML = `
                 <div style="border-bottom: 3px solid #f59e0b; padding-bottom: 18px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
@@ -2217,7 +2521,7 @@
                     </div>
                     <div style="text-align: right; font-size: 11px; color: #555;">
                         <strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}<br>
-                        <strong>Sistem Sürümü:</strong> 2026.1
+                        <strong>Sistem Sürümü:</strong> 2026.2
                     </div>
                 </div>
                 
@@ -2225,7 +2529,7 @@
                     <div>
                         <div style="margin-bottom: 6px;"><strong style="color: #444;">Kredi Kategorisi:</strong> <span style="text-transform: capitalize;">${state.main === 'bireysel' ? 'Bireysel' : 'Ticari'} Kredi</span></div>
                         <div style="margin-bottom: 6px;"><strong style="color: #444;">Kredi Alt Türü:</strong> <span style="text-transform: uppercase;">${state.sub}</span></div>
-                        <div><strong style="color: #444;">Aylık Faiz Oranı:</strong> %${id('val-faiz').value}</div>
+                        <div><strong style="color: #444;">Faiz Oranı:</strong> %${id('val-faiz').value} (${state.faizTipi === 'aylik' ? 'Aylık' : 'Yıllık'})</div>
                     </div>
                     <div>
                         <div style="margin-bottom: 6px;"><strong style="color: #444;">Talep Edilen Kredi:</strong> ${loanAmount}</div>
@@ -2311,7 +2615,7 @@
                     </div>
                     <div style="text-align: right; font-size: 11px; color: #555;">
                         <strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}<br>
-                        <strong>Analiz Sürümü:</strong> v2.3
+                        <strong>Analiz Sürümü:</strong> v2.4
                     </div>
                 </div>
                 
@@ -2345,7 +2649,7 @@
                             <span style="font-size: 14px; font-weight: bold; color: #111;">${realIntStr}</span>
                         </div>
                         <p style="margin: 5px 0 0 0; font-size: 11px; color: #666; line-height: 1.4;">
-                            Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye düşer. This indicates real financial relief under high inflation.
+                            Krediye ödediğiniz faiz oranından enflasyonun aşındırma etkisinin düşülmesiyle bulunan gerçek maliyet yüküdür. Enflasyon oranı kredi faizinden yüksek çıktığında bu değer eksiye düşer. Bu durum yüksek enflasyonda reel borç hafiflemesini doğrular.
                         </p>
                     </div>
 
