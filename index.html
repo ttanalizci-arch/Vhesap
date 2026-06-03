@@ -105,7 +105,7 @@
 
         @media (min-width: 641px) {
             .apple-container {
-                height: 870px;
+                height: 890px;
                 max-height: 97vh;
                 border-radius: 36px;
                 border: 1px solid var(--apple-border);
@@ -389,17 +389,6 @@
                 </button>
             </div>
 
-            <!-- EVDS TCMB Canlı Entegrasyon Şeridi -->
-            <div id="evds-bar" class="mx-5 my-1 p-2.5 bg-zinc-950/60 rounded-xl border border-zinc-800/40 flex items-center justify-between gap-3 text-xs flex-shrink-0">
-                <div class="flex items-center gap-2">
-                    <span id="evds-indicator" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="evds-status-text" class="text-zinc-400 font-semibold text-[10px] uppercase tracking-wider">TCMB EVDS Canlı Faiz Bağlantısı Kuruluyor...</span>
-                </div>
-                <button onclick="syncEVDS()" class="text-zinc-500 hover:text-amber-500 p-1 rounded-lg transition-colors flex items-center justify-center" title="TCMB Verilerini Güncelle">
-                    <i id="evds-sync-icon" class="fa-solid fa-arrows-rotate text-xs"></i>
-                </button>
-            </div>
-
             <!-- Ana Tab Gezgini -->
             <div class="main-nav">
                 <button class="nav-btn active" id="btn-bireysel" onclick="switchTab('bireysel')">Bireysel</button>
@@ -415,7 +404,7 @@
                 <div id="form-content" class="mt-1"></div>
 
                 <!-- Sonuç Bölümü -->
-                <div id="results" class="hidden mt-6 pb-12">
+                <div id="results" class="hidden mt-6 pb-2">
                     <div class="bg-zinc-900/40 rounded-3xl p-5 border border-amber-500/10 shadow-lg">
                         <h3 class="text-center text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
                         <div id="result-rows" class="space-y-3.5"></div>
@@ -434,6 +423,27 @@
                                 <i class="fa-solid fa-chart-line"></i> ANALİZ PANELİ
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Kurumsal Veri ve Sorumluluk Reddi Kartı -->
+                <div class="mt-8 mb-6 p-5 bg-zinc-900/30 rounded-2xl border border-zinc-800/20">
+                    <h4 class="text-xs font-black text-amber-500 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced"></i> Kurumsal Veri ve Sorumluluk Reddi
+                    </h4>
+                    <div class="text-[11px] text-zinc-400 space-y-2 leading-relaxed font-medium">
+                        <p>
+                            Vhesap Gelişmiş Hesaplama Sistemi’nde yer alan tüm mevduat ve kredi referans faiz oranları, 
+                            <strong>Türkiye Cumhuriyet Merkez Bankası (TCMB) EVDS (Elektronik Veri Dağıtım Sistemi) API</strong> 
+                            üzerinden düzenli olarak çekilmektedir.
+                        </p>
+                        <p>
+                            Veriler, TCMB tarafından yayımlanan resmi istatistiklere dayanmaktadır ve haftalık olarak otomatik senkronize edilmektedir. 
+                            Güncelleme işlemi her hafta <strong>Cuma günü saat 17:00’de</strong> otomatik olarak gerçekleştirilir.
+                        </p>
+                        <p class="text-[10px] text-zinc-500 italic pt-1 border-t border-zinc-800/30">
+                            Bu platformda sunulan bilgiler yalnızca bilgilendirme amaçlıdır. Herhangi bir finansal ürün teklifi, taahhüt veya bağlayıcı teklif niteliği taşımaz.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -956,7 +966,7 @@
             
             if (syncIcon) syncIcon.classList.add('animate-spin');
             if (indicator) {
-                indicator.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                indicator.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0";
             }
             if (statusText) statusText.innerText = "TCMB EVDS Verileri Alınıyor...";
 
@@ -1009,7 +1019,7 @@
             if (success && data) {
                 try {
                     parseEVDSData(data);
-                    if (indicator) indicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+                    if (indicator) indicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0";
                     if (statusText) statusText.innerText = "TCMB EVDS Canlı Faizleri Güncel (2026)";
                     showToast("TCMB EVDS canlı referans faiz oranları başarıyla güncellendi.", "success");
                     renderForm();
@@ -1019,9 +1029,9 @@
             }
             
             if (!success) {
-                // Bağlantı tamamen başarısız olursa yerel koruma mekanizması (Fallback) devreye girer
+                // Bağlantı tamamen başarısız olursa yerel koruma fallback mekanizması devreye girer
                 loadEVDSFallbacks();
-                if (indicator) indicator.className = "w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse";
+                if (indicator) indicator.className = "w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse flex-shrink-0";
                 if (statusText) statusText.innerText = "EVDS Çevrimdışı: En Son TCMB Oranları Aktif";
                 showToast("TCMB Verileri alınamadı. Güncel referans oranlar sisteme tanımlandı.", "success");
                 renderForm();
@@ -1204,34 +1214,6 @@
             hideResults();
         }
 
-        // Faiz tipi geçiş butonu entegrasyonu
-        function setFaizTipi(tip) {
-            const currentFaiz = parseFloat(id('val-faiz').value.replace(',', '.')) || 0;
-            if (state.faizTipi === tip) return;
-            
-            let newVal = currentFaiz;
-            if (tip === 'yillik' && state.faizTipi === 'aylik') {
-                newVal = currentFaiz * 12;
-            } else if (tip === 'aylik' && state.faizTipi === 'yillik') {
-                newVal = currentFaiz / 12;
-            }
-            
-            state.faizTipi = tip;
-            id('val-faiz').value = newVal.toFixed(2).replace('.', ',');
-            
-            // Buton aktiflik sınıflarını güncelle
-            if (id('faiz-tip-aylik') && id('faiz-tip-yillik')) {
-                id('faiz-tip-aylik').className = tip === 'aylik' ? 
-                    "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
-                    "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
-                id('faiz-tip-yillik').className = tip === 'yillik' ? 
-                    "px-2 py-1 text-[10px] font-bold rounded-md bg-amber-500 text-black transition-all" : 
-                    "px-2 py-1 text-[10px] font-bold rounded-md text-zinc-400 transition-all";
-            }
-                
-            validateVade();
-        }
-
         function toggleAraOdemeCollapse(checked) {
             state.hasAraOdemeler = checked;
             const container = id('ara-odemeler-container');
@@ -1282,7 +1264,7 @@
                 html += `
                     <div class="info-badge mb-3 flex flex-col items-start gap-1.5 !bg-amber-500/5 !border-amber-500/20">
                         <span class="font-bold text-amber-500 flex items-center gap-1.5 text-xs"><i class="fa-solid fa-file-invoice-dollar"></i> İskonto Kredisi</span>
-                        <span class="text-zinc-400 text-[11px] leading-relaxed">Vadesi gelmemiş ticari alacakların (çek/senet) iskonto faizi ve komisyon kesilerek peşin nakde çevrilmesidir. Faiz, masraflar ve komisyon başlangıçta peşin kesilir.</span>
+                        <span class="text-zinc-400 text-[11px] leading-relaxed">Vadesi gelmemiş ticari alacakların (çek/senet) iskonto faizi ve komisyon kesilerek peşin nakde çevrilmesidir. Peşin kesintiler baştan uygulanır.</span>
                     </div>`;
             }
 
@@ -1376,13 +1358,18 @@
                 state.faizTipi = 'yillik';
             }
 
-            // Canlı TCMB referans oranı bildirim rozeti
+            // Faiz Oranı Kartı İçine Entegre Edilen Canlı Referans Oranı Şablonu
             let evdsBadgeHtml = '';
             if (evdsRate) {
                 evdsBadgeHtml = `
-                    <div class="flex items-center justify-between px-1 mb-1 mt-1.5 text-[10px]">
-                        <span class="text-zinc-500 font-bold uppercase"><i class="fa-solid fa-building-columns text-amber-500/80 mr-1"></i> TCMB EVDS Referans Oranı: <strong class="text-amber-500">%${evdsRate.toFixed(2).replace('.', ',')}</strong></span>
-                        <button type="button" onclick="applyEVDSRate(${evdsRate})" class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/25 text-[9px] font-extrabold transition-all">BU ORANI UYGULA</button>
+                    <div class="mt-2 pt-2 border-t border-zinc-800/40 flex items-center justify-between gap-2">
+                        <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-building-columns text-amber-500/80"></i> 
+                            TCMB EVDS Oranı: <strong class="text-amber-500">%${evdsRate.toFixed(2).replace('.', ',')}</strong>
+                        </span>
+                        <button type="button" onclick="applyEVDSRate(${evdsRate})" class="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 active:scale-95 text-[9px] font-extrabold transition-all tracking-wide uppercase">
+                            BU ORANI UYGULA
+                        </button>
                     </div>
                 `;
             }
@@ -1577,9 +1564,14 @@
             let evdsBadgeHtml = '';
             if (evdsRate) {
                 evdsBadgeHtml = `
-                    <div class="flex items-center justify-between px-1 mb-1 mt-1.5 text-[10px]">
-                        <span class="text-zinc-500 font-bold uppercase"><i class="fa-solid fa-building-columns text-amber-500/80 mr-1"></i> TCMB Mevduat Oranı: <strong class="text-amber-500">%${evdsRate.toFixed(2).replace('.', ',')}</strong></span>
-                        <button type="button" onclick="applyEVDSRate(${evdsRate})" class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/25 text-[9px] font-extrabold transition-all">BU ORANI UYGULA</button>
+                    <div class="mt-2 pt-2 border-t border-zinc-800/40 flex items-center justify-between gap-2">
+                        <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-building-columns text-emerald-500"></i> 
+                            TCMB EVDS Oranı: <strong class="text-emerald-400">%${evdsRate.toFixed(2).replace('.', ',')}</strong>
+                        </span>
+                        <button type="button" onclick="applyEVDSRate(${evdsRate})" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 active:scale-95 text-[9px] font-extrabold transition-all tracking-wide uppercase">
+                            BU ORANI UYGULA
+                        </button>
                     </div>
                 `;
             }
@@ -1614,20 +1606,6 @@
                 </div>
                 <div id="info-stopaj" class="info-badge mb-4 text-center justify-center font-bold">Uygulanan Stopaj Oranı: %17,50</div>
                 <button class="action-btn" onclick="calculateMevduat()">GETİRİ HESAPLA</button>`;
-        }
-
-        function isTatil(date) {
-            const gun = date.getDay();
-            if (gun === 0 || gun === 6) return true;
-            const ayGun = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            return resmiTatiller.includes(ayGun);
-        }
-
-        function sonrakilsGunu(date) {
-            let next = new Date(date);
-            next.setDate(next.getDate() + 1);
-            while (isTatil(next)) { next.setDate(next.getDate() + 1); }
-            return next;
         }
 
         // BDDK 2026 Güncel Konut Kredisi Sınırları Entegrasyonu
@@ -2364,9 +2342,8 @@
             const b = (f + c) * bsmvo; // Faiz ve komisyondan alınan toplam %5 BSMV
 
             const kesinti = f + c + b;
-            const netPayout = T - kesinti; // Müşterinin eline geçen peşin tutar
+            const netPayout = T - kesinti; // Peşin ödeme tutarı
 
-            // Gerçek efektif yıllık finansman maliyeti hesabı (Efektif maliyet oranı)
             const efektifOran = netPayout > 0 ? (kesinti / netPayout) * (360 / G) * 100 : 0;
 
             const end = new Date(id('date-first').value);
@@ -2375,7 +2352,7 @@
                 i: 1,
                 date: end.toLocaleDateString('tr-TR'),
                 rawDate: new Date(end),
-                taksit: T, // Çekin vade sonundaki tahsilat tutarı (Bankaya ödenecek / borçludan tahsil edilecek nominal değer)
+                taksit: T, // Çekin vade sonundaki nominal değeri
                 ana: netPayout, 
                 f: f + c, 
                 k: b,
@@ -2695,7 +2672,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 13px;">
                         <div>
                             <strong>Toplam Anapara/Değer:</strong> ${format(sumPrincipal)}<br>
-                            <strong>Toplam Alınan Net Ödeme (Ödeme):</strong> <span style="color: #10b981; font-weight: bold;">${format(sumNetPayout)}</span>
+                            <strong>Toplam Alınan Net Ödeme (Peşin):</strong> <span style="color: #10b981; font-weight: bold;">${format(sumNetPayout)}</span>
                         </div>
                         <div>
                             <strong>Toplam Faiz / İskonto Yükü:</strong> <span style="color: #ef4444; font-weight: bold;">${format(sumInterest)}</span><br>
@@ -2833,6 +2810,91 @@
             const monthsDiff = end.getMonth() - start.getMonth();
             const daysDiff = end.getDate() - start.getDate();
             return (yearsDiff * 12) + monthsDiff + (daysDiff / 30.4375);
+        }
+
+        function onCustomInflationChange(value) {
+            state.customInflationAnnual = value;
+            const infAnnual = parseFloat(value);
+            const infMonthly = (Math.pow(1 + infAnnual / 100, 1 / 12) - 1) * 100;
+            const annualStr = infAnnual.toFixed(2).replace('.', ',');
+            const monthlyStr = infMonthly.toFixed(2).replace('.', ',');
+            
+            id('inf-custom-slider-val').innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+            recalculateInflationAnalysis();
+        }
+
+        function onAlternativeDepositRateChange(value) {
+            state.alternativeDepositRate = value;
+            const depAnnual = parseFloat(value);
+            const depMonthly = depAnnual / 12;
+            const annualStr = depAnnual.toFixed(2).replace('.', ',');
+            const monthlyStr = depMonthly.toFixed(2).replace('.', ',');
+            
+            id('inf-deposit-slider-val').innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+            recalculateInflationAnalysis();
+        }
+
+        function onProductInterestSliderChange(value) {
+            const isMevduatProduct = (state.main === 'mevduat');
+            const isShortTermCommercial = ['rotatif', 'spot', 'iskonto'].includes(state.sub);
+            const valText = id('inf-product-interest-val');
+            
+            if (valText) {
+                if (isMevduatProduct) {
+                    valText.innerText = `%${parseFloat(value).toFixed(0)}`;
+                } else if (isShortTermCommercial) {
+                    valText.innerText = `Yıllık %${parseFloat(value).toFixed(2).replace('.', ',')}`;
+                } else {
+                    const monthly = parseFloat(value);
+                    const annual = monthly * 12;
+                    const monthlyStr = monthly.toFixed(2).replace('.', ',');
+                    const annualStr = annual.toFixed(2).replace('.', ',');
+                    
+                    if (state.faizTipi === 'yillik') {
+                        valText.innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
+                    } else {
+                        valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
+                    }
+                }
+            }
+            
+            const mainFaizInput = id('val-faiz');
+            if (mainFaizInput) {
+                mainFaizInput.value = parseFloat(value).toFixed(2).replace('.', ',');
+            }
+            
+            if (isMevduatProduct) {
+                calculateMevduat();
+            } else if (state.sub === 'rotatif') {
+                calculateRotatif();
+            } else if (state.sub === 'spot') {
+                calculateSpot();
+            } else if (state.sub === 'iskonto') {
+                calculateIskonto();
+            } else if (state.sub.includes('ekhesap')) {
+                calculateEkHesap();
+            } else {
+                calculate();
+            }
+            
+            recalculateInflationAnalysis();
+        }
+
+        function toggleInflationTable() {
+            state.inflationTableVisible = !state.inflationTableVisible;
+            const container = id('inf-table-container');
+            const textEl = id('inf-table-toggle-text');
+            const iconEl = id('inf-table-toggle-icon');
+            
+            if (state.inflationTableVisible) {
+                container.classList.remove('hidden');
+                textEl.innerText = "AYLIK DETAYLI REEL ÖDEME TABLOSUNU GİZLE";
+                iconEl.classList.add('rotate-180');
+            } else {
+                container.classList.add('hidden');
+                textEl.innerText = "AYLIK DETAYLI REEL ÖDEME TABLOSUNU GÖSTER";
+                iconEl.classList.remove('rotate-180');
+            }
         }
 
         // Net Bugün Değer (NPV) ve Enflasyon Arındırma Analizörü
@@ -3009,7 +3071,7 @@
                     if (realDecisionNPV > 0 && realInterestPaid < 0) {
                         decisionTitleEl.innerText = "Finansal Bulgular: Negatif Reel Maliyetli Kredi ve Arbitraj";
                         decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
-                        decisionDescEl.innerText = `%${state.customInflationAnnual} enflasyon beklentisi altında kredinizin reel Net Bugün Değer maliyeti negatiftir. Sabit taksitlerin enflasyon karşısındaki aşınma hızı, ödeyeceğiniz nominal faiz yükünden daha hızlı gerçekleşmektedir. Kredi geri ödeme bütçesi ile alternatif mevduat getirisi kıyaslandığında, vade sonunda net ${format(nominalDecisionNPV)} (Bugünkü reel Net Bugün Değer ile ${format(realDecisionOC || realDecisionNPV)}) tutarında pozitif bir finansal fark oluştuğu tespit edilmiştir.`;
+                        decisionDescEl.innerText = `%${state.customInflationAnnual} enflasyon beklentisi altında kredinizin reel Net Bugün Değer maliyeti negatiftir. Sabit taksitlerin enflasyon karşısındaki aşınma hızı, ödeyeceğiniz nominal faiz yükünden daha hızlı gerçekleşmektedir. Kredi geri ödeme bütçesi ile alternatif mevduat getirisi kıyaslandığında, vade sonunda net ${format(nominalDecisionNPV)} (Bugünkü reel Net Bugün Değer ile ${format(realDecisionNPV)}) tutarında pozitif bir finansal fark oluştuğu tespit edilmiştir.`;
                     } else if (realDecisionNPV > 0) {
                         decisionTitleEl.innerText = "Finansal Bulgular: Pozitif Arbitraj Marjı Durumu";
                         decisionTitleEl.className = "text-lg font-black text-emerald-400 leading-snug mb-2";
@@ -3076,74 +3138,6 @@
             
             showToast("Simülasyon kredisi otomatik hesaplanarak kokpite aktarıldı.", "success");
             calculate();
-            recalculateInflationAnalysis();
-        }
-
-        function onCustomInflationChange(value) {
-            state.customInflationAnnual = value;
-            const infAnnual = parseFloat(value);
-            const infMonthly = (Math.pow(1 + infAnnual / 100, 1 / 12) - 1) * 100;
-            const annualStr = infAnnual.toFixed(2).replace('.', ',');
-            const monthlyStr = infMonthly.toFixed(2).replace('.', ',');
-            
-            id('inf-custom-slider-val').innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
-            recalculateInflationAnalysis();
-        }
-
-        function onAlternativeDepositRateChange(value) {
-            state.alternativeDepositRate = value;
-            const depAnnual = parseFloat(value);
-            const depMonthly = depAnnual / 12;
-            const annualStr = depAnnual.toFixed(2).replace('.', ',');
-            const monthlyStr = depMonthly.toFixed(2).replace('.', ',');
-            
-            id('inf-deposit-slider-val').innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
-            recalculateInflationAnalysis();
-        }
-
-        function onProductInterestSliderChange(value) {
-            const isMevduatProduct = (state.main === 'mevduat');
-            const isShortTermCommercial = ['rotatif', 'spot', 'iskonto'].includes(state.sub);
-            const valText = id('inf-product-interest-val');
-            
-            if (valText) {
-                if (isMevduatProduct) {
-                    valText.innerText = `%${parseFloat(value).toFixed(0)}`;
-                } else if (isShortTermCommercial) {
-                    valText.innerText = `Yıllık %${parseFloat(value).toFixed(2).replace('.', ',')}`;
-                } else {
-                    const monthly = parseFloat(value);
-                    const annual = monthly * 12;
-                    const monthlyStr = monthly.toFixed(2).replace('.', ',');
-                    const annualStr = annual.toFixed(2).replace('.', ',');
-                    
-                    if (state.faizTipi === 'yillik') {
-                        valText.innerText = `Yıllık %${annualStr} (Aylık %${monthlyStr})`;
-                    } else {
-                        valText.innerText = `Aylık %${monthlyStr} (Yıllık %${annualStr})`;
-                    }
-                }
-            }
-            
-            const mainFaizInput = id('val-faiz');
-            if (mainFaizInput) {
-                mainFaizInput.value = parseFloat(value).toFixed(2).replace('.', ',');
-            }
-            
-            if (isMevduatProduct) {
-                calculateMevduat();
-            } else if (state.sub === 'rotatif') {
-                calculateRotatif();
-            } else if (state.sub === 'spot') {
-                calculateSpot();
-            } else if (state.sub === 'iskonto') {
-                calculateIskonto();
-            } else if (state.sub.includes('ekhesap')) {
-                calculateEkHesap();
-            } else {
-                calculate();
-            }
-            
             recalculateInflationAnalysis();
         }
 
@@ -3275,23 +3269,6 @@
         function closeInflationOutside(event) {
             if (event.target.id === 'inflation-modal') {
                 closeInflation();
-            }
-        }
-
-        function toggleInflationTable() {
-            state.inflationTableVisible = !state.inflationTableVisible;
-            const container = id('inf-table-container');
-            const textEl = id('inf-table-toggle-text');
-            const iconEl = id('inf-table-toggle-icon');
-            
-            if (state.inflationTableVisible) {
-                container.classList.remove('hidden');
-                textEl.innerText = "AYLIK DETAYLI REEL ÖDEME TABLOSUNU GİZLE";
-                iconEl.classList.add('rotate-180');
-            } else {
-                container.classList.add('hidden');
-                textEl.innerText = "AYLIK DETAYLI REEL ÖDEME TABLOSUNU GÖSTER";
-                iconEl.classList.remove('rotate-180');
             }
         }
 
