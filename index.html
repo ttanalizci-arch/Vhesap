@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-H0WX0KCEM6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vhesap - Profesyonel Finans Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --apple-bg: #f4f4f5;
+            --apple-card: #ffffff;
+            --apple-text: #18181b;
+            --apple-text-muted: #71717a;
+            --apple-yellow: #d97706;
+            --bg-gradient: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
+            --border-color: rgba(217, 119, 6, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        body.dark {
+            --apple-bg: #09090b;
+            --apple-card: rgba(24, 24, 27, 0.75);
+            --apple-text: #f4f4f5;
+            --apple-text-muted: #a1a1aa;
+            --apple-yellow: #f59e0b;
+            --bg-gradient: radial-gradient(circle at top, rgba(39, 39, 42, 0.6) 0%, rgba(9, 9, 11, 0.98) 100%);
+            --border-color: rgba(245, 158, 11, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.8);
+        }
+
+        html, body {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            background-color: var(--apple-bg);
+            margin: 0; padding: 0;
+            transition: background-color 0.3s ease;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", sans-serif;
+            color: var(--apple-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+        }
+        .portal-container {
+            background: var(--bg-gradient);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        @media (min-width: 641px) {
+            .portal-container {
+                height: 850px;
+                max-height: 95vh;
+                border-radius: 36px;
+                border: 1px solid var(--border-color);
+                box-shadow: 0 30px 60px var(--shadow-color);
+                justify-content: center;
+            }
+        }
+        .portal-card {
+            background: var(--apple-card);
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .portal-card:hover {
+            border-color: var(--apple-yellow);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(245, 158, 11, 0.1);
+        }
+        
+        .global-theme-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--apple-card);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            color: var(--apple-yellow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .global-theme-btn:active { transform: scale(0.9); }
+        .global-theme-btn i { transition: transform 0.5s ease; }
+    </style>
+</head>
+<body class="dark">
+    <div class="portal-container text-center">
+        <!-- Merkezi Tema Butonu -->
+        <button id="global-theme-toggle" class="global-theme-btn" onclick="toggleGlobalTheme()" title="Temayı Değiştir">
+            <i id="global-theme-icon" class="fa-solid fa-moon text-lg"></i>
+        </button>
+
+        <div class="mb-8 mt-12 sm:mt-0">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 mb-4 shadow-inner">
+                <i class="fa-solid fa-chart-pie text-3xl text-amber-500"></i>
+            </div>
+            <h1 class="text-4xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
+            <p class="text-xs text-amber-500/80 uppercase font-extrabold tracking-widest mt-1.5">GELİŞMİŞ FİNANSAL SİMÜLASYON PORTALI</p>
+        </div>
+
+        <p class="text-[var(--apple-text-muted)] text-xs px-4 mb-8 leading-relaxed font-medium">
+            Lütfen gerçekleştirmek istediğiniz finansal analiz ve kredi amortisman türüne göre ilgili kokpiti seçiniz. Tüm sistem tek merkezden yönetilir.
+        </p>
+
+        <div class="space-y-4">
+            <!-- DOSYA YOLLARI DÜZELTİLDİ: GÖRECELİ YOL (RELATIVE PATH) -->
+            <button onclick="window.location.href='bireysel.html'" class="portal-card w-full p-5 rounded-3xl text-left flex items-center justify-between group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all duration-300">
+                        <i class="fa-solid fa-user-tie text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Bireysel Finans Paneli</h3>
+                        <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">İhtiyaç, Konut, Taşıt, Ek Hesap, Vadeli</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+            </button>
+
+            <!-- DOSYA YOLLARI DÜZELTİLDİ: GÖRECELİ YOL (RELATIVE PATH) -->
+            <button onclick="window.location.href='ticari.html'" class="portal-card w-full p-5 rounded-3xl text-left flex items-center justify-between group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all duration-300">
+                        <i class="fa-solid fa-briefcase text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Ticari Finans Paneli</h3>
+                        <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Ticari Krediler, Rotatif, Spot, İskonto</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+            </button>
+        </div>
+
+        <div class="mt-12 text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
+            Hassas Hesaplama & Karar Destek Altyapısı © 2026
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark');
+                document.getElementById('global-theme-icon').className = 'fa-solid fa-moon text-lg';
+            } else {
+                document.body.classList.remove('dark');
+                document.getElementById('global-theme-icon').className = 'fa-solid fa-sun text-lg';
+            }
+        };
+
+        function toggleGlobalTheme() {
+            const body = document.body;
+            const isDark = body.classList.toggle('dark');
+            localStorage.setItem('vhesap_global_theme', isDark ? 'dark' : 'light');
+            
+            const icon = document.getElementById('global-theme-icon');
+            icon.style.transform = 'rotate(360deg) scale(0)';
+            setTimeout(() => {
+                icon.className = isDark ? 'fa-solid fa-moon text-lg' : 'fa-solid fa-sun text-lg';
+                icon.style.transform = 'rotate(0deg) scale(1)';
+            }, 250);
+        }
+    </script>
+</body>
+</html>

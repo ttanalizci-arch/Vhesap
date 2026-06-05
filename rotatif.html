@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-H0WX0KCEM6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vhesap - Ticari Finans Paneli | Rotatif Kredi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            /* Gündüz (Açık) Teması */
+            --apple-bg: #f4f4f5;
+            --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
+            --apple-card: #ffffff;
+            --apple-card-border: rgba(0, 0, 0, 0.06);
+            --apple-text: #18181b;
+            --apple-text-muted: #71717a;
+            
+            --apple-yellow: #d97706; /* Amber */
+            --apple-yellow-hover: #b45309;
+            --apple-yellow-light: #fef08a;
+            
+            --apple-border: rgba(217, 119, 6, 0.15);
+            --apple-glow: rgba(217, 119, 6, 0.08);
+            
+            --apple-badge-bg: rgba(217, 119, 6, 0.05);
+            --apple-badge-text: #b45309;
+            --apple-badge-border: rgba(217, 217, 6, 0.15);
+            
+            --apple-nav-bg: rgba(228, 228, 231, 0.6);
+            --apple-nav-border: rgba(0, 0, 0, 0.04);
+            
+            --apple-modal-bg: #ffffff;
+            --apple-table-th-bg: #f4f4f5;
+            --apple-table-tr-even: rgba(0, 0, 0, 0.015);
+            --apple-table-border: rgba(0, 0, 0, 0.05);
+            
+            --apple-input-text: #d97706;
+            --apple-input-bg: #f4f4f5;
+            --apple-input-border: rgba(0, 0, 0, 0.04);
+
+            --apple-switch-bg: #e4e4e7;
+            --apple-switch-border: rgba(0, 0, 0, 0.08);
+            --apple-opt-panel-bg: rgba(0, 0, 0, 0.02);
+            --apple-opt-panel-border: rgba(0, 0, 0, 0.05);
+            
+            /* Durum Renkleri */
+            --success: #30d158;
+            --primary: #3b82f6;
+            --danger: #ff453a;
+            --accent: #f59e0b;
+        }
+
+        body.dark {
+            /* Siyah (Koyu) Teması */
+            --apple-bg: #09090b;
+            --apple-container-bg: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+            --apple-card: rgba(24, 24, 27, 0.7);
+            --apple-card-border: rgba(255, 255, 255, 0.04);
+            --apple-text: #f4f4f5;
+            --apple-text-muted: #a1a1aa;
+            
+            --apple-yellow: #f59e0b; /* Amber */
+            --apple-yellow-hover: #d97706;
+            --apple-yellow-light: #fef08a;
+            
+            --apple-border: rgba(245, 158, 11, 0.15);
+            --apple-glow: rgba(245, 158, 11, 0.25);
+            
+            --apple-badge-bg: rgba(245, 158, 11, 0.06);
+            --apple-badge-text: #fef08a;
+            --apple-badge-border: rgba(245, 158, 11, 0.12);
+            
+            --apple-nav-bg: rgba(39, 39, 42, 0.4);
+            --apple-nav-border: rgba(255, 255, 255, 0.03);
+            
+            --apple-modal-bg: #121214;
+            --apple-table-th-bg: #121214;
+            --apple-table-tr-even: rgba(255, 255, 255, 0.01);
+            --apple-table-border: rgba(255, 255, 255, 0.03);
+            
+            --apple-input-text: #f59e0b;
+            --apple-input-bg: #18181b;
+            --apple-input-border: rgba(255, 255, 255, 0.04);
+
+            --apple-switch-bg: #18181b;
+            --apple-switch-border: rgba(255, 255, 255, 0.05);
+            --apple-opt-panel-bg: rgba(255, 255, 255, 0.02);
+            --apple-opt-panel-border: rgba(255, 255, 255, 0.05);
+        }
+
+        html, body {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden; margin: 0; padding: 0;
+            -webkit-text-size-adjust: 100%; transition: background-color 0.3s ease;
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--apple-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", sans-serif;
+            color: var(--apple-text);
+            display: flex; justify-content: center; align-items: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--apple-text-muted); }
+
+        input, select, button { -webkit-appearance: none; appearance: none; outline: none; background: transparent; font-family: inherit; }
+
+        .apple-container {
+            background: var(--apple-container-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            width: 100%; max-width: 500px; height: 100%;
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+            padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+
+        @media (min-width: 641px) {
+            .apple-container {
+                height: 850px; max-height: 95vh; border-radius: 36px;
+                border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            }
+            body.dark .apple-container { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8); }
+        }
+
+        /* 5'Lİ SEGMENTED MENÜ */
+        .main-nav {
+            display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); 
+            background: rgba(128, 128, 128, 0.1); margin: 4px 16px; padding: 3px; border-radius: 12px; flex-shrink: 0; 
+            border: 1px solid rgba(128, 128, 128, 0.08); overflow-x: auto;
+        }
+        .nav-btn {
+            padding: 6px 2px; border-radius: 9px; font-size: 10px; font-weight: 600; text-align: center; cursor: pointer; 
+            color: var(--apple-text-muted); min-height: 32px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s; white-space: nowrap;
+        }
+        .nav-btn.active {
+            background: var(--apple-yellow); color: #000000; box-shadow: 0 4px 12px var(--apple-glow); font-weight: 700;
+        }
+
+        .scroll-area { flex: 1; padding: 8px 16px 40px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+        .input-card {
+            background: var(--apple-card); border-radius: 16px; padding: 12px 16px; margin-bottom: 10px;
+            border: 1px solid var(--apple-card-border); transition: all 0.3s ease;
+        }
+
+        .apple-input, .apple-select {
+            width: 100%; background: transparent; border: none; color: var(--apple-input-text);
+            font-size: 13px; font-weight: 600; padding: 2px 0; outline: none;
+        }
+        .apple-select option { background: var(--apple-modal-bg); color: var(--apple-text); }
+
+        .label-text { color: var(--apple-text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; display: block; font-weight: 700; }
+
+        /* APPLE TOGGLE SWITCHES */
+        .apple-toggle-bg { background: var(--apple-switch-bg); border: 1px solid var(--apple-switch-border); transition: all 0.3s ease; }
+        .apple-toggle-bg::after { background: var(--apple-text-muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .peer:checked + .apple-toggle-bg { background: var(--apple-yellow); border-color: var(--apple-yellow); }
+        .peer:checked + .apple-toggle-bg::after { background: #fff; }
+
+        .segmented-control { display: flex; background: var(--apple-switch-bg); padding: 3px; border-radius: 10px; border: 1px solid var(--apple-switch-border); gap: 4px; width: 100%; }
+        .segment-btn-rot {
+            flex: 1; background: transparent; border: none; color: var(--apple-text-muted); padding: 6px 4px;
+            border-radius: 7px; font-size: 9px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 4px; transition: all 0.25s ease;
+        }
+        .segment-btn-rot.active { background: var(--apple-yellow); color: #000; box-shadow: 0 2px 8px var(--apple-glow); }
+
+        .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+        .dot-success { background-color: var(--success); } .dot-primary { background-color: #3b82f6; } .dot-accent { background-color: #f59e0b; }
+        .segment-btn-rot.active .dot { background-color: #000 !important; }
+
+        .action-form-content { display: none; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+
+        .info-badge { font-size: 11px; background: var(--apple-badge-bg); color: var(--apple-badge-text); padding: 8px 12px; border-radius: 12px; font-weight: 600; margin-top: 6px; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--apple-badge-border); }
+
+        /* MINIMAL TABLOLAR VE KARTLAR */
+        .ledger-card { background: var(--apple-card); border: 1px solid var(--apple-card-border); border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+        .ledger-header { background-color: var(--apple-table-th-bg); padding: 8px 12px; border-bottom: 1px solid var(--apple-table-border); display: flex; justify-content: space-between; align-items: center; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 11px; white-space: nowrap; }
+        th { background-color: var(--apple-table-th-bg); color: var(--apple-text-muted); font-weight: 700; padding: 6px 8px; border-bottom: 2px solid var(--apple-table-border); font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        td { padding: 6px 8px; border-bottom: 1px solid var(--apple-table-border); color: var(--apple-text); vertical-align: middle; white-space: nowrap; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: var(--apple-table-tr-even); }
+        
+        .satir-tahakkuk { background-color: var(--apple-badge-bg) !important; font-weight: 700; }
+        .satir-tahakkuk td { color: var(--apple-yellow) !important; border-left: 2px solid var(--apple-yellow); }
+        .satir-faiz-degisim { background-color: rgba(255, 69, 58, 0.04) !important; font-style: italic; }
+        .satir-faiz-degisim td { color: var(--danger) !important; border-left: 2px solid var(--danger); }
+        
+        .select-disabled { opacity: 0.4; pointer-events: none; }
+
+        /* PDF MODU */
+        .pdf-mode { height: auto !important; max-height: none !important; overflow: visible !important; }
+        .pdf-mode .apple-container { height: auto !important; max-height: none !important; overflow: visible !important; box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
+        .pdf-mode .scroll-area { overflow: visible !important; height: auto !important; max-height: none !important; padding-bottom: 0 !important; }
+        .pdf-mode .pdf-hide { display: none !important; }
+    </style>
+</head>
+<body class="dark flex h-screen overflow-hidden selection:bg-amber-500/30">
+
+<div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-[var(--apple-yellow)] text-xs font-bold flex items-center gap-2" id="toast-container">
+    <i class="fa-solid fa-circle-info text-[var(--apple-yellow)]"></i>
+    <span id="toast-message"></span>
+</div>
+
+<div class="apple-container" id="main-container">
+    <div class="flex flex-col h-full w-full overflow-hidden">
+        
+        <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0 pdf-hide">
+            <a href="index.html" class="text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] transition-colors flex items-center gap-1.5 text-xs font-bold uppercase">
+                <i class="fa-solid fa-house-user"></i> Portal
+            </a>
+            <div class="flex items-baseline gap-2 cursor-pointer" onclick="window.location.href='bireysel.html'">
+                <h1 class="text-2xl font-extrabold tracking-tight text-[var(--apple-yellow)]">Vhesap</h1>
+                <span class="text-[9px] text-[var(--apple-yellow)] opacity-85 font-bold uppercase tracking-wider bg-[var(--apple-badge-bg)] px-1.5 py-0.5 rounded border border-[var(--apple-badge-border)] hover:bg-[var(--apple-yellow)] hover:text-black transition-colors">Ticari</span>
+            </div>
+            <div class="w-16"></div>
+        </div>
+
+        <!-- DOSYA YOLLARI DÜZELTİLDİ: GÖRECELİ YOL (RELATIVE PATH) -->
+        <div class="main-nav pdf-hide">
+            <button class="nav-btn" onclick="window.location.href='ticari.html?tab=taksitli-kredi'">Taksitli Kredi</button>
+            <button class="nav-btn active">Rotatif</button>
+            <button class="nav-btn" onclick="window.location.href='ticari.html?tab=spot'">Spot</button>
+            <button class="nav-btn" onclick="window.location.href='ticari.html?tab=iskonto'">İskonto</button>
+            <button class="nav-btn" onclick="window.location.href='ticari.html?tab=mevduat'">Vadeli</button>
+        </div>
+
+        <div class="scroll-area flex-1" id="content-area">
+            
+            <div class="info-badge mb-3">
+                <span class="font-bold text-[var(--apple-yellow)] flex items-center gap-1.5 text-xs"><i class="fa-solid fa-rotate"></i> Rotatif Kredi (Revolving)</span>
+                <span class="text-[var(--apple-text-muted)] text-[11px] leading-relaxed">Limit dahilinde kısmi kullanım/kapama yapılabilen esnek kredidir.</span>
+            </div>
+
+            <div class="input-card mb-3 !p-0 overflow-hidden">
+                <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-sliders text-[var(--apple-yellow)] mr-1.5"></i> Sözleşme Parametreleri</span>
+                    
+                    <div class="flex items-center gap-1.5 bg-[var(--apple-card)] border border-[var(--apple-card-border)] px-2 py-0.5 rounded shadow-sm hover:border-[var(--apple-yellow)] transition-colors cursor-pointer relative" title="Ödeme Periyodunu Değiştir">
+                        <span class="text-[9px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider pointer-events-none">Periyot:</span>
+                        <select id="periyot" class="bg-transparent text-[10px] font-bold text-[var(--apple-yellow)] outline-none cursor-pointer appearance-none pr-3" onchange="recalculateAll()">
+                            <option value="1">1 Ay</option>
+                            <option value="3" selected>3 Ay</option>
+                            <option value="6">6 Ay</option>
+                            <option value="12">12 Ay</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down text-[7px] text-[var(--apple-yellow)] absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+                </div>
+                
+                <div class="px-4 py-3 flex flex-wrap gap-2.5 items-center">
+                    <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
+                        <span id="faizTuruLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Basit Faiz</span>
+                        <input type="checkbox" id="faizTuruToggle" class="hidden peer" onchange="toggleFaizTuru(this.checked)">
+                        <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
+                    </label>
+
+                    <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm pdf-hide">
+                        <span id="modeLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Tekli Mod</span>
+                        <input type="checkbox" id="modeToggle" class="hidden peer" onchange="handleModeToggle(this.checked)">
+                        <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
+                    </label>
+
+                    <label id="singleAnchorToggleBadge" class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm transition-all duration-300">
+                        <span class="text-[10px] font-bold text-[var(--apple-text)]">Özel Çapa</span>
+                        <input type="checkbox" id="useAnchorSingle" class="hidden peer" onchange="toggleSingleAnchor(this.checked)">
+                        <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
+                    </label>
+                </div>
+
+                <div id="singleAnchorDateContainer" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">İlk Devre Sonu (Portföy)</span>
+                        <input type="date" id="singleAnchorDate" value="2026-06-05" class="apple-input bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] px-2 py-1 rounded text-xs w-32" onchange="recalculateAll()">
+                    </div>
+                </div>
+
+                <div id="multi-mode-panel" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">Aktif Dilimler</span>
+                        <button class="text-[var(--apple-yellow)] text-[10px] font-bold uppercase tracking-wider hover:opacity-70 transition-opacity flex items-center gap-1 pdf-hide" onclick="addNewSliceLetter()">
+                            <i class="fa-solid fa-plus"></i> Yeni Ekle
+                        </button>
+                    </div>
+                    <div id="active-slices-list" class="flex flex-wrap gap-1.5 py-1"></div>
+                </div>
+            </div>
+
+            <div class="input-card mb-3 !p-0 overflow-hidden pdf-hide">
+                <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer text-[var(--apple-yellow)] mr-1.5"></i> İşlem Talimatları</span>
+                </div>
+                
+                <div class="p-3 pb-4">
+                    <div class="segmented-control mb-3">
+                        <button class="segment-btn-rot active" onclick="switchActionTab('kul')">
+                            <div class="flex items-center gap-1.5"><span class="dot dot-success"></span> Kullandırım</div>
+                        </button>
+                        <button class="segment-btn-rot" onclick="switchActionTab('ode')">
+                            <div class="flex items-center gap-1.5"><span class="dot dot-primary"></span> Ödeme</div>
+                        </button>
+                        <button class="segment-btn-rot" onclick="switchActionTab('faiz')">
+                            <div class="flex items-center gap-1.5"><span class="dot dot-accent"></span> Faiz Değiş.</div>
+                        </button>
+                    </div>
+                    
+                    <div class="action-form-content" id="form-kul" style="display: block;">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative" id="kulTargetContainer">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Hedef Dilim</span>
+                                <div class="relative w-full">
+                                    <select id="kulTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4" onchange="updateKullandirimAnchorUI(this.value)"></select>
+                                    <i class="fa-solid fa-chevron-down text-[7px] text-[var(--apple-yellow)] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">İşlem Tarihi</span>
+                                <input type="date" id="kulDate" value="2026-06-05" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
+                            </div>
+
+                            <div id="multiAnchorWrapper" class="col-span-2 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] rounded-lg p-2 hidden transition-all duration-300">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] font-bold text-[var(--apple-text)]">Özel Çapa <span class="opacity-70 text-[8px]">(Seçili Dilim)</span></span>
+                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                        <span class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase">Aç/Kapat</span>
+                                        <input type="checkbox" id="kulAnchorToggle" class="hidden peer" onchange="toggleKulAnchor(this.checked)">
+                                        <div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div>
+                                    </label>
+                                </div>
+                                <div id="kulAnchorDateContainer" class="hidden mt-1.5 pt-1.5 border-t border-[var(--apple-table-border)]">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[9px] text-[var(--apple-text-muted)] uppercase font-bold">İlk Devre Sonu</span>
+                                        <input type="date" id="kulAnchorDate" class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] px-1.5 py-0.5 rounded text-[11px] font-bold w-28" onchange="saveAnchorForSlice()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 col-span-2">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tutar (TL)</span>
+                                <input type="text" id="kulAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                            </div>
+                            
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Faiz Oranı (%)</span>
+                                    <label class="flex items-center gap-1 cursor-pointer">
+                                        <span id="kulRateBasisLabel" class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase tracking-wide">Yıllık</span>
+                                        <input type="checkbox" id="kulRateBasisToggle" class="hidden peer" onchange="toggleRateBasis('kul')">
+                                        <div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div>
+                                    </label>
+                                </div>
+                                <input type="text" id="kulRate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="42,00">
+                            </div>
+
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Komisyon Oranı (% Yıl)</span>
+                                <input type="text" id="kulComRate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="1,20">
+                            </div>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-white dark:text-black text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider shadow-[0_4px_10px_-4px_var(--apple-glow)] active:scale-[0.98] transition-all" onclick="executeInlineKullandirim()">Talimatı İşle (T+0)</button>
+                    </div>
+
+                    <div class="action-form-content" id="form-ode">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative" id="odeTargetContainer">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Hedef Dilim</span>
+                                <div class="relative w-full">
+                                    <select id="odeTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4"></select>
+                                    <i class="fa-solid fa-chevron-down text-[7px] text-[var(--apple-yellow)] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tahsilat Tarihi</span>
+                                <input type="date" id="odeDate" value="2026-06-25" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
+                            </div>
+                            <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Ödeme Tutarı (TL)</span>
+                                <input type="text" id="odeAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                            </div>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-white dark:text-black text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider shadow-[0_4px_10px_-4px_var(--apple-glow)] active:scale-[0.98] transition-all" onclick="executeInlinePayment()">Ödemeyi Kaydet (T+1)</button>
+                    </div>
+
+                    <div class="action-form-content" id="form-faiz">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative" id="faizTargetContainer">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Hedef Dilim</span>
+                                    <label class="flex items-center gap-1 cursor-pointer" id="faizApplyAllLabel">
+                                        <span class="text-[7px] font-bold text-[var(--apple-yellow)] uppercase tracking-wider">Hepsine</span>
+                                        <input type="checkbox" id="faizApplyAll" class="hidden peer" onchange="toggleFaizApplyAll(this.checked)">
+                                        <div class="w-[20px] h-[10px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2 after:h-2 after:rounded-full peer-checked:after:translate-x-[10px] transition-all shadow-inner"></div>
+                                    </label>
+                                </div>
+                                <div class="relative w-full">
+                                    <select id="faizTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4"></select>
+                                    <i class="fa-solid fa-chevron-down text-[7px] text-[var(--apple-yellow)] absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Geçerlilik Tarihi</span>
+                                <input type="date" id="faizDate" value="2026-07-01" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
+                            </div>
+                            
+                            <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Yeni Cari Oran (%)</span>
+                                    <label class="flex items-center gap-1 cursor-pointer">
+                                        <span id="faizRateBasisLabel" class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase tracking-wide">Yıllık</span>
+                                        <input type="checkbox" id="faizRateBasisToggle" class="hidden peer" onchange="toggleRateBasis('faiz')">
+                                        <div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div>
+                                    </label>
+                                </div>
+                                <input type="text" id="faizRate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="45,00">
+                            </div>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-white dark:text-black text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider shadow-[0_4px_10px_-4px_var(--apple-glow)] active:scale-[0.98] transition-all" onclick="executeInlineFaizDegisikligi()">Güncellemeyi İşle</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ledgersArea" class="mt-4"></div>
+
+            <div id="results" class="hidden mt-4 mb-8">
+                <div id="summaryTableContainer"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let systemMode = 'single'; 
+    let anchorDates = {}; 
+    let paidPeriods = {}; // Devre sonlarının ödeme durumu: { "A_tarih_timestamp": true/false }
+    let portfolio = {}; 
+    let subAccountCounter = 65; 
+    let activeSlices = ['A']; 
+
+    const initialTransactions = [];
+    let dbTransactions = [];
+
+    // TÜRKİYE RESMİ TATİL MOTORU (Sabitler ve Dini Bayramlar 2026-2028)
+    const publicHolidays = [
+        "01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-29",
+        // 2026 Yaklaşık Dini Bayramlar
+        "2026-03-20", "2026-03-21", "2026-03-22", // Ramazan
+        "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-30", // Kurban
+        // 2027 Yaklaşık Dini Bayramlar
+        "2027-03-09", "2027-03-10", "2027-03-11", // Ramazan
+        "2027-05-16", "2027-05-17", "2027-05-18", "2027-05-19", // Kurban
+        // 2028 Yaklaşık Dini Bayramlar
+        "2028-02-26", "2028-02-27", "2028-02-28", // Ramazan
+        "2028-05-05", "2028-05-06", "2028-05-07", "2028-05-08"  // Kurban
+    ];
+
+    function isBusinessDay(d) {
+        let day = d.getDay();
+        if (day === 0 || day === 6) return false; // Hafta sonu atla
+        
+        let mmdd = String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+        let yyyymmdd = d.getFullYear() + "-" + mmdd;
+        
+        if (publicHolidays.includes(mmdd) || publicHolidays.includes(yyyymmdd)) return false; // Resmi tatil atla
+        return true;
+    }
+
+    function getNextBusinessDay(date) {
+        let d = new Date(date);
+        d.setDate(d.getDate() + 1); // T+1'den başla
+        while (!isBusinessDay(d)) {
+            d.setDate(d.getDate() + 1); // İş günü bulana kadar ileri git
+        }
+        return d;
+    }
+
+    function getPreviousBusinessDay(date) {
+        let d = new Date(date);
+        while (!isBusinessDay(d)) {
+            d.setDate(d.getDate() - 1); // İş günü bulana kadar geri git
+        }
+        return d;
+    }
+
+    function getLastBusinessDayOfMonth(year, month) {
+        let d = new Date(year, month + 1, 0);
+        return getPreviousBusinessDay(d);
+    }
+
+    window.onload = function() {
+        let bugun = "2026-06-05";
+        dbTransactions = JSON.parse(JSON.stringify(initialTransactions));
+        resetPortfolioState();
+        refreshTargetDropdowns();
+        updateActiveSlicesUI(); 
+        
+        document.getElementById('kulDate').value = bugun;
+        document.getElementById('odeDate').value = bugun;
+        document.getElementById('faizDate').value = bugun;
+        document.getElementById('singleAnchorDate').value = bugun;
+        
+        mask(document.getElementById('kulAmount'));
+        mask(document.getElementById('odeAmount'));
+        
+        const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.remove('dark');
+        } else {
+            document.body.classList.add('dark');
+        }
+
+        document.getElementById('faizTuruToggle').checked = false;
+        toggleFaizTuru(false);
+
+        setTimeout(() => recalculateAll(), 100);
+    };
+
+    function showToast(message) {
+        const toast = document.getElementById('toast-container');
+        document.getElementById('toast-message').innerText = message;
+        toast.style.transform = 'translate(-50%, 0)';
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.transform = 'translate(-50%, -20px)';
+            toast.style.opacity = '0';
+        }, 3000);
+    }
+
+    function switchActionTab(tabName) {
+        const buttons = document.querySelectorAll('.segment-btn-rot');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        const forms = document.querySelectorAll('.action-form-content');
+        forms.forEach(form => form.style.display = 'none');
+        document.getElementById('form-' + tabName).style.display = 'block';
+    }
+
+    function toggleFaizTuru(checked) {
+        document.getElementById('faizTuruLabel').innerText = checked ? 'Bileşik Faiz' : 'Basit Faiz';
+        recalculateAll();
+    }
+    function isBilesik() { return document.getElementById('faizTuruToggle').checked; }
+
+    function toggleRateBasis(prefix) {
+        const toggle = document.getElementById(prefix + 'RateBasisToggle');
+        const label = document.getElementById(prefix + 'RateBasisLabel');
+        const input = document.getElementById(prefix + 'Rate');
+        
+        let currentVal = parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0;
+        
+        if (toggle.checked) {
+            label.innerText = 'Aylık';
+            let newVal = currentVal / 12;
+            input.value = newVal.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        } else {
+            label.innerText = 'Yıllık';
+            let newVal = currentVal * 12;
+            input.value = newVal.toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+    }
+
+    function handleModeToggle(checked) {
+        systemMode = checked ? 'multi' : 'single';
+        document.getElementById('modeLabel').innerText = checked ? 'Çoklu Mod' : 'Tekli Mod';
+
+        if (checked) {
+            document.getElementById('multi-mode-panel').classList.remove('hidden');
+            document.getElementById('singleAnchorToggleBadge').classList.add('hidden');
+            document.getElementById('singleAnchorDateContainer').classList.add('hidden');
+            document.getElementById('multiAnchorWrapper').classList.remove('hidden');
+            
+            dbTransactions = []; 
+            subAccountCounter = 65; 
+            activeSlices = ['A'];
+            anchorDates = {}; 
+            paidPeriods = {};
+            subAccountCounter++; 
+            showToast("Çoklu Bağımsız Dilim moduna geçildi.");
+        } else {
+            document.getElementById('multi-mode-panel').classList.add('hidden');
+            document.getElementById('singleAnchorToggleBadge').classList.remove('hidden');
+            document.getElementById('multiAnchorWrapper').classList.add('hidden');
+            if (document.getElementById('useAnchorSingle').checked) {
+                document.getElementById('singleAnchorDateContainer').classList.remove('hidden');
+            }
+            
+            dbTransactions = JSON.parse(JSON.stringify(initialTransactions));
+            anchorDates = {};
+            paidPeriods = {};
+            showToast("Klasik Genel Rotatif moduna dönüldü.");
+        }
+
+        resetPortfolioState();
+        refreshTargetDropdowns();
+        updateActiveSlicesUI();
+        if (systemMode === 'multi') {
+            updateKullandirimAnchorUI(document.getElementById('kulTarget').value);
+        }
+        recalculateAll();
+    }
+
+    function addNewSliceLetter() {
+        if (systemMode !== 'multi') return;
+        
+        let letter = String.fromCharCode(subAccountCounter);
+        if (subAccountCounter > 90) { 
+            showToast("Maksimum dilim sınırına ulaşıldı!");
+            return;
+        }
+        
+        activeSlices.push(letter);
+        subAccountCounter++;
+        
+        refreshTargetDropdowns();
+        updateActiveSlicesUI();
+        
+        document.getElementById('kulTarget').value = letter;
+        document.getElementById('odeTarget').value = letter;
+        document.getElementById('faizTarget').value = letter;
+
+        updateKullandirimAnchorUI(letter);
+        showToast(`Dilim ${letter} listeye eklendi.`);
+        recalculateAll();
+    }
+
+    function updateActiveSlicesUI() {
+        const container = document.getElementById('active-slices-list');
+        if (!container) return;
+        
+        if (systemMode === 'single') {
+            container.innerHTML = ``;
+        } else {
+            container.innerHTML = activeSlices.map(letter => {
+                let dInfo = anchorDates[letter] ? ` <span class="opacity-70 font-normal ml-0.5">(${formatDate(anchorDates[letter]).slice(0,5)})</span>` : '';
+                return `<span class="bg-[var(--apple-badge-bg)] text-[var(--apple-badge-text)] px-2 py-1 rounded-full text-[10px] font-bold border border-[var(--apple-badge-border)]">Dilim ${letter}${dInfo}</span>`;
+            }).join('');
+        }
+    }
+
+    function refreshTargetDropdowns() {
+        const kulTargetContainer = document.getElementById('kulTargetContainer');
+        const odeTargetContainer = document.getElementById('odeTargetContainer');
+        const faizTargetContainer = document.getElementById('faizTargetContainer');
+        
+        const kulTarget = document.getElementById('kulTarget');
+        const odeTarget = document.getElementById('odeTarget');
+        const faizTarget = document.getElementById('faizTarget');
+        
+        const faizApplyAllCheck = document.getElementById('faizApplyAll');
+
+        let opts = '';
+        if (systemMode === 'single') {
+            opts = `<option value="ANA">Genel (ANA)</option>`;
+            kulTargetContainer.classList.add('select-disabled');
+            odeTargetContainer.classList.add('select-disabled');
+            faizTargetContainer.classList.add('select-disabled');
+        } else {
+            activeSlices.forEach(letter => { opts += `<option value="${letter}">Dilim ${letter}</option>`; });
+            kulTargetContainer.classList.remove('select-disabled');
+            odeTargetContainer.classList.remove('select-disabled');
+            faizTargetContainer.classList.remove('select-disabled');
+            faizApplyAllCheck.disabled = false;
+        }
+        
+        kulTarget.innerHTML = opts;
+        odeTarget.innerHTML = opts;
+        faizTarget.innerHTML = opts;
+    }
+
+    function toggleSingleAnchor(checked) {
+        document.getElementById('singleAnchorDateContainer').classList.toggle('hidden', !checked);
+        recalculateAll();
+    }
+
+    function updateKullandirimAnchorUI(slice) {
+        if (systemMode !== 'multi') return;
+        const toggle = document.getElementById('kulAnchorToggle');
+        const container = document.getElementById('kulAnchorDateContainer');
+        const dateInput = document.getElementById('kulAnchorDate');
+        
+        if (anchorDates[slice]) {
+            toggle.checked = true;
+            dateInput.value = anchorDates[slice];
+            container.classList.remove('hidden');
+        } else {
+            toggle.checked = false;
+            container.classList.add('hidden');
+        }
+    }
+
+    function toggleKulAnchor(checked) {
+        const container = document.getElementById('kulAnchorDateContainer');
+        const dateInput = document.getElementById('kulAnchorDate');
+        container.classList.toggle('hidden', !checked);
+        if (checked && !dateInput.value) {
+            dateInput.value = document.getElementById('kulDate').value;
+        }
+        saveAnchorForSlice();
+    }
+
+    function saveAnchorForSlice() {
+        if (systemMode !== 'multi') return;
+        const slice = document.getElementById('kulTarget').value;
+        const checked = document.getElementById('kulAnchorToggle').checked;
+        if (checked) {
+            anchorDates[slice] = document.getElementById('kulAnchorDate').value;
+        } else {
+            delete anchorDates[slice];
+        }
+        updateActiveSlicesUI();
+        recalculateAll();
+    }
+
+    function toggleFaizApplyAll(checked) {
+        const targetSel = document.getElementById('faizTarget');
+        if (checked) {
+            targetSel.parentElement.classList.add('select-disabled');
+        } else {
+            targetSel.parentElement.classList.remove('select-disabled');
+        }
+    }
+
+    function resetPortfolioState() {
+        portfolio = {};
+        if (systemMode === 'single') {
+            portfolio['ANA'] = { name: "Genel Rotatif", rows: [] };
+        } else {
+            activeSlices.forEach(letter => { portfolio[letter] = { name: "Dilim " + letter, rows: [] }; });
+        }
+    }
+
+    function executeInlineKullandirim() {
+        const subAcc = systemMode === 'single' ? 'ANA' : document.getElementById('kulTarget').value;
+        const amount = getRawVal('kulAmount');
+        const rateStr = document.getElementById('kulRate').value.replace(',', '.');
+        let rate = parseFloat(rateStr) || 0;
+        
+        if (document.getElementById('kulRateBasisToggle').checked) {
+            rate = rate * 12;
+        }
+
+        const comRateStr = document.getElementById('kulComRate').value.replace(',', '.');
+        const comRate = parseFloat(comRateStr) || 0;
+        const date = document.getElementById('kulDate').value;
+
+        if (amount <= 0) { showToast("Kullandırım tutarı sıfır olamaz."); return; }
+        if (systemMode === 'multi') { saveAnchorForSlice(); } 
+
+        dbTransactions.push({ 
+            id: Date.now(), 
+            subAcc: subAcc, 
+            type: 'Kullandırım', 
+            amount: amount, 
+            rate: rate, 
+            comRate: comRate, 
+            date: date 
+        });
+        showToast(`${subAcc} için kullandırım işlendi.`);
+        recalculateAll();
+    }
+
+    function executeInlinePayment() {
+        const subAcc = systemMode === 'single' ? 'ANA' : document.getElementById('odeTarget').value;
+        const amount = getRawVal('odeAmount');
+        const date = document.getElementById('odeDate').value;
+
+        if (amount <= 0) { showToast("Ödeme tutarı sıfır olamaz."); return; }
+
+        dbTransactions.push({ id: Date.now(), subAcc: subAcc, type: 'Ödeme', amount: amount, rate: 0, comRate: 0, date: date });
+        showToast(`${subAcc} ödemesi T+1 kaydedildi.`);
+        recalculateAll();
+    }
+
+    function executeInlineFaizDegisikligi() {
+        const applyAll = document.getElementById('faizApplyAll').checked;
+        const subAcc = systemMode === 'single' ? 'ANA' : document.getElementById('faizTarget').value;
+        const rateStr = document.getElementById('faizRate').value.replace(',', '.');
+        let rate = parseFloat(rateStr) || 0;
+
+        if (document.getElementById('faizRateBasisToggle').checked) {
+            rate = rate * 12;
+        }
+        
+        const date = document.getElementById('faizDate').value;
+
+        if (applyAll && systemMode === 'multi') {
+            activeSlices.forEach(acc => {
+                dbTransactions.push({ id: Date.now() + Math.random(), subAcc: acc, type: 'Faiz Oranı Değişikliği', amount: 0, rate: rate, comRate: -1, date: date });
+            });
+            showToast(`Tüm açık dilimlerin faizi güncellendi.`);
+        } else {
+            dbTransactions.push({ id: Date.now(), subAcc: subAcc, type: 'Faiz Oranı Değişikliği', amount: 0, rate: rate, comRate: -1, date: date });
+            showToast(`${subAcc} faizi güncellendi.`);
+        }
+        
+        recalculateAll();
+    }
+
+    function deleteTransaction(txId) {
+        if (!txId) return;
+        dbTransactions = dbTransactions.filter(t => t.id !== txId);
+        showToast("İşlem kaydı silindi.");
+        recalculateAll();
+    }
+
+    // DEVRE SONU ÖDEME/SERMAYELEŞTİRME AKSİYON TETİKLEYİCİSİ
+    function togglePeriodPaid(peKey) {
+        paidPeriods[peKey] = !paidPeriods[peKey];
+        if(paidPeriods[peKey]) {
+            showToast("Dönem faiz/komisyonu nakden ödendi seçildi (Basit bakiye korundu).");
+        } else {
+            showToast("Ödeme iptal edildi, faiz anaparaya eklendi (Bileşik Faiz aktif).");
+        }
+        recalculateAll();
+    }
+
+    function formatDate(date) {
+        if (!date) return '';
+        let d = new Date(date);
+        let day = String(d.getDate()).padStart(2, '0');
+        let month = String(d.getMonth() + 1).padStart(2, '0');
+        return `${day}.${month}.${d.getFullYear()}`;
+    }
+
+    function generatePeriodEnds(subAccId, startDate, endDate) {
+        let dates = [];
+        let period = parseInt(document.getElementById('periyot').value); 
+        let start = new Date(startDate);
+        let end = new Date(endDate);
+
+        let customAnchor = null;
+        if (systemMode === 'single') {
+            if (document.getElementById('useAnchorSingle').checked) {
+                customAnchor = document.getElementById('singleAnchorDate').value;
+            }
+        } else {
+            if (anchorDates[subAccId]) {
+                customAnchor = anchorDates[subAccId];
+            }
+        }
+
+        if (customAnchor) {
+            let anchor = new Date(customAnchor);
+            let current = new Date(anchor);
+            
+            while (current >= start) current.setMonth(current.getMonth() - period);
+            current.setMonth(current.getMonth() + period);
+            
+            while (current <= end) {
+                dates.push(new Date(getPreviousBusinessDay(current)));
+                current.setMonth(current.getMonth() + period);
+            }
+        } else {
+            let currentYear = start.getFullYear();
+            let endYear = end.getFullYear();
+            for (let year = currentYear; year <= endYear; year++) {
+                let targetMonths = [];
+                if (period === 1) targetMonths = [0,1,2,3,4,5,6,7,8,9,10,11]; 
+                else if (period === 3) targetMonths = [2, 5, 8, 11]; 
+                else if (period === 6) targetMonths = [5, 11]; 
+                else if (period === 12) targetMonths = [11]; 
+
+                targetMonths.forEach(m => {
+                    let d = getLastBusinessDayOfMonth(year, m);
+                    if (d >= start && d <= end) dates.push(d);
+                });
+            }
+        }
+        let uniqueTimes = [...new Set(dates.map(d => d.getTime()))];
+        uniqueTimes.sort((a,b) => a - b);
+        return uniqueTimes.map(t => new Date(t));
+    }
+
+    // Gelecekteki ilk Açık Devre Sonunu Bulmak İçin (Simülasyon Çözümü)
+    function getNextPeriodEnd(subAccId, refDate) {
+        let period = parseInt(document.getElementById('periyot').value);
+        let d = new Date(refDate);
+        
+        let customAnchor = null;
+        if (systemMode === 'single') {
+            if (document.getElementById('useAnchorSingle').checked) {
+                customAnchor = document.getElementById('singleAnchorDate').value;
+            }
+        } else {
+            if (anchorDates[subAccId]) {
+                customAnchor = anchorDates[subAccId];
+            }
+        }
+
+        if (customAnchor) {
+            let anchor = new Date(customAnchor);
+            let current = new Date(anchor);
+            
+            if (current <= d) {
+                while (current <= d) {
+                    current.setMonth(current.getMonth() + period);
+                }
+            } else {
+                while (current > d) {
+                    current.setMonth(current.getMonth() - period);
+                }
+                current.setMonth(current.getMonth() + period);
+            }
+            return new Date(getPreviousBusinessDay(current));
+        } else {
+            let year = d.getFullYear();
+            let month = d.getMonth();
+            let targetMonths = [];
+            if (period === 1) targetMonths = [0,1,2,3,4,5,6,7,8,9,10,11]; 
+            else if (period === 3) targetMonths = [2, 5, 8, 11]; 
+            else if (period === 6) targetMonths = [5, 11]; 
+            else if (period === 12) targetMonths = [11]; 
+            
+            for (let y = year; y <= year + 2; y++) {
+                for (let m of targetMonths) {
+                    if (y === year && m < month) continue;
+                    let cand = getLastBusinessDayOfMonth(y, m);
+                    if (cand > d) return cand;
+                }
+            }
+        }
+        return d;
+    }
+
+    // Gelişmiş Matematik ve Tahakkuk Motoru
+    function calculateAccountLedger(subAccId) {
+        let rawTx = dbTransactions.filter(t => t.subAcc === subAccId);
+        if (rawTx.length === 0) return [];
+
+        rawTx.sort((a,b) => new Date(a.date) - new Date(b.date));
+        let startRange = new Date(rawTx[0].date);
+        let endRange = new Date(rawTx[rawTx.length - 1].date);
+        let periodEnds = generatePeriodEnds(subAccId, startRange, endRange);
+        
+        let timeline = [];
+        rawTx.forEach(tx => {
+            let valDate = new Date(tx.date);
+            if (tx.type === 'Ödeme') {
+                // ÖDEME İŞLEMLERİNDE T+1 VE RESMİ TATİL/HAFTASONU ATLATMA MOTORU
+                valDate = getNextBusinessDay(valDate);
+            }
+            // Kullandırım işlemi direkt olarak aynı gün (T+0) valörlü çalışır, eksiye alınmaz. (Böylece 21 tam gün yakalanır)
+            timeline.push({ type: 'transaction', refDate: new Date(tx.date), valorDate: valDate, data: tx });
+        });
+        periodEnds.forEach(pe => {
+            timeline.push({ type: 'devreSonu', refDate: new Date(pe), valorDate: new Date(pe), data: null });
+        });
+
+        // AÇIK DÖNEM SİMÜLASYONU İÇİN EKLENEN KISIM
+        if (timeline.length > 0) {
+            let maxTimelineDate = new Date(Math.max(...timeline.map(t => t.valorDate)));
+            let nextPE = getNextPeriodEnd(subAccId, maxTimelineDate);
+            if (nextPE > maxTimelineDate) {
+                timeline.push({ type: 'openPeriodSim', refDate: nextPE, valorDate: nextPE, data: null });
+            }
+        }
+
+        timeline.sort((a,b) => {
+            let diff = a.valorDate - b.valorDate;
+            if (diff !== 0) return diff;
+            if (a.type === 'transaction' && b.type === 'devreSonu') return -1;
+            if (a.type === 'devreSonu' && b.type === 'transaction') return 1;
+            if (a.type === 'openPeriodSim') return 1;
+            if (b.type === 'openPeriodSim') return -1;
+            return 0;
+        });
+
+        let ledger = [];
+        let currentBakiye = 0;
+        let commissionBase = 0; // Komisyonun ödemelerle düşmemesi için ayrı izleyici (Kullandırım Matrahı)
+        let activeRate = rawTx[0].rate || 42.00; 
+        let activeComRate = rawTx[0].comRate || 0; 
+        let lastValorDate = timeline.length > 0 ? new Date(timeline[0].valorDate) : null;
+        
+        let cumulativeInterest = 0;
+        let interestPeriodAccumulated = 0;
+        let cumulativeCommission = 0;
+        let commissionPeriodAccumulated = 0;
+
+        let accountPeriods = [];
+        let periodEndsIdx = 0;
+        
+        function buildNewPeriodObj(peDate) {
+            let label = "Aktif / Açık Dönem (Simüle)";
+            if (peDate) {
+                const months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+                label = months[peDate.getMonth()] + " " + peDate.getFullYear() + " Dönemi";
+            }
+            return {
+                endDate: peDate ? peDate.getTime() : null,
+                label: label,
+                kullandirim: 0,
+                odeme: 0,
+                faiz: 0,
+                komisyon: 0,
+                bakiye: 0,
+                isPaid: false
+            };
+        }
+
+        let nextPE = periodEnds.length > 0 ? periodEnds[0] : null;
+        let currPeriodObj = buildNewPeriodObj(nextPE);
+
+        timeline.forEach((event) => {
+            let days = lastValorDate ? Math.round((event.valorDate - lastValorDate) / (1000 * 60 * 60 * 24)) : 0;
+            let accruedInterest = 0;
+            let accruedCommission = 0;
+            let isCompound = isBilesik();
+
+            if (days > 0 && (currentBakiye > 0 || commissionBase > 0)) {
+                if (currentBakiye > 0) {
+                    if (isCompound) {
+                        let newBakiye = currentBakiye * Math.pow(1 + (activeRate / 100) / 360, days);
+                        accruedInterest = newBakiye - currentBakiye;
+                        currentBakiye = newBakiye;
+                    } else {
+                        accruedInterest = (currentBakiye * (activeRate / 100) * days) / 360;
+                    }
+                }
+                
+                // KOMİSYON sadece artan kullandırım matrahı (commissionBase) üzerinden hesaplanır. Ödemeler bu matrahı düşürmez.
+                if (commissionBase > 0) {
+                    accruedCommission = (commissionBase * (activeComRate / 100) * days) / 360;
+                }
+
+                cumulativeInterest += accruedInterest;
+                interestPeriodAccumulated += accruedInterest;
+                cumulativeCommission += accruedCommission;
+                commissionPeriodAccumulated += accruedCommission;
+
+                currPeriodObj.faiz += accruedInterest;
+                currPeriodObj.komisyon += accruedCommission;
+            }
+
+            if (event.type === 'transaction') {
+                let tx = event.data;
+                
+                // Tabloda gösterilecek valör tarihi metni
+                let displayValor = "";
+                if (tx.type === 'Kullandırım') {
+                    displayValor = formatDate(event.valorDate) + " (T+0)"; // Doğrudan T+0
+                } else if (tx.type === 'Ödeme') {
+                    displayValor = formatDate(event.valorDate) + " (T+1)"; // Hafta sonu atlamış T+1
+                } else {
+                    displayValor = formatDate(event.valorDate);
+                }
+
+                if (tx.type === 'Kullandırım') {
+                    currentBakiye += tx.amount;
+                    commissionBase += tx.amount; // Kullandırımda hem bakiye hem komisyon matrahı artar
+                    currPeriodObj.kullandirim += tx.amount;
+                    if (tx.rate > 0) activeRate = tx.rate;
+                    if (tx.comRate >= 0) activeComRate = tx.comRate;
+                } else if (tx.type === 'Ödeme') {
+                    currentBakiye -= tx.amount;
+                    // Ödemede commissionBase (komisyon matrahı) bilerek DÜŞÜRÜLMÜYOR (ilgili dönemin sonuna kadar korunur)
+                    currPeriodObj.odeme += tx.amount;
+                } else if (tx.type === 'Faiz Oranı Değişikliği') {
+                    activeRate = tx.rate;
+                }
+
+                ledger.push({
+                    id: tx.id,
+                    isUserTx: true,
+                    isDevreSonu: false,
+                    islemTarihi: formatDate(event.refDate),
+                    valorTarihi: displayValor,
+                    islemTuru: tx.type,
+                    tutar: tx.amount,
+                    faizOrani: activeRate,
+                    komOrani: activeComRate,
+                    bakiye: currentBakiye,
+                    isleyenFaiz: accruedInterest > 0 ? fN(accruedInterest) : "-",
+                    // Kullanıcı talebine göre, Ödeme ve diğer ara satırlarda kafa karışmaması için "-" yapıldı. Birikim Devre Sonunda gösteriliyor.
+                    isleyenKomisyon: (accruedCommission > 0 && tx.type !== 'Ödeme') ? fN(accruedCommission) : "-",
+                    aciklama: tx.type === 'Faiz Oranı Değişikliği' ? `Oran güncellendi.` : '',
+                    class: tx.type === 'Faiz Oranı Değişikliği' ? 'satir-faiz-degisim' : ''
+                });
+            } else if (event.type === 'devreSonu') {
+                let postInterest = interestPeriodAccumulated;
+                let postCommission = commissionPeriodAccumulated;
+                
+                let peKey = subAccId + "_" + event.refDate.getTime();
+                let isPaid = paidPeriods[peKey] === true;
+
+                // KULLANICI ÖDE DEMEDİYSE FAİZ VE KOMİSYON ANAPARAYA EKLENİR -> BİLEŞİK FAİZ BAŞLAR
+                if (!isPaid) {
+                    currentBakiye += postInterest;
+                    currentBakiye += postCommission;
+                }
+
+                ledger.push({
+                    id: null,
+                    isUserTx: false,
+                    isDevreSonu: true,
+                    peKey: peKey,
+                    isPaid: isPaid,
+                    islemTarihi: formatDate(event.refDate),
+                    valorTarihi: formatDate(event.valorDate),
+                    islemTuru: "Devre Sonu",
+                    tutar: postInterest,
+                    faizOrani: activeRate,
+                    komOrani: activeComRate,
+                    bakiye: currentBakiye,
+                    isleyenFaiz: fN(postInterest),
+                    isleyenKomisyon: fN(postCommission),
+                    aciklama: isPaid ? 'Nakden Ödendi' : 'Sermayeleşti (Bileşik)',
+                    class: 'satir-tahakkuk'
+                });
+
+                currPeriodObj.bakiye = currentBakiye;
+                currPeriodObj.isPaid = isPaid;
+                accountPeriods.push(currPeriodObj);
+
+                interestPeriodAccumulated = 0; 
+                commissionPeriodAccumulated = 0;
+
+                commissionBase = currentBakiye; // Yeni Dönem için komisyon matrahı, güncel bakiye seviyesine sıfırlanır
+
+                periodEndsIdx++;
+                nextPE = periodEndsIdx < periodEnds.length ? periodEnds[periodEndsIdx] : null;
+                currPeriodObj = buildNewPeriodObj(nextPE);
+            } else if (event.type === 'openPeriodSim') {
+                // Sadece açık dönem sonu faizlerini simüle edip gösterir, bakiyeye henüz kalıcı eklenti yapmaz
+                let postInterest = interestPeriodAccumulated;
+                let postCommission = commissionPeriodAccumulated;
+
+                if (postInterest > 0 || postCommission > 0 || currentBakiye > 0) {
+                    ledger.push({
+                        id: null,
+                        isUserTx: false,
+                        isDevreSonu: true,
+                        peKey: 'sim',
+                        isPaid: false,
+                        islemTarihi: formatDate(event.refDate),
+                        valorTarihi: formatDate(event.valorDate),
+                        islemTuru: "Açık Dönem Sonu (Simülasyon)",
+                        tutar: postInterest,
+                        faizOrani: activeRate,
+                        komOrani: activeComRate,
+                        bakiye: currentBakiye, // Simüle olduğu için anaparaya eklenmediğini yansıtır
+                        isleyenFaiz: fN(postInterest),
+                        isleyenKomisyon: fN(postCommission),
+                        aciklama: 'Tahmini İleriki Tahakkuk',
+                        class: 'satir-tahakkuk !opacity-80 !bg-[var(--apple-yellow)]/10 border-dashed border border-[var(--apple-yellow)]/30'
+                    });
+                }
+            }
+            lastValorDate = new Date(event.valorDate);
+        });
+
+        if (timeline.length > 0) {
+            currPeriodObj.bakiye = currentBakiye;
+            accountPeriods.push(currPeriodObj);
+        }
+
+        portfolio[subAccId].mevcutBakiye = currentBakiye;
+        portfolio[subAccId].tophamFaiz = cumulativeInterest;
+        portfolio[subAccId].toplamKomisyon = cumulativeCommission;
+        portfolio[subAccId].toplamKullandirim = rawTx.filter(t => t.type === 'Kullandırım').reduce((sum, t) => sum + t.amount, 0);
+        portfolio[subAccId].toplamOdeme = rawTx.filter(t => t.type === 'Ödeme').reduce((sum, t) => sum + t.amount, 0);
+        
+        portfolio[subAccId].periods = accountPeriods;
+
+        return ledger;
+    }
+
+    function recalculateAll() {
+        let activeKeys = [...new Set(dbTransactions.map(t => t.subAcc))];
+        
+        portfolio = {};
+        if (systemMode === 'single') {
+            portfolio['ANA'] = { name: "Genel Rotatif", rows: [] };
+        } else {
+            let mergedSlices = [...new Set([...activeSlices, ...activeKeys])];
+            mergedSlices.forEach(k => {
+                if (k !== 'ANA') portfolio[k] = { name: "Dilim " + k, rows: [] };
+            });
+        }
+
+        let container = document.getElementById('ledgersArea');
+        container.innerHTML = '';
+
+        let totalBakiye = 0;
+        let consolidatedPeriods = {};
+
+        for (let key in portfolio) {
+            let entries = calculateAccountLedger(key);
+            let h = portfolio[key];
+
+            totalBakiye += h.mevcutBakiye;
+
+            let card = document.createElement('div');
+            card.className = 'ledger-card';
+            card.innerHTML = `
+                <div class="ledger-header !p-2 !px-3">
+                    <h3 class="!text-xs">${h.name} Ekstresi</h3>
+                    <div class="balance-badge !py-0.5 !px-2 !text-[10px]">Bak: ${format(h.mevcutBakiye)}</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="pdf-hide text-center" style="text-align:center; min-width:65px;">İşlem</th>
+                                <th>Tarih</th> <th>Türü</th> <th>Tutar</th>
+                                <th>Faiz Oranı</th> <th>Kom. Oranı</th> <th>Valör</th> <th>Bakiye</th>
+                                <th>İşleyen Faiz</th> <th>İşleyen Kom.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${entries.length === 0 ? `<tr><td colspan="10" style="text-align:center; color:var(--apple-text-muted);" class="py-3">Hareket yok.</td></tr>` : entries.map(e => {
+                                let actionHtml = '';
+                                if (e.isUserTx) {
+                                    actionHtml = `<button onclick="deleteTransaction(${e.id})" class="text-red-500 hover:text-red-400 p-1 transition-colors cursor-pointer" title="Kaydı Sil"><i class="fa-solid fa-trash-can text-[10px]"></i></button>`;
+                                } else if (e.isDevreSonu && e.peKey !== 'sim') {
+                                    if (e.isPaid) {
+                                        actionHtml = `<button onclick="togglePeriodPaid('${e.peKey}')" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white dark:text-black px-1.5 py-0.5 rounded text-[8px] font-extrabold shadow-sm cursor-pointer hover:opacity-90" title="İptal Etmek İçin Tıkla"><i class="fa-solid fa-check"></i> Ödendi</button>`;
+                                    } else {
+                                        actionHtml = `<button onclick="togglePeriodPaid('${e.peKey}')" class="bg-gradient-to-r from-amber-400 to-amber-500 text-black px-1.5 py-0.5 rounded text-[8px] font-extrabold shadow-sm cursor-pointer hover:bg-amber-600" title="Faiz ve Komisyonu Kapat (Anaparaya Ekleme)"><i class="fa-solid fa-wallet"></i> Öde</button>`;
+                                    }
+                                } else if (e.peKey === 'sim') {
+                                    actionHtml = `<span class="text-[8px] opacity-60"><i class="fa-solid fa-hourglass-half"></i></span>`;
+                                }
+
+                                return `
+                                <tr class="${e.class}">
+                                    <td class="pdf-hide text-center">${actionHtml}</td>
+                                    <td>${e.islemTarihi}</td>
+                                    <td><strong>${e.islemTuru}</strong></td>
+                                    <td>${e.tutar > 0 ? fN(e.tutar) : "-"}</td>
+                                    <td>%${fN(e.faizOrani)} <span class="text-[8px] opacity-60">Yıl</span></td>
+                                    <td>%${fN(e.komOrani)}</td>
+                                    <td>${e.valorTarihi}</td>
+                                    <td style="font-weight:700;">${fN(e.bakiye)}</td>
+                                    <td style="color:var(--apple-yellow); font-weight:700;">${e.isleyenFaiz}</td>
+                                    <td style="color:var(--primary); font-weight:700;">${e.isleyenKomisyon}</td>
+                                </tr>
+                            `}).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            container.appendChild(card);
+
+            if (h.periods) {
+                h.periods.forEach(p => {
+                    let pKey = p.endDate ? p.endDate : "open";
+                    if (!consolidatedPeriods[pKey]) {
+                        consolidatedPeriods[pKey] = {
+                            label: p.label,
+                            kullandirim: 0,
+                            odeme: 0,
+                            faiz: 0,
+                            komisyon: 0,
+                            bakiye: 0,
+                            statuses: []
+                        };
+                    }
+                    consolidatedPeriods[pKey].kullandirim += p.kullandirim;
+                    consolidatedPeriods[pKey].odeme += p.odeme;
+                    consolidatedPeriods[pKey].faiz += p.faiz;
+                    consolidatedPeriods[pKey].komisyon += p.komisyon;
+                    consolidatedPeriods[pKey].bakiye += p.bakiye; 
+                    if (p.endDate) {
+                        consolidatedPeriods[pKey].statuses.push({ slice: key, isPaid: p.isPaid });
+                    }
+                });
+            }
+        }
+
+        buildConsolidatedTable(consolidatedPeriods, totalBakiye);
+        document.getElementById('results').classList.remove('hidden');
+    }
+
+    function buildConsolidatedTable(consolidatedPeriods, totalBakiye) {
+        let container = document.getElementById('summaryTableContainer');
+        
+        let sortedKeys = Object.keys(consolidatedPeriods).sort((a, b) => {
+            if (a === "open") return 1;
+            if (b === "open") return -1;
+            return parseFloat(a) - parseFloat(b);
+        });
+
+        let rowsHtml = "";
+        if (sortedKeys.length === 0) {
+            rowsHtml = `<tr><td colspan="6" style="text-align:center; color:var(--apple-text-muted);" class="py-4">Hesaplanacak aktif dönem bulunmuyor.</td></tr>`;
+        } else {
+            rowsHtml = sortedKeys.map(k => {
+                let p = consolidatedPeriods[k];
+                let statusBadge = "";
+                
+                if (k === "open") {
+                    statusBadge = `<span class="text-[8px] font-bold uppercase text-blue-500 dark:text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20"><i class="fa-solid fa-bolt"></i> Açık Dönem</span>`;
+                } else {
+                    let stats = p.statuses || [];
+                    if (systemMode === 'single') {
+                        let paid = stats[0] ? stats[0].isPaid : false;
+                        statusBadge = paid ? 
+                            `<span class="text-[8px] font-bold uppercase text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded border border-green-500/20"><i class="fa-solid fa-circle-check"></i> Nakden Ödendi</span>` : 
+                            `<span class="text-[8px] font-bold uppercase text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20"><i class="fa-solid fa-layer-group"></i> Sermayeleşti (Bileşik)</span>`;
+                    } else {
+                        let paidCount = stats.filter(s => s.isPaid).length;
+                        let totalCount = stats.length;
+                        if (paidCount === totalCount) {
+                            statusBadge = `<span class="text-[8px] font-bold uppercase text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded border border-green-500/20"><i class="fa-solid fa-circle-check"></i> Tüm Dilimler Ödendi</span>`;
+                        } else if (paidCount === 0) {
+                            statusBadge = `<span class="text-[8px] font-bold uppercase text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20"><i class="fa-solid fa-layer-group"></i> Tüm Dilimler Sermayeleşti</span>`;
+                        } else {
+                            statusBadge = `<span class="text-[8px] font-bold uppercase text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">${paidCount}/${totalCount} Dilim Ödendi</span>`;
+                        }
+                    }
+                }
+
+                return `
+                    <tr>
+                        <td class="font-bold opacity-90 !py-2.5 !px-2 whitespace-nowrap">
+                            ${p.label}<br>
+                            <div class="mt-1">${statusBadge}</div>
+                        </td>
+                        <td class="font-semibold !py-2.5 !px-2 whitespace-nowrap">${format(p.kullandirim)}</td>
+                        <td class="font-semibold text-[#3b82f6] !py-2.5 !px-2 whitespace-nowrap">${format(p.odeme)}</td>
+                        <td style="color:var(--apple-yellow); font-weight:700;" class="!py-2.5 !px-2 whitespace-nowrap">${format(p.faiz)}</td>
+                        <td style="color:var(--primary); font-weight:700;" class="!py-2.5 !px-2 whitespace-nowrap">${format(p.komisyon)}</td>
+                        <td style="font-weight:800; background-color:rgba(255,255,255,0.01);" class="!py-2.5 !px-2 text-right whitespace-nowrap">${format(p.bakiye)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        container.innerHTML = `
+            <div class="ledger-card !mb-0 !border-[var(--apple-yellow)] shadow-[0_0_10px_var(--apple-glow)]">
+                <div class="ledger-header !bg-[var(--apple-badge-bg)] border-b border-[var(--apple-badge-border)] !p-2 !px-3">
+                    <h3 class="!text-[var(--apple-yellow)] !text-[11px] uppercase tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> Dönemsel Konsolide İcmal</h3>
+                    <div class="balance-badge !bg-[var(--danger)]/10 !border-[var(--danger)]/20 !text-[var(--danger)] !py-0.5 !px-2 !text-[10px]">Güncel Net Risk: ${format(totalBakiye)}</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="!py-2 !px-2">Dönem / Periyot</th> 
+                                <th class="!py-2 !px-2">Kullandırım</th> 
+                                <th class="!py-2 !px-2">Ödeme</th>
+                                <th class="!py-2 !px-2">Biriken Faiz</th>
+                                <th class="!py-2 !px-2">Biriken Komisyon</th>
+                                <th class="!py-2 !px-2 text-right">Dönem Sonu Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mt-3 pdf-hide">
+                <button onclick="exportDetailedPDF()" class="w-full bg-gradient-to-r from-zinc-800 to-zinc-900 dark:from-zinc-900 dark:to-zinc-950 text-[var(--apple-yellow)] border border-[var(--apple-yellow)]/30 text-xs font-bold py-2.5 rounded-xl uppercase tracking-wider shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-file-pdf text-sm text-red-500"></i> Detaylı Hesap Raporunu PDF İndir
+                </button>
+            </div>
+        `;
+    }
+
+    function exportDetailedPDF() {
+        const container = document.getElementById('main-container');
+        container.classList.add('pdf-mode');
+        document.body.classList.add('pdf-mode');
+
+        const opt = {
+            margin:       [12, 12, 12, 12],
+            filename:     'Vhesap_Rotatif_Finans_Ozet_Raporu.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true, 
+                logging: false,
+                backgroundColor: document.body.classList.contains('dark') ? '#09090b' : '#ffffff'
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        showToast("Dönemsel PDF Raporu hazırlanıyor...");
+
+        html2pdf().set(opt).from(container).save().then(() => {
+            container.classList.remove('pdf-mode');
+            document.body.classList.remove('pdf-mode');
+            showToast("PDF başarıyla kaydedildi.");
+        }).catch(err => {
+            container.classList.remove('pdf-mode');
+            document.body.classList.remove('pdf-mode');
+            console.error("PDF Hatası:", err);
+            showToast("PDF oluşturulurken bir hata meydana geldi.");
+        });
+    }
+
+    function getRawVal(id) { const el = document.getElementById(id); return el ? (parseFloat(el.value.replace(/\./g, '').replace(',', '.')) || 0) : 0; }
+    function format(n) { return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); }
+    function fN(n) { return (parseFloat(n) || 0).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+    function mask(e) { let v = e.value.replace(/\D/g, ""); e.value = v ? new Intl.NumberFormat('tr-TR').format(v) : ""; }
+</script>
+</body>
+</html>
