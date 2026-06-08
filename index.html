@@ -225,7 +225,6 @@
 </head>
 <body class="dark flex min-h-screen selection:bg-amber-500/30">
 
-    <!-- Toast Bildirimi -->
     <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-amber-500/30 text-xs font-bold flex items-center gap-2" id="toast-container">
         <i class="fa-solid fa-circle-info text-[var(--apple-yellow)]"></i>
         <span id="toast-message"></span>
@@ -462,7 +461,6 @@
                     <div id="summaryTableContainer" class="mt-4 hidden"></div>
                 </div>
 
-                <!-- Sonuç Özeti (Rotatif Hariç) -->
                 <div id="results" class="hidden mt-6 pb-2">
                     <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
                         <h3 class="text-center text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
@@ -552,7 +550,17 @@
 
         function id(x) { return document.getElementById(x); }
         function getRaw(x) { return parseFloat(id(x)?.value.replace(/\./g, '').replace(',', '.')) || 0; }
-        function format(n) { return new Intl.NumberFormat('tr-TR', {style:'currency',currency:'TRY'}).format(n); }
+        
+        function format(n) { 
+            let c = 'TRY';
+            if (state.main === 'vadeli') {
+                if (state.sub === 'vadeli-usd') c = 'USD';
+                else if (state.sub === 'vadeli-eur') c = 'EUR';
+                else if (state.sub === 'vadeli-altin') return fN(n) + ' GR';
+            }
+            return new Intl.NumberFormat('tr-TR', {style:'currency',currency:c}).format(n); 
+        }
+
         function fN(n) { return (parseFloat(n) || 0).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
         function mask(e) { let v = e.value.replace(/\D/g, ""); e.value = v ? new Intl.NumberFormat('tr-TR').format(v) : ""; }
         function showToast(msg) {
@@ -598,10 +606,43 @@
         function onStartDateChange() {
             const s = state.sub, m = state.main;
             const isDayBased = ['spot', 'iskonto', 'ekhesap'].includes(s) || m === 'vadeli';
-            if (!isDayBased) {
-                let st = new Date(id('date-start').value);
+            let st = new Date(id('date-start').value);
+            if (isDayBased) {
+                let days = parseInt(id('val-vade').value) || 0;
+                st.setDate(st.getDate() + days);
+                id('date-first').value = st.toISOString().split('T')[0];
+            } else {
                 st.setMonth(st.getMonth() + 1);
                 id('date-first').value = st.toISOString().split('T')[0];
+            }
+        }
+
+        function onVadeChange() {
+            const s = state.sub, m = state.main;
+            const isDayBased = ['spot', 'iskonto', 'ekhesap'].includes(s) || m === 'vadeli';
+            if (isDayBased) {
+                let st = new Date(id('date-start').value);
+                let days = parseInt(id('val-vade').value) || 0;
+                if (days < 0) { days = 0; id('val-vade').value = 0; }
+                st.setDate(st.getDate() + days);
+                id('date-first').value = st.toISOString().split('T')[0];
+            }
+        }
+
+        function onDateFirstChange() {
+            const s = state.sub, m = state.main;
+            const isDayBased = ['spot', 'iskonto', 'ekhesap'].includes(s) || m === 'vadeli';
+            if (isDayBased) {
+                let st = new Date(id('date-start').value);
+                let end = new Date(id('date-first').value);
+                if(end >= st) {
+                    let diffTime = end - st;
+                    let diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+                    id('val-vade').value = diffDays;
+                } else {
+                    id('date-first').value = id('date-start').value;
+                    id('val-vade').value = 0;
+                }
             }
         }
 
@@ -680,7 +721,15 @@
 
             let lStart = (s==='iskonto'?'İskonto Tarihi':(m==='vadeli'?'Başlangıç':'Kullandırım Tarihi'));
             let lEnd = (s==='iskonto'?'Çek Vade Tarihi':(m==='vadeli'?'Bitiş':(s==='ekhesap'?'Ödeme Tarihi':'İlk Taksit Tarihi')));
-            let lTutar = (s==='iskonto'?'Nominal Değer (TL)':(m==='vadeli'?'Anapara (TL)':'Tutar (TL)'));
+            
+            let currSymbol = 'TL';
+            if (m === 'vadeli') {
+                if (s === 'vadeli-usd') currSymbol = 'USD';
+                else if (s === 'vadeli-eur') currSymbol = 'EUR';
+                else if (s === 'vadeli-altin') currSymbol = 'GR';
+            }
+            let lTutar = (s==='iskonto'?'Nominal Değer (TL)':(m==='vadeli'?`Anapara (${currSymbol})`:'Tutar (TL)'));
+            
             let dFaiz = isDayBased ? "55,00" : "4,25";
             let vDays = m==='vadeli' ? 32 : (s==='ekhesap' ? 30 : 90);
             
@@ -695,7 +744,7 @@
 
             html += `<div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="input-card mb-0"><span class="label-text">${lStart}</span><input type="date" id="date-start" class="apple-input text-base" value="${startDateStr}" onchange="onStartDateChange()"></div>
-                <div class="input-card mb-0"><span class="label-text">${lEnd}</span><input type="date" id="date-first" class="apple-input text-base" value="${firstDateStr}"></div>
+                <div class="input-card mb-0"><span class="label-text">${lEnd}</span><input type="date" id="date-first" class="apple-input text-base" value="${firstDateStr}" onchange="onDateFirstChange()"></div>
             </div>
             <div class="input-card"><span class="label-text">${lTutar}</span><input type="text" id="val-tutar" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
 
@@ -704,7 +753,7 @@
             }
 
             html += `<div class="grid grid-cols-2 gap-3 mb-3">
-                <div class="input-card mb-0"><span class="label-text">${isDayBased ? 'Gün' : 'Vade (Ay)'}</span><input type="number" id="val-vade" class="apple-input" value="${isDayBased ? vDays : 12}"></div>
+                <div class="input-card mb-0"><span class="label-text">${isDayBased ? 'Gün' : 'Vade (Ay)'}</span><input type="number" id="val-vade" class="apple-input" value="${isDayBased ? vDays : 12}" oninput="onVadeChange()"></div>
                 <div class="input-card mb-0"><span class="label-text">${isDayBased ? 'Yıllık Oran (%)' : 'Faiz Oranı (%)'}</span>
                     <div class="flex items-center justify-between gap-1 mt-0.5"><input type="text" id="val-faiz" class="apple-input flex-1 min-w-[50px]" value="${dFaiz}">
                     ${isDayBased ? '' : `<div class="flex bg-[rgba(128,128,128,0.1)] p-0.5 rounded-lg border border-[rgba(128,128,128,0.2)] flex-shrink-0"><button id="faiz-tip-aylik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${state.faizTipi === 'aylik' ? 'bg-amber-500 text-black' : 'text-[var(--apple-text-muted)]'} transition-all" onclick="setFaizTipi('aylik')">AYLIK</button><button id="faiz-tip-yillik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${state.faizTipi === 'yillik' ? 'bg-amber-500 text-black' : 'text-[var(--apple-text-muted)]'} transition-all" onclick="setFaizTipi('yillik')">YILLIK</button></div>`}
@@ -789,6 +838,7 @@
             if(state.araOdemeler.length === 0) { l.innerHTML = '<div class="text-[10px] text-[var(--apple-text-muted)] text-center">Ara ödeme yok.</div>'; return; }
             l.innerHTML = state.araOdemeler.sort((a,b)=>new Date(a.date)-new Date(b.date)).map((o,i) => `<div class="ara-item"><div><div class="text-[var(--apple-text)] font-bold">${o.dateTr}</div><div class="text-[var(--apple-yellow)] font-mono font-bold">${format(o.tutar)}</div></div><div class="flex items-center gap-2"><span class="text-[9px] bg-[rgba(128,128,128,0.1)] px-2 py-1 rounded text-[var(--apple-text-muted)]">${o.tur==='vade'?'Vade Azalt':'Taksit Düş'}</span><button type="button" onclick="state.araOdemeler.splice(${i},1);renderAraOdemeList()" class="text-[var(--danger)]"><i class="fa-solid fa-trash-can"></i></button></div></div>`).join('');
         }
+        
         function addAraOdeme() {
             const d = id('val-ara-date').value, t = getRaw('val-ara-tutar'), tur = document.querySelector('input[name="ara-tur"]:checked').value;
             if(t <= 0) return showToast("Geçerli tutar girin.");
@@ -1014,7 +1064,12 @@
             let stopaj = 0.25;
             if(state.sub === 'vadeli-tl') { stopaj = G < 180 ? 0.175 : (G < 365 ? 0.15 : 0.10); }
 
-            let startD = new Date(id('date-start').value), endD = getNextBusinessDay(new Date(id('date-first').value));
+            let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
+            
+            if (!isBusinessDay(endD)) {
+                showToast("Uyarı: Vade bitiş tarihi hafta sonu veya tatil gününe denk gelmektedir!");
+            }
+
             const totalDays = Math.round((endD - startD) / 86400000);
             const brut = (T*F*totalDays)/365, kesinti = brut * stopaj, net = brut - kesinti;
 
