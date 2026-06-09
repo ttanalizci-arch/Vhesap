@@ -2,7 +2,7 @@
   "name": "Vhesap",
   "short_name": "Vhesap",
   "description": "Gelişmiş Finansal Simülasyon Portalı",
-  "start_url": "./index.html",
+  "start_url": "./index.html?utm_source=pwa&utm_medium=standalone",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#f59e0b",
