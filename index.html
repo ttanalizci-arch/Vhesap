@@ -419,7 +419,7 @@
                                     </div>
                                     <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 col-span-2">
                                         <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tutar (TL)</span>
-                                        <input type="text" inputmode="numeric" id="kulAmount" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                                        <input type="tel" id="kulAmount" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
                                     </div>
                                     <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
                                         <div class="flex justify-between items-center mb-0.5">
@@ -448,7 +448,7 @@
                                     </div>
                                     <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
                                         <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Ödeme Tutarı (TL)</span>
-                                        <input type="text" inputmode="numeric" id="odeAmount" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                                        <input type="tel" id="odeAmount" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
                                     </div>
                                 </div>
                                 <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlinePayment()">Ödemeyi Kaydet (T+1)</button>
@@ -733,14 +733,14 @@
 
             if(s === 'konut') {
                 id('info-area').innerHTML = `
-                    <div class="input-card"><span class="label-text">Ekspertiz Değeri (TL)</span><input type="text" inputmode="numeric" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkKonut()"></div>
+                    <div class="input-card"><span class="label-text">Ekspertiz Değeri (TL)</span><input type="tel" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkKonut()"></div>
                     <div class="grid grid-cols-2 gap-3 mb-3"><div class="input-card"><span class="label-text">Enerji Sınıfı</span><select id="val-ekb" class="apple-select" onchange="checkKonut()"><option value="AB">A-B</option><option value="C">C</option><option value="D">D ve Altı</option></select></div>
                     <div class="input-card"><span class="label-text">Mülkiyet Durumu</span><select id="val-mulkiyet" class="apple-select" onchange="checkKonut()"><option value="ilk">İlk Kez Alacak</option><option value="diger">2. ve Sonrası</option></select></div></div>
                     <div id="limit-badge" class="info-badge">Azami Kredi Oranı: Lütfen değer giriniz.</div>`;
                 id('info-area').classList.remove('hidden');
             } else if(s === 'tasit') {
                 id('info-area').innerHTML = `
-                    <div class="input-card"><span class="label-text">Kasko/Fatura Değeri (TL)</span><input type="text" inputmode="numeric" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkTasit()"></div>
+                    <div class="input-card"><span class="label-text">Kasko/Fatura Değeri (TL)</span><input type="tel" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkTasit()"></div>
                     <div class="input-card mb-3"><span class="label-text">Araç Türü</span><select id="val-arac-turu" class="apple-select" onchange="checkTasit()"><option value="icten">İçten Yanmalı</option><option value="elektrikli">Tam Elektrikli</option></select></div>
                     <div id="limit-badge" class="info-badge">Azami Vade/Oran: Lütfen değer giriniz.</div>`;
                 id('info-area').classList.remove('hidden');
@@ -783,7 +783,7 @@
                 <div class="input-card mb-0"><span class="label-text">${lStart}</span><input type="date" id="date-start" class="apple-input text-base" value="${startDateStr}" onchange="onStartDateChange()"></div>
                 <div class="input-card mb-0"><span class="label-text">${lEnd}</span><input type="date" id="date-first" class="apple-input text-base" value="${firstDateStr}" onchange="onDateFirstChange()"></div>
             </div>
-            <div class="input-card"><span class="label-text">${lTutar}</span><input type="text" id="val-tutar" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
+            <div class="input-card"><span class="label-text">${lTutar}</span><input type="tel" id="val-tutar" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
 
             if(s === 'spot' || s === 'iskonto') {
                 html += `<div class="input-card"><span class="label-text">Banka Komisyon Oranı (% Yıl)</span><input type="text" id="val-komisyon" class="apple-input" value="1,00"></div>`;
@@ -822,7 +822,7 @@
                     </label>
                     <div id="ara-odemeler-container" class="${state.hasAraOdemeler ? '' : 'hidden'} mt-3 pt-3 border-t border-[rgba(128,128,128,0.1)]">
                         <div id="ara-odeme-list" class="mb-3"></div>
-                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="text" inputmode="numeric" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
+                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="tel" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
                         <div class="grid grid-cols-2 gap-2 mb-3">
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="vade" class="peer hidden" checked><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">VADE AZALSIN</div></label>
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="taksit" class="peer hidden"><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">TAKSİT DÜŞSÜN</div></label>
@@ -884,7 +884,10 @@
         }
 
         function executeCalculation() {
-            if (document.activeElement) document.activeElement.blur(); // Hesapla dediğimizde klavye kapanır
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
+            document.querySelectorAll('input').forEach(el => el.blur()); // Klavyeyi tüm cihazlarda garantili kapatır
             
             const s = state.sub; const m = state.main;
             if(m === 'vadeli') return calcMevduat();
