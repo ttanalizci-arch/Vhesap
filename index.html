@@ -419,7 +419,7 @@
                                     </div>
                                     <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 col-span-2">
                                         <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tutar (TL)</span>
-                                        <input type="tel" id="kulAmount" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                                        <input type="text" id="kulAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
                                     </div>
                                     <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
                                         <div class="flex justify-between items-center mb-0.5">
@@ -448,7 +448,7 @@
                                     </div>
                                     <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
                                         <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Ödeme Tutarı (TL)</span>
-                                        <input type="tel" id="odeAmount" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                                        <input type="text" id="odeAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
                                     </div>
                                 </div>
                                 <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlinePayment()">Ödemeyi Kaydet (T+1)</button>
@@ -492,6 +492,36 @@
                             <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2 pdf-hide" onclick="openPlan()">
                                 <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
                             </button>
+                            <button id="btn-karsilastirma-ekle" class="hidden w-full mt-3 py-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-500 font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2 pdf-hide" onclick="addVadeliKarsilastirma()">
+                                <i class="fa-solid fa-code-compare"></i> KARŞILAŞTIRMAYA EKLE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VADELİ KARŞILAŞTIRMA ALANI -->
+                <div id="vadeli-karsilastirma-container" class="hidden mt-4 pb-2">
+                    <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest">Karşılaştırma Tablosu</h3>
+                            <button onclick="clearVadeliKarsilastirma()" class="text-[var(--danger)] hover:opacity-80 text-[10px] font-bold"><i class="fa-solid fa-trash"></i> Temizle</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="rotatif-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Tutar</th>
+                                        <th>Gün</th>
+                                        <th>Oran</th>
+                                        <th class="text-right">Net Getiri</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="karsilastirma-body"></tbody>
+                            </table>
+                        </div>
+                        <div id="karsilastirma-farklar" class="mt-4 space-y-2 border-t border-[var(--apple-table-border)] pt-4">
+                            <!-- Karşılaştırma fark satırları buraya gelecek -->
                         </div>
                     </div>
                 </div>
@@ -539,7 +569,12 @@
             faizTipi: 'aylik', 
             hasAraOdemeler: false, 
             hasOdemesiz: false,
-            calcMeta: {}
+            calcMeta: {},
+            vadeliKarsilastirmalar: [],
+            currentVadeliNet: 0,
+            currentVadeliDays: 0,
+            currentVadeliTutar: 0,
+            currentVadeliOran: 0
         };
 
         const NAV_MAP = {
@@ -586,14 +621,11 @@
 
         function fN(n) { return (parseFloat(n) || 0).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
         function mask(e) { let v = e.value.replace(/\D/g, ""); e.value = v ? new Intl.NumberFormat('tr-TR').format(v) : ""; }
-        
-        let toastTimeout;
         function showToast(msg) {
             const toast = id('toast-container');
             id('toast-message').innerText = msg;
             toast.style.transform = 'translate(-50%, 0)'; toast.style.opacity = '1';
-            if (toastTimeout) clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 3000);
+            setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 3000);
         }
 
         // --- GOOGLE ANALYTICS NİYET ÖLÇÜMÜ (EVENT TRACKING) YARDIMCI FONKSİYONU ---
@@ -706,6 +738,10 @@
             state.sub = subId;
             state.araOdemeler = []; state.hasAraOdemeler = false; state.hasOdemesiz = false;
             
+            // Vadeli Karşılaştırma Temizliği
+            state.vadeliKarsilastirmalar = [];
+            if(id('vadeli-karsilastirma-container')) id('vadeli-karsilastirma-container').classList.add('hidden');
+
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             if(id('nav-' + subId)) id('nav-' + subId).classList.add('active');
             
@@ -733,14 +769,14 @@
 
             if(s === 'konut') {
                 id('info-area').innerHTML = `
-                    <div class="input-card"><span class="label-text">Ekspertiz Değeri (TL)</span><input type="tel" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkKonut()"></div>
+                    <div class="input-card"><span class="label-text">Ekspertiz Değeri (TL)</span><input type="text" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkKonut()"></div>
                     <div class="grid grid-cols-2 gap-3 mb-3"><div class="input-card"><span class="label-text">Enerji Sınıfı</span><select id="val-ekb" class="apple-select" onchange="checkKonut()"><option value="AB">A-B</option><option value="C">C</option><option value="D">D ve Altı</option></select></div>
                     <div class="input-card"><span class="label-text">Mülkiyet Durumu</span><select id="val-mulkiyet" class="apple-select" onchange="checkKonut()"><option value="ilk">İlk Kez Alacak</option><option value="diger">2. ve Sonrası</option></select></div></div>
                     <div id="limit-badge" class="info-badge">Azami Kredi Oranı: Lütfen değer giriniz.</div>`;
                 id('info-area').classList.remove('hidden');
             } else if(s === 'tasit') {
                 id('info-area').innerHTML = `
-                    <div class="input-card"><span class="label-text">Kasko/Fatura Değeri (TL)</span><input type="tel" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkTasit()"></div>
+                    <div class="input-card"><span class="label-text">Kasko/Fatura Değeri (TL)</span><input type="text" id="val-deger" class="apple-input" placeholder="0" oninput="mask(this); checkTasit()"></div>
                     <div class="input-card mb-3"><span class="label-text">Araç Türü</span><select id="val-arac-turu" class="apple-select" onchange="checkTasit()"><option value="icten">İçten Yanmalı</option><option value="elektrikli">Tam Elektrikli</option></select></div>
                     <div id="limit-badge" class="info-badge">Azami Vade/Oran: Lütfen değer giriniz.</div>`;
                 id('info-area').classList.remove('hidden');
@@ -783,7 +819,7 @@
                 <div class="input-card mb-0"><span class="label-text">${lStart}</span><input type="date" id="date-start" class="apple-input text-base" value="${startDateStr}" onchange="onStartDateChange()"></div>
                 <div class="input-card mb-0"><span class="label-text">${lEnd}</span><input type="date" id="date-first" class="apple-input text-base" value="${firstDateStr}" onchange="onDateFirstChange()"></div>
             </div>
-            <div class="input-card"><span class="label-text">${lTutar}</span><input type="tel" id="val-tutar" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
+            <div class="input-card"><span class="label-text">${lTutar}</span><input type="text" id="val-tutar" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
 
             if(s === 'spot' || s === 'iskonto') {
                 html += `<div class="input-card"><span class="label-text">Banka Komisyon Oranı (% Yıl)</span><input type="text" id="val-komisyon" class="apple-input" value="1,00"></div>`;
@@ -822,7 +858,7 @@
                     </label>
                     <div id="ara-odemeler-container" class="${state.hasAraOdemeler ? '' : 'hidden'} mt-3 pt-3 border-t border-[rgba(128,128,128,0.1)]">
                         <div id="ara-odeme-list" class="mb-3"></div>
-                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="tel" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
+                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="text" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
                         <div class="grid grid-cols-2 gap-2 mb-3">
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="vade" class="peer hidden" checked><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">VADE AZALSIN</div></label>
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="taksit" class="peer hidden"><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">TAKSİT DÜŞSÜN</div></label>
@@ -831,7 +867,7 @@
                     </div>
                 </div>`;
             }
-            html += `<button type="button" class="action-btn" onclick="executeCalculation()">HESAPLA</button>`;
+            html += `<button type="button" class="action-btn" onmousedown="event.preventDefault()" onclick="executeCalculation()">HESAPLA</button>`;
             id('form-content').innerHTML = html;
             if(!isDayBased && m !== 'vadeli') renderAraOdemeList();
         }
@@ -884,11 +920,6 @@
         }
 
         function executeCalculation() {
-            if (document.activeElement && typeof document.activeElement.blur === 'function') {
-                document.activeElement.blur();
-            }
-            document.querySelectorAll('input').forEach(el => el.blur()); // Klavyeyi tüm cihazlarda garantili kapatır
-            
             const s = state.sub; const m = state.main;
             if(m === 'vadeli') return calcMevduat();
             if(s === 'spot' || s === 'iskonto' || s === 'ekhesap') return calcDayBased(s);
@@ -1057,6 +1088,7 @@
 
             id('results').classList.remove('hidden'); 
             id('plan-trigger-container').classList.remove('hidden');
+            if (id('btn-karsilastirma-ekle')) id('btn-karsilastirma-ekle').classList.add('hidden');
         }
 
         function calcDayBased(type) {
@@ -1068,7 +1100,6 @@
             let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
             let originalEndD = new Date(endD);
 
-            // Ek hesap dahil hepsi için tatil günü öteleme ve uyarı sistemi
             if(type === 'spot' || type === 'iskonto' || type === 'ekhesap') {
                 endD = getNextBusinessDay(endD);
                 if (originalEndD.getTime() !== endD.getTime()) {
@@ -1078,7 +1109,7 @@
 
             const totalDays = Math.round((endD - startD) / 86400000);
             const f = (T*F*totalDays)/360;
-            const c = (T*C*totalDays)/360; // Komisyonu yıllık orandan güne çevirip uygularız (Banka standardı)
+            const c = (T*C*totalDays)/360; 
             const tax = (f+c)*(kkdf+bsmv);
             let totalBorc = 0, netVerilen = T;
 
@@ -1110,10 +1141,11 @@
             state.lastCalc = plan;
             id('plan-thead').innerHTML = `<tr><th>İşlem</th><th>Valör Tarihi</th><th>Tutar</th><th>Net Faiz</th><th>Komisyon</th><th>Vergiler</th><th class="text-right">Bakiye/Borç</th></tr>`;
             
-            // ANALYTICS NİYET ÖLÇÜMÜ: Gün bazlı işlemler kaydediliyor.
+            // ANALYTICS NİYET ÖLÇÜMÜ
             trackCalculation(state.sub, T);
 
             id('results').classList.remove('hidden'); id('plan-trigger-container').classList.remove('hidden');
+            if (id('btn-karsilastirma-ekle')) id('btn-karsilastirma-ekle').classList.add('hidden');
         }
 
         function calcMevduat() {
@@ -1140,12 +1172,88 @@
             
             id('plan-thead').innerHTML = `<tr><th>No</th><th>Tarih</th><th>Tutar</th><th>Brüt Faiz</th><th>Stopaj</th><th class="text-right">Bakiye</th></tr>`;
             
-            // ANALYTICS NİYET ÖLÇÜMÜ: Mevduat işlemleri kaydediliyor.
             trackCalculation(state.sub, T);
 
             id('results').classList.remove('hidden'); id('plan-trigger-container').classList.remove('hidden');
+
+            // Vadeli karşılaştırma değişkenlerini state içerisine aktar ve butonu göster
+            state.currentVadeliNet = net;
+            state.currentVadeliDays = totalDays;
+            state.currentVadeliTutar = T;
+            state.currentVadeliOran = F * 100;
+            
+            if (id('btn-karsilastirma-ekle')) id('btn-karsilastirma-ekle').classList.remove('hidden');
         }
 
+        // ==========================================
+        // VADELİ KARŞILAŞTIRMA MODÜLÜ (YENİ)
+        // ==========================================
+        function addVadeliKarsilastirma() {
+            if (state.main !== 'vadeli') return;
+
+            state.vadeliKarsilastirmalar.push({
+                tutar: state.currentVadeliTutar,
+                net: state.currentVadeliNet,
+                days: state.currentVadeliDays,
+                oran: state.currentVadeliOran,
+                id: state.vadeliKarsilastirmalar.length + 1
+            });
+
+            renderVadeliKarsilastirma();
+            showToast("Seçenek karşılaştırmaya eklendi!");
+        }
+
+        function renderVadeliKarsilastirma() {
+            const container = id('vadeli-karsilastirma-container');
+            if (state.vadeliKarsilastirmalar.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+            container.classList.remove('hidden');
+
+            const tbody = id('karsilastirma-body');
+            tbody.innerHTML = state.vadeliKarsilastirmalar.map(item => `
+                <tr>
+                    <td class="text-center font-bold text-[var(--apple-text-muted)]">${item.id}</td>
+                    <td>${format(item.tutar)}</td>
+                    <td>${item.days}</td>
+                    <td>%${fN(item.oran)}</td>
+                    <td class="text-right font-bold" style="color:var(--apple-yellow);">${format(item.net)}</td>
+                </tr>
+            `).join('');
+
+            const farklarDiv = id('karsilastirma-farklar');
+            farklarDiv.innerHTML = '';
+            
+            // Eğer karşılaştırmada 1'den fazla kayıt varsa fark satırlarını render et
+            if (state.vadeliKarsilastirmalar.length > 1) {
+                let farkHtml = '';
+                for (let i = 1; i < state.vadeliKarsilastirmalar.length; i++) {
+                    let prev = state.vadeliKarsilastirmalar[i-1];
+                    let curr = state.vadeliKarsilastirmalar[i];
+                    let diff = curr.net - prev.net;
+                    
+                    let colorClass = diff > 0 ? 'text-[var(--success)]' : (diff < 0 ? 'text-[var(--danger)]' : 'text-[var(--apple-text-muted)]');
+                    let sign = diff > 0 ? '+' : '';
+                    
+                    farkHtml += `<div class="flex justify-between items-center text-[11px] bg-[var(--apple-badge-bg)] p-2.5 rounded-xl border border-[var(--apple-badge-border)] shadow-sm">
+                        <span class="text-[var(--apple-text)] font-bold">${curr.id}. Hesap ile ${prev.id}. Hesap Net Getiri Farkı:</span>
+                        <span class="font-extrabold text-sm ${colorClass}">${sign}${format(diff)}</span>
+                    </div>`;
+                }
+                farklarDiv.innerHTML = farkHtml;
+            } else {
+                farklarDiv.innerHTML = `<div class="text-center text-[10px] text-[var(--apple-text-muted)] py-2 font-semibold">Net getiri farkını görmek için yeni bir tutar/oran hesaplayıp tekrar listeye ekleyin.</div>`;
+            }
+        }
+
+        function clearVadeliKarsilastirma() {
+            state.vadeliKarsilastirmalar = [];
+            renderVadeliKarsilastirma();
+            showToast("Karşılaştırma tablosu temizlendi.");
+        }
+
+        // ==========================================
         function openPlan() {
             if(!state.lastCalc) return;
             id('plan-subtitle').innerText = state.calcMeta.cat + " / " + state.calcMeta.tur;
@@ -1232,7 +1340,6 @@
             if (rotatifSystemMode === 'multi') rotatifSaveAnchorForSlice();
             rotatifDbTransactions.push({ id: Date.now(), subAcc, type: 'Kullandırım', amount, rate, comRate, date });
             
-            // ANALYTICS NİYET ÖLÇÜMÜ: Rotatif Kullandırım eklendiğinde takip edilir.
             trackCalculation('rotatif', amount);
 
             showToast(`${subAcc} için kullandırım işlendi.`); recalculateRotatif();
