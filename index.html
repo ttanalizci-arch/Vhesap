@@ -239,25 +239,15 @@
         .satir-faiz-degisim { background-color: rgba(255, 69, 58, 0.04) !important; font-style: italic; }
         .satir-faiz-degisim td { color: var(--danger) !important; border-left: 2px solid var(--danger); }
 
-        /* PDF MODU */
-        .pdf-mode { height: auto !important; max-height: none !important; overflow: visible !important; }
-        .pdf-mode .apple-container, .pdf-mode .modal-content { height: auto !important; max-height: none !important; overflow: visible !important; box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
-        .pdf-mode .scroll-area, .pdf-mode .flex-1 { overflow: visible !important; height: auto !important; max-height: none !important; padding-bottom: 0 !important; }
-        .pdf-mode .pdf-hide { display: none !important; }
-        .pdf-mode #pdf-template-wrapper { display: block !important; }
-
-        /* "Hesap Kurdu" Minimalist B&W PDF Çıktı Şablonu */
-        #pdf-template-wrapper { display: none; background: #ffffff; color: #000000; padding: 20px 30px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 11px; }
-        .hk-pdf-title { font-size: 16px; font-weight: bold; text-align: left; margin-bottom: 24px; line-height: 1.4; letter-spacing: 0.5px; color: #000; text-transform: uppercase; }
-        .hk-pdf-grid { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 24px; color: #000; }
-        .hk-pdf-col { display: flex; flex-direction: column; gap: 6px; width: 48%; }
-        .hk-pdf-row { display: flex; justify-content: flex-start; }
-        .hk-pdf-row span:first-child { width: 140px; font-weight: normal; color: #333; }
-        .hk-pdf-row span:last-child { font-weight: bold; color: #000; }
-        .hk-pdf-table { width: 100%; border-collapse: collapse; font-size: 9px; margin-bottom: 20px; color: #000; }
-        .hk-pdf-table th { border-bottom: 1px solid #000; padding: 6px 4px; text-align: left; font-weight: bold; }
-        .hk-pdf-table td { border-bottom: 1px dotted #ccc; padding: 6px 4px; text-align: left; }
-        .hk-pdf-table th.right, .hk-pdf-table td.right { text-align: right; }
+        /* YENİ PDF MODU (Gelişmiş Çıktı İçin İzole) */
+        .pdf-mode { height: auto !important; min-height: 100% !important; overflow: visible !important; background: #ffffff !important; }
+        .pdf-mode body, .pdf-mode html { height: auto !important; min-height: 100% !important; overflow: visible !important; background: #ffffff !important; }
+        .pdf-mode .apple-container, 
+        .pdf-mode .modal, 
+        .pdf-mode #toast-container, 
+        .pdf-mode #offline-blocker { display: none !important; }
+        #pdf-template-wrapper { display: none; }
+        .pdf-mode #pdf-template-wrapper { display: block !important; background: #ffffff; color: #1f2937; padding: 20px 30px; width: 100%; min-height: 100vh; }
     </style>
 </head>
 <body class="dark flex min-h-screen selection:bg-amber-500/30">
@@ -277,9 +267,9 @@
     <div class="apple-container" id="main-container">
         
         <!-- ======================= ANA PORTAL GÖRÜNÜMÜ ======================= -->
-        <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center pdf-hide relative">
+        <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
             
-            <button id="global-theme-toggle" class="global-theme-btn pdf-hide" onclick="toggleGlobalTheme()" title="Temayı Değiştir">
+            <button id="global-theme-toggle" class="global-theme-btn" onclick="toggleGlobalTheme()" title="Temayı Değiştir">
                 <i id="global-theme-icon" class="fa-solid fa-moon text-lg"></i>
             </button>
 
@@ -344,7 +334,7 @@
         <!-- ======================= ORTAK İÇERİK YAPISI ======================= -->
         <div id="view-app" class="hidden flex-col flex-1 w-full">
             
-            <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0 pdf-hide">
+            <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
                 <button onclick="navigateTo('portal')" class="text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] transition-colors flex items-center gap-1.5 text-xs font-bold uppercase">
                     <i class="fa-solid fa-house-user"></i> Portal
                 </button>
@@ -355,7 +345,7 @@
                 <div class="w-16"></div>
             </div>
 
-            <div class="main-nav pdf-hide" id="dynamic-nav"></div>
+            <div class="main-nav" id="dynamic-nav"></div>
 
             <div class="scroll-area flex-1">
                 <div id="info-area" class="mb-3 hidden"></div>
@@ -381,7 +371,7 @@
                                 <input type="checkbox" id="faizTuruToggle" class="hidden peer" onchange="rotatifToggleFaizTuru(this.checked)">
                                 <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
                             </label>
-                            <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm pdf-hide">
+                            <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
                                 <span id="modeLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Tekli Mod</span>
                                 <input type="checkbox" id="modeToggle" class="hidden peer" onchange="rotatifHandleModeToggle(this.checked)">
                                 <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
@@ -401,13 +391,13 @@
                         <div id="multi-mode-panel" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">Aktif Dilimler</span>
-                                <button class="text-[var(--apple-yellow)] text-[10px] font-bold uppercase tracking-wider hover:opacity-70 transition-opacity flex items-center gap-1 pdf-hide" onclick="rotatifAddNewSliceLetter()"><i class="fa-solid fa-plus"></i> Yeni Ekle</button>
+                                <button class="text-[var(--apple-yellow)] text-[10px] font-bold uppercase tracking-wider hover:opacity-70 transition-opacity flex items-center gap-1" onclick="rotatifAddNewSliceLetter()"><i class="fa-solid fa-plus"></i> Yeni Ekle</button>
                             </div>
                             <div id="active-slices-list" class="flex flex-wrap gap-1.5 py-1"></div>
                         </div>
                     </div>
 
-                    <div class="input-card mb-3 !p-0 overflow-hidden pdf-hide">
+                    <div class="input-card mb-3 !p-0 overflow-hidden">
                         <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
                             <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer text-[var(--apple-yellow)] mr-1.5"></i> İşlem Talimatları</span>
                         </div>
@@ -450,7 +440,7 @@
                                         <input type="text" id="kulRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="42,00">
                                     </div>
                                     <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Komisyon Oranı (% Yıl)</span>
+                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Komisyon Oranı (% Yıl) <span class="text-amber-500/80 lowercase text-[7px]">(+BSMV)</span></span>
                                         <input type="text" id="kulComRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="1,20">
                                     </div>
                                 </div>
@@ -510,13 +500,13 @@
                         <h3 class="text-center text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
                         <div id="result-rows" class="space-y-3.5"></div>
                         <div class="mt-5" id="plan-trigger-container">
-                            <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2 pdf-hide" onclick="openPlan()">
+                            <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
                                 <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
                             </button>
-                            <button id="btn-takvime-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2 pdf-hide" onclick="addToCalendar()">
+                            <button id="btn-takvime-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="addToCalendar()">
                                 <i class="fa-regular fa-calendar-plus"></i> VADE SONUNU TAKVİME EKLE
                             </button>
-                            <button id="btn-karsilastirma-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-500 font-bold text-xs tracking-wide transition-all duration-200 items-center justify-center gap-2 pdf-hide" onclick="addVadeliKarsilastirma()">
+                            <button id="btn-karsilastirma-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-500 font-bold text-xs tracking-wide transition-all duration-200 items-center justify-center gap-2" onclick="addVadeliKarsilastirma()">
                                 <i class="fa-solid fa-code-compare"></i> KARŞILAŞTIRMAYA EKLE
                             </button>
                         </div>
@@ -578,7 +568,7 @@
         </div>
     </div>
 
-    <!-- PDF Şablonu (Hesap Kurdu Teması) -->
+    <!-- PDF Şablonu İzole Render Alanı -->
     <div id="pdf-template-wrapper"></div>
 
     <script>
@@ -652,18 +642,16 @@
             setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 3000);
         }
 
-        // --- GOOGLE ANALYTICS NİYET ÖLÇÜMÜ (EVENT TRACKING) YARDIMCI FONKSİYONU ---
         function trackCalculation(turu, tutar) {
             if (typeof gtag === 'function') {
                 gtag('event', 'hesaplama_yapildi', {
-                    'event_category': state.main, // Bireysel, Ticari, Vadeli
-                    'hesaplama_turu': turu,       // Konut, Rotatif, Spot vb.
-                    'value': tutar                // Gelecekte reklam verene göstermek için hesaplanan hacim
+                    'event_category': state.main, 
+                    'hesaplama_turu': turu,       
+                    'value': tutar                
                 });
             }
         }
 
-        // İnternet Bağlantı Kontrolcüsü
         function checkConnection() {
             const blocker = id('offline-blocker');
             if(blocker) { blocker.style.display = navigator.onLine ? 'none' : 'flex'; }
@@ -855,7 +843,7 @@
             <div class="input-card"><span class="label-text">${lTutar}</span><input type="text" id="val-tutar" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
 
             if(s === 'spot' || s === 'iskonto') {
-                html += `<div class="input-card"><span class="label-text">Banka Komisyon Oranı (% Yıl)</span><input type="text" id="val-komisyon" inputmode="numeric" class="apple-input" value="1,00"></div>`;
+                html += `<div class="input-card"><span class="label-text">Banka Komisyon Oranı (% Yıl) <span class="text-amber-500/80 lowercase text-[8px]">(+BSMV eklenecektir)</span></span><input type="text" id="val-komisyon" inputmode="numeric" class="apple-input" value="1,00"></div>`;
             }
 
             html += `<div class="grid grid-cols-2 gap-3 mb-3">
@@ -1116,7 +1104,6 @@
                 {l: "Toplam Geri Ödeme", v: format(sumTak)}
             ].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             
-            // ANALYTICS NİYET ÖLÇÜMÜ: Taksitli kredi hesaplaması kaydediliyor.
             trackCalculation(state.sub, T);
 
             id('results').classList.remove('hidden'); 
@@ -1129,8 +1116,11 @@
         function calcDayBased(type) {
             const T = getRaw('val-tutar'), G = parseInt(id('val-vade').value);
             const F = parseFloat(id('val-faiz').value.replace(',','.'))/100;
-            const C = getRaw('val-komisyon')/100 || 0; // Komisyon yıllık orandır, faiz gibi çalışır
+            const C_raw = getRaw('val-komisyon')/100 || 0; 
             const { kkdf, bsmv } = getTaxes();
+            
+            // Komisyon Oranı Üzerine BSMV İlave Edilerek Hesaplama Gerçekleştiriliyor
+            const C = C_raw * (1 + bsmv); 
             
             let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
             let originalEndD = new Date(endD);
@@ -1144,23 +1134,24 @@
 
             const totalDays = Math.round((endD - startD) / 86400000);
             const f = (T*F*totalDays)/360;
-            const c = (T*C*totalDays)/360; 
-            const tax = (f+c)*(kkdf+bsmv);
+            const c = (T*C*totalDays)/360; // c artık BSMV dahil edilmiş komisyon oranından hesaplanıyor
+            const tax = f * (kkdf+bsmv); // Komisyona dahil olduğu için vergi sadece faizden alınır
+            
             let totalBorc = 0, netVerilen = T;
-
             let plan = [];
+            
             if(type === 'spot') {
                 totalBorc = T + f + c + tax;
                 plan = [{i:'KAPAMA', date: endD.toLocaleDateString('tr-TR'), taksit: totalBorc, ana: T, f: f, kom: c, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Vade Sonu Toplu Ödeme", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Komisyon", v: format(c)}, {l: "Vergiler", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Vade Sonu Toplu Ödeme", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             } else if(type === 'iskonto') {
                 netVerilen = T - (f + c + tax);
                 plan = [{i:'İSKONTO', date: startD.toLocaleDateString('tr-TR'), taksit: T, ana: netVerilen, f: f, kom: c, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Ele Geçen Net Tutar", v: format(netVerilen), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Çek Nominal Değeri", v: format(T)}, {l: "Net İskonto", v: format(f)}, {l: "Komisyon", v: format(c)}, {l: "Vergiler", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Ele Geçen Net Tutar", v: format(netVerilen), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Çek Nominal Değeri", v: format(T)}, {l: "Net İskonto", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             } else if(type === 'ekhesap') {
                 totalBorc = T + f + tax;
                 plan = [{i:'ÖDEME', date: endD.toLocaleDateString('tr-TR'), taksit: totalBorc, ana: T, f: f, kom: 0, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Toplam Borç", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Vergiler", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Toplam Borç", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             }
 
             state.calcMeta = {
@@ -1174,9 +1165,8 @@
             };
 
             state.lastCalc = plan;
-            id('plan-thead').innerHTML = `<tr><th>İşlem</th><th>Valör Tarihi</th><th>Tutar</th><th>Net Faiz</th><th>Komisyon</th><th>Vergiler</th><th class="text-right">Bakiye/Borç</th></tr>`;
+            id('plan-thead').innerHTML = `<tr><th>İşlem</th><th>Valör Tarihi</th><th>Tutar</th><th>Net Faiz</th><th>Kom.(+BSMV)</th><th>Vergiler</th><th class="text-right">Bakiye/Borç</th></tr>`;
             
-            // ANALYTICS NİYET ÖLÇÜMÜ
             trackCalculation(state.sub, T);
 
             id('results').classList.remove('hidden'); id('plan-trigger-container').classList.remove('hidden');
@@ -1213,7 +1203,6 @@
 
             id('results').classList.remove('hidden'); id('plan-trigger-container').classList.remove('hidden');
 
-            // Vadeli karşılaştırma değişkenlerini state içerisine aktar ve butonu göster
             state.currentVadeliNet = net;
             state.currentVadeliDays = totalDays;
             state.currentVadeliTutar = T;
@@ -1264,7 +1253,6 @@
             const farklarDiv = id('karsilastirma-farklar');
             farklarDiv.innerHTML = '';
             
-            // Eğer karşılaştırmada 1'den fazla kayıt varsa fark satırlarını render et
             if (state.vadeliKarsilastirmalar.length > 1) {
                 let farkHtml = '';
                 for (let i = 1; i < state.vadeliKarsilastirmalar.length; i++) {
@@ -1304,7 +1292,6 @@
             const dateParts = endDateStr.split('-');
             if (dateParts.length !== 3) return;
 
-            // Vade Sonu - Saat 09:00 Sabah bildirimli (Outlook, Google, Apple ile uyumlu)
             const dtStart = `${dateParts[0]}${dateParts[1]}${dateParts[2]}T090000`;
             const dtEnd = `${dateParts[0]}${dateParts[1]}${dateParts[2]}T100000`;
             
@@ -1424,10 +1411,9 @@
             const date = id('kulDate').value;
             if (amount <= 0) return showToast("Tutar 0 olamaz.");
             if (rotatifSystemMode === 'multi') rotatifSaveAnchorForSlice();
-            rotatifDbTransactions.push({ id: Date.now(), subAcc, type: 'Kullandırım', amount, rate, comRate, date });
             
+            rotatifDbTransactions.push({ id: Date.now(), subAcc, type: 'Kullandırım', amount, rate, comRate, date });
             trackCalculation('rotatif', amount);
-
             showToast(`${subAcc} için kullandırım işlendi.`); recalculateRotatif();
         }
 
@@ -1512,9 +1498,18 @@
 
             timeline.forEach((event) => {
                 let days = lastValorDate ? Math.round((event.valorDate - lastValorDate) / 86400000) : 0, accruedInterest = 0, accruedCommission = 0, isCompound = rotatifIsBilesik();
+                
+                // Ticari kredi olduğu için komisyon hesaplanırken de %5 BSMV dahil ediliyor
+                let bsmvRatio = 0.05;
+                let effectiveComRate = activeComRate * (1 + bsmvRatio); 
+
                 if (days > 0 && (currentBakiye > 0 || commissionBase > 0)) {
                     if (currentBakiye > 0) { if (isCompound) { let newBakiye = currentBakiye * Math.pow(1 + (activeRate / 100) / 360, days); accruedInterest = newBakiye - currentBakiye; currentBakiye = newBakiye; } else accruedInterest = (currentBakiye * (activeRate / 100) * days) / 360; }
-                    if (commissionBase > 0) accruedCommission = (commissionBase * (activeComRate / 100) * days) / 360;
+                    
+                    if (commissionBase > 0) {
+                        accruedCommission = (commissionBase * (effectiveComRate / 100) * days) / 360; // BSMV dahil komisyon tahakkuku
+                    }
+                    
                     cumulativeInterest += accruedInterest; interestPeriodAccumulated += accruedInterest; cumulativeCommission += accruedCommission; commissionPeriodAccumulated += accruedCommission;
                     currPeriodObj.faiz += accruedInterest; currPeriodObj.komisyon += accruedCommission;
                 }
@@ -1558,7 +1553,7 @@
                 let card = document.createElement('div'); card.className = 'ledger-card';
                 card.innerHTML = `<div class="ledger-header"><h3 class="text-xs font-bold">${h.name} Ekstresi</h3><div class="text-[10px] font-bold bg-[var(--apple-badge-bg)] text-[var(--apple-badge-text)] px-2 py-1 rounded border border-[var(--apple-badge-border)]">Bak: ${format(h.mevcutBakiye)}</div></div>
                     <div class="table-responsive"><table class="rotatif-table">
-                    <thead><tr><th class="pdf-hide text-center" style="min-width:65px;">İşlem</th><th>Tarih</th><th>Türü</th><th>Tutar</th><th>Oran</th><th>Kom.</th><th>Valör</th><th class="text-right">Bakiye</th><th>Faiz</th><th>İşleyen Kom.</th></tr></thead>
+                    <thead><tr><th class="pdf-hide text-center" style="min-width:65px;">İşlem</th><th>Tarih</th><th>Türü</th><th>Tutar</th><th>Oran</th><th>Kom.(+BSMV)</th><th>Valör</th><th class="text-right">Bakiye</th><th>Faiz</th><th>İşleyen Kom.</th></tr></thead>
                     <tbody>${entries.length === 0 ? `<tr><td colspan="10" class="text-center text-[var(--apple-text-muted)] py-3">Hareket yok.</td></tr>` : entries.map(e => {
                         let actionHtml = '';
                         if (e.isUserTx) actionHtml = `<button onclick="rotatifDeleteTransaction(${e.id})" class="text-red-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash-can text-[10px]"></i></button>`;
@@ -1566,7 +1561,13 @@
                             if (e.isPaid) actionHtml = `<button onclick="rotatifTogglePeriodPaid('${e.peKey}')" class="bg-gradient-to-r from-green-500 to-emerald-600 text-black px-1.5 py-0.5 rounded text-[8px] font-bold"><i class="fa-solid fa-check"></i> Ödendi</button>`;
                             else actionHtml = `<button onclick="rotatifTogglePeriodPaid('${e.peKey}')" class="bg-gradient-to-r from-amber-400 to-amber-500 text-black px-1.5 py-0.5 rounded text-[8px] font-bold hover:opacity-90"><i class="fa-solid fa-wallet"></i> Öde</button>`;
                         } else if (e.peKey === 'sim') actionHtml = `<span class="text-[8px] opacity-60"><i class="fa-solid fa-hourglass-half"></i></span>`;
-                        return `<tr class="${e.class}"><td class="pdf-hide text-center">${actionHtml}</td><td>${e.islemTarihi}</td><td><strong>${e.islemTuru}</strong></td><td>${e.tutar>0?fN(e.tutar):"-"}</td><td>%${fN(e.faizOrani)}</td><td>%${fN(e.komOrani)}</td><td>${e.valorTarihi}</td><td class="text-right font-bold">${fN(e.bakiye)}</td><td class="text-[var(--apple-yellow)] font-bold">${e.isleyenFaiz}</td><td class="text-[var(--primary)] font-bold">${e.isleyenKomisyon}</td></tr>`;
+                        
+                        let komDisplay = '-';
+                        if (e.komOrani > 0) {
+                            komDisplay = `%${fN(e.komOrani)}<br><span class="text-[8px] text-[var(--apple-text-muted)]">(Ef.%${fN(e.komOrani * 1.05)})</span>`;
+                        }
+                        
+                        return `<tr class="${e.class}"><td class="pdf-hide text-center">${actionHtml}</td><td>${e.islemTarihi}</td><td><strong>${e.islemTuru}</strong></td><td>${e.tutar>0?fN(e.tutar):"-"}</td><td>%${fN(e.faizOrani)}</td><td>${komDisplay}</td><td>${e.valorTarihi}</td><td class="text-right font-bold">${fN(e.bakiye)}</td><td class="text-[var(--apple-yellow)] font-bold">${e.isleyenFaiz}</td><td class="text-[var(--primary)] font-bold">${e.isleyenKomisyon}</td></tr>`;
                     }).join('')}</tbody></table></div>`;
                 container.appendChild(card);
                 if (h.periods) { h.periods.forEach(p => {
@@ -1593,85 +1594,258 @@
                 return `<tr><td class="font-bold !py-2.5">${p.label}<div class="mt-1">${statusBadge}</div></td><td class="font-semibold !py-2.5">${format(p.kullandirim)}</td><td class="font-semibold text-blue-500 !py-2.5">${format(p.odeme)}</td><td style="color:var(--apple-yellow);" class="font-bold !py-2.5">${format(p.faiz)}</td><td style="color:var(--primary);" class="font-bold !py-2.5">${format(p.komisyon)}</td><td class="font-bold bg-[rgba(255,255,255,0.02)] !py-2.5 text-right">${format(p.bakiye)}</td></tr>`;
             }).join('');
 
-            container.innerHTML = `<div class="ledger-card !border-[var(--apple-yellow)] shadow-[0_0_10px_var(--apple-glow)]"><div class="ledger-header !bg-[var(--apple-badge-bg)]"><h3 class="!text-[var(--apple-yellow)] !text-[11px] uppercase"><i class="fa-solid fa-chart-pie mr-1"></i> İcmal</h3><div class="text-[10px] font-bold text-rose-500 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded">Net Risk: ${format(totalBakiye)}</div></div><div class="table-responsive"><table class="rotatif-table"><thead><tr><th>Dönem</th><th>Kullandırım</th><th>Ödeme</th><th>Biriken Faiz</th><th>Biriken Kom.</th><th class="text-right">Risk</th></tr></thead><tbody>${rowsHtml||`<tr><td colspan="6" class="text-center py-4 text-[var(--apple-text-muted)]">Aktif dönem yok.</td></tr>`}</tbody></table></div></div>
+            container.innerHTML = `<div class="ledger-card !border-[var(--apple-yellow)] shadow-[0_0_10px_var(--apple-glow)]"><div class="ledger-header !bg-[var(--apple-badge-bg)]"><h3 class="!text-[var(--apple-yellow)] !text-[11px] uppercase"><i class="fa-solid fa-chart-pie mr-1"></i> İcmal</h3><div class="text-[10px] font-bold text-rose-500 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded">Net Risk: ${format(totalBakiye)}</div></div><div class="table-responsive"><table class="rotatif-table"><thead><tr><th>Dönem</th><th>Kullandırım</th><th>Ödeme</th><th>Biriken Faiz</th><th>Biriken Kom. (+BSMV)</th><th class="text-right">Risk</th></tr></thead><tbody>${rowsHtml||`<tr><td colspan="6" class="text-center py-4 text-[var(--apple-text-muted)]">Aktif dönem yok.</td></tr>`}</tbody></table></div></div>
             <div class="mt-3 pdf-hide"><button onclick="downloadPDF()" class="w-full bg-gradient-to-r from-zinc-800 to-zinc-900 text-[var(--apple-yellow)] border border-[var(--apple-yellow)]/30 text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider flex items-center justify-center gap-2"><i class="fa-solid fa-file-pdf text-red-500"></i> PDF Raporu Al</button></div>`;
             container.classList.remove('hidden');
         }
 
         // ==========================================
-        // PDF EXPORT (Hesap Kurdu Minimalist Tema)
+        // GELİŞMİŞ PDF EXPORT (İzole Edilmiş Temiz Çıktı)
         // ==========================================
         function downloadPDF() { 
             const wrapper = id('pdf-template-wrapper');
             let contentHtml = '';
-            const dStr = new Date().toLocaleDateString('tr-TR');
+            const dStr = new Date().toLocaleDateString('tr-TR') + ' ' + new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+            const refId = 'VH-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+
+            // 1. KURUMSAL HEADER
+            contentHtml += `
+                <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1f2937; max-width: 900px; margin: 0 auto;">
+                    <table style="width: 100%; border-bottom: 3px solid #f59e0b; padding-bottom: 15px; margin-bottom: 25px;">
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <h1 style="margin: 0; font-size: 28px; color: #111827; letter-spacing: -0.5px;">Vhesap</h1>
+                                <p style="margin: 4px 0 0 0; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Gelişmiş Finansal Simülasyon</p>
+                            </td>
+                            <td style="text-align: right; vertical-align: bottom;">
+                                <h2 style="margin: 0 0 4px 0; font-size: 16px; color: #374151;">FİNANSAL ANALİZ RAPORU</h2>
+                                <p style="margin: 0; font-size: 10px; color: #6b7280;">Tarih: <strong>${dStr}</strong> | Ref: <strong>${refId}</strong></p>
+                            </td>
+                        </tr>
+                    </table>
+            `;
 
             if (state.sub === 'rotatif') {
                 let totalKullandirim = 0, totalRisk = 0;
                 for(let k in rotatifPortfolio) { totalRisk += rotatifPortfolio[k].mevcutBakiye; totalKullandirim += rotatifPortfolio[k].toplamKullandirim || 0; }
-                
-                contentHtml = `<div class="hk-pdf-title">VHESAP<br>DETAYLI GERİ ÖDEME PLANI</div>
-                <div class="hk-pdf-grid">
-                    <div class="hk-pdf-col"><div class="hk-pdf-row"><span>Kredi Kategorisi:</span><span>Ticari Finans</span></div><div class="hk-pdf-row"><span>Kredi Alt Türü:</span><span>ROTATİF</span></div><div class="hk-pdf-row"><span>Cari Faiz Oranı:</span><span>Değişken</span></div><div class="hk-pdf-row"><span>Toplam Kullandırım:</span><span>${format(totalKullandirim)}</span></div></div>
-                    <div class="hk-pdf-col"><div class="hk-pdf-row"><span>Güncel Risk:</span><span>${format(totalRisk)}</span></div><div class="hk-pdf-row"><span>Rapor Tarihi:</span><span>${dStr}</span></div><div class="hk-pdf-row"><span>Sistem Sürümü:</span><span>2026.1</span></div></div>
-                </div>`;
 
+                // Rotatif Özet
+                contentHtml += `
+                    <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px;">
+                        <table style="width: 100%; font-size: 12px;">
+                            <tr>
+                                <td style="padding: 6px 0; width: 50%;"><strong>Kredi Kategorisi:</strong> Ticari Finans</td>
+                                <td style="padding: 6px 0; width: 50%;"><strong>Güncel Risk (Bakiye):</strong> <span style="color: #d97706; font-weight: bold; font-size: 14px;">${format(totalRisk)}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0;"><strong>Kredi Alt Türü:</strong> ROTATİF KREDİ</td>
+                                <td style="padding: 6px 0;"><strong>Toplam Kullandırım:</strong> ${format(totalKullandirim)}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0;"><strong>Cari Faiz Oranı:</strong> Değişken</td>
+                                <td style="padding: 6px 0;"><strong>Para Birimi:</strong> TRY</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+
+                // Rotatif Detaylı Ekstreler
                 for(let k in rotatifPortfolio) {
                     let h = rotatifPortfolio[k]; let entries = calculateAccountLedger(k);
-                    contentHtml += `<div style="font-weight:bold; font-size:11px; margin-top:15px; border-bottom:1px solid #000; padding-bottom:4px; margin-bottom:5px;">${h.name} Ekstresi (Bakiye: ${format(h.mevcutBakiye)})</div>`;
-                    contentHtml += `<table class="hk-pdf-table"><thead><tr><th>Tarih</th><th>İşlem Türü</th><th class="right">Tutar</th><th class="right">Oran(%)</th><th>Valör</th><th class="right">Bakiye</th><th class="right">Net Faiz</th><th class="right">Komisyon</th></tr></thead><tbody>`;
-                    entries.forEach(e => { contentHtml += `<tr><td>${e.islemTarihi}</td><td>${e.islemTuru} ${e.aciklama ? '('+e.aciklama+')':''}</td><td class="right">${e.tutar>0?fN(e.tutar):'-'}</td><td class="right">${e.faizOrani||'-'}</td><td>${e.valorTarihi}</td><td class="right">${fN(e.bakiye)}</td><td class="right">${e.isleyenFaiz}</td><td class="right">${e.isleyenKomisyon}</td></tr>`; });
+                    contentHtml += `<h3 style="font-size: 14px; margin-bottom: 10px; color: #111827; border-bottom: 1px solid #d1d5db; padding-bottom: 4px;">${h.name} Hesap Ekstresi <span style="float: right; color: #d97706;">Bakiye: ${format(h.mevcutBakiye)}</span></h3>`;
+                    contentHtml += `<table style="width: 100%; font-size: 10px; border-collapse: collapse; margin-bottom: 25px; text-align: left;">
+                        <thead>
+                            <tr style="background-color: #f3f4f6; color: #374151;">
+                                <th style="padding: 8px; border: 1px solid #e5e7eb;">Tarih</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb;">İşlem Türü</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Tutar</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Oran(%)</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Kom.(Efektif BSMV Dahil)</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Valör</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Net Faiz</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">İşleyen Kom.</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Bakiye</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    entries.forEach((e, i) => {
+                        let bg = i % 2 === 0 ? '#ffffff' : '#f9fafb';
+                        if (e.isDevreSonu) bg = '#fffbeb';
+                        let komStr = e.komOrani > 0 ? `%${fN(e.komOrani * 1.05)}` : '-';
+                        contentHtml += `<tr style="background-color: ${bg};">
+                            <td style="padding: 8px; border: 1px solid #e5e7eb;">${e.islemTarihi}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb;"><strong>${e.islemTuru}</strong> ${e.aciklama ? '<br><span style="font-size:8px;color:#6b7280;">('+e.aciklama+')</span>':''}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${e.tutar>0?fN(e.tutar):'-'}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${e.faizOrani||'-'}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${komStr}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${e.valorTarihi}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#b45309;">${e.isleyenFaiz}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#0369a1;">${e.isleyenKomisyon}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight: bold;">${fN(e.bakiye)}</td>
+                        </tr>`;
+                    });
                     contentHtml += `</tbody></table>`;
                 }
 
-                contentHtml += `<div style="font-weight:bold; font-size:11px; margin-top:20px; border-bottom:1px solid #000; padding-bottom:4px; margin-bottom:5px;">Dönemsel Konsolide İcmal</div>`;
-                contentHtml += `<table class="hk-pdf-table"><thead><tr><th>Dönem</th><th class="right">Kullandırım</th><th class="right">Ödeme</th><th class="right">Faiz</th><th class="right">Komisyon</th><th class="right">Risk Bakiye</th></tr></thead><tbody>`;
+                // Rotatif Konsolide İcmal
+                contentHtml += `<h3 style="font-size: 14px; margin-bottom: 10px; color: #111827; border-bottom: 1px solid #d1d5db; padding-bottom: 4px;">Dönemsel Konsolide İcmal</h3>`;
+                contentHtml += `<table style="width: 100%; font-size: 10px; border-collapse: collapse; margin-bottom: 25px; text-align: left;">
+                    <thead>
+                        <tr style="background-color: #f3f4f6; color: #374151;">
+                            <th style="padding: 8px; border: 1px solid #e5e7eb;">Dönem</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Kullandırım</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Ödeme</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Biriken Faiz</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Biriken Komisyon</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Risk Bakiye</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
                 let sortedKeys = Object.keys(rotatifConsolidated).sort((a, b) => { if (a === "open") return 1; if (b === "open") return -1; return parseFloat(a) - parseFloat(b); });
-                sortedKeys.forEach(k => { let p = rotatifConsolidated[k]; contentHtml += `<tr><td>${p.label}</td><td class="right">${format(p.kullandirim)}</td><td class="right">${format(p.odeme)}</td><td class="right">${format(p.faiz)}</td><td class="right">${format(p.komisyon)}</td><td class="right">${format(p.bakiye)}</td></tr>`; });
+                sortedKeys.forEach((k, i) => {
+                    let bg = i % 2 === 0 ? '#ffffff' : '#f9fafb';
+                    let p = rotatifConsolidated[k];
+                    contentHtml += `<tr style="background-color: ${bg};">
+                        <td style="padding: 8px; border: 1px solid #e5e7eb;"><strong>${p.label}</strong></td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(p.kullandirim)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#0369a1;">${format(p.odeme)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#b45309;">${format(p.faiz)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(p.komisyon)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight: bold;">${format(p.bakiye)}</td>
+                    </tr>`;
+                });
                 contentHtml += `</tbody></table>`;
+
             } else {
                 const m = state.calcMeta;
-                contentHtml = `<div class="hk-pdf-title">VHESAP<br>DETAYLI GERİ ÖDEME PLANI</div>
-                <div class="hk-pdf-grid">
-                    <div class="hk-pdf-col"><div class="hk-pdf-row"><span>Kredi Kategorisi:</span><span>${m.cat}</span></div><div class="hk-pdf-row"><span>Kredi Alt Türü:</span><span>${m.tur}</span></div><div class="hk-pdf-row"><span>Faiz/Kâr Oranı:</span><span>%${m.faiz}</span></div><div class="hk-pdf-row"><span>Talep Edilen Kredi:</span><span>${format(m.tutar)}</span></div></div>
-                    <div class="hk-pdf-col"><div class="hk-pdf-row"><span>Aylık Ödeme (İlk):</span><span>${format(m.aylik)}</span></div><div class="hk-pdf-row"><span>Toplam Geri Ödeme:</span><span>${format(m.toplam)}</span></div><div class="hk-pdf-row"><span>Tarih:</span><span>${dStr}</span></div><div class="hk-pdf-row"><span>Sistem Sürümü:</span><span>2026.1</span></div></div>
-                </div>`;
                 
-                contentHtml += `<table class="hk-pdf-table">`;
+                // Diğer Krediler (Taksitli, Spot, Vadeli vb.) Özet
+                contentHtml += `
+                    <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px;">
+                        <table style="width: 100%; font-size: 12px;">
+                            <tr>
+                                <td style="padding: 6px 0; width: 50%;"><strong>Kategori:</strong> ${m.cat}</td>
+                                <td style="padding: 6px 0; width: 50%;"><strong>Ana Tutar:</strong> <span style="font-weight:bold; color:#111827;">${format(m.tutar)}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0;"><strong>Alt Tür:</strong> ${m.tur}</td>
+                                <td style="padding: 6px 0;"><strong>İlk/Aylık Taksit:</strong> <span style="color:#d97706; font-weight:bold; font-size:14px;">${format(m.aylik)}</span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0;"><strong>Faiz/Getiri Oranı:</strong> %${m.faiz}</td>
+                                <td style="padding: 6px 0;"><strong>Toplam Geri Ödeme:</strong> <span style="font-weight:bold;">${format(m.toplam)}</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+
+                contentHtml += `<h3 style="font-size: 14px; margin-bottom: 10px; color: #111827; border-bottom: 1px solid #d1d5db; padding-bottom: 4px;">Ödeme / Nakit Akış Planı</h3>`;
+                contentHtml += `<table style="width: 100%; font-size: 10px; border-collapse: collapse; margin-bottom: 25px; text-align: left;">
+                    <thead>
+                        <tr style="background-color: #f3f4f6; color: #374151;">`;
+
                 let isDayBased = ['spot', 'iskonto', 'ekhesap'].includes(state.sub);
                 let isMevduat = state.main === 'vadeli';
-                
-                contentHtml += `<thead><tr>`;
-                if(isMevduat) { contentHtml += `<th>No</th><th>Tarih</th><th class="right">Tutar</th><th class="right">Brüt Faiz</th><th class="right">Stopaj</th><th class="right">Bakiye</th>`; } 
-                else if(isDayBased) { contentHtml += `<th>İşlem</th><th>Tarih</th><th class="right">Tutar</th><th class="right">Net Faiz</th><th class="right">Komisyon</th><th class="right">Vergi</th><th class="right">Bakiye</th>`; } 
-                else { contentHtml += `<th>No</th><th>Tarih</th><th class="right">Taksit Tutarı</th><th class="right">Anapara</th><th class="right">Faiz</th><th class="right">Vergiler</th><th class="right">Kalan Bakiye</th>`; }
+
+                if(isMevduat) {
+                    contentHtml += `<th style="padding: 8px; border: 1px solid #e5e7eb;">No</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb;">Tarih</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Tutar</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Brüt Faiz</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Stopaj Kesintisi</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Bakiye</th>`;
+                } else if(isDayBased) {
+                    contentHtml += `<th style="padding: 8px; border: 1px solid #e5e7eb;">İşlem</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb;">Tarih</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">İşlem Tutarı</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Net Faiz</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Kom. (BSMV Dahil)</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Vergiler (Faiz Üzerinden)</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Bakiye</th>`;
+                } else {
+                    contentHtml += `<th style="padding: 8px; border: 1px solid #e5e7eb;">No</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb;">Tarih</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Taksit Tutarı</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Anapara</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Faiz</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Vergiler</th>
+                    <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Kalan Bakiye</th>`;
+                }
                 contentHtml += `</tr></thead><tbody>`;
-                
+
                 if(state.lastCalc) {
-                    state.lastCalc.forEach(r => {
-                        contentHtml += `<tr>`;
-                        if(isMevduat) { contentHtml += `<td>${r.i}</td><td>${r.date}</td><td class="right">${format(r.taksit)}</td><td class="right">${format(r.f)}</td><td class="right">${format(r.k)}</td><td class="right">${format(r.bak)}</td>`; } 
-                        else if(isDayBased) { contentHtml += `<td>${r.i}</td><td>${r.date}</td><td class="right">${format(r.taksit)}</td><td class="right">${format(r.f)}</td><td class="right">${format(r.kom)}</td><td class="right">${format(r.k)}</td><td class="right">${format(r.bak)}</td>`; } 
-                        else { contentHtml += `<td>${r.i}</td><td>${r.date}</td><td class="right">${format(r.taksit)}</td><td class="right">${format(r.ana)}</td><td class="right">${format(r.f)}</td><td class="right">${format(r.k)}</td><td class="right">${format(r.bak)}</td>`; }
+                    state.lastCalc.forEach((r, i) => {
+                        let bg = i % 2 === 0 ? '#ffffff' : '#f9fafb';
+                        contentHtml += `<tr style="background-color: ${bg};">`;
+                        if(isMevduat) {
+                            contentHtml += `<td style="padding: 8px; border: 1px solid #e5e7eb;">${r.i}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb;">${r.date}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.taksit)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#b45309;">${format(r.f)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.k)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight:bold;">${format(r.bak)}</td>`;
+                        } else if(isDayBased) {
+                            contentHtml += `<td style="padding: 8px; border: 1px solid #e5e7eb;">${r.i}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb;">${r.date}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.taksit)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#b45309;">${format(r.f)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.kom)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.k)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight:bold;">${format(r.bak)}</td>`;
+                        } else {
+                            contentHtml += `<td style="padding: 8px; border: 1px solid #e5e7eb;">${r.i}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb;">${r.date}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight:bold;">${format(r.taksit)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.ana)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#b45309;">${format(r.f)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.k)}</td>
+                            <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight:bold;">${format(r.bak)}</td>`;
+                        }
                         contentHtml += `</tr>`;
                     });
                 }
                 contentHtml += `</tbody></table>`;
             }
 
+            // 3. RAPOR FOOTER
+            contentHtml += `
+                <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; text-align: center;">
+                    <p style="margin: 0;">Bu rapor Vhesap Platformu tarafından elektronik olarak üretilmiştir. Gösterilen veriler bilgi amaçlı olup resmi bir teklif veya bağlayıcı taahhüt niteliği taşımaz.</p>
+                    <p style="margin: 4px 0 0 0;">&copy; ${new Date().getFullYear()} Vhesap Finans. Tüm hakları saklıdır.</p>
+                </div>
+                </div>
+            `;
+
             wrapper.innerHTML = contentHtml;
             document.body.classList.add('pdf-mode');
 
             setTimeout(() => {
                 const opt = { 
-                    margin: [10, 10, 10, 10], filename: 'Vhesap_Odeme_Plani.pdf', image: { type: 'jpeg', quality: 0.98 }, 
-                    html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+                    margin: [10, 10, 10, 10], 
+                    filename: `Vhesap_Rapor_${refId}.pdf`, 
+                    image: { type: 'jpeg', quality: 1.0 }, 
+                    html2canvas: { 
+                        scale: 2, 
+                        useCORS: true, 
+                        logging: false,
+                        windowWidth: document.documentElement.scrollWidth,
+                        scrollY: 0
+                    }, 
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: 'avoid-all' }
                 };
+                
                 showToast("PDF Hazırlanıyor...");
+                
                 html2pdf().set(opt).from(wrapper).save().then(() => { 
-                    document.body.classList.remove('pdf-mode'); showToast("PDF Başarıyla Kaydedildi."); 
+                    document.body.classList.remove('pdf-mode'); 
+                    showToast("PDF Başarıyla Kaydedildi."); 
+                }).catch((e) => {
+                    console.error("PDF oluşturma hatası:", e);
+                    document.body.classList.remove('pdf-mode'); 
+                    showToast("PDF oluşturulurken bir hata oluştu.");
                 });
-            }, 100);
+            }, 300);
         }
 
     </script>
