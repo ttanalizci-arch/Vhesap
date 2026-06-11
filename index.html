@@ -24,17 +24,15 @@
     <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
 
     <script>
+      // Offline çalışmayı engelle ve PWA/ServiceWorker çerezlerini temizle (Güncellemelerin anında gelmesi için)
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js')
-            .then(registration => {
-              console.log('ServiceWorker başarıyla kaydedildi:', registration.scope);
-              registration.update(); // Mobil cihazlarda eski önbelleği aşmak için zorla güncelle
-            })
-            .catch(error => {
-              console.log('ServiceWorker kaydı başarısız:', error);
-            });
-        });
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+              for(let registration of registrations) {
+                  registration.unregister().then(function(isUnregistered) {
+                      if(isUnregistered) { console.log('Eski ServiceWorker silindi, güncel sürüm çekiliyor.'); }
+                  });
+              }
+          });
       }
       
       // Mobil Safari/Chrome önbellek temizleyici (Yeni özelliklerin anında görünmesi için)
@@ -257,6 +255,13 @@
     </style>
 </head>
 <body class="dark flex min-h-screen selection:bg-amber-500/30">
+
+    <!-- İnternet Bağlantısı Engelleyici -->
+    <div id="offline-blocker" style="display: none;" class="fixed inset-0 bg-black/95 z-[9999] flex-col items-center justify-center text-white backdrop-blur-md">
+        <i class="fa-solid fa-wifi text-6xl text-[var(--apple-yellow)] mb-6 opacity-50"></i>
+        <h2 class="text-2xl font-black mb-2 tracking-tight">Bağlantı Koptu</h2>
+        <p class="text-center text-[#a1a1aa] max-w-xs text-xs font-semibold leading-relaxed">Analitik veri akışı ve güncel hesaplamalar için aktif bir internet bağlantısı gereklidir. Lütfen ağınızı kontrol edin.</p>
+    </div>
 
     <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-amber-500/30 text-xs font-bold flex items-center gap-2" id="toast-container">
         <i class="fa-solid fa-circle-info text-[var(--apple-yellow)]"></i>
@@ -649,7 +654,16 @@
             }
         }
 
+        // İnternet Bağlantı Kontrolcüsü
+        function checkConnection() {
+            const blocker = id('offline-blocker');
+            if(blocker) { blocker.style.display = navigator.onLine ? 'none' : 'flex'; }
+        }
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+
         window.onload = () => {
+            checkConnection();
             const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
             if (savedTheme === 'light') { document.body.classList.remove('dark'); id('global-theme-icon').className = 'fa-solid fa-sun text-lg'; }
             else { document.body.classList.add('dark'); id('global-theme-icon').className = 'fa-solid fa-moon text-lg'; }
