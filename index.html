@@ -25,14 +25,20 @@
 
     <script>
       // Offline çalışmayı engelle ve PWA/ServiceWorker çerezlerini temizle (Güncellemelerin anında gelmesi için)
-      if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(function(registrations) {
-              for(let registration of registrations) {
-                  registration.unregister().then(function(isUnregistered) {
-                      if(isUnregistered) { console.log('Eski ServiceWorker silindi, güncel sürüm çekiliyor.'); }
-                  });
-              }
-          });
+      try {
+          if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                      registration.unregister().then(function(isUnregistered) {
+                          if(isUnregistered) { console.log('Eski ServiceWorker silindi, güncel sürüm çekiliyor.'); }
+                      }).catch(function(e) { console.warn('ServiceWorker unregister hatası:', e); });
+                  }
+              }).catch(function(e) {
+                  console.warn('ServiceWorker kayıtları alınamadı (InvalidStateError atlatıldı):', e);
+              });
+          }
+      } catch (e) {
+          console.warn('ServiceWorker erişimi engellendi:', e);
       }
       
       // Mobil Safari/Chrome önbellek temizleyici (Yeni özelliklerin anında görünmesi için)
@@ -40,7 +46,7 @@
           try {
               caches.keys().then(names => {
                   names.forEach(name => { caches.delete(name); });
-              });
+              }).catch(function(e) { console.warn('Cache temizleme hatası:', e); });
           } catch(e) {}
       }
     </script>
@@ -506,6 +512,9 @@
                         <div class="mt-5" id="plan-trigger-container">
                             <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2 pdf-hide" onclick="openPlan()">
                                 <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
+                            </button>
+                            <button id="btn-takvime-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2 pdf-hide" onclick="addToCalendar()">
+                                <i class="fa-regular fa-calendar-plus"></i> VADE SONUNU TAKVİME EKLE
                             </button>
                             <button id="btn-karsilastirma-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-500 font-bold text-xs tracking-wide transition-all duration-200 items-center justify-center gap-2 pdf-hide" onclick="addVadeliKarsilastirma()">
                                 <i class="fa-solid fa-code-compare"></i> KARŞILAŞTIRMAYA EKLE
@@ -1113,6 +1122,7 @@
             id('results').classList.remove('hidden'); 
             id('plan-trigger-container').classList.remove('hidden');
             if (id('btn-karsilastirma-ekle')) id('btn-karsilastirma-ekle').style.display = 'none';
+            if (id('btn-takvime-ekle')) id('btn-takvime-ekle').style.display = 'none';
             setTimeout(() => id('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
@@ -1171,6 +1181,7 @@
 
             id('results').classList.remove('hidden'); id('plan-trigger-container').classList.remove('hidden');
             if (id('btn-karsilastirma-ekle')) id('btn-karsilastirma-ekle').style.display = 'none';
+            if (id('btn-takvime-ekle')) id('btn-takvime-ekle').style.display = 'none';
             setTimeout(() => id('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
@@ -1209,6 +1220,7 @@
             state.currentVadeliOran = F * 100;
             
             if (id('btn-karsilastirma-ekle')) id('btn-karsilastirma-ekle').style.display = 'flex';
+            if (id('btn-takvime-ekle')) id('btn-takvime-ekle').style.display = 'flex';
             setTimeout(() => id('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
@@ -1278,6 +1290,53 @@
             state.vadeliKarsilastirmalar = [];
             renderVadeliKarsilastirma();
             showToast("Karşılaştırma tablosu temizlendi.");
+        }
+        
+        // ==========================================
+        // TAKVİME EKLE MODÜLÜ (.ICS OLUŞTURUCU)
+        // ==========================================
+        function addToCalendar() {
+            if (state.main !== 'vadeli') return;
+            
+            const endDateStr = id('date-first').value; // YYYY-MM-DD
+            if (!endDateStr) return;
+            
+            const dateParts = endDateStr.split('-');
+            if (dateParts.length !== 3) return;
+
+            // Vade Sonu - Saat 09:00 Sabah bildirimli (Outlook, Google, Apple ile uyumlu)
+            const dtStart = `${dateParts[0]}${dateParts[1]}${dateParts[2]}T090000`;
+            const dtEnd = `${dateParts[0]}${dateParts[1]}${dateParts[2]}T100000`;
+            
+            const tutar = format(state.currentVadeliTutar);
+            const net = format(state.currentVadeliNet);
+            const altTur = state.sub.replace('vadeli-', '').toUpperCase();
+            const title = `Vhesap: ${altTur} Vade Sonu`;
+            const description = `Mevduat vade sonu geldi.\\n\\nAnapara: ${tutar}\\nNet Getiri: ${net}`;
+            
+            const icsContent = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//Vhesap//TR",
+                "BEGIN:VEVENT",
+                `DTSTART:${dtStart}`,
+                `DTEND:${dtEnd}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${description}`,
+                "END:VEVENT",
+                "END:VCALENDAR"
+            ].join("\r\n");
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Vhesap_Vade_Sonu.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("Takvim dosyası oluşturuldu. Tıklayarak takvime kaydedebilirsiniz.");
         }
 
         // ==========================================
