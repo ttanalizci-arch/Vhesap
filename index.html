@@ -23,8 +23,6 @@
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
 
-    <title>Vhesap & Vanaliz - Finans Portalı</title>
-
     <script>
       // Offline çalışmayı engelle ve PWA/ServiceWorker çerezlerini temizle
       try {
@@ -157,11 +155,10 @@
             --k-nav-bg: rgba(28, 28, 30, 0.85);
         }
 
-        /* YENİ: Tek sayfa uygulaması için Body ayarları */
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            overflow: hidden; /* Dış kaydırmayı engelle, iç kısımlar kayacak */
+            overflow: hidden; 
             background-color: var(--apple-bg);
             transition: background-color 0.3s ease;
         }
@@ -266,7 +263,7 @@
         .satir-faiz-degisim { background-color: rgba(255, 69, 58, 0.04) !important; font-style: italic; }
         .satir-faiz-degisim td { color: var(--danger) !important; border-left: 2px solid var(--danger); }
 
-        /* YENİ PDF MODU (Gelişmiş Çıktı İçin İzole) */
+        /* YENİ PDF MODU */
         .pdf-mode { height: auto !important; min-height: 100% !important; overflow: visible !important; background: #ffffff !important; }
         .pdf-mode body, .pdf-mode html { height: auto !important; min-height: 100% !important; overflow: visible !important; background: #ffffff !important; }
         .pdf-mode #swipe-wrapper,
@@ -326,15 +323,15 @@
 </head>
 <body class="dark selection:bg-amber-500/30">
 
-    <!-- VHESAP MODALS & TOASTS (En dışta tutulur ki her yerde çalışsın) -->
+    <!-- VHESAP MODALS & TOASTS -->
     <div id="offline-blocker" style="display: none;" class="fixed inset-0 bg-black/95 z-[9999] flex-col items-center justify-center text-white backdrop-blur-md">
         <i class="fa-solid fa-wifi text-6xl text-[var(--apple-yellow)] mb-6 opacity-50"></i>
         <h2 class="text-2xl font-black mb-2 tracking-tight">Bağlantı Koptu</h2>
         <p class="text-center text-[#a1a1aa] max-w-xs text-xs font-semibold leading-relaxed">Analitik veri akışı ve güncel hesaplamalar için aktif bir internet bağlantısı gereklidir. Lütfen ağınızı kontrol edin.</p>
     </div>
 
-    <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-amber-500/30 text-xs font-bold flex items-center gap-2" id="toast-container">
-        <i class="fa-solid fa-circle-info text-[var(--apple-yellow)]"></i>
+    <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-amber-500/30 text-[11px] text-center font-bold flex items-center gap-2 max-w-[90vw]" id="toast-container">
+        <i class="fa-solid fa-circle-info text-[var(--apple-yellow)] flex-shrink-0"></i>
         <span id="toast-message"></span>
     </div>
 
@@ -364,12 +361,10 @@
     </div>
 
 
-    <!-- ========================================== -->
     <!-- KAYDIRMA (SWIPE) KAPSAYICISI -->
-    <!-- ========================================== -->
     <div id="swipe-wrapper" style="display: flex; width: 200vw; height: 100vh; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);">
         
-        <!-- PANE 1: VHESAP (index.html) -->
+        <!-- PANE 1: VHESAP -->
         <div id="vhesap-viewport" style="width: 100vw; height: 100vh; overflow-y: auto; position: relative;">
             
             <div class="apple-container" id="main-container">
@@ -381,13 +376,11 @@
                         <i id="global-theme-icon" class="fa-solid fa-moon text-lg"></i>
                     </button>
 
-                    <!-- Vhesap Sol Geçiş Butonu (Ana Panel) -->
                     <button onclick="window.switchToKanaliz()" class="nav-bubble-btn absolute top-[80px] left-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç">
                         <i class="fa-solid fa-chevron-left text-[10px]"></i>
                         <span class="nav-bubble-text text-[10px] font-bold ml-1.5">Vanaliz</span>
                     </button>
 
-                    <!-- Vhesap Sağ Geçiş Butonu (Ana Panel) -->
                     <button onclick="window.switchToKanaliz()" class="nav-bubble-btn absolute top-[80px] right-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç">
                         <span class="nav-bubble-text text-[10px] font-bold mr-1.5">Vanaliz</span>
                         <i class="fa-solid fa-chevron-right text-[10px]"></i>
@@ -663,7 +656,7 @@
             </div>
         </div>
 
-        <!-- PANE 2: KANALIZ (Kanaliz.html) -->
+        <!-- PANE 2: KANALIZ -->
         <div id="kanaliz-viewport" style="width: 100vw; height: 100vh; overflow-y: auto;" class="font-sans pb-12 relative">
             
             <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-6 py-4 flex items-center justify-between">
@@ -675,7 +668,6 @@
                         <h1 class="text-base font-semibold tracking-tight text-[var(--k-text)]">Vanaliz</h1>
                     </div>
                     
-                    <!-- KANALIZ PDF BUTONU -->
                     <button onclick="downloadKanalizPDF()" class="bg-[#ff9f0a]/10 text-[#ff9f0a] border border-[#ff9f0a]/20 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-[#ff9f0a]/20 transition-all shadow-sm uppercase tracking-wider">
                         <i class="fa-solid fa-file-pdf text-red-500"></i> Rapor Al
                     </button>
@@ -687,7 +679,6 @@
                 <div class="space-y-4">
                     <div class="bg-[var(--k-card)] rounded-[1.5rem] p-4 sm:p-6 shadow-2xl border border-[var(--k-border)] relative">
                         
-                        <!-- NEW: Integrated left/right chevrons -->
                         <button onclick="window.switchToVhesap()" class="nav-bubble-btn absolute left-[-14px] top-1/2 -translate-y-1/2 h-8 px-3 rounded-2xl bg-[var(--k-card)] border border-[var(--k-border)] text-[#ff9f0a] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:scale-110 z-10" title="Vhesap'a Dön">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
                             <span class="nav-bubble-text text-[10px] font-bold ml-1.5">Vhesap</span>
@@ -709,7 +700,6 @@
                         </div>
 
                         <div id="loans-container" class="space-y-3">
-                            <!-- Kartlar JS ile eklenecek -->
                         </div>
 
                         <div id="empty-state" class="hidden text-center py-10 text-[var(--k-text-muted)] opacity-60 text-xs">
@@ -800,7 +790,6 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-white/90 text-[11px] font-medium">Finansal Sonuç</span>
                                     <div id="sim-result-badge">
-                                        <!-- JS -->
                                     </div>
                                 </div>
                             </div>
@@ -817,18 +806,15 @@
     <div id="pdf-template-wrapper"></div>
 
 
-    <!-- ========================================== -->
     <!-- KAYDIRMA (SWIPE) LOGIC SCRIPT -->
-    <!-- ========================================== -->
     <script>
         let touchstartX = 0;
         let touchstartY = 0;
         let touchendX = 0;
         let touchendY = 0;
-        let currentScreen = 0; // 0: Vhesap, 1: Kanaliz
+        let currentScreen = 0; 
         const swipeContainer = document.getElementById('swipe-wrapper');
 
-        // Yönlendirme (Toggle) İşlevi
         window.toggleScreen = function() {
             if (currentScreen === 0) {
                 window.switchToKanaliz();
@@ -841,13 +827,10 @@
             const xDiff = touchendX - touchstartX;
             const yDiff = Math.abs(touchendY - touchstartY);
             
-            // X ekseninde hareket, Y eksenindekinden belirgin şekilde fazla olmalı
             if (Math.abs(xDiff) > yDiff && Math.abs(xDiff) > 50) {
                 if (xDiff < 0 && currentScreen === 0) {
-                    // Sola Kaydırma (Parmak sola gitti) -> Vhesap'tan Vanaliz'e geç
                     window.switchToKanaliz();
                 } else if (xDiff > 0 && currentScreen === 1) {
-                    // Sağa Kaydırma (Parmak sağa gitti) -> Vanaliz'den Vhesap'a geç
                     window.switchToVhesap();
                 }
             }
@@ -882,13 +865,9 @@
     </script>
 
 
-    <!-- ========================================== -->
     <!-- VHESAP SCRIPT -->
-    <!-- ========================================== -->
     <script>
-        // ==========================================
         // GLOBAL STATE & UTILS
-        // ==========================================
         const state = {
             main: 'portal', 
             sub: '', 
@@ -922,9 +901,7 @@
 
         const publicHolidays = ["01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-29", "2026-03-20", "2026-03-21", "2026-03-22", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-30"];
 
-        // ==========================================
-        // 4. ROTATİF MOTORU (GLOBAL YAPILAR)
-        // ==========================================
+        // ROTATİF MOTORU (GLOBAL YAPILAR)
         let rotatifSystemMode = 'single'; 
         let rotatifAnchorDates = {}; 
         let rotatifPaidPeriods = {}; 
@@ -982,7 +959,6 @@
             let today = new Date().toISOString().split('T')[0];
             id('kulDate').value = today; id('odeDate').value = today; id('faizDate').value = today; id('singleAnchorDate').value = today;
 
-            // Navigasyon balon oklarını 3 saniye sonra küçült
             setTimeout(() => {
                 document.querySelectorAll('.nav-bubble-text').forEach(el => el.classList.add('collapsed'));
                 document.querySelectorAll('.nav-bubble-btn').forEach(el => {
@@ -1059,9 +1035,7 @@
             }
         }
 
-        // ==========================================
         // NAVIGATION & ROUTING
-        // ==========================================
         function navigateTo(viewName) {
             state.main = viewName;
             if(viewName === 'portal') {
@@ -1082,7 +1056,6 @@
             state.sub = subId;
             state.araOdemeler = []; state.hasAraOdemeler = false; state.hasOdemesiz = false;
             
-            // Vadeli Karşılaştırma Temizliği
             state.vadeliKarsilastirmalar = [];
             if(id('vadeli-karsilastirma-container')) id('vadeli-karsilastirma-container').style.display = 'none';
 
@@ -1103,9 +1076,7 @@
             }
         }
 
-        // ==========================================
         // FORM RENDERING (Non-Rotatif)
-        // ==========================================
         function renderForm() {
             const m = state.main, s = state.sub;
             const isDayBased = ['spot', 'iskonto', 'ekhesap'].includes(s) || m === 'vadeli';
@@ -1263,6 +1234,51 @@
             id('val-ara-tutar').value = ''; renderAraOdemeList();
         }
 
+        // BDDK Limit Doğrulama
+        function validateBDDK() {
+            const s = state.sub;
+            const T_kredi = getRaw('val-tutar');
+            const V_ay = parseInt(id('val-vade').value);
+
+            if (s === 'ihtiyac') {
+                if (T_kredi <= 125000 && V_ay > 36) return "BDDK: 125.000 TL'ye kadar maks. vade 36 aydır.";
+                if (T_kredi > 125000 && T_kredi <= 250000 && V_ay > 24) return "BDDK: 125.000-250.000 TL arası maks. vade 24 aydır.";
+                if (T_kredi > 250000 && V_ay > 12) return "BDDK: 250.000 TL üzeri maks. vade 12 aydır.";
+            }
+            else if (s === 'tasit') {
+                const T_deger = getRaw('val-deger');
+                if (T_deger <= 0) return "Lütfen araç kasko/fatura değerini giriniz.";
+                const type = id('val-arac-turu')?.value;
+                let oran = 0, vade = 0;
+                if(type === 'icten') {
+                    if(T_deger<=400000){ oran=0.70; vade=48;} else if(T_deger<=800000){ oran=0.50; vade=36;} else if(T_deger<=1200000){ oran=0.30; vade=24;} else if(T_deger<=2000000){ oran=0.20; vade=12;} else{oran=0;vade=0;}
+                } else {
+                    if(T_deger<=2500000){ oran=0.70; vade=48;} else if(T_deger<=5000000){ oran=0.50; vade=36;} else if(T_deger<=6500000){ oran=0.30; vade=24;} else if(T_deger<=7500000){ oran=0.20; vade=12;} else{oran=0;vade=0;}
+                }
+
+                if (vade === 0) return "BDDK: Bu tutardaki araçlar için kredi kullandırılamaz.";
+                if (V_ay > vade) return `BDDK: Bu araç değeri için maks. vade ${vade} aydır.`;
+                if (T_kredi > T_deger * oran) return `BDDK: Bu araç için maks. kredi tutarı ${format(T_deger * oran)} olabilir.`;
+            }
+            else if (s === 'konut') {
+                const T_deger = getRaw('val-deger');
+                if (T_deger <= 0) return "Lütfen konut ekspertiz değerini giriniz.";
+                let ekb = id('val-ekb')?.value;
+                let mulkiyet = id('val-mulkiyet')?.value;
+                let oran = 0;
+                if(T_deger <= 5000000) oran = ekb==='AB'?0.90:(ekb==='C'?0.80:0.70);
+                else if(T_deger <= 7000000) oran = ekb==='AB'?0.80:(ekb==='C'?0.70:0.60);
+                else if(T_deger <= 10000000) oran = ekb==='AB'?0.70:(ekb==='C'?0.60:0.50);
+                else if(T_deger <= 20000000) oran = ekb==='AB'?0.50:(ekb==='C'?0.40:0.30);
+                else oran = ekb==='AB'?0.40:(ekb==='C'?0.30:0.20);
+                if(mulkiyet === 'diger') oran *= 0.25;
+
+                if (T_kredi > T_deger * oran) return `BDDK: Bu konut için maks. kredi tutarı ${format(T_deger * oran)} olabilir.`;
+            }
+
+            return true;
+        }
+
         function executeCalculation() {
             const s = state.sub; const m = state.main;
             if(m === 'vadeli') return calcMevduat();
@@ -1282,7 +1298,14 @@
             let F = parseFloat(id('val-faiz').value.replace(',','.')) / 100;
             if(state.faizTipi === 'yillik') F /= 12;
             
-            if(T<=0 || V<=0 || isNaN(F)) return showToast("Geçerli değerler girin.");
+            if(T<=0 || V<=0 || isNaN(F)) return showToast("Lütfen hesaplama için geçerli değerler girin.");
+
+            // BDDK Doğrulamasını burada çağırıyoruz. Uyarıyı gösterir ama işlemi durdurmaz (return kaldırıldı).
+            const bddkCheck = validateBDDK();
+            if (bddkCheck !== true) {
+                showToast(bddkCheck);
+            }
+
             const { kkdf, bsmv } = getTaxes();
             const brutF = F * (1 + kkdf + bsmv);
 
@@ -1442,7 +1465,6 @@
             const C_raw = getRaw('val-komisyon')/100 || 0; 
             const { kkdf, bsmv } = getTaxes();
             
-            // Komisyon Oranı Üzerine BSMV İlave Edilerek Hesaplama Gerçekleştiriliyor
             const C = C_raw * (1 + bsmv); 
             
             let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
@@ -1536,9 +1558,7 @@
             setTimeout(() => id('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
-        // ==========================================
-        // VADELİ KARŞILAŞTIRMA MODÜLÜ (YENİ)
-        // ==========================================
+        // VADELİ KARŞILAŞTIRMA MODÜLÜ
         function addVadeliKarsilastirma() {
             if (state.main !== 'vadeli') return;
 
@@ -1603,9 +1623,7 @@
             showToast("Karşılaştırma tablosu temizlendi.");
         }
         
-        // ==========================================
         // TAKVİME EKLE MODÜLÜ (.ICS OLUŞTURUCU)
-        // ==========================================
         function addToCalendar() {
             if (state.main !== 'vadeli') return;
             
@@ -1649,7 +1667,6 @@
             showToast("Takvim dosyası oluşturuldu. Tıklayarak takvime kaydedebilirsiniz.");
         }
 
-        // ==========================================
         function openPlan() {
             if(!state.lastCalc) return;
             id('plan-subtitle').innerText = state.calcMeta.cat + " / " + state.calcMeta.tur;
@@ -1668,9 +1685,7 @@
         function closePlan() { id('plan-modal').style.display = 'none'; }
         function closePlanOutside(e) { if(e.target.id === 'plan-modal') closePlan(); }
 
-        // ==========================================
-        // 4. ROTATİF MOTORU MANTIK VE İŞLEVLERİ
-        // ==========================================
+        // ROTATİF MOTORU MANTIK VE İŞLEVLERİ
         function rotatifSwitchActionTab(tab) { document.querySelectorAll('.segment-btn-rot').forEach(b => b.classList.remove('active')); event.currentTarget.classList.add('active'); document.querySelectorAll('.action-form-content').forEach(f => f.style.display='none'); id('form-'+tab).style.display='block'; }
         function rotatifToggleFaizTuru(c) { id('faizTuruLabel').innerText = c ? 'Bileşik Faiz' : 'Basit Faiz'; recalculateRotatif(); }
         function rotatifIsBilesik() { return id('faizTuruToggle').checked; }
@@ -1822,7 +1837,6 @@
             timeline.forEach((event) => {
                 let days = lastValorDate ? Math.round((event.valorDate - lastValorDate) / 86400000) : 0, accruedInterest = 0, accruedCommission = 0, isCompound = rotatifIsBilesik();
                 
-                // Ticari kredi olduğu için komisyon hesaplanırken de %5 BSMV dahil ediliyor
                 let bsmvRatio = 0.05;
                 let effectiveComRate = activeComRate * (1 + bsmvRatio); 
 
@@ -1830,7 +1844,7 @@
                     if (currentBakiye > 0) { if (isCompound) { let newBakiye = currentBakiye * Math.pow(1 + (activeRate / 100) / 360, days); accruedInterest = newBakiye - currentBakiye; currentBakiye = newBakiye; } else accruedInterest = (currentBakiye * (activeRate / 100) * days) / 360; }
                     
                     if (commissionBase > 0) {
-                        accruedCommission = (commissionBase * (effectiveComRate / 100) * days) / 360; // BSMV dahil komisyon tahakkuku
+                        accruedCommission = (commissionBase * (effectiveComRate / 100) * days) / 360; 
                     }
                     
                     cumulativeInterest += accruedInterest; interestPeriodAccumulated += accruedInterest; cumulativeCommission += accruedCommission; commissionPeriodAccumulated += accruedCommission;
@@ -2163,9 +2177,7 @@
     </script>
 
 
-    <!-- ========================================== -->
     <!-- KANALIZ SCRIPT -->
-    <!-- ========================================== -->
     <script>
         const kanalizToday = new Date();
         const pastDate = new Date(kanalizToday);
