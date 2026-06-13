@@ -1,0 +1,21 @@
+{
+  "bireysel": {
+    "konut": "2.89",
+    "arac": "3.50",
+    "ihtiyac": "4.10",
+    "ekhesap": "4.25"
+  },
+  "ticari": {
+    "taksitli": "4",
+    "rotatif": "48",
+    "spot": "47",
+    "iskonto": "47",
+    "ekhesap": "4.25"
+  },
+  "vadeli": {
+    "try": "41",
+    "usd": "2",
+    "eur": "0.50",
+    "xau": "0.25"
+  }
+}
