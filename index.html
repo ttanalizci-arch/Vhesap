@@ -12,7 +12,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vhesap & Kanaliz - Finans Portalı</title>
+    <title>Vhesap & Vanaliz - Finans Portalı</title>
     <link rel="manifest" href="manifest.json">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -98,7 +98,7 @@
             --danger: #ff453a;
             --accent: #f59e0b;
 
-            /* Kanaliz Light Theme Variables */
+            /* Vanaliz Light Theme Variables */
             --k-bg: #f4f4f5;
             --k-card: #ffffff;
             --k-text: #18181b;
@@ -144,7 +144,7 @@
             --apple-switch-bg: #18181b;
             --apple-switch-border: rgba(255, 255, 255, 0.05);
 
-            /* Kanaliz Dark Theme Variables */
+            /* Vanaliz Dark Theme Variables */
             --k-bg: #000000;
             --k-card: #1c1c1e;
             --k-text: #ffffff;
@@ -157,7 +157,8 @@
 
         body, html {
             margin: 0; padding: 0;
-            width: 100%; height: 100%;
+            width: 100%; 
+            height: 100vh; height: 100dvh;
             overflow: hidden; 
             background-color: var(--apple-bg);
             transition: background-color 0.3s ease;
@@ -166,7 +167,9 @@
         #vhesap-viewport {
             color: var(--apple-text);
             display: flex; justify-content: center; align-items: flex-start;
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; overflow-y: auto;
+            position: absolute; top: 0; left: 0; width: 100vw; 
+            height: 100vh; height: 100dvh; 
+            overflow-y: auto;
             background-color: var(--apple-bg);
             transition: background-color 0.3s ease;
         }
@@ -181,7 +184,7 @@
 
         .apple-container {
             background: var(--apple-container-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            width: 100%; max-width: 500px; min-height: 100vh; display: flex; flex-direction: column; position: relative;
+            width: 100%; max-width: 500px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative;
             padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -287,32 +290,32 @@
         .nav-bubble-text.collapsed { max-width: 0; opacity: 0; margin-left: 0 !important; margin-right: 0 !important; }
     </style>
 
-    <!-- KANALIZ CSS -->
+    <!-- VANALIZ CSS -->
     <style>
-        #kanaliz-viewport {
+        #vanaliz-viewport {
             background-color: var(--k-bg);
             color: var(--k-text-muted);
             transition: background-color 0.3s ease;
-            position: absolute; top: 0; left: 100vw; width: 100vw; height: 100vh; overflow-y: auto;
+            position: absolute; top: 0; left: 100vw; width: 100vw; height: 100vh; height: 100dvh; overflow-y: auto;
         }
-        #kanaliz-viewport ::selection {
+        #vanaliz-viewport ::selection {
             background-color: #ff9f0a;
             color: white;
         }
-        #kanaliz-viewport input[type=number]::-webkit-inner-spin-button, 
-        #kanaliz-viewport input[type=number]::-webkit-outer-spin-button { 
+        #vanaliz-viewport input[type=number]::-webkit-inner-spin-button, 
+        #vanaliz-viewport input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; margin: 0; 
         }
-        #kanaliz-viewport input[type=number] {
+        #vanaliz-viewport input[type=number] {
             -moz-appearance: textfield;
         }
-        #kanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator {
+        #vanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8); opacity: 0.5; cursor: pointer;
         }
-        body.light #kanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator {
+        body.light #vanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(0);
         }
-        #kanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        #vanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator:hover {
             opacity: 0.8;
         }
         @keyframes fadeIn {
@@ -322,10 +325,10 @@
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
-        /* Kanaliz Scrollbar */
-        #kanaliz-viewport::-webkit-scrollbar { width: 4px; height: 4px; }
-        #kanaliz-viewport::-webkit-scrollbar-track { background: transparent; }
-        #kanaliz-viewport::-webkit-scrollbar-thumb { background: var(--k-border); border-radius: 10px; }
+        /* Vanaliz Scrollbar */
+        #vanaliz-viewport::-webkit-scrollbar { width: 4px; height: 4px; }
+        #vanaliz-viewport::-webkit-scrollbar-track { background: transparent; }
+        #vanaliz-viewport::-webkit-scrollbar-thumb { background: var(--k-border); border-radius: 10px; }
     </style>
 </head>
 <body class="dark selection:bg-amber-500/30">
@@ -416,7 +419,7 @@
                                     <option value="Ticari - Spot">Ticari - Spot</option>
                                     <option value="Ticari - İskonto">Ticari - İskonto</option>
                                     <option value="Vadeli / Mevduat">Vadeli / Mevduat</option>
-                                    <option value="Vanaliz (Kanaliz Portalı)">Vanaliz (Kanaliz Portalı)</option>
+                                    <option value="Vanaliz Portalı">Vanaliz Portalı</option>
                                     <option value="Diğer (Genel)">Diğer (Genel)</option>
                                 </select>
                                 <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-4 pointer-events-none"></i>
@@ -452,7 +455,7 @@
 
 
     <!-- KAYDIRMA (SWIPE) KAPSAYICISI -->
-    <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; overflow: hidden;">
+    <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
         
         <!-- PANE 1: VHESAP -->
         <div id="vhesap-viewport">
@@ -464,12 +467,12 @@
                         <i id="global-theme-icon" class="fa-solid fa-moon text-lg"></i>
                     </button>
 
-                    <button onclick="window.switchToKanaliz('left')" class="nav-bubble-btn absolute top-[80px] left-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç (Soldan)">
+                    <button onclick="window.switchToVanaliz('left')" class="nav-bubble-btn absolute top-[80px] left-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç (Soldan)">
                         <i class="fa-solid fa-chevron-left text-[10px]"></i>
                         <span class="nav-bubble-text text-[10px] font-bold ml-1.5">Vanaliz</span>
                     </button>
 
-                    <button onclick="window.switchToKanaliz('right')" class="nav-bubble-btn absolute top-[80px] right-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç (Sağdan)">
+                    <button onclick="window.switchToVanaliz('right')" class="nav-bubble-btn absolute top-[80px] right-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç (Sağdan)">
                         <span class="nav-bubble-text text-[10px] font-bold mr-1.5">Vanaliz</span>
                         <i class="fa-solid fa-chevron-right text-[10px]"></i>
                     </button>
@@ -531,7 +534,7 @@
                         Hassas Hesaplama & Karar Destek Altyapısı © 2026
                     </div>
 
-                    <div class="mt-auto pt-6 border-t border-[rgba(128,128,128,0.08)] w-full flex justify-center gap-5 text-[10px] uppercase font-bold text-[var(--apple-text-muted)]">
+                    <div class="mt-auto pt-4 pb-8 sm:pt-6 sm:pb-0 border-t border-[rgba(128,128,128,0.08)] w-full flex flex-wrap justify-center gap-x-4 gap-y-2 text-[10px] uppercase font-bold text-[var(--apple-text-muted)]">
                         <button onclick="openFeedbackModal('hata')" class="hover:text-red-500 transition-colors flex items-center gap-1.5 py-2">
                             <i class="fa-solid fa-bug"></i> Hata Bildir
                         </button>
@@ -756,8 +759,8 @@
             </div>
         </div>
 
-        <!-- PANE 2: KANALIZ -->
-        <div id="kanaliz-viewport" class="font-sans pb-12">
+        <!-- PANE 2: VANALIZ -->
+        <div id="vanaliz-viewport" class="font-sans pb-12">
             
             <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 max-w-7xl mx-auto w-full justify-between">
@@ -768,7 +771,7 @@
                         <h1 class="text-base font-semibold tracking-tight text-[var(--k-text)]">Vanaliz</h1>
                     </div>
                     
-                    <button onclick="downloadKanalizPDF()" class="bg-[#ff9f0a]/10 text-[#ff9f0a] border border-[#ff9f0a]/20 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-[#ff9f0a]/20 transition-all shadow-sm uppercase tracking-wider">
+                    <button onclick="downloadVanalizPDF()" class="bg-[#ff9f0a]/10 text-[#ff9f0a] border border-[#ff9f0a]/20 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-[#ff9f0a]/20 transition-all shadow-sm uppercase tracking-wider">
                         <i class="fa-solid fa-file-pdf text-red-500"></i> Rapor Al
                     </button>
                 </div>
@@ -920,7 +923,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             screens = [
                 document.getElementById('vhesap-viewport'),
-                document.getElementById('kanaliz-viewport')
+                document.getElementById('vanaliz-viewport')
             ];
             screens[0].style.left = '0';
             screens[1].style.left = '100vw';
@@ -971,7 +974,7 @@
 
         window.toggleScreen = function() {
             if (currentScreenIndex === 0) {
-                window.switchToKanaliz();
+                window.switchToVanaliz();
             } else {
                 window.switchToVhesap();
             }
@@ -991,7 +994,7 @@
                 }
                 
                 if (targetIndex === 1) {
-                    if (typeof gtag === 'function') gtag('event', 'page_view', { page_title: 'Vanaliz', page_path: '/kanaliz' });
+                    if (typeof gtag === 'function') gtag('event', 'page_view', { page_title: 'Vanaliz', page_path: '/vanaliz' });
                 } else {
                     if (typeof gtag === 'function') gtag('event', 'page_view', { page_title: 'Vhesap Portal', page_path: '/' });
                 }
@@ -1009,12 +1012,12 @@
             checkDirection();
         }, {passive: true});
 
-        window.switchToKanaliz = function(btnPosition) {
+        window.switchToVanaliz = function(btnPosition) {
             let dir = btnPosition === 'left' ? -1 : 1; 
             if(!btnPosition) dir = 1; 
             slideTo(1, dir);
             if (typeof gtag === 'function') {
-                gtag('event', 'page_view', { page_title: 'Vanaliz', page_path: '/kanaliz' });
+                gtag('event', 'page_view', { page_title: 'Vanaliz', page_path: '/vanaliz' });
             }
         };
 
@@ -1512,7 +1515,7 @@
             return { kkdf: 0.15, bsmv: 0.15 };
         }
 
-        // YENİ: Kırık Vade (Vade Farkı) hesaplaması güncellendi.
+        // YENİ: Kırık Vade (Vade Farkı) hesaplaması standartlara uygun olarak güncellendi.
         function calcTaksitliKredi() {
             const T = getRaw('val-tutar'), V = parseInt(id('val-vade').value);
             let F = parseFloat(id('val-faiz').value.replace(',','.')) / 100;
@@ -1533,11 +1536,12 @@
 
             let plan = [], totalF = 0, totalV = 0, bak = T;
             let prevD = new Date(id('date-start').value), dFirst = new Date(id('date-first').value);
+            let prevStandardDate = new Date(prevD.getTime());
+            
             let sortedAra = [...state.araOdemeler].sort((a,b)=>new Date(a.date)-new Date(b.date));
             let araIdx = 0;
 
             let taksitNormal = brutF > 0 ? (T * brutF * Math.pow(1+brutF, V)) / (Math.pow(1+brutF, V)-1) : T/V;
-            let normalIntForPayment = (T * F) + (T * F)*(kkdf+bsmv); // Kırık vadesiz standart faiz
             let maxIter = V * 2, i = 1;
 
             if (G > 0) {
@@ -1586,9 +1590,11 @@
                         araIdx++;
                     }
 
+                    let isBroken = (t === 1 || prevD.getTime() !== prevStandardDate.getTime());
+                    let curDays = isBroken ? Math.round(Math.abs(tD-prevD)/86400000) : 30;
+
                     if(t < G) {
-                        let days = Math.round(Math.abs(tD-prevD)/86400000);
-                        let fNet = (bak * F / 30) * days, v = fNet*(kkdf+bsmv);
+                        let fNet = (bak * F / 30) * curDays, v = fNet*(kkdf+bsmv);
                         if(oType === 'faiz-odemeli') {
                             let payF = fNet; let payV = v;
                             if (state.main !== 'ticari') {
@@ -1607,8 +1613,7 @@
                             }
                         }
                     } else if(t === G) {
-                        let days = Math.round(Math.abs(tD-prevD)/86400000);
-                        let fNet = (bak * F / 30) * days;
+                        let fNet = (bak * F / 30) * curDays;
                         let v = fNet*(kkdf+bsmv);
                         
                         if (state.main === 'ticari' && oType === 'ilk-taksit') {
@@ -1655,8 +1660,7 @@
                             plan.push({i:t, date: tD.toLocaleDateString('tr-TR'), taksit: totalPayment, ana: ana, f: payF, k: payV, bak: Math.max(0,bak)});
                         }
                     } else {
-                        let days = Math.round(Math.abs(tD-prevD)/86400000);
-                        let fNet = (bak * F / 30) * days, v = fNet*(kkdf+bsmv), grossInt = fNet+v, ana = 0, currTak = 0;
+                        let fNet = (bak * F / 30) * curDays, v = fNet*(kkdf+bsmv), grossInt = fNet+v, ana = 0, currTak = 0;
 
                         if (wasAra) {
                             if (hasVadeAdj) {
@@ -1687,7 +1691,9 @@
                         bak -= ana; totalF += fNet; totalV += v;
                         plan.push({i:t, date: tD.toLocaleDateString('tr-TR'), taksit: currTak, ana, f: fNet, k: v, bak: Math.max(0,bak)});
                     }
-                    prevD = tD; if (bak <= 0.01) break;
+                    prevD = new Date(tD.getTime()); 
+                    prevStandardDate = new Date(tD.getTime());
+                    if (bak <= 0.01) break;
                 }
             } else {
                 while(bak > 0.01 && i <= maxIter) {
@@ -1704,8 +1710,10 @@
                         prevD = aD; if(aO.tur === 'vade') hasVadeAdj = true; araIdx++;
                     }
 
-                    let days = (i===1 || wasAra) ? Math.round(Math.abs(tD-prevD)/86400000) : 30;
-                    let fNet = (bak * F / 30) * days, v = fNet*(kkdf+bsmv), grossInt = fNet+v, ana = 0, currTak = 0;
+                    let isBroken = (i === 1 || prevD.getTime() !== prevStandardDate.getTime());
+                    let curDays = isBroken ? Math.round(Math.abs(tD-prevD)/86400000) : 30;
+
+                    let fNet = (bak * F / 30) * curDays, v = fNet*(kkdf+bsmv), grossInt = fNet+v, ana = 0, currTak = 0;
 
                     if (wasAra) {
                         if (hasVadeAdj) {
@@ -1717,7 +1725,7 @@
                         ana = Math.max(0, taksitNormal - (bak * brutF));
                         if (bak <= ana + 0.1) ana = bak; currTak = ana + grossInt;
                     } else {
-                        if (i === 1) { // Kırık Vade İçin Sadece İlk Taksitte Ekstra Faiz Farkı Yansıtılması
+                        if (i === 1) { 
                             let standardInt = (bak * F) + (bak * F)*(kkdf+bsmv);
                             let normalAna = taksitNormal - standardInt;
                             ana = Math.max(0, normalAna);
@@ -1730,7 +1738,10 @@
                     }
                     bak -= ana; totalF += fNet; totalV += v;
                     plan.push({i, date: tD.toLocaleDateString('tr-TR'), taksit: currTak, ana, f: fNet, k: v, bak: Math.max(0,bak)});
-                    prevD = tD; i++;
+                    
+                    prevD = new Date(tD.getTime());
+                    prevStandardDate = new Date(tD.getTime());
+                    i++;
                 }
             }
 
@@ -2486,11 +2497,11 @@
     </script>
 
 
-    <!-- KANALIZ SCRIPT -->
+    <!-- VANALIZ SCRIPT -->
     <script>
-        const kanalizToday = new Date();
-        const pastDate = new Date(kanalizToday);
-        pastDate.setMonth(kanalizToday.getMonth() - 6);
+        const vanalizToday = new Date();
+        const pastDate = new Date(vanalizToday);
+        pastDate.setMonth(vanalizToday.getMonth() - 6);
         const defaultDateStr = pastDate.toISOString().slice(0, 10); 
 
         let loans = [
@@ -2509,8 +2520,8 @@
         const getMonthsPassed = (tarih) => {
             if (!tarih) return 0;
             const past = new Date(tarih);
-            let months = (kanalizToday.getFullYear() - past.getFullYear()) * 12 + (kanalizToday.getMonth() - past.getMonth());
-            if (kanalizToday.getDate() < past.getDate()) {
+            let months = (vanalizToday.getFullYear() - past.getFullYear()) * 12 + (vanalizToday.getMonth() - past.getMonth());
+            if (vanalizToday.getDate() < past.getDate()) {
                 months--;
             }
             return months < 0 ? 0 : months;
@@ -2545,337 +2556,311 @@
         const elSumKalanOdeme = document.getElementById('sum-kalan-odeme');
         const elSumVade = document.getElementById('sum-vade');
         const elSumOran = document.getElementById('sum-oran');
-        
-        const elSimOranInput = document.getElementById('sim-oran-input');
-        const elSimVadeInput = document.getElementById('sim-vade-input');
-        const elSimToplamTutar = document.getElementById('sim-toplam-tutar');
-        const elSimYeniTaksit = document.getElementById('sim-yeni-taksit');
-        const elSimYeniToplam = document.getElementById('sim-yeni-toplam');
-        const elSimResultBadge = document.getElementById('sim-result-badge');
 
         function calculateSummary() {
-            let totalKalanTaksit = 0;
-            let totalKalanAnaPara = 0;
-            let totalKalanOdeme = 0;
-            let weightedRateSum = 0;
+            summary = { totalKalanTaksit: 0, totalKalanAnaPara: 0, totalKalanOdeme: 0, avgKalanVade: 0, avgOran: 0 };
+            let totalWeightedVade = 0;
+            let totalWeightedOran = 0;
 
             loans.forEach(loan => {
-                const gecenAy = getMonthsPassed(loan.tarih);
-                const kalanVade = Math.max(0, loan.vade - gecenAy);
-                const r = (loan.oran * VERGI_CARPANI) / 100;
-                
-                let kalanAnaPara = 0;
-                if (kalanVade > 0) {
-                    if (r === 0) kalanAnaPara = loan.taksit * kalanVade;
-                    else kalanAnaPara = loan.taksit * (1 - Math.pow(1 + r, -kalanVade)) / r;
-                }
-
-                if (kalanVade > 0) {
-                    totalKalanTaksit += loan.taksit;
-                    totalKalanAnaPara += kalanAnaPara;
-                    totalKalanOdeme += (kalanVade * loan.taksit);
-                    weightedRateSum += (kalanAnaPara * loan.oran); 
-                }
+                const monthsPassed = getMonthsPassed(loan.tarih);
+                const kalanVade = Math.max(0, loan.vade - monthsPassed);
                 
                 loan._kalanVade = kalanVade;
+                loan._kalanOdeme = kalanVade * loan.taksit;
+
+                let kalanAnaPara = 0;
+                let anaparaBakiyesi = loan.tutar;
+                let aylikFaiz = loan.oran / 100;
+
+                for (let i = 1; i <= loan.vade; i++) {
+                    let faizOdeme = anaparaBakiyesi * aylikFaiz * VERGI_CARPANI;
+                    let anaparaOdeme = loan.taksit - faizOdeme;
+                    if(anaparaOdeme < 0) anaparaOdeme = 0; 
+                    anaparaBakiyesi -= anaparaOdeme;
+                    if (i === monthsPassed) {
+                        kalanAnaPara = anaparaBakiyesi > 0 ? anaparaBakiyesi : 0;
+                    }
+                }
+                
+                if (monthsPassed === 0) kalanAnaPara = loan.tutar;
+                if (monthsPassed >= loan.vade) kalanAnaPara = 0;
+
                 loan._kalanAnaPara = kalanAnaPara;
+
+                if (kalanVade > 0) {
+                    summary.totalKalanTaksit += loan.taksit;
+                    summary.totalKalanAnaPara += kalanAnaPara;
+                    summary.totalKalanOdeme += loan._kalanOdeme;
+                    totalWeightedVade += (kalanVade * kalanAnaPara);
+                    totalWeightedOran += (loan.oran * kalanAnaPara);
+                }
             });
 
-            const avgKalanVade = totalKalanTaksit > 0 ? (totalKalanOdeme / totalKalanTaksit) : 0;
-            const avgOran = totalKalanAnaPara > 0 ? (weightedRateSum / totalKalanAnaPara) : 0;
-
-            summary = { totalKalanTaksit, totalKalanAnaPara, totalKalanOdeme, avgKalanVade, avgOran };
+            if (summary.totalKalanAnaPara > 0) {
+                summary.avgKalanVade = totalWeightedVade / summary.totalKalanAnaPara;
+                summary.avgOran = totalWeightedOran / summary.totalKalanAnaPara;
+            }
 
             elSumKalanAnaPara.textContent = formatMoney(summary.totalKalanAnaPara);
             elSumTaksit.textContent = formatMoney(summary.totalKalanTaksit);
             elSumKalanOdeme.textContent = formatMoney(summary.totalKalanOdeme);
-            elSumVade.textContent = summary.avgKalanVade.toFixed(1);
+            elSumVade.textContent = summary.avgKalanVade.toFixed(2);
             elSumOran.textContent = summary.avgOran.toFixed(2);
-            elSimToplamTutar.textContent = formatMoney(summary.totalKalanAnaPara);
+            
+            document.getElementById('sim-toplam-tutar').textContent = formatMoney(summary.totalKalanAnaPara);
+            
+            updateSim();
         }
 
-        function calculateSimulation() {
-            const P = summary.totalKalanAnaPara;
-            const r = (simOran * VERGI_CARPANI) / 100;
-            const n = simVade;
+        window.updateSim = function() {
+            simOran = parseFloat(document.getElementById('sim-oran-input').value) || 0;
+            simVade = parseInt(document.getElementById('sim-vade-input').value) || 1;
+            
+            if(simVade <= 0) simVade = 1;
+            if(simOran < 0) simOran = 0;
 
-            let pmt = 0;
-            if (P > 0) {
-                if (r > 0) pmt = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-                else if (n > 0) pmt = P / n;
-            }
+            const r = (simOran / 100) * VERGI_CARPANI;
+            const pv = summary.totalKalanAnaPara;
+            let yeniTaksit = 0;
 
-            const totalNewPayment = pmt * n;
-            const difference = summary.totalKalanOdeme - totalNewPayment;
-
-            elSimYeniTaksit.textContent = formatMoney(pmt);
-            elSimYeniToplam.textContent = formatMoney(totalNewPayment);
-
-            if (difference >= 0) {
-                elSimResultBadge.innerHTML = `
-                    <div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-100 bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30">
-                        <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
-                        <span class="font-semibold text-[11px]">+${formatMoney(Math.abs(difference))} Kâr</span>
-                    </div>
-                `;
+            if (r > 0) {
+                yeniTaksit = pv * (r * Math.pow(1 + r, simVade)) / (Math.pow(1 + r, simVade) - 1);
             } else {
-                elSimResultBadge.innerHTML = `
-                    <div class="flex items-center gap-1 text-red-600 dark:text-red-100 bg-red-500/20 px-2.5 py-1 rounded-lg border border-red-500/30">
-                        <i data-lucide="trending-down" class="w-3.5 h-3.5"></i>
-                        <span class="font-semibold text-[11px]">-${formatMoney(Math.abs(difference))} Zarar</span>
-                    </div>
-                `;
+                yeniTaksit = pv / simVade;
             }
-            
-            if(window.lucide) window.lucide.createIcons();
-        }
 
-        function renderTable() {
-            loansContainer.innerHTML = '';
+            const yeniToplam = yeniTaksit * simVade;
+            const kazanc = summary.totalKalanOdeme - yeniToplam;
+
+            document.getElementById('sim-yeni-taksit').textContent = formatMoney(yeniTaksit);
+            document.getElementById('sim-yeni-toplam').textContent = formatMoney(yeniToplam);
             
+            const badge = document.getElementById('sim-result-badge');
+            if (kazanc > 0) {
+                badge.innerHTML = `<span class="bg-green-500/20 text-green-300 border border-green-500/30 px-2.5 py-1 rounded-md text-[10px] font-bold">+${formatMoney(kazanc)} Kâr</span>`;
+            } else if (kazanc < 0) {
+                badge.innerHTML = `<span class="bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-1 rounded-md text-[10px] font-bold">${formatMoney(kazanc)} Zarar</span>`;
+            } else {
+                badge.innerHTML = `<span class="bg-white/10 text-white/70 border border-white/20 px-2.5 py-1 rounded-md text-[10px] font-bold">Nötr (₺0,00)</span>`;
+            }
+        };
+
+        function renderLoans() {
+            loansContainer.innerHTML = '';
             if (loans.length === 0) {
                 emptyState.classList.remove('hidden');
             } else {
                 emptyState.classList.add('hidden');
-
                 loans.forEach((loan, index) => {
-                    const isFinished = loan._kalanVade <= 0;
+                    const monthsPassed = getMonthsPassed(loan.tarih);
+                    const kalanVade = Math.max(0, loan.vade - monthsPassed);
+                    const isFinished = kalanVade === 0;
+
                     const card = document.createElement('div');
-                    card.className = 'bg-[var(--k-hover)] border border-[var(--k-border)] rounded-xl p-3 relative group transition-all hover:bg-[var(--k-input)] animate-fade-in';
-                    
+                    card.className = `bg-[var(--k-card)] rounded-xl p-4 sm:p-5 border border-[var(--k-border)] shadow-sm hover:shadow-md transition-all duration-300 relative group animate-fade-in ${isFinished ? 'opacity-60 grayscale' : ''}`;
+                    card.style.animationDelay = `${index * 50}ms`;
+
                     card.innerHTML = `
-                        <div class="flex justify-between items-center mb-2.5 border-b border-[var(--k-border)] pb-2.5">
-                            <div class="flex flex-col">
-                                <span class="text-[10px] text-[var(--k-text-muted)] uppercase tracking-wider font-bold mb-0.5">Kredi #${loan.id}</span>
-                                <span class="text-sm font-bold text-[var(--k-text)]">${formatMoney(loan.tutar)}</span>
-                            </div>
-                            <div class="flex gap-1">
-                                <button onclick="window.editLoan(${loan.id})" class="w-7 h-7 rounded-lg bg-[var(--k-input)] text-[var(--k-text)] hover:bg-[#ff9f0a] hover:text-white transition-colors flex items-center justify-center border border-[var(--k-border)]">
-                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
-                                </button>
-                                <button onclick="window.deleteLoan(${loan.id})" class="w-7 h-7 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center border border-red-500/20">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="window.deleteLoan(${loan.id})" class="w-7 h-7 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                            <div>
-                                <span class="block text-[9px] text-[var(--k-text-muted)] uppercase tracking-wider">Aylık Taksit</span>
-                                <span class="text-xs font-semibold text-[#ff9f0a]">${formatMoney(loan.taksit)}</span>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-[#ff9f0a]/10 flex items-center justify-center text-[#ff9f0a]">
+                                <i data-lucide="credit-card" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <span class="block text-[9px] text-[var(--k-text-muted)] uppercase tracking-wider">Faiz Oranı</span>
-                                <span class="text-xs font-semibold text-[var(--k-text)]">%${loan.oran.toFixed(2)}</span>
+                                <h3 class="text-sm font-semibold text-[var(--k-text)]">Kredi #${loan.id} ${isFinished ? '<span class="text-[10px] bg-green-500/10 text-green-500 px-1.5 py-0.5 rounded ml-1">BİTTİ</span>' : ''}</h3>
+                                <p class="text-[10px] text-[var(--k-text-muted)] opacity-70 flex items-center gap-1 mt-0.5"><i data-lucide="calendar" class="w-3 h-3"></i> Kullandırım: ${loan.tarih.split('-').reverse().join('.')}</p>
                             </div>
-                            <div>
-                                <span class="block text-[9px] text-[var(--k-text-muted)] uppercase tracking-wider">Kalan Vade</span>
-                                <span class="text-xs font-semibold ${isFinished ? 'text-emerald-500' : 'text-[var(--k-text)]'}">${isFinished ? 'Bitti' : loan._kalanVade + ' Ay'}</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div class="bg-[var(--k-input)] rounded-lg p-2.5 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors">
+                                <label class="block text-[9px] uppercase tracking-wider text-[var(--k-text-muted)] opacity-80 mb-1 font-medium">Tarih</label>
+                                <input type="date" value="${loan.tarih}" onchange="window.updateLoan(${loan.id}, 'tarih', this.value)" class="w-full bg-transparent text-[var(--k-text)] text-xs font-semibold focus:outline-none" />
                             </div>
-                            <div>
-                                <span class="block text-[9px] text-[var(--k-text-muted)] uppercase tracking-wider">Kalan Ana Para</span>
-                                <span class="text-xs font-semibold text-[var(--k-text)]">${formatMoney(loan._kalanAnaPara)}</span>
+                            
+                            <div class="bg-[var(--k-input)] rounded-lg p-2.5 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors relative">
+                                <label class="block text-[9px] uppercase tracking-wider text-[var(--k-text-muted)] opacity-80 mb-1 font-medium">Tutar (TL)</label>
+                                <input type="text" inputmode="numeric" value="${new Intl.NumberFormat('tr-TR').format(loan.tutar)}" onfocus="this.value = this.value.replace(/\\D/g, '')" onblur="window.updateLoan(${loan.id}, 'tutar', this.value)" class="w-full bg-transparent text-[var(--k-text)] text-xs font-semibold focus:outline-none" />
+                            </div>
+
+                            <div class="bg-[var(--k-input)] rounded-lg p-2.5 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors">
+                                <label class="block text-[9px] uppercase tracking-wider text-[var(--k-text-muted)] opacity-80 mb-1 font-medium">Vade (Ay)</label>
+                                <div class="flex items-center">
+                                    <input type="number" value="${loan.vade}" onchange="window.updateLoan(${loan.id}, 'vade', this.value)" class="w-full bg-transparent text-[var(--k-text)] text-xs font-semibold focus:outline-none" />
+                                    <span class="text-[9px] text-[#ff9f0a] font-bold bg-[#ff9f0a]/10 px-1.5 py-0.5 rounded whitespace-nowrap">${kalanVade} Kalan</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-[var(--k-input)] rounded-lg p-2.5 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors">
+                                <label class="block text-[9px] uppercase tracking-wider text-[var(--k-text-muted)] opacity-80 mb-1 font-medium">Aylık Faiz (%)</label>
+                                <input type="number" step="0.01" value="${loan.oran}" onchange="window.updateLoan(${loan.id}, 'oran', this.value)" class="w-full bg-transparent text-[var(--k-text)] text-xs font-semibold focus:outline-none" />
+                            </div>
+
+                            <div class="bg-[#ff9f0a]/5 rounded-lg p-2.5 border border-[#ff9f0a]/20 lg:col-span-4 mt-1 flex justify-between items-center focus-within:border-[#ff9f0a]/50 transition-colors">
+                                <label class="block text-[10px] uppercase tracking-wider text-[#ff9f0a] font-bold">Aylık Taksit (TL)</label>
+                                <input type="text" inputmode="numeric" value="${new Intl.NumberFormat('tr-TR').format(loan.taksit)}" onfocus="this.value = this.value.replace(/\\D/g, '')" onblur="window.updateLoan(${loan.id}, 'taksit', this.value)" class="w-32 bg-transparent text-[#ff9f0a] text-sm font-bold text-right focus:outline-none" />
                             </div>
                         </div>
                     `;
                     loansContainer.appendChild(card);
                 });
+                lucide.createIcons();
             }
-            if(window.lucide) window.lucide.createIcons();
         }
 
-        window.addLoan = () => {
-            const newId = loans.length > 0 ? Math.max(...loans.map(l => l.id)) + 1 : 1;
-            const newLoan = { id: newId, tarih: defaultDateStr, vade: 12, taksit: 0, tutar: 0, oran: 0 };
-            loans.push(newLoan);
-            window.editLoan(newId);
-            calculateAllKanaliz();
-        };
-
-        window.deleteLoan = (id) => {
-            if(confirm('Bu krediyi silmek istediğinize emin misiniz?')) {
-                loans = loans.filter(l => l.id !== id);
-                calculateAllKanaliz();
-            }
-        };
-
-        // YENİ: Anlık otomatik hesaplama fonksiyonu (Kanaliz içerisi için)
-        window.kanalizAutoCalc = (source) => {
-            let tutar = parseFloat(document.getElementById('edit-tutar').value) || 0;
-            let vade = parseInt(document.getElementById('edit-vade').value) || 0;
-            let taksit = parseFloat(document.getElementById('edit-taksit').value) || 0;
-            let oran = parseFloat(document.getElementById('edit-oran').value) || 0;
-
-            if (tutar > 0 && vade > 0) {
-                if (source === 'oran' && oran > 0) {
-                    let r = (oran * VERGI_CARPANI) / 100;
-                    let newTaksit = tutar * (r * Math.pow(1 + r, vade)) / (Math.pow(1 + r, vade) - 1);
-                    document.getElementById('edit-taksit').value = newTaksit.toFixed(2);
-                } else if (source === 'taksit' && taksit > 0) {
-                    let foundRate = calculateRateFromTaksit(tutar, taksit, vade);
-                    let newOran = (foundRate * 100) / VERGI_CARPANI;
-                    document.getElementById('edit-oran').value = newOran.toFixed(2);
-                } else if (source === 'tutar' || source === 'vade') {
-                    if (oran > 0) {
-                        let r = (oran * VERGI_CARPANI) / 100;
-                        let newTaksit = tutar * (r * Math.pow(1 + r, vade)) / (Math.pow(1 + r, vade) - 1);
-                        document.getElementById('edit-taksit').value = newTaksit.toFixed(2);
-                    } else if (taksit > 0) {
-                        let foundRate = calculateRateFromTaksit(tutar, taksit, vade);
-                        let newOran = (foundRate * 100) / VERGI_CARPANI;
-                        document.getElementById('edit-oran').value = newOran.toFixed(2);
-                    }
-                }
-            }
-        };
-
-        window.editLoan = (id) => {
-            const loan = loans.find(l => l.id === id);
-            if (!loan) return;
-            
-            const trDate = new Date(loan.tarih).toLocaleDateString('tr-TR');
-            
-            // YENİ: Modaldaki inputlara oninput="window.kanalizAutoCalc('xxx')" eklendi
-            const modalHtml = `
-                <div id="kanaliz-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
-                    <div class="bg-[var(--k-card)] w-full max-w-sm rounded-[24px] shadow-2xl border border-[var(--k-border)] overflow-hidden animate-fade-in flex flex-col">
-                        <div class="px-5 py-4 border-b border-[var(--k-border)] flex justify-between items-center bg-[var(--k-hover)]">
-                            <h3 class="font-bold text-[var(--k-text)] text-sm">Kredi #${loan.id} Düzenle</h3>
-                            <button onclick="document.getElementById('kanaliz-modal').remove()" class="w-7 h-7 rounded-full bg-[var(--k-input)] text-[var(--k-text-muted)] hover:text-[var(--k-text)] flex items-center justify-center transition-colors">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="p-5 space-y-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-[var(--k-text-muted)] uppercase mb-1.5 ml-1">Kredi Çekiliş Tarihi</label>
-                                <input type="date" id="edit-tarih" value="${loan.tarih}" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--k-text)] focus:border-[#ff9f0a] focus:ring-1 focus:ring-[#ff9f0a] outline-none transition-all">
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--k-text-muted)] uppercase mb-1.5 ml-1">Tutar (TL)</label>
-                                    <input type="number" id="edit-tutar" value="${loan.tutar}" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--k-text)] focus:border-[#ff9f0a] focus:ring-1 focus:ring-[#ff9f0a] outline-none transition-all" onfocus="this.select()" oninput="window.kanalizAutoCalc('tutar')">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--k-text-muted)] uppercase mb-1.5 ml-1">Vade (Ay)</label>
-                                    <input type="number" id="edit-vade" value="${loan.vade}" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--k-text)] focus:border-[#ff9f0a] focus:ring-1 focus:ring-[#ff9f0a] outline-none transition-all" onfocus="this.select()" oninput="window.kanalizAutoCalc('vade')">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--k-text-muted)] uppercase mb-1.5 ml-1">Aylık Taksit</label>
-                                    <input type="number" id="edit-taksit" value="${loan.taksit}" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--k-text)] focus:border-[#ff9f0a] focus:ring-1 focus:ring-[#ff9f0a] outline-none transition-all" onfocus="this.select()" oninput="window.kanalizAutoCalc('taksit')">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--k-text-muted)] uppercase mb-1.5 ml-1">Faiz (%)</label>
-                                    <input type="number" step="0.01" id="edit-oran" value="${loan.oran}" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--k-text)] focus:border-[#ff9f0a] focus:ring-1 focus:ring-[#ff9f0a] outline-none transition-all" onfocus="this.select()" oninput="window.kanalizAutoCalc('oran')">
-                                </div>
-                            </div>
-                            
-                            <p class="text-[9px] text-[var(--k-text-muted)] bg-[var(--k-input)] p-2 rounded-lg leading-relaxed border border-[var(--k-border)]">
-                                <span class="font-bold text-[#ff9f0a]">İpucu:</span> Tutar, Vade ve Faiz girilirse <strong>Taksit</strong>;<br>Tutar, Vade ve Taksit girilirse <strong>Faiz</strong> otomatik hesaplanır.
-                            </p>
-                        </div>
-                        
-                        <div class="p-4 bg-[var(--k-hover)] border-t border-[var(--k-border)]">
-                            <button onclick="window.saveLoan(${loan.id})" class="w-full bg-[#ff9f0a] hover:bg-[#e68e00] text-white font-bold py-3 rounded-xl shadow-lg shadow-[#ff9f0a]/30 transition-all active:scale-[0.98] text-sm">
-                                Değişiklikleri Kaydet
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            if(window.lucide) window.lucide.createIcons();
-        };
-
-        window.saveLoan = (id) => {
+        window.updateLoan = function(id, field, value) {
             const loan = loans.find(l => l.id === id);
             if (!loan) return;
 
-            loan.tarih = document.getElementById('edit-tarih').value;
-            let tutar = parseFloat(document.getElementById('edit-tutar').value) || 0;
-            let vade = parseInt(document.getElementById('edit-vade').value) || 0;
-            let taksit = parseFloat(document.getElementById('edit-taksit').value) || 0;
-            let oran = parseFloat(document.getElementById('edit-oran').value) || 0;
-
-            if (tutar > 0 && vade > 0) {
-                if (taksit > 0 && oran === 0) {
-                    const foundRate = calculateRateFromTaksit(tutar, taksit, vade);
-                    oran = (foundRate * 100) / VERGI_CARPANI;
-                } else if (oran > 0) {
-                    const r = (oran * VERGI_CARPANI) / 100;
-                    taksit = tutar * (r * Math.pow(1 + r, vade)) / (Math.pow(1 + r, vade) - 1);
-                }
+            if (field === 'tarih') {
+                loan.tarih = value;
+            } else if (field === 'tutar' || field === 'taksit') {
+                let numericVal = parseFloat(value.toString().replace(/\./g, '').replace(',', '.'));
+                if (isNaN(numericVal)) numericVal = 0;
+                loan[field] = numericVal;
+            } else {
+                loan[field] = parseFloat(value) || 0;
             }
 
-            loan.tutar = tutar;
-            loan.vade = vade;
-            loan.taksit = taksit;
-            loan.oran = oran;
+            if (field === 'tutar' || field === 'vade' || field === 'oran') {
+                const r = (loan.oran / 100) * VERGI_CARPANI;
+                if (r > 0 && loan.vade > 0) {
+                    loan.taksit = loan.tutar * (r * Math.pow(1 + r, loan.vade)) / (Math.pow(1 + r, loan.vade) - 1);
+                } else if (loan.vade > 0) {
+                    loan.taksit = loan.tutar / loan.vade;
+                }
+            } else if (field === 'taksit') {
+                let calculatedRate = calculateRateFromTaksit(loan.tutar, loan.taksit, loan.vade);
+                loan.oran = (calculatedRate / VERGI_CARPANI) * 100;
+            }
 
-            document.getElementById('kanaliz-modal').remove();
-            calculateAllKanaliz();
-        };
-
-        window.updateSim = () => {
-            simOran = parseFloat(elSimOranInput.value) || 0;
-            simVade = parseInt(elSimVadeInput.value) || 0;
-            calculateSimulation();
-        };
-
-        function calculateAllKanaliz() {
             calculateSummary();
-            renderTable();
-            calculateSimulation();
-        }
+            renderLoans();
+        };
 
-        window.downloadKanalizPDF = () => {
-            const wrapper = document.createElement('div');
-            wrapper.style.padding = '20px';
-            wrapper.style.fontFamily = 'sans-serif';
-            wrapper.style.color = '#1f2937';
-            
-            let html = '<h2 style="color:#d97706; margin-bottom: 5px;">Vanaliz - Kredi Portföy Raporu</h2>';
-            html += '<p style="font-size: 11px; color:#6b7280; margin-top: 0; margin-bottom: 20px;">Tarih: ' + new Date().toLocaleDateString('tr-TR') + '</p>';
-            
-            html += '<div style="background:#f9fafb; border:1px solid #e5e7eb; padding:15px; border-radius:8px; margin-bottom:20px;">';
-            html += '<h3 style="margin-top:0; font-size:14px;">Kalan Borç Özeti</h3>';
-            html += '<p><strong>Toplam Kapatma Tutarı:</strong> ' + formatMoney(summary.totalKalanAnaPara) + '</p>';
-            html += '<p><strong>Aylık Toplam Taksit:</strong> ' + formatMoney(summary.totalKalanTaksit) + '</p>';
-            html += '<p><strong>Ortalama Vade:</strong> ' + summary.avgKalanVade.toFixed(1) + ' Ay</p>';
-            html += '<p><strong>Ağırlıklı Ortalama Faiz:</strong> %' + summary.avgOran.toFixed(2) + '</p>';
-            html += '</div>';
-
-            html += '<h3 style="font-size:14px; border-bottom:1px solid #d1d5db; padding-bottom:5px;">Krediler Detayı</h3>';
-            html += '<table style="width:100%; font-size:10px; border-collapse: collapse; text-align:left;">';
-            html += '<tr style="background:#f3f4f6;"> <th style="padding:8px; border:1px solid #e5e7eb;">ID</th> <th style="padding:8px; border:1px solid #e5e7eb;">Tutar</th> <th style="padding:8px; border:1px solid #e5e7eb;">Taksit</th> <th style="padding:8px; border:1px solid #e5e7eb;">Oran</th> <th style="padding:8px; border:1px solid #e5e7eb;">Kalan Vade</th> <th style="padding:8px; border:1px solid #e5e7eb;">Kalan Ana Para</th> </tr>';
-            
-            loans.forEach((l, i) => {
-                let bg = i % 2 === 0 ? '#fff' : '#f9fafb';
-                html += '<tr style="background:'+bg+';"> <td style="padding:8px; border:1px solid #e5e7eb;">#'+l.id+'</td> <td style="padding:8px; border:1px solid #e5e7eb;">'+formatMoney(l.tutar)+'</td> <td style="padding:8px; border:1px solid #e5e7eb;">'+formatMoney(l.taksit)+'</td> <td style="padding:8px; border:1px solid #e5e7eb;">%'+l.oran.toFixed(2)+'</td> <td style="padding:8px; border:1px solid #e5e7eb;">'+l._kalanVade+' Ay</td> <td style="padding:8px; border:1px solid #e5e7eb; font-weight:bold;">'+formatMoney(l._kalanAnaPara)+'</td> </tr>';
+        window.addLoan = function() {
+            const newId = loans.length > 0 ? Math.max(...loans.map(l => l.id)) + 1 : 1;
+            loans.unshift({
+                id: newId,
+                tarih: defaultDateStr,
+                vade: 12,
+                taksit: 10000,
+                tutar: 100000,
+                oran: 3.50
             });
-            html += '</table>';
+            window.updateLoan(newId, 'tutar', 100000); 
+        };
+
+        window.deleteLoan = function(id) {
+            loans = loans.filter(l => l.id !== id);
+            calculateSummary();
+            renderLoans();
+        };
+
+        setTimeout(() => {
+            calculateSummary();
+            renderLoans();
+        }, 500);
+
+        window.downloadVanalizPDF = function() {
+            const wrapper = document.getElementById('pdf-template-wrapper');
+            let html = '';
+            const dStr = new Date().toLocaleDateString('tr-TR') + ' ' + new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+            
+            html += `<div style="font-family: Arial, sans-serif; color: #1f2937; max-width: 800px; margin: 0 auto; padding: 20px;">
+                <h1 style="color: #ff9f0a; border-bottom: 2px solid #ff9f0a; padding-bottom: 10px;">Vanaliz Raporu</h1>
+                <p style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">Tarih: ${dStr}</p>
+                
+                <h2 style="font-size: 16px; margin-top: 20px;">Özet Durum</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
+                    <tr style="background: #f9fafb;">
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Toplam Kalan Anapara:</strong></td>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold;">${formatMoney(summary.totalKalanAnaPara)}</td>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Aylık Toplam Taksit:</strong></td>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb; font-weight: bold; color: #ff9f0a;">${formatMoney(summary.totalKalanTaksit)}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Ortalama Kalan Vade:</strong></td>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;">${summary.avgKalanVade.toFixed(2)} Ay</td>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Ağırlıklı Ortalama Faiz:</strong></td>
+                        <td style="padding: 10px; border: 1px solid #e5e7eb;">%${summary.avgOran.toFixed(2)}</td>
+                    </tr>
+                </table>
+                
+                <h2 style="font-size: 16px; margin-top: 20px; color: #b45309;">Kâr / Zarar Simülasyonu</h2>
+                <div style="background-color: #fffbeb; border: 1px solid #fde68a; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 12px;">
+                    <p>Mevcut borçlar kapatılıp yeni bir kredi (<strong>%${simOran}</strong> faiz, <strong>${simVade}</strong> ay) kullanılırsa:</p>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <td>Mevcut Kalan Toplam Çıkış:</td>
+                            <td style="text-align: right; font-weight: bold;">${formatMoney(summary.totalKalanOdeme)}</td>
+                        </tr>
+                        <tr>
+                            <td>Yeni Kredi Aylık Taksit:</td>
+                            <td style="text-align: right; font-weight: bold;">${document.getElementById('sim-yeni-taksit').textContent}</td>
+                        </tr>
+                        <tr>
+                            <td>Yeni Kredi Toplam Çıkış:</td>
+                            <td style="text-align: right; font-weight: bold;">${document.getElementById('sim-yeni-toplam').textContent}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top: 10px; border-top: 1px solid #fde68a; font-weight: bold;">Simülasyon Sonucu:</td>
+                            <td style="padding-top: 10px; border-top: 1px solid #fde68a; text-align: right;">${document.getElementById('sim-result-badge').innerHTML}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h2 style="font-size: 16px;">Kredi Detayları</h2>
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">
+                    <thead>
+                        <tr style="background: #f3f4f6;">
+                            <th style="padding: 8px; border: 1px solid #e5e7eb;">#</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb;">Tarih</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">İlk Tutar</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Aylık Taksit</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Faiz (%)</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Kalan Vade</th>
+                            <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Kalan Anapara</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            loans.forEach((l, i) => {
+                let bg = i % 2 === 0 ? '#ffffff' : '#f9fafb';
+                html += `<tr style="background:${bg};">
+                    <td style="padding:8px; border:1px solid #e5e7eb;">${l.id}</td>
+                    <td style="padding:8px; border:1px solid #e5e7eb;">${l.tarih}</td>
+                    <td style="padding:8px; border:1px solid #e5e7eb; text-align: right;">${formatMoney(l.tutar)}</td>
+                    <td style="padding:8px; border:1px solid #e5e7eb; text-align: right;">${formatMoney(l.taksit)}</td>
+                    <td style="padding:8px; border:1px solid #e5e7eb; text-align: center;">%${l.oran.toFixed(2)}</td>
+                    <td style="padding:8px; border:1px solid #e5e7eb; text-align: center;">${l._kalanVade} Ay</td>
+                    <td style="padding:8px; border:1px solid #e5e7eb; text-align: right; font-weight:bold;">${formatMoney(l._kalanAnaPara)}</td>
+                </tr>`;
+            });
+            html += `</tbody></table></div>`;
 
             wrapper.innerHTML = html;
-            
             document.body.classList.add('pdf-mode');
+
             setTimeout(() => {
                 html2pdf().set({
                     margin: 10,
-                    filename: 'Vanaliz_Rapor.pdf',
+                    filename: `Vanaliz_Rapor_${Math.random().toString(36).substr(2,6)}.pdf`,
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 }).from(wrapper).save().then(() => {
                     document.body.classList.remove('pdf-mode');
-                    showToast("Vanaliz PDF İndirildi.");
+                    showToast("Vanaliz PDF kaydedildi.");
                 });
             }, 300);
         };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            calculateAllKanaliz();
-        });
     </script>
 </body>
 </html>
