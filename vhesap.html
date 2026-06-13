@@ -34,7 +34,6 @@
             max-width: 800px;
         }
 
-        /* Minimalist Başlık */
         .header {
             margin-bottom: 30px;
             padding-bottom: 15px;
@@ -54,10 +53,7 @@
             margin-top: 5px;
         }
 
-        /* Kategori Bölümleri */
-        .section {
-            margin-bottom: 30px;
-        }
+        .section { margin-bottom: 30px; }
 
         .section-title {
             font-size: 15px;
@@ -68,14 +64,12 @@
             font-weight: 500;
         }
 
-        /* Responsive Grid Yapısı */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
         }
 
-        /* Minimalist Girdi Alanları */
         .input-card {
             background-color: var(--surface);
             border: 1px solid var(--border);
@@ -86,9 +80,7 @@
             transition: border-color 0.2s ease;
         }
 
-        .input-card:focus-within {
-            border-color: var(--amber);
-        }
+        .input-card:focus-within { border-color: var(--amber); }
 
         .input-card label {
             font-size: 12px;
@@ -117,7 +109,6 @@
             outline: none;
         }
 
-        /* Para Birimi Etiketleri */
         .currency-badge {
             font-size: 10px;
             background: rgba(255, 255, 255, 0.1);
@@ -127,7 +118,6 @@
             color: var(--text-muted);
         }
 
-        /* Kaydet Butonu */
         .btn-container {
             position: sticky;
             bottom: 20px;
@@ -148,26 +138,18 @@
             box-shadow: 0 4px 15px rgba(255, 159, 10, 0.3);
             transition: transform 0.1s, background-color 0.2s;
             width: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-save:active {
-            transform: scale(0.96);
-        }
+        .btn-save:active { transform: scale(0.96); }
 
-        /* Mobil Cihazlar İçin Özel Ayarlar */
         @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-            .grid {
-                grid-template-columns: 1fr; /* Mobilde alt alta dizer */
-            }
-            .btn-container {
-                justify-content: stretch;
-            }
-            .btn-save {
-                width: 100%; /* Mobilde buton tam genişlik olur */
-            }
+            body { padding: 15px; }
+            .grid { grid-template-columns: 1fr; }
+            .btn-container { justify-content: stretch; }
+            .btn-save { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -176,7 +158,7 @@
 <div class="container">
     <div class="header">
         <h1>Vhesap</h1>
-        <p>Oran ve Parametre Yönetimi</p>
+        <p>Oran ve Parametre Yönetimi (Kullanıcılar İçin JSON Oluşturucu)</p>
     </div>
 
     <form id="ratesForm">
@@ -187,25 +169,25 @@
                 <div class="input-card">
                     <label>Konut Kredisi</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="k-konut" placeholder="3.20">
+                        <span>%</span><input type="number" step="0.01" id="k-konut" placeholder="3.20" value="3.20">
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Araç Kredisi</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="k-arac" placeholder="3.50">
+                        <span>%</span><input type="number" step="0.01" id="k-arac" placeholder="3.50" value="3.50">
                     </div>
                 </div>
                 <div class="input-card">
                     <label>İhtiyaç Kredisi</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="k-ihtiyac" placeholder="4.10">
+                        <span>%</span><input type="number" step="0.01" id="k-ihtiyac" placeholder="4.10" value="4.10">
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Ek Hesap (KMH)</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="k-ekhesap" placeholder="5.00">
+                        <span>%</span><input type="number" step="0.01" id="k-ekhesap" placeholder="5.00" value="5.00">
                     </div>
                 </div>
             </div>
@@ -218,59 +200,59 @@
                 <div class="input-card">
                     <label>Taksitli Kredi</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="t-taksitli" placeholder="4.50">
+                        <span>%</span><input type="number" step="0.01" id="t-taksitli" placeholder="4.50" value="4.50">
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Rotatif Kredi</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="t-rotatif" placeholder="4.25">
+                        <span>%</span><input type="number" step="0.01" id="t-rotatif" placeholder="42.00" value="42.00">
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Spot Kredi</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="t-spot" placeholder="4.00">
+                        <span>%</span><input type="number" step="0.01" id="t-spot" placeholder="45.00" value="45.00">
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Ticari Ek Hesap</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="t-ekhesap" placeholder="5.25">
+                        <span>%</span><input type="number" step="0.01" id="t-ekhesap" placeholder="5.25" value="5.25">
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VADELİ İŞLEMLER (PARA BİRİMLERİNE GÖRE) -->
+        <!-- VADELİ İŞLEMLER -->
         <div class="section">
             <h2 class="section-title">Vadeli Mevduat</h2>
             <div class="grid">
                 <div class="input-card">
                     <label>Türk Lirası (TRY)</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="v-try" placeholder="45.00">
+                        <span>%</span><input type="number" step="0.01" id="v-try" placeholder="45.00" value="45.00">
                         <span class="currency-badge">TL</span>
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Amerikan Doları (USD)</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="v-usd" placeholder="2.50">
+                        <span>%</span><input type="number" step="0.01" id="v-usd" placeholder="2.50" value="2.50">
                         <span class="currency-badge">USD</span>
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Euro (EUR)</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="v-eur" placeholder="2.00">
+                        <span>%</span><input type="number" step="0.01" id="v-eur" placeholder="2.00" value="2.00">
                         <span class="currency-badge">EUR</span>
                     </div>
                 </div>
                 <div class="input-card">
                     <label>Altın (XAU)</label>
                     <div class="input-row">
-                        <span>%</span><input type="number" step="0.01" id="v-xau" placeholder="1.25">
+                        <span>%</span><input type="number" step="0.01" id="v-xau" placeholder="1.25" value="1.25">
                         <span class="currency-badge">XAU</span>
                     </div>
                 </div>
@@ -278,7 +260,10 @@
         </div>
 
         <div class="btn-container">
-            <button type="button" class="btn-save" onclick="saveData()">Değişiklikleri Kaydet</button>
+            <button type="button" class="btn-save" onclick="saveData()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Değişiklikleri Kaydet (İndir)
+            </button>
         </div>
     </form>
 </div>
@@ -296,6 +281,7 @@
                 taksitli: document.getElementById('t-taksitli').value,
                 rotatif: document.getElementById('t-rotatif').value,
                 spot: document.getElementById('t-spot').value,
+                iskonto: document.getElementById('t-spot').value, // İskonto için spot oranını kullanır
                 ekhesap: document.getElementById('t-ekhesap').value
             },
             vadeli: {
@@ -306,21 +292,37 @@
             }
         };
 
-        console.log("Kaydedilen Oranlar:", JSON.stringify(vhesapData, null, 2));
+        // JSON formatına dönüştür
+        const jsonString = JSON.stringify(vhesapData, null, 2);
+        
+        // İndirilebilir bir dosya (Blob) oluştur
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        // İndirmeyi tetikleyecek geçici bir link oluştur
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'rates.json'; // Dosya adı her zaman rates.json olmalıdır!
+        document.body.appendChild(a);
+        a.click();
+        
+        // Temizlik
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
 
         // Buton animasyonu ve geri bildirimi
         const btn = document.querySelector('.btn-save');
-        const originalText = btn.innerText;
+        const originalText = btn.innerHTML;
         
-        btn.innerText = "Kaydedildi ✓";
+        btn.innerHTML = "İndirildi ✓";
         btn.style.backgroundColor = "#32D74B"; // Apple Green
         btn.style.color = "#FFF";
         
         setTimeout(() => {
-            btn.innerText = originalText;
+            btn.innerHTML = originalText;
             btn.style.backgroundColor = "var(--amber)";
             btn.style.color = "#000";
-        }, 2000);
+        }, 3000);
     }
 </script>
 
