@@ -230,6 +230,9 @@
 
         .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; }
         .modal-content { background: var(--apple-card); height: 100%; width: 100%; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(128, 128, 128, 0.1); padding-top: env(safe-area-inset-top); }
+        
+        .modal-content-feedback { height: auto; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; }
+
         .plan-table { width: 100%; font-size: 12px; border-collapse: separate; border-spacing: 0; }
         .plan-table th { color: var(--apple-text-muted); text-align: center; padding: 12px 6px; border-bottom: 2px solid rgba(128, 128, 128, 0.2); text-transform: uppercase; font-size: 10px; font-weight: 700; position: sticky; top: 0; z-index: 10; background: var(--apple-card); }
         .plan-table td { padding: 12px 6px; border-bottom: 1px solid rgba(128, 128, 128, 0.08); text-align: center; color: var(--apple-text); }
@@ -360,6 +363,93 @@
         </div>
     </div>
 
+    <!-- Geri Bildirim Modalı -->
+    <div id="feedback-modal" class="modal" onclick="closeFeedbackOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-2" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-yellow)] flex items-center gap-2" id="feedback-title"><i class="fa-solid fa-bug text-red-500"></i> Hata Bildir</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Uygulama Geri Bildirimi</p>
+                </div>
+                <button onclick="closeFeedback()" class="w-9 h-9 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom">
+                
+                <!-- Geri Bildirim Formu (FormSubmit Altyapılı) -->
+                <form action="https://formsubmit.co/ttanalizci@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    
+                    <!-- Form Ayarları (FormSubmit Configuration) -->
+                    <input type="hidden" name="_subject" value="Vhesap & Vanaliz - Yeni Geri Bildirim!">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="Bildirim_Turu" id="feedback-type" value="Hata Bildirimi">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="input-card !mb-0 !p-3">
+                            <span class="label-text">Ad Soyad (İsteğe Bağlı)</span>
+                            <input type="text" name="Ad_Soyad" class="apple-input text-sm" placeholder="İsim">
+                        </div>
+                        <div class="input-card !mb-0 !p-3">
+                            <span class="label-text">Telefon (İsteğe Bağlı)</span>
+                            <input type="tel" name="Telefon" class="apple-input text-sm" placeholder="5xx">
+                        </div>
+                    </div>
+
+                    <div class="input-card !p-3">
+                        <span class="label-text">E-posta (Zorunlu - Yanıt için)</span>
+                        <input type="email" name="email" required class="apple-input text-sm" placeholder="mail@ornek.com">
+                    </div>
+
+                    <!-- Sadece Hata Bildiriminde Gözükecek Alanlar -->
+                    <div id="hata-fields" class="space-y-4">
+                        <div class="input-card !p-3">
+                            <span class="label-text">Hangi Ekranda Sorun Var?</span>
+                            <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg mt-1 px-3 py-1.5 flex items-center">
+                                <select name="Sorunlu_Ekran" class="apple-select text-sm w-full outline-none appearance-none bg-transparent">
+                                    <option value="Belirtilmedi">Seçiniz...</option>
+                                    <option value="Bireysel - İhtiyaç">Bireysel - İhtiyaç</option>
+                                    <option value="Bireysel - Konut">Bireysel - Konut</option>
+                                    <option value="Bireysel - Taşıt">Bireysel - Taşıt</option>
+                                    <option value="Ticari - Taksitli">Ticari - Taksitli</option>
+                                    <option value="Ticari - Rotatif">Ticari - Rotatif</option>
+                                    <option value="Ticari - Spot">Ticari - Spot</option>
+                                    <option value="Ticari - İskonto">Ticari - İskonto</option>
+                                    <option value="Vadeli / Mevduat">Vadeli / Mevduat</option>
+                                    <option value="Vanaliz (Kanaliz Portalı)">Vanaliz (Kanaliz Portalı)</option>
+                                    <option value="Diğer (Genel)">Diğer (Genel)</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-4 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div class="input-card !p-3">
+                            <span class="label-text">Beklediğiniz Sonuç Neydi?</span>
+                            <textarea name="Beklenen_Sonuc" rows="2" class="apple-input text-sm w-full resize-none" placeholder="Örn: Taksit tutarının 5.500 TL çıkmasını bekliyordum..."></textarea>
+                        </div>
+
+                        <div class="input-card !p-3">
+                            <span class="label-text">Uygulamanın Verdiği Sonuç?</span>
+                            <textarea name="Alinan_Sonuc" rows="2" class="apple-input text-sm w-full resize-none" placeholder="Örn: Uygulama taksiti 5.800 TL olarak hesaplıyor..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-card !p-3">
+                        <span class="label-text">Açıklama / Detaylar</span>
+                        <textarea name="Aciklama" required rows="3" class="apple-input text-sm w-full resize-none" placeholder="Lütfen durumu detaylıca açıklayın..."></textarea>
+                    </div>
+
+                    <div class="input-card !p-3 border-dashed border-2 border-[var(--apple-border)] bg-[var(--apple-badge-bg)]">
+                        <span class="label-text flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-up"></i> Ekran Görüntüsü Yükle (Faydalı Olur)</span>
+                        <input type="file" name="attachment" accept="image/*" class="w-full text-xs text-[var(--apple-text-muted)] mt-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-[var(--apple-yellow)] file:text-black hover:file:opacity-90 transition-all cursor-pointer">
+                    </div>
+
+                    <button type="submit" class="action-btn !mt-2 mb-2"><i class="fa-regular fa-paper-plane mr-2"></i> GÖNDER</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <!-- KAYDIRMA (SWIPE) KAPSAYICISI -->
     <div id="swipe-wrapper" style="display: flex; width: 200vw; height: 100vh; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);">
@@ -441,6 +531,19 @@
                     
                     <div class="mt-12 text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
                         Hassas Hesaplama & Karar Destek Altyapısı © 2026
+                    </div>
+
+                    <!-- İNCE VE ZARİF GERİ BİLDİRİM PANELİ -->
+                    <div class="mt-auto pt-6 border-t border-[rgba(128,128,128,0.08)] w-full flex justify-center gap-5 text-[10px] uppercase font-bold text-[var(--apple-text-muted)]">
+                        <button onclick="openFeedbackModal('hata')" class="hover:text-red-500 transition-colors flex items-center gap-1.5 py-2">
+                            <i class="fa-solid fa-bug"></i> Hata Bildir
+                        </button>
+                        <button onclick="openFeedbackModal('oneri')" class="hover:text-blue-500 transition-colors flex items-center gap-1.5 py-2">
+                            <i class="fa-regular fa-lightbulb"></i> Özellik Öner
+                        </button>
+                        <button onclick="openFeedbackModal('degerlendirme')" class="hover:text-amber-500 transition-colors flex items-center gap-1.5 py-2">
+                            <i class="fa-regular fa-star"></i> Değerlendir
+                        </button>
                     </div>
                 </div>
 
@@ -862,6 +965,38 @@
                 gtag('event', 'page_view', { page_title: 'Vhesap Portal', page_path: '/' });
             }
         };
+        
+        // GERİ BİLDİRİM MODAL KONTROLLERİ
+        function openFeedbackModal(type) {
+            const modal = document.getElementById('feedback-modal');
+            const title = document.getElementById('feedback-title');
+            const typeInput = document.getElementById('feedback-type');
+            const hataFields = document.getElementById('hata-fields');
+
+            if (type === 'hata') {
+                title.innerHTML = '<i class="fa-solid fa-bug text-red-500"></i> Hata Bildir';
+                typeInput.value = 'Hata Bildirimi';
+                hataFields.style.display = 'block';
+            } else if (type === 'oneri') {
+                title.innerHTML = '<i class="fa-regular fa-lightbulb text-blue-500"></i> Özellik Öner';
+                typeInput.value = 'Yeni Özellik Önerisi';
+                hataFields.style.display = 'none';
+            } else {
+                title.innerHTML = '<i class="fa-regular fa-star text-amber-500"></i> Değerlendir';
+                typeInput.value = 'Genel Uygulama Değerlendirmesi';
+                hataFields.style.display = 'none';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedback-modal').style.display = 'none';
+        }
+
+        function closeFeedbackOutside(e) {
+            if(e.target.id === 'feedback-modal') closeFeedback();
+        }
     </script>
 
 
