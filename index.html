@@ -611,7 +611,7 @@
                         <div id="results" class="hidden mt-6 pb-2">
                             <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
                                 <h3 class="text-center text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
-                                <div id="result-rows" class="space-y-3.5"></div>
+                                <div id="result-rows" class="space-y-1.5"></div>
                                 <div class="mt-5" id="plan-trigger-container">
                                     <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
                                         <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
@@ -930,7 +930,7 @@
             const toast = id('toast-container');
             id('toast-message').innerText = msg;
             toast.style.transform = 'translate(-50%, 0)'; toast.style.opacity = '1';
-            setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 3000);
+            setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 4000);
         }
 
         function trackCalculation(turu, tutar) {
@@ -1173,7 +1173,7 @@
                     </label>
                     <div id="ara-odemeler-container" class="${state.hasAraOdemeler ? '' : 'hidden'} mt-3 pt-3 border-t border-[rgba(128,128,128,0.1)]">
                         <div id="ara-odeme-list" class="mb-3"></div>
-                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="text" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
+                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="text" inputmode="numeric" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
                         <div class="grid grid-cols-2 gap-2 mb-3">
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="vade" class="peer hidden" checked><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">VADE AZALSIN</div></label>
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="taksit" class="peer hidden"><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">TAKSİT DÜŞSÜN</div></label>
@@ -1280,6 +1280,9 @@
         }
 
         function executeCalculation() {
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
             const s = state.sub; const m = state.main;
             if(m === 'vadeli') return calcMevduat();
             if(s === 'spot' || s === 'iskonto' || s === 'ekhesap') return calcDayBased(s);
@@ -1448,7 +1451,7 @@
                 {l: "Toplam Net Faiz", v: format(totalF)},
                 {l: `Vergi Toplamı`, v: format(totalV)},
                 {l: "Toplam Geri Ödeme", v: format(sumTak)}
-            ].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+            ].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             
             trackCalculation(state.sub, T);
 
@@ -1488,15 +1491,15 @@
             if(type === 'spot') {
                 totalBorc = T + f + c + tax;
                 plan = [{i:'KAPAMA', date: endD.toLocaleDateString('tr-TR'), taksit: totalBorc, ana: T, f: f, kom: c, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Vade Sonu Toplu Ödeme", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Vade Sonu Toplu Ödeme", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             } else if(type === 'iskonto') {
                 netVerilen = T - (f + c + tax);
                 plan = [{i:'İSKONTO', date: startD.toLocaleDateString('tr-TR'), taksit: T, ana: netVerilen, f: f, kom: c, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Ele Geçen Net Tutar", v: format(netVerilen), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Çek Nominal Değeri", v: format(T)}, {l: "Net İskonto", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Ele Geçen Net Tutar", v: format(netVerilen), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Çek Nominal Değeri", v: format(T)}, {l: "Net İskonto", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             } else if(type === 'ekhesap') {
                 totalBorc = T + f + tax;
                 plan = [{i:'ÖDEME', date: endD.toLocaleDateString('tr-TR'), taksit: totalBorc, ana: T, f: f, kom: 0, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Toplam Borç", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Toplam Borç", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             }
 
             state.calcMeta = {
@@ -1540,7 +1543,7 @@
                 tutar: T, aylık: net, toplam: T + net, isRotatif: false
             };
 
-            id('result-rows').innerHTML = [{l: "Net Getiri", v: format(net), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Brüt Faiz", v: format(brut)}, {l: `Stopaj Kesintisi (%${stopaj*100})`, v: format(kesinti)}, {l: "Vade Sonu Bakiye", v: format(T+net)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+            id('result-rows').innerHTML = [{l: "Net Getiri", v: format(net), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Brüt Faiz", v: format(brut)}, {l: `Stopaj Kesintisi (%${stopaj*100})`, v: format(kesinti)}, {l: "Vade Sonu Bakiye", v: format(T+net)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             
             id('plan-thead').innerHTML = `<tr><th>No</th><th>Tarih</th><th>Tutar</th><th>Brüt Faiz</th><th>Stopaj</th><th class="text-right">Bakiye</th></tr>`;
             
