@@ -2922,14 +2922,20 @@
             }
         });
 
-        btnLogin.addEventListener('click', () => {
+btnLogin.addEventListener('click', () => {
             signInWithPopup(auth, provider).catch(error => {
-                console.warn("Popup engellendi, yönlendirme deneniyor...", error);
+                console.warn("Popup hatası:", error);
                 
-                // Eğer popup engellenirse (özellikle iframe/Canvas içinde) yönlendirme metodunu dene
+                // Eğer popup engellenirse yönlendirme metodunu dene
                 signInWithRedirect(auth, provider).catch(redirectError => {
                     console.error("Yönlendirme Hatası:", redirectError);
-                    showToast("Önizleme kısıtlaması. Tam ekranda veya dışa aktarıp deneyin.");
+                    
+                    // Hata mesajını daha açıklayıcı hale getirdik:
+                    if(redirectError.code === 'auth/unauthorized-domain') {
+                        showToast("Hata: Bu alan adı Firebase'de yetkilendirilmemiş. (Authorized Domains)");
+                    } else {
+                        showToast("Giriş yapılamadı. Güvenlik veya ayar sorunu oluştu.");
+                    }
                 });
             });
         });
