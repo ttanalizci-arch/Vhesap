@@ -450,54 +450,6 @@
         </div>
     </div>
 
-    <!-- FORUM / TOPLULUK MODALI -->
-    <div id="forum-modal" class="modal" onclick="closeForumOutside(event)">
-        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
-            <div id="sheet-handle-3" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
-            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
-                <div>
-                    <h2 class="text-xl font-bold text-[var(--apple-yellow)] flex items-center gap-2"><i class="fa-regular fa-comments"></i> Topluluk Forumu</h2>
-                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Kullanıcı Değerlendirmeleri</p>
-                </div>
-                <button onclick="closeForum()" class="w-9 h-9 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <!-- Yorumların Listeleneceği Alan -->
-            <div id="forum-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-4 overscroll-contain bg-[var(--apple-bg)]" style="-webkit-overflow-scrolling: touch;">
-                <div class="text-center text-[10px] text-[var(--apple-text-muted)] mt-5">Yorumlar yükleniyor...</div>
-            </div>
-
-            <!-- Alt Kısım: Giriş / Yorum Gönderme -->
-            <div class="px-5 py-4 border-t border-zinc-500/20 bg-[var(--apple-card)] pb-safe-bottom">
-                <!-- Giriş Yapılmamışsa Gösterilecek -->
-                <div id="forum-login-section" class="flex flex-col items-center">
-                    <p class="text-xs text-[var(--apple-text-muted)] mb-3 text-center">Yorum yapmak veya değerlendirme bırakmak için giriş yapmalısınız.</p>
-                    <button id="btn-google-login" class="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-gray-100 transition-colors">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
-                        Google ile Giriş Yap
-                    </button>
-                </div>
-
-                <!-- Giriş Yapılmışsa Gösterilecek -->
-                <div id="forum-input-section" style="display: none;" class="flex flex-col gap-2">
-                    <div class="flex items-center justify-between px-1">
-                        <div class="flex items-center gap-2">
-                            <img id="forum-user-avatar" src="" class="w-6 h-6 rounded-full" alt="Avatar">
-                            <span id="forum-user-name" class="text-xs font-bold text-[var(--apple-text)]">İsim Soyisim</span>
-                        </div>
-                        <button id="btn-logout" class="text-[10px] text-red-500 hover:underline">Çıkış Yap</button>
-                    </div>
-                    <div class="flex items-end gap-2 mt-2">
-                        <textarea id="forum-new-message" rows="2" class="apple-input bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] text-sm w-full resize-none p-3 rounded-xl" placeholder="Uygulama hakkındaki düşüncelerini paylaş..."></textarea>
-                        <button id="btn-send-message" class="bg-[var(--apple-yellow)] text-black w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 hover:bg-[var(--apple-yellow-hover)] transition-colors disabled:opacity-50">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <!-- KAYDIRMA (SWIPE) KAPSAYICISI -->
     <div id="swipe-wrapper" style="display: flex; width: 200vw; height: 100vh; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);">
@@ -589,8 +541,8 @@
                         <button onclick="openFeedbackModal('oneri')" class="hover:text-blue-500 transition-colors flex items-center gap-1.5 py-2">
                             <i class="fa-regular fa-lightbulb"></i> Özellik Öner
                         </button>
-                        <button onclick="openForum()" class="hover:text-amber-500 transition-colors flex items-center gap-1.5 py-2">
-                            <i class="fa-regular fa-comments"></i> Topluluk
+                        <button onclick="openFeedbackModal('degerlendirme')" class="hover:text-amber-500 transition-colors flex items-center gap-1.5 py-2">
+                            <i class="fa-regular fa-star"></i> Değerlendir
                         </button>
                     </div>
                 </div>
@@ -1014,7 +966,7 @@
             }
         };
         
-        // GERİ BİLDİRİM & FORUM MODAL KONTROLLERİ
+        // GERİ BİLDİRİM MODAL KONTROLLERİ
         function openFeedbackModal(type) {
             const modal = document.getElementById('feedback-modal');
             const title = document.getElementById('feedback-title');
@@ -1045,19 +997,6 @@
         function closeFeedbackOutside(e) {
             if(e.target.id === 'feedback-modal') closeFeedback();
         }
-
-        // Yeni Forum Kontrolleri
-        window.openForum = function() {
-            document.getElementById('forum-modal').style.display = 'flex';
-        };
-        
-        window.closeForum = function() {
-            document.getElementById('forum-modal').style.display = 'none';
-        };
-        
-        window.closeForumOutside = function(e) {
-            if(e.target.id === 'forum-modal') window.closeForum();
-        };
     </script>
 
 
@@ -2786,193 +2725,7 @@
             calculateAllKanaliz();
             renderTable();
         });
-    </script>
 
-    <!-- FIREBASE & FORUM SİSTEMİ -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken, signInWithRedirect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        let firebaseConfig;
-        if (typeof __firebase_config !== 'undefined') {
-            firebaseConfig = JSON.parse(__firebase_config);
-        } else {
-            firebaseConfig = {
-                apiKey: "AIzaSyCx7C_7b1QLMbxWjfofN0qPxfQVwxx_sOg",
-                authDomain: "vhesap-512d9.firebaseapp.com",
-                projectId: "vhesap-512d9",
-                storageBucket: "vhesap-512d9.firebasestorage.app",
-                messagingSenderId: "738861500202",
-                appId: "1:738861500202:web:df8e088c10e69701bdc053",
-                measurementId: "G-DYTDV72YBC"
-            };
-        }
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'vhesap';
-        
-        const getForumCollection = () => {
-            if (typeof __firebase_config !== 'undefined') {
-                return collection(db, 'artifacts', appId, 'public', 'data', 'forum_messages');
-            } else {
-                return collection(db, 'forum_messages');
-            }
-        };
-
-        const loginSection = document.getElementById('forum-login-section');
-        const inputSection = document.getElementById('forum-input-section');
-        const messagesContainer = document.getElementById('forum-messages');
-        const btnLogin = document.getElementById('btn-google-login');
-        const btnLogout = document.getElementById('btn-logout');
-        const btnSend = document.getElementById('btn-send-message');
-        const messageInput = document.getElementById('forum-new-message');
-        const userNameDisplay = document.getElementById('forum-user-name');
-        const userAvatarDisplay = document.getElementById('forum-user-avatar');
-
-        let currentUser = null;
-        let unsubscribeSnapshot = null;
-
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else if (!auth.currentUser) {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Giriş başlatma hatası:", error);
-            }
-        };
-        initAuth();
-
-        onAuthStateChanged(auth, (user) => {
-            if (user && !user.isAnonymous) {
-                currentUser = user;
-                loginSection.style.display = 'none';
-                inputSection.style.display = 'flex';
-                userNameDisplay.innerText = user.displayName || "Kullanıcı";
-                userAvatarDisplay.src = user.photoURL || "https://www.svgrepo.com/show/5125/avatar.svg";
-            } else {
-                currentUser = null;
-                loginSection.style.display = 'flex';
-                inputSection.style.display = 'none';
-            }
-
-            if (user && !unsubscribeSnapshot) {
-                unsubscribeSnapshot = onSnapshot(getForumCollection(), (snapshot) => {
-                    let messagesList = [];
-                    snapshot.forEach((doc) => {
-                        messagesList.push({ id: doc.id, ...doc.data() });
-                    });
-
-                    messagesList.sort((a, b) => {
-                        const timeA = a.timestamp ? a.timestamp.toMillis() : Date.now();
-                        const timeB = b.timestamp ? b.timestamp.toMillis() : Date.now();
-                        return timeA - timeB;
-                    });
-
-                    messagesContainer.innerHTML = '';
-                    if (messagesList.length === 0) {
-                        messagesContainer.innerHTML = '<div class="text-center text-[10px] text-[var(--apple-text-muted)] mt-5">Henüz yorum yapılmamış. İlk değerlendiren sen ol!</div>';
-                        return;
-                    }
-
-                    messagesList.forEach((data) => {
-                        const isMe = currentUser && currentUser.uid === data.uid;
-                        let dateStr = 'Şimdi';
-                        if (data.timestamp) {
-                            const date = new Date(data.timestamp.toDate());
-                            dateStr = date.toLocaleDateString('tr-TR', { day:'2-digit', month:'2-digit' }) + ' ' + 
-                                      date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute:'2-digit' });
-                        }
-
-                        const msgHtml = `
-                            <div class="flex gap-3 ${isMe ? 'flex-row-reverse' : ''} mb-4">
-                                <img src="${data.photoURL || 'https://www.svgrepo.com/show/5125/avatar.svg'}" class="w-8 h-8 rounded-full shadow-sm flex-shrink-0 border border-[var(--apple-card-border)]" alt="Avatar">
-                                <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[80%]">
-                                    <div class="flex items-baseline gap-2 mb-1 px-1">
-                                        <span class="text-[10px] font-bold text-[var(--apple-text)]">${data.displayName || 'Kullanıcı'}</span>
-                                        <span class="text-[8px] text-[var(--apple-text-muted)]">${dateStr}</span>
-                                    </div>
-                                    <div class="p-3 rounded-2xl ${isMe ? 'bg-[var(--apple-yellow)] text-black rounded-tr-sm' : 'bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-text)] rounded-tl-sm'} text-xs shadow-sm break-words">
-                                        ${data.text.replace(/\n/g, '<br>')}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        messagesContainer.insertAdjacentHTML('beforeend', msgHtml);
-                    });
-                    
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, (error) => {
-                    console.error("Firestore Dinleme Hatası:", error);
-                    messagesContainer.innerHTML = `
-                        <div class="flex flex-col items-center justify-center h-full text-center px-4 mt-5">
-                            <i class="fa-solid fa-database text-4xl text-red-500/50 mb-3"></i>
-                            <h3 class="text-sm font-bold text-red-500 mb-1">Erişim İzni Reddedildi</h3>
-                            <p class="text-[10px] text-[var(--apple-text-muted)] leading-relaxed">Lütfen Firestore güvenlik kurallarınızı kontrol edin veya sayfayı yenileyin.</p>
-                        </div>
-                    `;
-                });
-            }
-        });
-
-btnLogin.addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch(error => {
-                console.warn("Popup hatası:", error);
-                
-                // Eğer popup engellenirse yönlendirme metodunu dene
-                signInWithRedirect(auth, provider).catch(redirectError => {
-                    console.error("Yönlendirme Hatası:", redirectError);
-                    
-                    // Hata mesajını daha açıklayıcı hale getirdik:
-                    if(redirectError.code === 'auth/unauthorized-domain') {
-                        showToast("Hata: Bu alan adı Firebase'de yetkilendirilmemiş. (Authorized Domains)");
-                    } else {
-                        showToast("Giriş yapılamadı. Güvenlik veya ayar sorunu oluştu.");
-                    }
-                });
-            });
-        });
-        
-        btnLogout.addEventListener('click', () => {
-            signOut(auth);
-        });
-
-        messageInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                btnSend.click();
-            }
-        });
-
-        // 3. Yeni Yorum Gönderme İşlemi
-        btnSend.addEventListener('click', async () => {
-            const text = messageInput.value.trim();
-            if (!text || !currentUser) return;
-            
-            btnSend.disabled = true;
-            try {
-                await addDoc(getForumCollection(), {
-                    text: text,
-                    uid: currentUser.uid,
-                    displayName: currentUser.displayName,
-                    photoURL: currentUser.photoURL,
-                    timestamp: serverTimestamp()
-                });
-                messageInput.value = ''; // Gönderdikten sonra kutuyu temizle
-                showToast("Mesajınız gönderildi.");
-            } catch (e) {
-                console.error("Mesaj gönderilemedi:", e);
-                showToast("Mesaj gönderilirken bir hata oluştu.");
-            }
-            btnSend.disabled = false;
-        });
     </script>
 </body>
 </html>
