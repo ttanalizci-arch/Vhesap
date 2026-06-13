@@ -12,7 +12,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vhesap - Gelişmiş Finans Portalı</title>
+    <title>Vhesap & Kanaliz - Finans Portalı</title>
     <link rel="manifest" href="manifest.json">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,7 +24,7 @@
     <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
 
     <script>
-      // Offline çalışmayı engelle ve PWA/ServiceWorker çerezlerini temizle (Güncellemelerin anında gelmesi için)
+      // Offline çalışmayı engelle ve PWA/ServiceWorker çerezlerini temizle
       try {
           if ('serviceWorker' in navigator) {
               navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -34,14 +34,13 @@
                       }).catch(function(e) { console.warn('ServiceWorker unregister hatası:', e); });
                   }
               }).catch(function(e) {
-                  console.warn('ServiceWorker kayıtları alınamadı (InvalidStateError atlatıldı):', e);
+                  console.warn('ServiceWorker kayıtları alınamadı:', e);
               });
           }
       } catch (e) {
           console.warn('ServiceWorker erişimi engellendi:', e);
       }
       
-      // Mobil Safari/Chrome önbellek temizleyici (Yeni özelliklerin anında görünmesi için)
       if ('caches' in window) {
           try {
               caches.keys().then(names => {
@@ -50,10 +49,14 @@
           } catch(e) {}
       }
     </script>
+    
+    <!-- CDNs -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
+    <!-- VHESAP CSS -->
     <style>
         :root {
             /* Light Theme */
@@ -94,6 +97,16 @@
             --primary: #3b82f6;
             --danger: #ff453a;
             --accent: #f59e0b;
+
+            /* Kanaliz Light Theme Variables */
+            --k-bg: #f4f4f5;
+            --k-card: #ffffff;
+            --k-text: #18181b;
+            --k-text-muted: #71717a;
+            --k-border: rgba(0, 0, 0, 0.1);
+            --k-input: rgba(0, 0, 0, 0.05);
+            --k-hover: rgba(0, 0, 0, 0.03);
+            --k-nav-bg: rgba(255, 255, 255, 0.85);
         }
 
         body.dark {
@@ -130,17 +143,29 @@
 
             --apple-switch-bg: #18181b;
             --apple-switch-border: rgba(255, 255, 255, 0.05);
+
+            /* Kanaliz Dark Theme Variables */
+            --k-bg: #000000;
+            --k-card: #1c1c1e;
+            --k-text: #ffffff;
+            --k-text-muted: #ebebf5;
+            --k-border: rgba(255, 255, 255, 0.08);
+            --k-input: rgba(0, 0, 0, 0.4);
+            --k-hover: rgba(255, 255, 255, 0.04);
+            --k-nav-bg: rgba(28, 28, 30, 0.85);
         }
 
-        html, body {
-            background-color: var(--apple-bg); margin: 0; padding: 0;
-            -webkit-text-size-adjust: 100%; transition: all 0.3s ease;
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden; 
+            background-color: var(--apple-bg);
+            transition: background-color 0.3s ease;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: var(--apple-text); display: flex; justify-content: center; align-items: flex-start;
-            min-height: 100vh;
+        #vhesap-viewport {
+            color: var(--apple-text);
+            display: flex; justify-content: center; align-items: flex-start;
         }
 
         input, select, textarea, button {
@@ -159,8 +184,7 @@
         }
 
         @media (min-width: 641px) {
-            html, body { overflow: auto; height: auto; min-height: 100%; }
-            body { align-items: flex-start; padding: 40px 0; }
+            #vhesap-viewport { padding: 40px 0; }
             .apple-container { height: auto; min-height: 890px; max-height: none; border-radius: 36px; border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); overflow: hidden; }
         }
         
@@ -239,308 +263,76 @@
         .satir-faiz-degisim { background-color: rgba(255, 69, 58, 0.04) !important; font-style: italic; }
         .satir-faiz-degisim td { color: var(--danger) !important; border-left: 2px solid var(--danger); }
 
-        /* YENİ PDF MODU (Gelişmiş Çıktı İçin İzole) */
+        /* YENİ PDF MODU */
         .pdf-mode { height: auto !important; min-height: 100% !important; overflow: visible !important; background: #ffffff !important; }
         .pdf-mode body, .pdf-mode html { height: auto !important; min-height: 100% !important; overflow: visible !important; background: #ffffff !important; }
-        .pdf-mode .apple-container, 
+        .pdf-mode #swipe-wrapper,
         .pdf-mode .modal, 
         .pdf-mode #toast-container, 
-        .pdf-mode #offline-blocker { display: none !important; }
+        .pdf-mode #offline-blocker,
+        .pdf-mode .nav-bubble-btn,
+        .pdf-mode .nav-toggle-btn { display: none !important; }
         #pdf-template-wrapper { display: none; }
         .pdf-mode #pdf-template-wrapper { display: block !important; background: #ffffff; color: #1f2937; padding: 20px 30px; width: 100%; min-height: 100vh; }
+        
+        /* Navigasyon Balon Okları CSS */
+        .nav-bubble-btn { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; overflow: hidden; }
+        .nav-bubble-text { display: inline-block; max-width: 60px; opacity: 1; transition: all 0.5s ease; vertical-align: middle; }
+        .nav-bubble-text.collapsed { max-width: 0; opacity: 0; margin-left: 0 !important; margin-right: 0 !important; }
+    </style>
+
+    <!-- KANALIZ CSS -->
+    <style>
+        #kanaliz-viewport {
+            background-color: var(--k-bg);
+            color: var(--k-text-muted);
+            transition: background-color 0.3s ease;
+        }
+        #kanaliz-viewport ::selection {
+            background-color: #ff9f0a;
+            color: white;
+        }
+        #kanaliz-viewport input[type=number]::-webkit-inner-spin-button, 
+        #kanaliz-viewport input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
+        #kanaliz-viewport input[type=number] {
+            -moz-appearance: textfield;
+        }
+        #kanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8); opacity: 0.5; cursor: pointer;
+        }
+        body.light #kanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0);
+        }
+        #kanaliz-viewport input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 0.8;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        /* Kanaliz Scrollbar */
+        #kanaliz-viewport::-webkit-scrollbar { width: 4px; height: 4px; }
+        #kanaliz-viewport::-webkit-scrollbar-track { background: transparent; }
+        #kanaliz-viewport::-webkit-scrollbar-thumb { background: var(--k-border); border-radius: 10px; }
     </style>
 </head>
-<body class="dark flex min-h-screen selection:bg-amber-500/30">
+<body class="dark selection:bg-amber-500/30">
 
-    <!-- İnternet Bağlantısı Engelleyici -->
+    <!-- VHESAP MODALS & TOASTS -->
     <div id="offline-blocker" style="display: none;" class="fixed inset-0 bg-black/95 z-[9999] flex-col items-center justify-center text-white backdrop-blur-md">
         <i class="fa-solid fa-wifi text-6xl text-[var(--apple-yellow)] mb-6 opacity-50"></i>
         <h2 class="text-2xl font-black mb-2 tracking-tight">Bağlantı Koptu</h2>
         <p class="text-center text-[#a1a1aa] max-w-xs text-xs font-semibold leading-relaxed">Analitik veri akışı ve güncel hesaplamalar için aktif bir internet bağlantısı gereklidir. Lütfen ağınızı kontrol edin.</p>
     </div>
 
-    <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-amber-500/30 text-xs font-bold flex items-center gap-2" id="toast-container">
-        <i class="fa-solid fa-circle-info text-[var(--apple-yellow)]"></i>
+    <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0 bg-[var(--apple-card)] text-[var(--apple-text)] px-4 py-2.5 rounded-xl shadow-lg border border-amber-500/30 text-[11px] text-center font-bold flex items-center gap-2 max-w-[90vw]" id="toast-container">
+        <i class="fa-solid fa-circle-info text-[var(--apple-yellow)] flex-shrink-0"></i>
         <span id="toast-message"></span>
-    </div>
-
-    <div class="apple-container" id="main-container">
-        
-        <!-- ======================= ANA PORTAL GÖRÜNÜMÜ ======================= -->
-        <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
-            
-            <button id="global-theme-toggle" class="global-theme-btn" onclick="toggleGlobalTheme()" title="Temayı Değiştir">
-                <i id="global-theme-icon" class="fa-solid fa-moon text-lg"></i>
-            </button>
-
-            <div class="mb-8 mt-4 sm:mt-0">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 mb-4 shadow-inner">
-                    <i class="fa-solid fa-chart-pie text-3xl text-amber-500"></i>
-                </div>
-                <h1 class="text-4xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
-                <p class="text-xs text-amber-500/80 uppercase font-extrabold tracking-widest mt-1.5">GELİŞMİŞ FİNANSAL SİMÜLASYON</p>
-            </div>
-
-            <p class="text-[var(--apple-text-muted)] text-xs px-2 mb-8 leading-relaxed font-medium">
-                Lütfen gerçekleştirmek istediğiniz finansal analiz ve kredi amortisman türüne göre ilgili kokpiti seçiniz.
-            </p>
-
-            <div class="space-y-4">
-                <button onclick="navigateTo('bireysel')" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
-                            <i class="fa-solid fa-user-tie text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Bireysel Finans</h3>
-                            <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">İhtiyaç, Konut, Taşıt, Ek Hesap</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
-                </button>
-
-                <button onclick="navigateTo('ticari')" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
-                            <i class="fa-solid fa-briefcase text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Ticari Finans</h3>
-                            <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Taksitli, Rotatif, Spot, İskonto</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
-                </button>
-
-                <button onclick="navigateTo('vadeli')" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
-                            <i class="fa-solid fa-vault text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Vadeli Finans</h3>
-                            <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Mevduat: TL, USD, EUR, ALTIN</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
-                </button>
-            </div>
-            
-            <div class="mt-12 text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
-                Hassas Hesaplama & Karar Destek Altyapısı © 2026
-            </div>
-        </div>
-
-        <!-- ======================= ORTAK İÇERİK YAPISI ======================= -->
-        <div id="view-app" class="hidden flex-col flex-1 w-full">
-            
-            <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
-                <button onclick="navigateTo('portal')" class="text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] transition-colors flex items-center gap-1.5 text-xs font-bold uppercase">
-                    <i class="fa-solid fa-house-user"></i> Portal
-                </button>
-                <div class="flex items-baseline gap-2 cursor-pointer">
-                    <h1 class="text-2xl font-extrabold tracking-tight text-amber-500">Vhesap</h1>
-                    <span id="app-badge-title" class="text-[9px] text-amber-500 opacity-85 font-bold uppercase tracking-wider bg-[var(--apple-badge-bg)] px-1.5 py-0.5 rounded border border-[var(--apple-badge-border)]"></span>
-                </div>
-                <div class="w-16"></div>
-            </div>
-
-            <div class="main-nav" id="dynamic-nav"></div>
-
-            <div class="scroll-area flex-1">
-                <div id="info-area" class="mb-3 hidden"></div>
-
-                <div id="form-content" class="mt-1"></div>
-                
-                <!-- ROTATİF SPESİFİK UI ALANI -->
-                <div id="rotatif-ui-container" class="hidden">
-                    <div class="input-card mb-3 !p-0 overflow-hidden">
-                        <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-sliders text-[var(--apple-yellow)] mr-1.5"></i> Sözleşme Parametreleri</span>
-                            <div class="flex items-center gap-1.5 bg-[var(--apple-card)] border border-[var(--apple-card-border)] px-2 py-0.5 rounded shadow-sm relative cursor-pointer hover:border-[var(--apple-yellow)] transition-colors">
-                                <span class="text-[9px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider pointer-events-none">Periyot:</span>
-                                <select id="periyot" class="bg-transparent text-[10px] font-bold text-[var(--apple-yellow)] outline-none cursor-pointer appearance-none pr-3" onchange="recalculateRotatif()">
-                                    <option value="1">1 Ay</option><option value="3" selected>3 Ay</option><option value="6">6 Ay</option><option value="12">12 Ay</option>
-                                </select>
-                                <i class="fa-solid fa-chevron-down text-[7px] text-[var(--apple-yellow)] absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                            </div>
-                        </div>
-                        <div class="px-4 py-3 flex flex-wrap gap-2.5 items-center">
-                            <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
-                                <span id="faizTuruLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Basit Faiz</span>
-                                <input type="checkbox" id="faizTuruToggle" class="hidden peer" onchange="rotatifToggleFaizTuru(this.checked)">
-                                <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
-                            </label>
-                            <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
-                                <span id="modeLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Tekli Mod</span>
-                                <input type="checkbox" id="modeToggle" class="hidden peer" onchange="rotatifHandleModeToggle(this.checked)">
-                                <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
-                            </label>
-                            <label id="singleAnchorToggleBadge" class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
-                                <span class="text-[10px] font-bold text-[var(--apple-text)]">Özel Çapa</span>
-                                <input type="checkbox" id="useAnchorSingle" class="hidden peer" onchange="rotatifToggleSingleAnchor(this.checked)">
-                                <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
-                            </label>
-                        </div>
-                        <div id="singleAnchorDateContainer" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">İlk Devre Sonu (Portföy)</span>
-                                <input type="date" id="singleAnchorDate" class="apple-input bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] px-2 py-1 rounded text-xs w-32" onchange="recalculateRotatif()">
-                            </div>
-                        </div>
-                        <div id="multi-mode-panel" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">Aktif Dilimler</span>
-                                <button class="text-[var(--apple-yellow)] text-[10px] font-bold uppercase tracking-wider hover:opacity-70 transition-opacity flex items-center gap-1" onclick="rotatifAddNewSliceLetter()"><i class="fa-solid fa-plus"></i> Yeni Ekle</button>
-                            </div>
-                            <div id="active-slices-list" class="flex flex-wrap gap-1.5 py-1"></div>
-                        </div>
-                    </div>
-
-                    <div class="input-card mb-3 !p-0 overflow-hidden">
-                        <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer text-[var(--apple-yellow)] mr-1.5"></i> İşlem Talimatları</span>
-                        </div>
-                        <div class="p-3 pb-4">
-                            <div class="segmented-control mb-3">
-                                <button class="segment-btn-rot active" onclick="rotatifSwitchActionTab('kul')"><div class="flex items-center gap-1.5"><span class="dot dot-success"></span> Kullandırım</div></button>
-                                <button class="segment-btn-rot" onclick="rotatifSwitchActionTab('ode')"><div class="flex items-center gap-1.5"><span class="dot dot-primary"></span> Ödeme</div></button>
-                                <button class="segment-btn-rot" onclick="rotatifSwitchActionTab('faiz')"><div class="flex items-center gap-1.5"><span class="dot dot-accent"></span> Faiz Değiş.</div></button>
-                            </div>
-                            
-                            <div class="action-form-content block" id="form-kul">
-                                <div class="grid grid-cols-2 gap-2 mb-3">
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative select-disabled" id="kulTargetContainer">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Hedef Dilim</span>
-                                        <select id="kulTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4" onchange="rotatifUpdateKullandirimAnchorUI(this.value)"><option value="ANA">Genel (ANA)</option></select>
-                                    </div>
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">İşlem Tarihi</span>
-                                        <input type="date" id="kulDate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
-                                    </div>
-                                    <div id="multiAnchorWrapper" class="col-span-2 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] rounded-lg p-2 hidden">
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-[9px] font-bold text-[var(--apple-text)]">Özel Çapa</span>
-                                            <label class="flex items-center gap-1.5 cursor-pointer">
-                                                <input type="checkbox" id="kulAnchorToggle" class="hidden peer" onchange="rotatifToggleKulAnchor(this.checked)">
-                                                <div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div>
-                                            </label>
-                                        </div>
-                                        <div id="kulAnchorDateContainer" class="hidden mt-1.5 pt-1.5 border-t border-[var(--apple-table-border)]"><input type="date" id="kulAnchorDate" class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] px-1.5 py-0.5 rounded text-[11px] font-bold w-full" onchange="rotatifSaveAnchorForSlice()"></div>
-                                    </div>
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 col-span-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tutar (TL)</span>
-                                        <input type="text" id="kulAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
-                                    </div>
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <div class="flex justify-between items-center mb-0.5">
-                                            <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Faiz Oranı (%)</span>
-                                            <label class="flex items-center gap-1 cursor-pointer"><span id="kulRateBasisLabel" class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase">Yıllık</span><input type="checkbox" id="kulRateBasisToggle" class="hidden peer" onchange="rotatifToggleRateBasis('kul')"><div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div></label>
-                                        </div>
-                                        <input type="text" id="kulRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="42,00">
-                                    </div>
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Komisyon Oranı (% Yıl) <span class="text-amber-500/80 lowercase text-[7px]">(+BSMV)</span></span>
-                                        <input type="text" id="kulComRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="1,20">
-                                    </div>
-                                </div>
-                                <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlineKullandirim()">Talimatı İşle (T+0)</button>
-                            </div>
-                            
-                            <div class="action-form-content hidden" id="form-ode">
-                                <div class="grid grid-cols-2 gap-2 mb-3">
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative select-disabled" id="odeTargetContainer">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Hedef Dilim</span>
-                                        <select id="odeTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4"><option value="ANA">Genel (ANA)</option></select>
-                                    </div>
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tahsilat Tarihi</span>
-                                        <input type="date" id="odeDate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
-                                    </div>
-                                    <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Ödeme Tutarı (TL)</span>
-                                        <input type="text" id="odeAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
-                                    </div>
-                                </div>
-                                <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlinePayment()">Ödemeyi Kaydet (T+1)</button>
-                            </div>
-
-                            <div class="action-form-content hidden" id="form-faiz">
-                                <div class="grid grid-cols-2 gap-2 mb-3">
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative select-disabled" id="faizTargetContainer">
-                                        <div class="flex justify-between items-center mb-0.5">
-                                            <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Hedef Dilim</span>
-                                            <label class="flex items-center gap-1 cursor-pointer"><span class="text-[7px] font-bold text-[var(--apple-yellow)] uppercase">Hepsine</span><input type="checkbox" id="faizApplyAll" class="hidden peer" onchange="rotatifToggleFaizApplyAll(this.checked)"><div class="w-[20px] h-[10px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2 after:h-2 after:rounded-full peer-checked:after:translate-x-[10px]"></div></label>
-                                        </div>
-                                        <select id="faizTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4"><option value="ANA">Genel (ANA)</option></select>
-                                    </div>
-                                    <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Geçerlilik Tarihi</span>
-                                        <input type="date" id="faizDate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
-                                    </div>
-                                    <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
-                                        <div class="flex justify-between items-center mb-0.5">
-                                            <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Yeni Cari Oran (%)</span>
-                                            <label class="flex items-center gap-1 cursor-pointer"><span id="faizRateBasisLabel" class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase">Yıllık</span><input type="checkbox" id="faizRateBasisToggle" class="hidden peer" onchange="rotatifToggleRateBasis('faiz')"><div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px]"></div></label>
-                                        </div>
-                                        <input type="text" id="faizRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="45,00">
-                                    </div>
-                                </div>
-                                <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlineFaizDegisikligi()">Güncellemeyi İşle</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="ledgersArea" class="mt-4"></div>
-                    <div id="summaryTableContainer" class="mt-4 hidden"></div>
-                </div>
-
-                <div id="results" class="hidden mt-6 pb-2">
-                    <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
-                        <h3 class="text-center text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
-                        <div id="result-rows" class="space-y-3.5"></div>
-                        <div class="mt-5" id="plan-trigger-container">
-                            <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
-                                <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
-                            </button>
-                            <button id="btn-takvime-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="addToCalendar()">
-                                <i class="fa-regular fa-calendar-plus"></i> VADE SONUNU TAKVİME EKLE
-                            </button>
-                            <button id="btn-karsilastirma-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-500 font-bold text-xs tracking-wide transition-all duration-200 items-center justify-center gap-2" onclick="addVadeliKarsilastirma()">
-                                <i class="fa-solid fa-code-compare"></i> KARŞILAŞTIRMAYA EKLE
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VADELİ KARŞILAŞTIRMA ALANI -->
-                <div id="vadeli-karsilastirma-container" style="display: none;" class="mt-4 pb-2">
-                    <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest">Karşılaştırma Tablosu</h3>
-                            <button onclick="clearVadeliKarsilastirma()" class="text-[var(--danger)] hover:opacity-80 text-[10px] font-bold"><i class="fa-solid fa-trash"></i> Temizle</button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="rotatif-table w-full">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">#</th>
-                                        <th>Tutar</th>
-                                        <th>Gün</th>
-                                        <th>Oran</th>
-                                        <th class="text-right">Net Getiri</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="karsilastirma-body"></tbody>
-                            </table>
-                        </div>
-                        <div id="karsilastirma-farklar" class="mt-4 space-y-2 border-t border-[var(--apple-table-border)] pt-4">
-                            <!-- Karşılaştırma fark satırları buraya gelecek -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Ödeme Planı Modalı -->
@@ -568,13 +360,514 @@
         </div>
     </div>
 
+
+    <!-- KAYDIRMA (SWIPE) KAPSAYICISI -->
+    <div id="swipe-wrapper" style="display: flex; width: 200vw; height: 100vh; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);">
+        
+        <!-- PANE 1: VHESAP -->
+        <div id="vhesap-viewport" style="width: 100vw; height: 100vh; overflow-y: auto; position: relative;">
+            
+            <div class="apple-container" id="main-container">
+                
+                <!-- ANA PORTAL GÖRÜNÜMÜ -->
+                <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
+                    
+                    <button id="global-theme-toggle" class="global-theme-btn" onclick="toggleGlobalTheme()" title="Temayı Değiştir">
+                        <i id="global-theme-icon" class="fa-solid fa-moon text-lg"></i>
+                    </button>
+
+                    <button onclick="window.switchToKanaliz()" class="nav-bubble-btn absolute top-[80px] left-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç">
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                        <span class="nav-bubble-text text-[10px] font-bold ml-1.5">Vanaliz</span>
+                    </button>
+
+                    <button onclick="window.switchToKanaliz()" class="nav-bubble-btn absolute top-[80px] right-6 h-8 px-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-yellow)] flex items-center justify-center shadow-md hover:scale-110 z-[100]" title="Vanaliz'e Geç">
+                        <span class="nav-bubble-text text-[10px] font-bold mr-1.5">Vanaliz</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+
+                    <div class="mb-8 mt-4 sm:mt-0">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 mb-4 shadow-inner">
+                            <i class="fa-solid fa-chart-pie text-3xl text-amber-500"></i>
+                        </div>
+                        <h1 class="text-4xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
+                        <p class="text-xs text-amber-500/80 uppercase font-extrabold tracking-widest mt-1.5">GELİŞMİŞ FİNANSAL SİMÜLASYON</p>
+                    </div>
+
+                    <p class="text-[var(--apple-text-muted)] text-xs px-2 mb-8 leading-relaxed font-medium">
+                        Lütfen gerçekleştirmek istediğiniz finansal analiz ve kredi amortisman türüne göre ilgili kokpiti seçiniz.
+                    </p>
+
+                    <div class="space-y-4">
+                        <button onclick="navigateTo('bireysel')" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-user-tie text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Bireysel Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">İhtiyaç, Konut, Taşıt, Ek Hesap</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+
+                        <button onclick="navigateTo('ticari')" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-briefcase text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Ticari Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Taksitli, Rotatif, Spot, İskonto</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+
+                        <button onclick="navigateTo('vadeli')" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-vault text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Vadeli Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Mevduat: TL, USD, EUR, ALTIN</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-12 text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
+                        Hassas Hesaplama & Karar Destek Altyapısı © 2026
+                    </div>
+                </div>
+
+                <!-- ORTAK İÇERİK YAPISI -->
+                <div id="view-app" class="hidden flex-col flex-1 w-full">
+                    
+                    <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
+                        <button onclick="navigateTo('portal')" class="text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] transition-colors flex items-center gap-1.5 text-xs font-bold uppercase">
+                            <i class="fa-solid fa-house-user"></i> Portal
+                        </button>
+                        <div class="flex items-baseline gap-2 cursor-pointer">
+                            <h1 class="text-2xl font-extrabold tracking-tight text-amber-500">Vhesap</h1>
+                            <span id="app-badge-title" class="text-[9px] text-amber-500 opacity-85 font-bold uppercase tracking-wider bg-[var(--apple-badge-bg)] px-1.5 py-0.5 rounded border border-[var(--apple-badge-border)]"></span>
+                        </div>
+                        <div class="w-16"></div>
+                    </div>
+
+                    <div class="main-nav" id="dynamic-nav"></div>
+
+                    <div class="scroll-area flex-1">
+                        <div id="info-area" class="mb-3 hidden"></div>
+
+                        <div id="form-content" class="mt-1"></div>
+                        
+                        <!-- ROTATİF SPESİFİK UI ALANI -->
+                        <div id="rotatif-ui-container" class="hidden">
+                            <div class="input-card mb-3 !p-0 overflow-hidden">
+                                <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
+                                    <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-sliders text-[var(--apple-yellow)] mr-1.5"></i> Sözleşme Parametreleri</span>
+                                    <div class="flex items-center gap-1.5 bg-[var(--apple-card)] border border-[var(--apple-card-border)] px-2 py-0.5 rounded shadow-sm relative cursor-pointer hover:border-[var(--apple-yellow)] transition-colors">
+                                        <span class="text-[9px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider pointer-events-none">Periyot:</span>
+                                        <select id="periyot" class="bg-transparent text-[10px] font-bold text-[var(--apple-yellow)] outline-none cursor-pointer appearance-none pr-3" onchange="recalculateRotatif()">
+                                            <option value="1">1 Ay</option><option value="3" selected>3 Ay</option><option value="6">6 Ay</option><option value="12">12 Ay</option>
+                                        </select>
+                                        <i class="fa-solid fa-chevron-down text-[7px] text-[var(--apple-yellow)] absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                                    </div>
+                                </div>
+                                <div class="px-4 py-3 flex flex-wrap gap-2.5 items-center">
+                                    <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
+                                        <span id="faizTuruLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Basit Faiz</span>
+                                        <input type="checkbox" id="faizTuruToggle" class="hidden peer" onchange="rotatifToggleFaizTuru(this.checked)">
+                                        <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
+                                    </label>
+                                    <label class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
+                                        <span id="modeLabel" class="text-[10px] font-bold text-[var(--apple-text)]">Tekli Mod</span>
+                                        <input type="checkbox" id="modeToggle" class="hidden peer" onchange="rotatifHandleModeToggle(this.checked)">
+                                        <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
+                                    </label>
+                                    <label id="singleAnchorToggleBadge" class="flex items-center gap-1.5 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] px-2.5 py-1.5 rounded-full cursor-pointer shadow-sm">
+                                        <span class="text-[10px] font-bold text-[var(--apple-text)]">Özel Çapa</span>
+                                        <input type="checkbox" id="useAnchorSingle" class="hidden peer" onchange="rotatifToggleSingleAnchor(this.checked)">
+                                        <div class="w-[26px] h-[14px] rounded-full relative apple-toggle-bg after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:w-3 after:h-3 after:rounded-full peer-checked:after:translate-x-[12px] transition-all"></div>
+                                    </label>
+                                </div>
+                                <div id="singleAnchorDateContainer" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">İlk Devre Sonu (Portföy)</span>
+                                        <input type="date" id="singleAnchorDate" class="apple-input bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] px-2 py-1 rounded text-xs w-32" onchange="recalculateRotatif()">
+                                    </div>
+                                </div>
+                                <div id="multi-mode-panel" class="hidden px-4 pb-3 border-t border-[var(--apple-table-border)] pt-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-[10px] font-bold text-[var(--apple-text-muted)] uppercase tracking-wider">Aktif Dilimler</span>
+                                        <button class="text-[var(--apple-yellow)] text-[10px] font-bold uppercase tracking-wider hover:opacity-70 transition-opacity flex items-center gap-1" onclick="rotatifAddNewSliceLetter()"><i class="fa-solid fa-plus"></i> Yeni Ekle</button>
+                                    </div>
+                                    <div id="active-slices-list" class="flex flex-wrap gap-1.5 py-1"></div>
+                                </div>
+                            </div>
+
+                            <div class="input-card mb-3 !p-0 overflow-hidden">
+                                <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
+                                    <span class="text-[10px] font-bold text-[var(--apple-text)] uppercase tracking-wider"><i class="fa-solid fa-money-bill-transfer text-[var(--apple-yellow)] mr-1.5"></i> İşlem Talimatları</span>
+                                </div>
+                                <div class="p-3 pb-4">
+                                    <div class="segmented-control mb-3">
+                                        <button class="segment-btn-rot active" onclick="rotatifSwitchActionTab('kul')"><div class="flex items-center gap-1.5"><span class="dot dot-success"></span> Kullandırım</div></button>
+                                        <button class="segment-btn-rot" onclick="rotatifSwitchActionTab('ode')"><div class="flex items-center gap-1.5"><span class="dot dot-primary"></span> Ödeme</div></button>
+                                        <button class="segment-btn-rot" onclick="rotatifSwitchActionTab('faiz')"><div class="flex items-center gap-1.5"><span class="dot dot-accent"></span> Faiz Değiş.</div></button>
+                                    </div>
+                                    
+                                    <div class="action-form-content block" id="form-kul">
+                                        <div class="grid grid-cols-2 gap-2 mb-3">
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative select-disabled" id="kulTargetContainer">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Hedef Dilim</span>
+                                                <select id="kulTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4" onchange="rotatifUpdateKullandirimAnchorUI(this.value)"><option value="ANA">Genel (ANA)</option></select>
+                                            </div>
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">İşlem Tarihi</span>
+                                                <input type="date" id="kulDate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
+                                            </div>
+                                            <div id="multiAnchorWrapper" class="col-span-2 bg-[var(--apple-table-th-bg)] border border-[var(--apple-table-border)] rounded-lg p-2 hidden">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-[9px] font-bold text-[var(--apple-text)]">Özel Çapa</span>
+                                                    <label class="flex items-center gap-1.5 cursor-pointer">
+                                                        <input type="checkbox" id="kulAnchorToggle" class="hidden peer" onchange="rotatifToggleKulAnchor(this.checked)">
+                                                        <div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div>
+                                                    </label>
+                                                </div>
+                                                <div id="kulAnchorDateContainer" class="hidden mt-1.5 pt-1.5 border-t border-[var(--apple-table-border)]"><input type="date" id="kulAnchorDate" class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] px-1.5 py-0.5 rounded text-[11px] font-bold w-full" onchange="rotatifSaveAnchorForSlice()"></div>
+                                            </div>
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 col-span-2">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tutar (TL)</span>
+                                                <input type="text" id="kulAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                                            </div>
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <div class="flex justify-between items-center mb-0.5">
+                                                    <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Faiz Oranı (%)</span>
+                                                    <label class="flex items-center gap-1 cursor-pointer"><span id="kulRateBasisLabel" class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase">Yıllık</span><input type="checkbox" id="kulRateBasisToggle" class="hidden peer" onchange="rotatifToggleRateBasis('kul')"><div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px] transition-all"></div></label>
+                                                </div>
+                                                <input type="text" id="kulRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="42,00">
+                                            </div>
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Komisyon Oranı (% Yıl) <span class="text-amber-500/80 lowercase text-[7px]">(+BSMV)</span></span>
+                                                <input type="text" id="kulComRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="1,20">
+                                            </div>
+                                        </div>
+                                        <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlineKullandirim()">Talimatı İşle (T+0)</button>
+                                    </div>
+                                    
+                                    <div class="action-form-content hidden" id="form-ode">
+                                        <div class="grid grid-cols-2 gap-2 mb-3">
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative select-disabled" id="odeTargetContainer">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Hedef Dilim</span>
+                                                <select id="odeTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4"><option value="ANA">Genel (ANA)</option></select>
+                                            </div>
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Tahsilat Tarihi</span>
+                                                <input type="date" id="odeDate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
+                                            </div>
+                                            <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Ödeme Tutarı (TL)</span>
+                                                <input type="text" id="odeAmount" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" placeholder="0" oninput="mask(this)">
+                                            </div>
+                                        </div>
+                                        <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlinePayment()">Ödemeyi Kaydet (T+1)</button>
+                                    </div>
+
+                                    <div class="action-form-content hidden" id="form-faiz">
+                                        <div class="grid grid-cols-2 gap-2 mb-3">
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2 relative select-disabled" id="faizTargetContainer">
+                                                <div class="flex justify-between items-center mb-0.5">
+                                                    <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Hedef Dilim</span>
+                                                    <label class="flex items-center gap-1 cursor-pointer"><span class="text-[7px] font-bold text-[var(--apple-yellow)] uppercase">Hepsine</span><input type="checkbox" id="faizApplyAll" class="hidden peer" onchange="rotatifToggleFaizApplyAll(this.checked)"><div class="w-[20px] h-[10px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2 after:h-2 after:rounded-full peer-checked:after:translate-x-[10px]"></div></label>
+                                                </div>
+                                                <select id="faizTarget" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none appearance-none pr-4"><option value="ANA">Genel (ANA)</option></select>
+                                            </div>
+                                            <div class="bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase block mb-0.5">Geçerlilik Tarihi</span>
+                                                <input type="date" id="faizDate" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none">
+                                            </div>
+                                            <div class="col-span-2 bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg p-2">
+                                                <div class="flex justify-between items-center mb-0.5">
+                                                    <span class="text-[9px] text-[var(--apple-text-muted)] font-bold uppercase">Yeni Cari Oran (%)</span>
+                                                    <label class="flex items-center gap-1 cursor-pointer"><span id="faizRateBasisLabel" class="text-[8px] font-bold text-[var(--apple-yellow)] uppercase">Yıllık</span><input type="checkbox" id="faizRateBasisToggle" class="hidden peer" onchange="rotatifToggleRateBasis('faiz')"><div class="w-[22px] h-[12px] rounded-full relative apple-toggle-bg after:absolute after:top-[1px] after:left-[1px] after:w-2.5 after:h-2.5 after:rounded-full peer-checked:after:translate-x-[10px]"></div></label>
+                                                </div>
+                                                <input type="text" id="faizRate" inputmode="numeric" class="bg-transparent text-xs font-bold text-[var(--apple-text)] w-full outline-none" value="45,00">
+                                            </div>
+                                        </div>
+                                        <button class="action-btn !mt-0 !min-h-[40px] !text-xs !py-2" onclick="rotatifExecuteInlineFaizDegisikligi()">Güncellemeyi İşle</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="ledgersArea" class="mt-4"></div>
+                            <div id="summaryTableContainer" class="mt-4 hidden"></div>
+                        </div>
+
+                        <div id="results" class="hidden mt-6 pb-2">
+                            <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
+                                <h3 class="text-center text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mb-4">Hesaplama Sonuç Özeti</h3>
+                                <div id="result-rows" class="space-y-1.5"></div>
+                                <div class="mt-5" id="plan-trigger-container">
+                                    <button class="w-full py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="openPlan()">
+                                        <i class="fa-solid fa-calendar-days"></i> DETAYLI ÖDEME PLANI
+                                    </button>
+                                    <button id="btn-takvime-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 rounded-2xl text-[var(--apple-yellow)] font-bold text-xs tracking-wide transition-all duration-200 flex items-center justify-center gap-2" onclick="addToCalendar()">
+                                        <i class="fa-regular fa-calendar-plus"></i> VADE SONUNU TAKVİME EKLE
+                                    </button>
+                                    <button id="btn-karsilastirma-ekle" style="display: none;" class="w-full mt-3 py-3.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-500 font-bold text-xs tracking-wide transition-all duration-200 items-center justify-center gap-2" onclick="addVadeliKarsilastirma()">
+                                        <i class="fa-solid fa-code-compare"></i> KARŞILAŞTIRMAYA EKLE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VADELİ KARŞILAŞTIRMA ALANI -->
+                        <div id="vadeli-karsilastirma-container" style="display: none;" class="mt-4 pb-2">
+                            <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-[10px] text-[var(--apple-text-muted)] font-bold uppercase tracking-widest">Karşılaştırma Tablosu</h3>
+                                    <button onclick="clearVadeliKarsilastirma()" class="text-[var(--danger)] hover:opacity-80 text-[10px] font-bold"><i class="fa-solid fa-trash"></i> Temizle</button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="rotatif-table w-full">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th>Tutar</th>
+                                                <th>Gün</th>
+                                                <th>Oran</th>
+                                                <th class="text-right">Net Getiri</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="karsilastirma-body"></tbody>
+                                    </table>
+                                </div>
+                                <div id="karsilastirma-farklar" class="mt-4 space-y-2 border-t border-[var(--apple-table-border)] pt-4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANE 2: KANALIZ -->
+        <div id="kanaliz-viewport" style="width: 100vw; height: 100vh; overflow-y: auto;" class="font-sans pb-12 relative">
+            
+            <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3 max-w-7xl mx-auto w-full justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff9f0a] to-[#d97c00] flex items-center justify-center shadow-lg shadow-[#ff9f0a]/20">
+                            <i data-lucide="pie-chart" class="text-white w-4 h-4"></i>
+                        </div>
+                        <h1 class="text-base font-semibold tracking-tight text-[var(--k-text)]">Vanaliz</h1>
+                    </div>
+                    
+                    <button onclick="downloadKanalizPDF()" class="bg-[#ff9f0a]/10 text-[#ff9f0a] border border-[#ff9f0a]/20 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-[#ff9f0a]/20 transition-all shadow-sm uppercase tracking-wider">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> Rapor Al
+                    </button>
+                </div>
+            </nav>
+
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+                
+                <div class="space-y-4">
+                    <div class="bg-[var(--k-card)] rounded-[1.5rem] p-4 sm:p-6 shadow-2xl border border-[var(--k-border)] relative">
+                        
+                        <button onclick="window.switchToVhesap()" class="nav-bubble-btn absolute left-[-14px] top-1/2 -translate-y-1/2 h-8 px-3 rounded-2xl bg-[var(--k-card)] border border-[var(--k-border)] text-[#ff9f0a] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:scale-110 z-10" title="Vhesap'a Dön">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            <span class="nav-bubble-text text-[10px] font-bold ml-1.5">Vhesap</span>
+                        </button>
+                        <button onclick="window.switchToVhesap()" class="nav-bubble-btn absolute right-[-14px] top-1/2 -translate-y-1/2 h-8 px-3 rounded-2xl bg-[var(--k-card)] border border-[var(--k-border)] text-[#ff9f0a] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:scale-110 z-10" title="Vhesap'a Dön">
+                            <span class="nav-bubble-text text-[10px] font-bold mr-1.5">Vhesap</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                            <div>
+                                <h2 class="text-lg font-semibold text-[var(--k-text)] tracking-tight">Mevcut Kredileriniz</h2>
+                                <p class="text-xs text-[var(--k-text-muted)] opacity-70 mt-0.5">Girdiğiniz verilerle taksit veya faiz oranı otomatik hesaplanır.</p>
+                            </div>
+                            <button onclick="window.addLoan()" class="flex items-center gap-1.5 bg-[#ff9f0a]/10 text-[#ff9f0a] hover:bg-[#ff9f0a] hover:text-white transition-all duration-300 px-4 py-2 rounded-full font-medium text-xs w-full sm:w-auto justify-center">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                Yeni Ekle
+                            </button>
+                        </div>
+
+                        <div id="loans-container" class="space-y-3">
+                        </div>
+
+                        <div id="empty-state" class="hidden text-center py-10 text-[var(--k-text-muted)] opacity-60 text-xs">
+                            Henüz kredi eklenmedi. Başlamak için yeni bir kredi ekleyin.
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 bg-[#ff9f0a]/5 border border-[#ff9f0a]/10 p-4 rounded-[1.5rem]">
+                        <i data-lucide="info" class="w-4 h-4 text-[#ff9f0a] shrink-0 mt-0.5 opacity-80"></i>
+                        <p class="text-xs text-[var(--k-text-muted)] opacity-80 leading-relaxed">
+                            <strong class="text-[var(--k-text)] opacity-90 font-medium">Otomatik Hesaplamalar:</strong> Tutar, Vade ve Faiz girerseniz <strong>Taksit</strong> otomatik hesaplanır. Eğer Tutar, Vade ve Taksit girerseniz, sistem otomatik olarak uygulanan <strong>Faiz Oranını</strong> bulur. Analize sadece bugünden sonraki gelecek ödemeleriniz dahil edilir.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    
+                    <div class="bg-[var(--k-card)] rounded-xl p-3 shadow-2xl border border-[var(--k-border)] flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-sm font-semibold text-[var(--k-text)] mb-2 tracking-tight">Kalan Borç Özeti</h2>
+                            <div class="space-y-1">
+                                <div class="flex justify-between items-center py-0.5">
+                                    <span class="text-[var(--k-text-muted)] opacity-70 text-[11px]">Toplam Kapatma Tutarı (Ana Para)</span>
+                                    <span id="sum-kalan-anapara" class="text-xs font-semibold text-[var(--k-text)]">₺0,00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-0.5 border-t border-[var(--k-border)]">
+                                    <span class="text-[var(--k-text-muted)] opacity-70 text-[11px]">Aylık Toplam Ödenen Taksit</span>
+                                    <span id="sum-taksit" class="text-xs font-semibold text-[#ff9f0a]">₺0,00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-0.5 border-t border-[var(--k-border)]">
+                                    <span class="text-[var(--k-text-muted)] opacity-70 text-[11px]">Vade Sonuna Kadar Toplam Çıkış</span>
+                                    <span id="sum-kalan-odeme" class="text-xs font-semibold text-[var(--k-text)]">₺0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-[var(--k-border)]">
+                            <div>
+                                <span class="block text-[9px] text-[var(--k-text-muted)] opacity-60 mb-0.5 uppercase tracking-wider">Ortalama Vade</span>
+                                <span class="text-sm font-semibold text-[var(--k-text)] tracking-tight"><span id="sum-vade">0.00</span> <span class="text-[10px] font-normal text-[var(--k-text-muted)] opacity-60">Ay</span></span>
+                            </div>
+                            <div>
+                                <span class="block text-[9px] text-[var(--k-text-muted)] opacity-60 mb-0.5 uppercase tracking-wider">Ağırlıklı Faiz</span>
+                                <span class="text-sm font-semibold text-[var(--k-text)] tracking-tight">%<span id="sum-oran">0.00</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative overflow-hidden bg-gradient-to-br from-[#ff9f0a] to-[#cc7a00] rounded-xl p-3 shadow-2xl shadow-[#ff9f0a]/10">
+                        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5 blur-3xl pointer-events-none"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-1.5 mb-2">
+                                <i data-lucide="calculator" class="text-white w-3.5 h-3.5"></i>
+                                <h2 class="text-sm font-semibold text-white tracking-tight">Kar / Zarar Simülasyonu</h2>
+                            </div>
+                            <p class="text-white/80 text-[11px] leading-snug mb-2">Mevcut tüm borçlarınızı (<strong id="sim-toplam-tutar" class="text-white">₺0,00</strong>) kapatıp, tek bir yeni kredi çekmek isterseniz:</p>
+
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="bg-black/20 rounded-lg p-2 border border-white/10 focus-within:border-white/40 transition-colors">
+                                    <label class="block text-white/70 text-[9px] uppercase tracking-wider font-medium mb-0.5">Yeni Faiz (%)</label>
+                                    <input 
+                                        type="number" step="0.01" id="sim-oran-input"
+                                        class="w-full bg-transparent text-white text-sm font-semibold focus:outline-none placeholder-white/30"
+                                        value="3.50" oninput="window.updateSim()" onfocus="this.select()"
+                                    />
+                                </div>
+                                <div class="bg-black/20 rounded-lg p-2 border border-white/10 focus-within:border-white/40 transition-colors">
+                                    <label class="block text-white/70 text-[9px] uppercase tracking-wider font-medium mb-0.5">Yeni Vade (Ay)</label>
+                                    <input 
+                                        type="number" id="sim-vade-input"
+                                        class="w-full bg-transparent text-white text-sm font-semibold focus:outline-none placeholder-white/30"
+                                        value="24" oninput="window.updateSim()" onfocus="this.select()"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="bg-white/10 backdrop-blur-xl rounded-lg p-2.5 border border-white/20">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-white/80 text-[11px]">Yeni Aylık Taksit</span>
+                                    <span id="sim-yeni-taksit" class="text-xs font-semibold text-white">₺0,00</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-2 pb-2 border-b border-white/10">
+                                    <span class="text-white/80 text-[11px]">Yeni Toplam Ödeme</span>
+                                    <span id="sim-yeni-toplam" class="text-xs font-medium text-white/90">₺0,00</span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <span class="text-white/90 text-[11px] font-medium">Finansal Sonuç</span>
+                                    <div id="sim-result-badge">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+    </div>
+
     <!-- PDF Şablonu İzole Render Alanı -->
     <div id="pdf-template-wrapper"></div>
 
+
+    <!-- KAYDIRMA (SWIPE) LOGIC SCRIPT -->
     <script>
-        // ==========================================
+        let touchstartX = 0;
+        let touchstartY = 0;
+        let touchendX = 0;
+        let touchendY = 0;
+        let currentScreen = 0; 
+        const swipeContainer = document.getElementById('swipe-wrapper');
+
+        window.toggleScreen = function() {
+            if (currentScreen === 0) {
+                window.switchToKanaliz();
+            } else {
+                window.switchToVhesap();
+            }
+        };
+
+        function checkDirection() {
+            const xDiff = touchendX - touchstartX;
+            const yDiff = Math.abs(touchendY - touchstartY);
+            
+            if (Math.abs(xDiff) > yDiff && Math.abs(xDiff) > 50) {
+                if (xDiff < 0 && currentScreen === 0) {
+                    window.switchToKanaliz();
+                } else if (xDiff > 0 && currentScreen === 1) {
+                    window.switchToVhesap();
+                }
+            }
+        }
+
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+            touchstartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            touchendY = e.changedTouches[0].screenY;
+            checkDirection();
+        }, {passive: true});
+
+        window.switchToKanaliz = function() {
+            currentScreen = 1;
+            swipeContainer.style.transform = 'translateX(-50%)';
+            if (typeof gtag === 'function') {
+                gtag('event', 'page_view', { page_title: 'Vanaliz', page_path: '/kanaliz' });
+            }
+        };
+
+        window.switchToVhesap = function() {
+            currentScreen = 0;
+            swipeContainer.style.transform = 'translateX(0)';
+            if (typeof gtag === 'function') {
+                gtag('event', 'page_view', { page_title: 'Vhesap Portal', page_path: '/' });
+            }
+        };
+    </script>
+
+
+    <!-- VHESAP SCRIPT -->
+    <script>
         // GLOBAL STATE & UTILS
-        // ==========================================
         const state = {
             main: 'portal', 
             sub: '', 
@@ -608,9 +901,7 @@
 
         const publicHolidays = ["01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-29", "2026-03-20", "2026-03-21", "2026-03-22", "2026-05-27", "2026-05-28", "2026-05-29", "2026-05-30"];
 
-        // ==========================================
-        // 4. ROTATİF MOTORU (GLOBAL YAPILAR)
-        // ==========================================
+        // ROTATİF MOTORU (GLOBAL YAPILAR)
         let rotatifSystemMode = 'single'; 
         let rotatifAnchorDates = {}; 
         let rotatifPaidPeriods = {}; 
@@ -639,7 +930,7 @@
             const toast = id('toast-container');
             id('toast-message').innerText = msg;
             toast.style.transform = 'translate(-50%, 0)'; toast.style.opacity = '1';
-            setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 3000);
+            setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 4000);
         }
 
         function trackCalculation(turu, tutar) {
@@ -667,6 +958,14 @@
             
             let today = new Date().toISOString().split('T')[0];
             id('kulDate').value = today; id('odeDate').value = today; id('faizDate').value = today; id('singleAnchorDate').value = today;
+
+            setTimeout(() => {
+                document.querySelectorAll('.nav-bubble-text').forEach(el => el.classList.add('collapsed'));
+                document.querySelectorAll('.nav-bubble-btn').forEach(el => {
+                    el.classList.remove('px-3', 'rounded-2xl');
+                    el.classList.add('w-8', 'rounded-full');
+                });
+            }, 3000);
         };
 
         function toggleGlobalTheme() {
@@ -736,9 +1035,7 @@
             }
         }
 
-        // ==========================================
         // NAVIGATION & ROUTING
-        // ==========================================
         function navigateTo(viewName) {
             state.main = viewName;
             if(viewName === 'portal') {
@@ -759,7 +1056,6 @@
             state.sub = subId;
             state.araOdemeler = []; state.hasAraOdemeler = false; state.hasOdemesiz = false;
             
-            // Vadeli Karşılaştırma Temizliği
             state.vadeliKarsilastirmalar = [];
             if(id('vadeli-karsilastirma-container')) id('vadeli-karsilastirma-container').style.display = 'none';
 
@@ -780,9 +1076,7 @@
             }
         }
 
-        // ==========================================
         // FORM RENDERING (Non-Rotatif)
-        // ==========================================
         function renderForm() {
             const m = state.main, s = state.sub;
             const isDayBased = ['spot', 'iskonto', 'ekhesap'].includes(s) || m === 'vadeli';
@@ -879,7 +1173,7 @@
                     </label>
                     <div id="ara-odemeler-container" class="${state.hasAraOdemeler ? '' : 'hidden'} mt-3 pt-3 border-t border-[rgba(128,128,128,0.1)]">
                         <div id="ara-odeme-list" class="mb-3"></div>
-                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="text" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
+                        <div class="grid grid-cols-2 gap-2 mb-3"><div><span class="label-text">Tarih</span><input type="date" id="val-ara-date" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" value="${new Date(Date.now() + 86400000*60).toISOString().split('T')[0]}"></div><div><span class="label-text">Tutar</span><input type="text" inputmode="numeric" id="val-ara-tutar" class="apple-input bg-[rgba(128,128,128,0.05)] rounded-lg px-2" placeholder="0" oninput="mask(this)"></div></div>
                         <div class="grid grid-cols-2 gap-2 mb-3">
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="vade" class="peer hidden" checked><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">VADE AZALSIN</div></label>
                             <label class="cursor-pointer"><input type="radio" name="ara-tur" value="taksit" class="peer hidden"><div class="py-2 px-1 rounded-xl bg-[rgba(128,128,128,0.05)] border border-transparent peer-checked:border-[var(--apple-yellow)] peer-checked:text-[var(--apple-yellow)] text-[10px] font-bold text-center">TAKSİT DÜŞSÜN</div></label>
@@ -940,7 +1234,55 @@
             id('val-ara-tutar').value = ''; renderAraOdemeList();
         }
 
+        // BDDK Limit Doğrulama
+        function validateBDDK() {
+            const s = state.sub;
+            const T_kredi = getRaw('val-tutar');
+            const V_ay = parseInt(id('val-vade').value);
+
+            if (s === 'ihtiyac') {
+                if (T_kredi <= 125000 && V_ay > 36) return "BDDK: 125.000 TL'ye kadar maks. vade 36 aydır.";
+                if (T_kredi > 125000 && T_kredi <= 250000 && V_ay > 24) return "BDDK: 125.000-250.000 TL arası maks. vade 24 aydır.";
+                if (T_kredi > 250000 && V_ay > 12) return "BDDK: 250.000 TL üzeri maks. vade 12 aydır.";
+            }
+            else if (s === 'tasit') {
+                const T_deger = getRaw('val-deger');
+                if (T_deger <= 0) return "Lütfen araç kasko/fatura değerini giriniz.";
+                const type = id('val-arac-turu')?.value;
+                let oran = 0, vade = 0;
+                if(type === 'icten') {
+                    if(T_deger<=400000){ oran=0.70; vade=48;} else if(T_deger<=800000){ oran=0.50; vade=36;} else if(T_deger<=1200000){ oran=0.30; vade=24;} else if(T_deger<=2000000){ oran=0.20; vade=12;} else{oran=0;vade=0;}
+                } else {
+                    if(T_deger<=2500000){ oran=0.70; vade=48;} else if(T_deger<=5000000){ oran=0.50; vade=36;} else if(T_deger<=6500000){ oran=0.30; vade=24;} else if(T_deger<=7500000){ oran=0.20; vade=12;} else{oran=0;vade=0;}
+                }
+
+                if (vade === 0) return "BDDK: Bu tutardaki araçlar için kredi kullandırılamaz.";
+                if (V_ay > vade) return `BDDK: Bu araç değeri için maks. vade ${vade} aydır.`;
+                if (T_kredi > T_deger * oran) return `BDDK: Bu araç için maks. kredi tutarı ${format(T_deger * oran)} olabilir.`;
+            }
+            else if (s === 'konut') {
+                const T_deger = getRaw('val-deger');
+                if (T_deger <= 0) return "Lütfen konut ekspertiz değerini giriniz.";
+                let ekb = id('val-ekb')?.value;
+                let mulkiyet = id('val-mulkiyet')?.value;
+                let oran = 0;
+                if(T_deger <= 5000000) oran = ekb==='AB'?0.90:(ekb==='C'?0.80:0.70);
+                else if(T_deger <= 7000000) oran = ekb==='AB'?0.80:(ekb==='C'?0.70:0.60);
+                else if(T_deger <= 10000000) oran = ekb==='AB'?0.70:(ekb==='C'?0.60:0.50);
+                else if(T_deger <= 20000000) oran = ekb==='AB'?0.50:(ekb==='C'?0.40:0.30);
+                else oran = ekb==='AB'?0.40:(ekb==='C'?0.30:0.20);
+                if(mulkiyet === 'diger') oran *= 0.25;
+
+                if (T_kredi > T_deger * oran) return `BDDK: Bu konut için maks. kredi tutarı ${format(T_deger * oran)} olabilir.`;
+            }
+
+            return true;
+        }
+
         function executeCalculation() {
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
             const s = state.sub; const m = state.main;
             if(m === 'vadeli') return calcMevduat();
             if(s === 'spot' || s === 'iskonto' || s === 'ekhesap') return calcDayBased(s);
@@ -959,7 +1301,14 @@
             let F = parseFloat(id('val-faiz').value.replace(',','.')) / 100;
             if(state.faizTipi === 'yillik') F /= 12;
             
-            if(T<=0 || V<=0 || isNaN(F)) return showToast("Geçerli değerler girin.");
+            if(T<=0 || V<=0 || isNaN(F)) return showToast("Lütfen hesaplama için geçerli değerler girin.");
+
+            // BDDK Doğrulamasını burada çağırıyoruz. Uyarıyı gösterir ama işlemi durdurmaz (return kaldırıldı).
+            const bddkCheck = validateBDDK();
+            if (bddkCheck !== true) {
+                showToast(bddkCheck);
+            }
+
             const { kkdf, bsmv } = getTaxes();
             const brutF = F * (1 + kkdf + bsmv);
 
@@ -1102,7 +1451,7 @@
                 {l: "Toplam Net Faiz", v: format(totalF)},
                 {l: `Vergi Toplamı`, v: format(totalV)},
                 {l: "Toplam Geri Ödeme", v: format(sumTak)}
-            ].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+            ].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             
             trackCalculation(state.sub, T);
 
@@ -1119,7 +1468,6 @@
             const C_raw = getRaw('val-komisyon')/100 || 0; 
             const { kkdf, bsmv } = getTaxes();
             
-            // Komisyon Oranı Üzerine BSMV İlave Edilerek Hesaplama Gerçekleştiriliyor
             const C = C_raw * (1 + bsmv); 
             
             let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
@@ -1134,8 +1482,8 @@
 
             const totalDays = Math.round((endD - startD) / 86400000);
             const f = (T*F*totalDays)/360;
-            const c = (T*C*totalDays)/360; // c artık BSMV dahil edilmiş komisyon oranından hesaplanıyor
-            const tax = f * (kkdf+bsmv); // Komisyona dahil olduğu için vergi sadece faizden alınır
+            const c = (T*C*totalDays)/360; 
+            const tax = f * (kkdf+bsmv); 
             
             let totalBorc = 0, netVerilen = T;
             let plan = [];
@@ -1143,15 +1491,15 @@
             if(type === 'spot') {
                 totalBorc = T + f + c + tax;
                 plan = [{i:'KAPAMA', date: endD.toLocaleDateString('tr-TR'), taksit: totalBorc, ana: T, f: f, kom: c, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Vade Sonu Toplu Ödeme", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Vade Sonu Toplu Ödeme", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             } else if(type === 'iskonto') {
                 netVerilen = T - (f + c + tax);
                 plan = [{i:'İSKONTO', date: startD.toLocaleDateString('tr-TR'), taksit: T, ana: netVerilen, f: f, kom: c, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Ele Geçen Net Tutar", v: format(netVerilen), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Çek Nominal Değeri", v: format(T)}, {l: "Net İskonto", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Ele Geçen Net Tutar", v: format(netVerilen), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Çek Nominal Değeri", v: format(T)}, {l: "Net İskonto", v: format(f)}, {l: "Komisyon (BSMV Dahil)", v: format(c)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             } else if(type === 'ekhesap') {
                 totalBorc = T + f + tax;
                 plan = [{i:'ÖDEME', date: endD.toLocaleDateString('tr-TR'), taksit: totalBorc, ana: T, f: f, kom: 0, k: tax, bak: 0}];
-                id('result-rows').innerHTML = [{l: "Toplam Borç", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+                id('result-rows').innerHTML = [{l: "Toplam Borç", v: format(totalBorc), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Net Faiz", v: format(f)}, {l: "Vergiler (Faiz Üzerinden)", v: format(tax)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             }
 
             state.calcMeta = {
@@ -1195,7 +1543,7 @@
                 tutar: T, aylık: net, toplam: T + net, isRotatif: false
             };
 
-            id('result-rows').innerHTML = [{l: "Net Getiri", v: format(net), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Brüt Faiz", v: format(brut)}, {l: `Stopaj Kesintisi (%${stopaj*100})`, v: format(kesinti)}, {l: "Vade Sonu Bakiye", v: format(T+net)}].map(d => `<div class="flex justify-between p-3 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
+            id('result-rows').innerHTML = [{l: "Net Getiri", v: format(net), h:true}, {l: "Valör Gün Sayısı", v: totalDays}, {l: "Brüt Faiz", v: format(brut)}, {l: `Stopaj Kesintisi (%${stopaj*100})`, v: format(kesinti)}, {l: "Vade Sonu Bakiye", v: format(T+net)}].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             
             id('plan-thead').innerHTML = `<tr><th>No</th><th>Tarih</th><th>Tutar</th><th>Brüt Faiz</th><th>Stopaj</th><th class="text-right">Bakiye</th></tr>`;
             
@@ -1213,9 +1561,7 @@
             setTimeout(() => id('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
-        // ==========================================
-        // VADELİ KARŞILAŞTIRMA MODÜLÜ (YENİ)
-        // ==========================================
+        // VADELİ KARŞILAŞTIRMA MODÜLÜ
         function addVadeliKarsilastirma() {
             if (state.main !== 'vadeli') return;
 
@@ -1280,9 +1626,7 @@
             showToast("Karşılaştırma tablosu temizlendi.");
         }
         
-        // ==========================================
         // TAKVİME EKLE MODÜLÜ (.ICS OLUŞTURUCU)
-        // ==========================================
         function addToCalendar() {
             if (state.main !== 'vadeli') return;
             
@@ -1326,7 +1670,6 @@
             showToast("Takvim dosyası oluşturuldu. Tıklayarak takvime kaydedebilirsiniz.");
         }
 
-        // ==========================================
         function openPlan() {
             if(!state.lastCalc) return;
             id('plan-subtitle').innerText = state.calcMeta.cat + " / " + state.calcMeta.tur;
@@ -1345,9 +1688,7 @@
         function closePlan() { id('plan-modal').style.display = 'none'; }
         function closePlanOutside(e) { if(e.target.id === 'plan-modal') closePlan(); }
 
-        // ==========================================
-        // 4. ROTATİF MOTORU MANTIK VE İŞLEVLERİ
-        // ==========================================
+        // ROTATİF MOTORU MANTIK VE İŞLEVLERİ
         function rotatifSwitchActionTab(tab) { document.querySelectorAll('.segment-btn-rot').forEach(b => b.classList.remove('active')); event.currentTarget.classList.add('active'); document.querySelectorAll('.action-form-content').forEach(f => f.style.display='none'); id('form-'+tab).style.display='block'; }
         function rotatifToggleFaizTuru(c) { id('faizTuruLabel').innerText = c ? 'Bileşik Faiz' : 'Basit Faiz'; recalculateRotatif(); }
         function rotatifIsBilesik() { return id('faizTuruToggle').checked; }
@@ -1499,7 +1840,6 @@
             timeline.forEach((event) => {
                 let days = lastValorDate ? Math.round((event.valorDate - lastValorDate) / 86400000) : 0, accruedInterest = 0, accruedCommission = 0, isCompound = rotatifIsBilesik();
                 
-                // Ticari kredi olduğu için komisyon hesaplanırken de %5 BSMV dahil ediliyor
                 let bsmvRatio = 0.05;
                 let effectiveComRate = activeComRate * (1 + bsmvRatio); 
 
@@ -1507,7 +1847,7 @@
                     if (currentBakiye > 0) { if (isCompound) { let newBakiye = currentBakiye * Math.pow(1 + (activeRate / 100) / 360, days); accruedInterest = newBakiye - currentBakiye; currentBakiye = newBakiye; } else accruedInterest = (currentBakiye * (activeRate / 100) * days) / 360; }
                     
                     if (commissionBase > 0) {
-                        accruedCommission = (commissionBase * (effectiveComRate / 100) * days) / 360; // BSMV dahil komisyon tahakkuku
+                        accruedCommission = (commissionBase * (effectiveComRate / 100) * days) / 360; 
                     }
                     
                     cumulativeInterest += accruedInterest; interestPeriodAccumulated += accruedInterest; cumulativeCommission += accruedCommission; commissionPeriodAccumulated += accruedCommission;
@@ -1599,16 +1939,12 @@
             container.classList.remove('hidden');
         }
 
-        // ==========================================
-        // GELİŞMİŞ PDF EXPORT (İzole Edilmiş Temiz Çıktı)
-        // ==========================================
         function downloadPDF() { 
             const wrapper = id('pdf-template-wrapper');
             let contentHtml = '';
             const dStr = new Date().toLocaleDateString('tr-TR') + ' ' + new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             const refId = 'VH-' + Math.random().toString(36).substr(2, 8).toUpperCase();
 
-            // 1. KURUMSAL HEADER
             contentHtml += `
                 <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1f2937; max-width: 900px; margin: 0 auto;">
                     <table style="width: 100%; border-bottom: 3px solid #f59e0b; padding-bottom: 15px; margin-bottom: 25px;">
@@ -1629,7 +1965,6 @@
                 let totalKullandirim = 0, totalRisk = 0;
                 for(let k in rotatifPortfolio) { totalRisk += rotatifPortfolio[k].mevcutBakiye; totalKullandirim += rotatifPortfolio[k].toplamKullandirim || 0; }
 
-                // Rotatif Özet
                 contentHtml += `
                     <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px;">
                         <table style="width: 100%; font-size: 12px;">
@@ -1649,7 +1984,6 @@
                     </div>
                 `;
 
-                // Rotatif Detaylı Ekstreler
                 for(let k in rotatifPortfolio) {
                     let h = rotatifPortfolio[k]; let entries = calculateAccountLedger(k);
                     contentHtml += `<h3 style="font-size: 14px; margin-bottom: 10px; color: #111827; border-bottom: 1px solid #d1d5db; padding-bottom: 4px;">${h.name} Hesap Ekstresi <span style="float: right; color: #d97706;">Bakiye: ${format(h.mevcutBakiye)}</span></h3>`;
@@ -1687,7 +2021,6 @@
                     contentHtml += `</tbody></table>`;
                 }
 
-                // Rotatif Konsolide İcmal
                 contentHtml += `<h3 style="font-size: 14px; margin-bottom: 10px; color: #111827; border-bottom: 1px solid #d1d5db; padding-bottom: 4px;">Dönemsel Konsolide İcmal</h3>`;
                 contentHtml += `<table style="width: 100%; font-size: 10px; border-collapse: collapse; margin-bottom: 25px; text-align: left;">
                     <thead>
@@ -1718,8 +2051,6 @@
 
             } else {
                 const m = state.calcMeta;
-                
-                // Diğer Krediler (Taksitli, Spot, Vadeli vb.) Özet
                 contentHtml += `
                     <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px;">
                         <table style="width: 100%; font-size: 12px;">
@@ -1807,7 +2138,6 @@
                 contentHtml += `</tbody></table>`;
             }
 
-            // 3. RAPOR FOOTER
             contentHtml += `
                 <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; text-align: center;">
                     <p style="margin: 0;">Bu rapor Vhesap Platformu tarafından elektronik olarak üretilmiştir. Gösterilen veriler bilgi amaçlı olup resmi bir teklif veya bağlayıcı taahhüt niteliği taşımaz.</p>
@@ -1847,6 +2177,419 @@
                 });
             }, 300);
         }
+    </script>
+
+
+    <!-- KANALIZ SCRIPT -->
+    <script>
+        const kanalizToday = new Date();
+        const pastDate = new Date(kanalizToday);
+        pastDate.setMonth(kanalizToday.getMonth() - 6);
+        const defaultDateStr = pastDate.toISOString().slice(0, 10); 
+
+        let loans = [
+            { id: 1, tarih: defaultDateStr, vade: 24, taksit: 7287, tutar: 100000, oran: 3.89 },
+        ];
+
+        let simOran = 3.50;
+        let simVade = 24;
+        let summary = { totalKalanTaksit: 0, totalKalanAnaPara: 0, totalKalanOdeme: 0, avgKalanVade: 0, avgOran: 0 };
+        const VERGI_CARPANI = 1.30; 
+
+        const formatMoney = (amount) => {
+            return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 2 }).format(amount);
+        };
+
+        const getMonthsPassed = (tarih) => {
+            if (!tarih) return 0;
+            const past = new Date(tarih);
+            let months = (kanalizToday.getFullYear() - past.getFullYear()) * 12 + (kanalizToday.getMonth() - past.getMonth());
+            if (kanalizToday.getDate() < past.getDate()) {
+                months--;
+            }
+            return months < 0 ? 0 : months;
+        };
+
+        function calculateRateFromTaksit(pv, pmt, n) {
+            if (pv <= 0 || pmt <= 0 || n <= 0) return 0;
+            if (pmt * n <= pv) return 0; 
+
+            let low = 0.0;
+            let high = 1.0; 
+            let guess = 0.05;
+            
+            for (let i = 0; i < 50; i++) { 
+                guess = (low + high) / 2;
+                let calcPmt = pv * (guess * Math.pow(1 + guess, n)) / (Math.pow(1 + guess, n) - 1);
+                if (Math.abs(calcPmt - pmt) < 0.001) break;
+                if (calcPmt > pmt) {
+                    high = guess;
+                } else {
+                    low = guess;
+                }
+            }
+            return guess;
+        }
+
+        const loansContainer = document.getElementById('loans-container');
+        const emptyState = document.getElementById('empty-state');
+        
+        const elSumKalanAnaPara = document.getElementById('sum-kalan-anapara');
+        const elSumTaksit = document.getElementById('sum-taksit');
+        const elSumKalanOdeme = document.getElementById('sum-kalan-odeme');
+        const elSumVade = document.getElementById('sum-vade');
+        const elSumOran = document.getElementById('sum-oran');
+        
+        const elSimOranInput = document.getElementById('sim-oran-input');
+        const elSimVadeInput = document.getElementById('sim-vade-input');
+        const elSimToplamTutar = document.getElementById('sim-toplam-tutar');
+        const elSimYeniTaksit = document.getElementById('sim-yeni-taksit');
+        const elSimYeniToplam = document.getElementById('sim-yeni-toplam');
+        const elSimResultBadge = document.getElementById('sim-result-badge');
+
+        function calculateSummary() {
+            let totalKalanTaksit = 0;
+            let totalKalanAnaPara = 0;
+            let totalKalanOdeme = 0;
+            let weightedRateSum = 0;
+
+            loans.forEach(loan => {
+                const gecenAy = getMonthsPassed(loan.tarih);
+                const kalanVade = Math.max(0, loan.vade - gecenAy);
+                const r = (loan.oran * VERGI_CARPANI) / 100;
+                
+                let kalanAnaPara = 0;
+                if (kalanVade > 0) {
+                    if (r === 0) kalanAnaPara = loan.taksit * kalanVade;
+                    else kalanAnaPara = loan.taksit * (1 - Math.pow(1 + r, -kalanVade)) / r;
+                }
+
+                if (kalanVade > 0) {
+                    totalKalanTaksit += loan.taksit;
+                    totalKalanAnaPara += kalanAnaPara;
+                    totalKalanOdeme += (kalanVade * loan.taksit);
+                    weightedRateSum += (kalanAnaPara * loan.oran); 
+                }
+                
+                loan._kalanVade = kalanVade;
+                loan._kalanAnaPara = kalanAnaPara;
+            });
+
+            const avgKalanVade = totalKalanTaksit > 0 ? (totalKalanOdeme / totalKalanTaksit) : 0;
+            const avgOran = totalKalanAnaPara > 0 ? (weightedRateSum / totalKalanAnaPara) : 0;
+
+            summary = { totalKalanTaksit, totalKalanAnaPara, totalKalanOdeme, avgKalanVade, avgOran };
+
+            elSumKalanAnaPara.textContent = formatMoney(summary.totalKalanAnaPara);
+            elSumTaksit.textContent = formatMoney(summary.totalKalanTaksit);
+            elSumKalanOdeme.textContent = formatMoney(summary.totalKalanOdeme);
+            elSumVade.textContent = summary.avgKalanVade.toFixed(1);
+            elSumOran.textContent = summary.avgOran.toFixed(2);
+            elSimToplamTutar.textContent = formatMoney(summary.totalKalanAnaPara);
+        }
+
+        function calculateSimulation() {
+            const P = summary.totalKalanAnaPara;
+            const r = (simOran * VERGI_CARPANI) / 100;
+            const n = simVade;
+
+            let pmt = 0;
+            if (P > 0) {
+                if (r > 0) pmt = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                else if (n > 0) pmt = P / n;
+            }
+
+            const totalNewPayment = pmt * n;
+            const difference = summary.totalKalanOdeme - totalNewPayment;
+
+            elSimYeniTaksit.textContent = formatMoney(pmt);
+            elSimYeniToplam.textContent = formatMoney(totalNewPayment);
+
+            if (difference >= 0) {
+                elSimResultBadge.innerHTML = `
+                    <div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-100 bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                        <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                        <span class="font-semibold text-[11px]">+${formatMoney(Math.abs(difference))} Kâr</span>
+                    </div>
+                `;
+            } else {
+                elSimResultBadge.innerHTML = `
+                    <div class="flex items-center gap-1 text-red-600 dark:text-red-100 bg-red-500/20 px-2.5 py-1 rounded-lg border border-red-500/30">
+                        <i data-lucide="trending-down" class="w-3.5 h-3.5"></i>
+                        <span class="font-semibold text-[11px]">-${formatMoney(Math.abs(difference))} Zarar</span>
+                    </div>
+                `;
+            }
+            
+            if(window.lucide) window.lucide.createIcons();
+        }
+
+        function renderTable() {
+            loansContainer.innerHTML = '';
+            
+            if (loans.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+
+                loans.forEach((loan, index) => {
+                    const isFinished = loan._kalanVade <= 0;
+                    const card = document.createElement('div');
+                    card.className = 'bg-[var(--k-hover)] border border-[var(--k-border)] rounded-xl p-3 relative group transition-all hover:bg-[var(--k-input)] animate-fade-in';
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center mb-2.5 border-b border-[var(--k-border)] pb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-5 h-5 rounded-md bg-[#ff9f0a]/20 text-[#ff9f0a] flex items-center justify-center text-[10px] font-bold border border-[#ff9f0a]/30">${index + 1}</div>
+                                <span id="kalan-ay-${loan.id}" class="text-[10px] font-medium ${isFinished ? 'text-emerald-500' : 'text-[var(--k-text-muted)] opacity-70'}">
+                                    ${isFinished ? 'Tamamlandı' : loan._kalanVade + ' Ay Kaldı'}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span id="kalan-odeme-${loan.id}" class="text-xs font-semibold ${isFinished ? 'text-emerald-500' : 'text-[var(--k-text)]'}">
+                                    ${formatMoney(loan._kalanVade * loan.taksit)}
+                                </span>
+                                <button onclick="window.removeLoan(${loan.id})" class="text-[var(--k-text-muted)] opacity-50 hover:text-red-500 hover:opacity-100 transition-colors focus:outline-none">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+                            <div class="flex flex-col">
+                                <label class="text-[9px] text-[var(--k-text-muted)] opacity-60 uppercase tracking-wider mb-1 pl-0.5">Açılış</label>
+                                <input type="date" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-lg px-2 py-1.5 text-[var(--k-text)] focus:outline-none focus:border-[#ff9f0a]/50 transition-all text-[11px]"
+                                    value="${loan.tarih}" onchange="window.updateLoanKanaliz(${loan.id}, 'tarih', this.value)">
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <label class="text-[9px] text-[var(--k-text-muted)] opacity-60 uppercase tracking-wider mb-1 pl-0.5">Tutar (₺)</label>
+                                <input type="number" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-lg px-2 py-1.5 text-[var(--k-text)] focus:outline-none focus:border-[#ff9f0a]/50 transition-all text-[11px]"
+                                    placeholder="0" value="${loan.tutar || ''}" oninput="window.updateLoanKanaliz(${loan.id}, 'tutar', this.value)" onfocus="this.select()">
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <label class="text-[9px] text-[var(--k-text-muted)] opacity-60 uppercase tracking-wider mb-1 pl-0.5">Vade</label>
+                                <input type="number" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-lg px-2 py-1.5 text-[var(--k-text)] focus:outline-none focus:border-[#ff9f0a]/50 transition-all text-[11px]"
+                                    placeholder="0" value="${loan.vade || ''}" oninput="window.updateLoanKanaliz(${loan.id}, 'vade', this.value)" onfocus="this.select()">
+                            </div>
+                            
+                            <div class="flex flex-col">
+                                <label class="text-[9px] text-[var(--k-text-muted)] opacity-60 uppercase tracking-wider mb-1 pl-0.5">Faiz (%)</label>
+                                <input type="number" step="0.01" id="oran-${loan.id}" class="w-full bg-[var(--k-input)] border border-[var(--k-border)] rounded-lg px-2 py-1.5 text-[var(--k-text)] focus:outline-none focus:border-[#ff9f0a]/50 transition-all text-[11px]"
+                                    placeholder="0.00" value="${loan.oran || ''}" oninput="window.updateLoanKanaliz(${loan.id}, 'oran', this.value)" onfocus="this.select()">
+                            </div>
+                            
+                            <div class="flex flex-col col-span-2 md:col-span-1">
+                                <label class="text-[9px] text-[#ff9f0a]/80 uppercase tracking-wider mb-1 pl-0.5">Taksit</label>
+                                <input type="number" id="taksit-${loan.id}" class="w-full bg-[#ff9f0a]/10 border border-[#ff9f0a]/20 rounded-lg px-2 py-1.5 text-[#ff9f0a] focus:outline-none focus:border-[#ff9f0a]/50 transition-all text-[11px] font-semibold"
+                                    placeholder="0.00" value="${loan.taksit ? loan.taksit.toFixed(2) : ''}" oninput="window.updateLoanKanaliz(${loan.id}, 'taksit', this.value)" onfocus="this.select()">
+                            </div>
+                        </div>
+                    `;
+                    loansContainer.appendChild(card);
+                });
+            }
+            
+            if(window.lucide) window.lucide.createIcons();
+        }
+
+        function calculateAllKanaliz() {
+            calculateSummary();
+            calculateSimulation();
+        }
+
+        window.updateLoanKanaliz = (id, field, value) => {
+            const finalValue = field === 'tarih' ? value : (parseFloat(value) || 0);
+            let targetLoan = loans.find(l => l.id === id);
+            
+            if (!targetLoan) return;
+            targetLoan[field] = finalValue;
+            
+            if (['tutar', 'vade', 'oran'].includes(field)) {
+                const r = (targetLoan.oran * VERGI_CARPANI) / 100;
+                let newTaksit = 0;
+                
+                if (targetLoan.vade > 0 && targetLoan.tutar > 0) {
+                    if (r > 0) {
+                        newTaksit = targetLoan.tutar * (r * Math.pow(1 + r, targetLoan.vade)) / (Math.pow(1 + r, targetLoan.vade) - 1);
+                    } else {
+                        newTaksit = targetLoan.tutar / targetLoan.vade;
+                    }
+                }
+                
+                targetLoan.taksit = newTaksit;
+                
+                const taksitInput = document.getElementById(`taksit-${id}`);
+                if (taksitInput) {
+                    taksitInput.value = newTaksit ? newTaksit.toFixed(2) : "";
+                }
+            } 
+            else if (field === 'taksit') {
+                if (targetLoan.tutar > 0 && targetLoan.vade > 0 && targetLoan.taksit > 0) {
+                    const r_eff = calculateRateFromTaksit(targetLoan.tutar, targetLoan.taksit, targetLoan.vade);
+                    const newOran = (r_eff * 100) / VERGI_CARPANI;
+                    targetLoan.oran = newOran;
+                    
+                    const oranInput = document.getElementById(`oran-${id}`);
+                    if (oranInput) {
+                        oranInput.value = newOran ? newOran.toFixed(2) : "";
+                    }
+                }
+            }
+            
+            calculateAllKanaliz();
+            
+            const isFinished = targetLoan._kalanVade <= 0;
+            const elOdeme = document.getElementById(`kalan-odeme-${id}`);
+            const elAy = document.getElementById(`kalan-ay-${id}`);
+            
+            if(elOdeme) {
+                elOdeme.textContent = formatMoney(targetLoan._kalanVade * targetLoan.taksit);
+                elOdeme.className = `text-xs font-semibold ${isFinished ? 'text-emerald-500' : 'text-[var(--k-text)]'}`;
+            }
+            if(elAy) {
+                elAy.textContent = isFinished ? 'Tamamlandı' : `${targetLoan._kalanVade} Ay Kaldı`;
+                elAy.className = `text-[10px] font-medium ${isFinished ? 'text-emerald-500' : 'text-[var(--k-text-muted)] opacity-70'}`;
+            }
+        };
+
+        window.addLoan = () => {
+            const newId = loans.length > 0 ? Math.max(...loans.map(l => l.id)) + 1 : 1;
+            const d = new Date();
+            loans.push({ id: newId, tarih: d.toISOString().slice(0, 10), vade: 12, taksit: 0, tutar: 0, oran: 0 });
+            calculateAllKanaliz();
+            renderTable();
+        };
+
+        window.removeLoan = (id) => {
+            loans = loans.filter(loan => loan.id !== id);
+            calculateAllKanaliz();
+            renderTable();
+        };
+
+        window.updateSim = () => {
+            simOran = parseFloat(elSimOranInput.value) || 0;
+            simVade = parseInt(elSimVadeInput.value) || 0;
+            calculateSimulation();
+        };
+
+        function downloadKanalizPDF() {
+            const wrapper = document.getElementById('pdf-template-wrapper');
+            const dStr = new Date().toLocaleDateString('tr-TR') + ' ' + new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+            const refId = 'KN-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+
+            let contentHtml = `
+                <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1f2937; max-width: 900px; margin: 0 auto;">
+                    <table style="width: 100%; border-bottom: 3px solid #ff9f0a; padding-bottom: 15px; margin-bottom: 25px;">
+                        <tr>
+                            <td style="vertical-align: middle;">
+                                <h1 style="margin: 0; font-size: 28px; color: #111827; letter-spacing: -0.5px;">Vanaliz</h1>
+                                <p style="margin: 4px 0 0 0; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Kredi Analiz Portalı</p>
+                            </td>
+                            <td style="text-align: right; vertical-align: bottom;">
+                                <h2 style="margin: 0 0 4px 0; font-size: 16px; color: #374151;">KREDİ PORTFÖY RAPORU</h2>
+                                <p style="margin: 0; font-size: 10px; color: #6b7280;">Tarih: <strong>${dStr}</strong> | Ref: <strong>${refId}</strong></p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px;">
+                        <h3 style="font-size: 14px; margin: 0 0 10px 0; color: #111827;">Kalan Borç Özeti</h3>
+                        <table style="width: 100%; font-size: 12px;">
+                            <tr>
+                                <td style="padding: 6px 0; width: 50%;"><strong>Toplam Kapatma Tutarı:</strong> <span style="color: #d97706; font-weight: bold;">${formatMoney(summary.totalKalanAnaPara)}</span></td>
+                                <td style="padding: 6px 0; width: 50%;"><strong>Aylık Toplam Ödenen:</strong> ${formatMoney(summary.totalKalanTaksit)}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0;"><strong>Vade Sonuna Kadar Çıkış:</strong> ${formatMoney(summary.totalKalanOdeme)}</td>
+                                <td style="padding: 6px 0;"><strong>Ortalama Vade / Oran:</strong> ${summary.avgKalanVade.toFixed(1)} Ay / %${summary.avgOran.toFixed(2)}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <h3 style="font-size: 14px; margin-bottom: 10px; color: #111827; border-bottom: 1px solid #d1d5db; padding-bottom: 4px;">Mevcut Krediler Listesi</h3>
+                    <table style="width: 100%; font-size: 10px; border-collapse: collapse; margin-bottom: 25px; text-align: left;">
+                        <thead>
+                            <tr style="background-color: #f3f4f6; color: #374151;">
+                                <th style="padding: 8px; border: 1px solid #e5e7eb;">Açılış</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Tutar</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Vade</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Oran (%)</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Aylık Taksit</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            loans.forEach((l, i) => {
+                let bg = i % 2 === 0 ? '#ffffff' : '#f9fafb';
+                let durum = l._kalanVade <= 0 ? 'Tamamlandı' : `${l._kalanVade} Ay Kaldı`;
+                contentHtml += `
+                    <tr style="background-color: ${bg};">
+                        <td style="padding: 8px; border: 1px solid #e5e7eb;">${l.tarih}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${formatMoney(l.tutar)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${l.vade}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${l.oran.toFixed(2)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight: bold; color: #d97706;">${formatMoney(l.taksit)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${durum}</td>
+                    </tr>
+                `;
+            });
+
+            contentHtml += `
+                        </tbody>
+                    </table>
+
+                    <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px;">
+                        <h3 style="font-size: 14px; margin: 0 0 10px 0; color: #92400e;">Kâr / Zarar Simülasyonu</h3>
+                        <p style="margin: 0 0 8px 0; font-size: 11px; color: #b45309;">Yeni Plan: %${simOran} Faiz, ${simVade} Ay</p>
+                        <table style="width: 100%; font-size: 12px;">
+                            <tr>
+                                <td style="padding: 4px 0; width: 50%;"><strong>Yeni Aylık Taksit:</strong> ${document.getElementById('sim-yeni-taksit').textContent}</td>
+                                <td style="padding: 4px 0; width: 50%;"><strong>Yeni Toplam Ödeme:</strong> ${document.getElementById('sim-yeni-toplam').textContent}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: 8px 0 0 0; font-weight: bold; font-size: 13px;">Finansal Sonuç: ${document.getElementById('sim-result-badge').innerText.replace(/\n/g, ' ')}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; text-align: center;">
+                        <p style="margin: 0;">Bu rapor Vanaliz Platformu tarafından elektronik olarak üretilmiştir.</p>
+                        <p style="margin: 4px 0 0 0;">&copy; ${new Date().getFullYear()} Vhesap Finans. Tüm hakları saklıdır.</p>
+                    </div>
+                </div>
+            `;
+
+            wrapper.innerHTML = contentHtml;
+            document.body.classList.add('pdf-mode');
+
+            setTimeout(() => {
+                const opt = { 
+                    margin: [10, 10, 10, 10], 
+                    filename: `Kanaliz_Rapor_${refId}.pdf`, 
+                    image: { type: 'jpeg', quality: 1.0 }, 
+                    html2canvas: { scale: 2, useCORS: true, logging: false }, 
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                showToast("PDF Hazırlanıyor...");
+                html2pdf().set(opt).from(wrapper).save().then(() => { 
+                    document.body.classList.remove('pdf-mode'); 
+                    showToast("PDF Başarıyla Kaydedildi."); 
+                }).catch((e) => {
+                    document.body.classList.remove('pdf-mode'); 
+                    showToast("PDF oluşturulurken bir hata oluştu.");
+                });
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateAllKanaliz();
+            renderTable();
+        });
 
     </script>
 </body>
