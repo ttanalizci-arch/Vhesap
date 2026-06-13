@@ -908,7 +908,6 @@
     <!-- PDF Şablonu İzole Render Alanı -->
     <div id="pdf-template-wrapper"></div>
 
-
     <!-- KAYDIRMA (SWIPE) LOGIC SCRIPT -->
     <script>
         let touchstartX = 0;
@@ -999,10 +998,11 @@
         }
     </script>
 
-
     <!-- VHESAP SCRIPT -->
     <script>
         // GLOBAL STATE & UTILS
+        window.defaultRates = null; // Panele kaydedilen harici oranları tutacak obje
+
         const state = {
             main: 'portal', 
             sub: '', 
@@ -1085,7 +1085,44 @@
         window.addEventListener('online', checkConnection);
         window.addEventListener('offline', checkConnection);
 
-        window.onload = () => {
+        // Yönetim panelinden gelen oranları dışarıdan okuma fonksiyonu
+        async function loadGlobalRates() {
+            try {
+                const response = await fetch('rates.json?t=' + new Date().getTime());
+                if (response.ok) {
+                    window.defaultRates = await response.json();
+                }
+            } catch (e) {
+                console.warn('rates.json okunmadı, varsayılan sabitler kullanılacak.');
+            }
+        }
+
+        function getDefaultRate(m, s) {
+            if (!window.defaultRates) return null;
+            let r = null;
+            try {
+                if (m === 'bireysel') {
+                    if (s === 'konut') r = window.defaultRates.bireysel.konut;
+                    else if (s === 'tasit') r = window.defaultRates.bireysel.arac;
+                    else if (s === 'ihtiyac') r = window.defaultRates.bireysel.ihtiyac;
+                    else if (s === 'ekhesap') r = window.defaultRates.bireysel.ekhesap;
+                } else if (m === 'ticari') {
+                    if (s === 'ticari-taksitli') r = window.defaultRates.ticari.taksitli;
+                    else if (s === 'rotatif') r = window.defaultRates.ticari.rotatif;
+                    else if (s === 'spot') r = window.defaultRates.ticari.spot;
+                    else if (s === 'iskonto') r = window.defaultRates.ticari.iskonto || window.defaultRates.ticari.spot;
+                } else if (m === 'vadeli') {
+                    if (s === 'vadeli-tl') r = window.defaultRates.vadeli.try;
+                    else if (s === 'vadeli-usd') r = window.defaultRates.vadeli.usd;
+                    else if (s === 'vadeli-eur') r = window.defaultRates.vadeli.eur;
+                    else if (s === 'vadeli-altin') r = window.defaultRates.vadeli.xau;
+                }
+            } catch(e) {}
+            return r ? String(r).replace('.', ',') : null;
+        }
+
+        window.onload = async () => {
+            await loadGlobalRates(); // Github üzerindeki JSON'u baz al
             checkConnection();
             const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
             if (savedTheme === 'light') { document.body.classList.remove('dark'); id('global-theme-icon').className = 'fa-solid fa-sun text-lg'; }
@@ -1203,6 +1240,14 @@
             if(subId === 'rotatif') {
                 id('form-content').classList.add('hidden');
                 id('rotatif-ui-container').classList.remove('hidden');
+                
+                // Rotatif oranını JSON'dan çekme
+                let rRate = getDefaultRate('ticari', 'rotatif');
+                if (rRate) {
+                    if(id('kulRate')) id('kulRate').value = rRate;
+                    if(id('faizRate')) id('faizRate').value = rRate;
+                }
+
                 recalculateRotatif(); 
             } else {
                 id('rotatif-ui-container').classList.add('hidden');
@@ -1254,6 +1299,9 @@
             let lTutar = (s==='iskonto'?'Nominal Değer (TL)':(m==='vadeli'?`Anapara (${currSymbol})`:'Tutar (TL)'));
             
             let dFaiz = isDayBased ? "42,00" : "4,25";
+            let overrideRate = getDefaultRate(m, s);
+            if (overrideRate) dFaiz = overrideRate;
+
             let vDays = m==='vadeli' ? 32 : (s==='ekhesap' ? 30 : 90);
             
             if(isDayBased) state.faizTipi = 'yillik';
@@ -1438,7 +1486,6 @@
             
             if(T<=0 || V<=0 || isNaN(F)) return showToast("Lütfen hesaplama için geçerli değerler girin.");
 
-            // BDDK Doğrulamasını burada çağırıyoruz. Uyarıyı gösterir ama işlemi durdurmaz (return kaldırıldı).
             const bddkCheck = validateBDDK();
             if (bddkCheck !== true) {
                 showToast(bddkCheck);
@@ -2666,7 +2713,7 @@
                         <td style="padding: 8px; border: 1px solid #e5e7eb;">${l.tarih}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${formatMoney(l.tutar)}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${l.vade}</td>
-                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${l.oran.toFixed(2)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">%${l.oran.toFixed(2)}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight: bold; color: #d97706;">${formatMoney(l.taksit)}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${durum}</td>
                     </tr>
