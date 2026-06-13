@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vhesap - Yönetim Paneli</title>
+    <style>
+        :root {
+            --amber: #FF9F0A; 
+            --bg-dark: #000000;
+            --surface: #1C1C1E;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #F2F2F7;
+            --text-muted: #8E8E93;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Minimalist Başlık */
+        .header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            color: var(--amber);
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Kategori Bölümleri */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        /* Responsive Grid Yapısı */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        /* Minimalist Girdi Alanları */
+        .input-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-card:focus-within {
+            border-color: var(--amber);
+        }
+
+        .input-card label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-row span {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-right: 6px;
+        }
+
+        .input-row input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            outline: none;
+        }
+
+        /* Para Birimi Etiketleri */
+        .currency-badge {
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: auto;
+            color: var(--text-muted);
+        }
+
+        /* Kaydet Butonu */
+        .btn-container {
+            position: sticky;
+            bottom: 20px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-save {
+            background-color: var(--amber);
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 159, 10, 0.3);
+            transition: transform 0.1s, background-color 0.2s;
+            width: auto;
+        }
+
+        .btn-save:active {
+            transform: scale(0.96);
+        }
+
+        /* Mobil Cihazlar İçin Özel Ayarlar */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            .grid {
+                grid-template-columns: 1fr; /* Mobilde alt alta dizer */
+            }
+            .btn-container {
+                justify-content: stretch;
+            }
+            .btn-save {
+                width: 100%; /* Mobilde buton tam genişlik olur */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Vhesap</h1>
+        <p>Oran ve Parametre Yönetimi</p>
+    </div>
+
+    <form id="ratesForm">
+        <!-- BİREYSEL KREDİLER -->
+        <div class="section">
+            <h2 class="section-title">Bireysel Krediler</h2>
+            <div class="grid">
+                <div class="input-card">
+                    <label>Konut Kredisi</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="k-konut" placeholder="3.20">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Araç Kredisi</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="k-arac" placeholder="3.50">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>İhtiyaç Kredisi</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="k-ihtiyac" placeholder="4.10">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Ek Hesap (KMH)</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="k-ekhesap" placeholder="5.00">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TİCARİ KREDİLER -->
+        <div class="section">
+            <h2 class="section-title">Ticari Krediler</h2>
+            <div class="grid">
+                <div class="input-card">
+                    <label>Taksitli Kredi</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="t-taksitli" placeholder="4.50">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Rotatif Kredi</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="t-rotatif" placeholder="4.25">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Spot Kredi</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="t-spot" placeholder="4.00">
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Ticari Ek Hesap</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="t-ekhesap" placeholder="5.25">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VADELİ İŞLEMLER (PARA BİRİMLERİNE GÖRE) -->
+        <div class="section">
+            <h2 class="section-title">Vadeli Mevduat</h2>
+            <div class="grid">
+                <div class="input-card">
+                    <label>Türk Lirası (TRY)</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="v-try" placeholder="45.00">
+                        <span class="currency-badge">TL</span>
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Amerikan Doları (USD)</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="v-usd" placeholder="2.50">
+                        <span class="currency-badge">USD</span>
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Euro (EUR)</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="v-eur" placeholder="2.00">
+                        <span class="currency-badge">EUR</span>
+                    </div>
+                </div>
+                <div class="input-card">
+                    <label>Altın (XAU)</label>
+                    <div class="input-row">
+                        <span>%</span><input type="number" step="0.01" id="v-xau" placeholder="1.25">
+                        <span class="currency-badge">XAU</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn-save" onclick="saveData()">Değişiklikleri Kaydet</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function saveData() {
+        const vhesapData = {
+            bireysel: {
+                konut: document.getElementById('k-konut').value,
+                arac: document.getElementById('k-arac').value,
+                ihtiyac: document.getElementById('k-ihtiyac').value,
+                ekhesap: document.getElementById('k-ekhesap').value
+            },
+            ticari: {
+                taksitli: document.getElementById('t-taksitli').value,
+                rotatif: document.getElementById('t-rotatif').value,
+                spot: document.getElementById('t-spot').value,
+                ekhesap: document.getElementById('t-ekhesap').value
+            },
+            vadeli: {
+                try: document.getElementById('v-try').value,
+                usd: document.getElementById('v-usd').value,
+                eur: document.getElementById('v-eur').value,
+                xau: document.getElementById('v-xau').value
+            }
+        };
+
+        console.log("Kaydedilen Oranlar:", JSON.stringify(vhesapData, null, 2));
+
+        // Buton animasyonu ve geri bildirimi
+        const btn = document.querySelector('.btn-save');
+        const originalText = btn.innerText;
+        
+        btn.innerText = "Kaydedildi ✓";
+        btn.style.backgroundColor = "#32D74B"; // Apple Green
+        btn.style.color = "#FFF";
+        
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.backgroundColor = "var(--amber)";
+            btn.style.color = "#000";
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
