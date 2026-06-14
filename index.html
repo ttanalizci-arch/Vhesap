@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr" class="h-full">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -50,13 +49,11 @@
       }
     </script>
     
-    <!-- CDNs -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
-    <!-- VHESAP CSS -->
     <style>
         :root {
             /* Light Theme */
@@ -290,7 +287,6 @@
         .nav-bubble-text.collapsed { max-width: 0; opacity: 0; margin-left: 0 !important; margin-right: 0 !important; }
     </style>
 
-    <!-- VANALIZ CSS -->
     <style>
         #vanaliz-viewport {
             background-color: var(--k-bg);
@@ -333,7 +329,6 @@
 </head>
 <body class="dark selection:bg-amber-500/30">
 
-    <!-- VHESAP MODALS & TOASTS -->
     <div id="offline-blocker" style="display: none;" class="fixed inset-0 bg-black/95 z-[9999] flex-col items-center justify-center text-white backdrop-blur-md">
         <i class="fa-solid fa-wifi text-6xl text-[var(--apple-yellow)] mb-6 opacity-50"></i>
         <h2 class="text-2xl font-black mb-2 tracking-tight">Bağlantı Koptu</h2>
@@ -345,7 +340,6 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Ödeme Planı Modalı -->
     <div id="plan-modal" class="modal" onclick="closePlanOutside(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div id="sheet-handle" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0 cursor-grab active:cursor-grabbing"></div>
@@ -370,7 +364,6 @@
         </div>
     </div>
 
-    <!-- Geri Bildirim Modalı -->
     <div id="feedback-modal" class="modal" onclick="closeFeedbackOutside(event)">
         <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
             <div id="sheet-handle-2" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
@@ -454,13 +447,10 @@
     </div>
 
 
-    <!-- KAYDIRMA (SWIPE) KAPSAYICISI -->
     <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
         
-        <!-- PANE 1: VHESAP -->
         <div id="vhesap-viewport">
             <div class="apple-container" id="main-container">
-                <!-- ANA PORTAL GÖRÜNÜMÜ -->
                 <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
                     
                     <button id="global-theme-toggle" class="global-theme-btn" onclick="toggleGlobalTheme()" title="Temayı Değiştir">
@@ -547,7 +537,6 @@
                     </div>
                 </div>
 
-                <!-- ORTAK İÇERİK YAPISI -->
                 <div id="view-app" class="hidden flex-col flex-1 w-full">
                     
                     <div class="flex items-center justify-between px-5 pt-4 pb-2 flex-shrink-0">
@@ -568,7 +557,6 @@
 
                         <div id="form-content" class="mt-1"></div>
                         
-                        <!-- ROTATİF SPESİFİK UI ALANI -->
                         <div id="rotatif-ui-container" class="hidden">
                             <div class="input-card mb-3 !p-0 overflow-hidden">
                                 <div class="px-4 py-2.5 bg-[var(--apple-table-th-bg)] border-b border-[var(--apple-table-border)] flex items-center justify-between">
@@ -729,7 +717,6 @@
                             </div>
                         </div>
 
-                        <!-- VADELİ KARŞILAŞTIRMA ALANI -->
                         <div id="vadeli-karsilastirma-container" style="display: none;" class="mt-4 pb-2">
                             <div class="bg-[var(--apple-card)] rounded-3xl p-5 border border-[var(--apple-card-border)] shadow-lg">
                                 <div class="flex justify-between items-center mb-4">
@@ -759,8 +746,7 @@
             </div>
         </div>
 
-        <!-- PANE 2: VANALIZ -->
-        <div id="vanaliz-viewport" class="font-sans pb-12">
+        <div id="vanaliz-viewport" class="font-sans" style="padding-bottom: calc(env(safe-area-inset-bottom) + 20px);">
             
             <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 max-w-7xl mx-auto w-full justify-between">
@@ -780,7 +766,7 @@
             <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
                 
                 <div class="space-y-4">
-                    <div class="bg-[var(--k-card)] rounded-[1.5rem] p-4 sm:p-6 shadow-2xl border border-[var(--k-border)] relative">
+                    <div class="bg-[var(--apple-card)] rounded-3xl p-5 sm:p-6 shadow-lg border border-[var(--apple-card-border)] relative">
                         
                         <button onclick="window.switchToVhesap('left')" class="nav-bubble-btn absolute left-[-14px] top-1/2 -translate-y-1/2 h-8 px-3 rounded-2xl bg-[var(--k-card)] border border-[var(--k-border)] text-[#ff9f0a] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:scale-110 z-10" title="Vhesap'a Dön (Soldan)">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
@@ -793,16 +779,15 @@
 
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
                             <div>
-                                <h2 class="text-lg font-semibold text-[var(--k-text)] tracking-tight">Mevcut Kredileriniz</h2>
-                                <p class="text-xs text-[var(--k-text-muted)] opacity-70 mt-0.5">Değerleri değiştirdiğiniz an eksik parametre otomatik hesaplanır.</p>
+                                <h2 class="text-xl font-bold text-[var(--apple-text)] tracking-tight">Mevcut Kredileriniz</h2>
+                                <p class="text-[10px] text-[var(--apple-text-muted)] uppercase font-bold tracking-wider mt-0.5">Değerleri değiştirdiğiniz an eksik parametre otomatik hesaplanır.</p>
                             </div>
-                            <button onclick="window.addLoan()" class="flex items-center gap-1.5 bg-[#ff9f0a]/10 text-[#ff9f0a] hover:bg-[#ff9f0a] hover:text-white transition-all duration-300 px-4 py-2 rounded-full font-medium text-xs w-full sm:w-auto justify-center">
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                Yeni Ekle
+                            <button onclick="window.addLoan()" class="flex items-center gap-1.5 bg-amber-500/10 text-[var(--apple-yellow)] border border-amber-500/20 hover:bg-amber-500 hover:text-black transition-all duration-300 px-4 py-2 rounded-xl font-bold text-xs w-full sm:w-auto justify-center shadow-sm">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> YENİ EKLE
                             </button>
                         </div>
 
-                        <div id="loans-container" class="space-y-3">
+                        <div id="loans-container" class="space-y-4">
                         </div>
 
                         <div id="empty-state" class="hidden text-center py-10 text-[var(--k-text-muted)] opacity-60 text-xs">
@@ -810,7 +795,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-2.5 bg-[#ff9f0a]/5 border border-[#ff9f0a]/10 p-4 rounded-[1.5rem]">
+                    <div class="flex items-start gap-2.5 bg-[#ff9f0a]/5 border border-[#ff9f0a]/10 p-4 rounded-3xl">
                         <i data-lucide="info" class="w-4 h-4 text-[#ff9f0a] shrink-0 mt-0.5 opacity-80"></i>
                         <p class="text-xs text-[var(--k-text-muted)] opacity-80 leading-relaxed">
                             <strong class="text-[var(--k-text)] opacity-90 font-medium">Otomatik Hesaplamalar:</strong> Tutar, Vade ve Faiz girerseniz <strong>Taksit</strong> otomatik hesaplanır. Eğer Tutar, Vade ve Taksit girerseniz, sistem otomatik olarak uygulanan <strong>Faiz Oranını</strong> bulur. Analize sadece bugünden sonraki gelecek ödemeleriniz dahil edilir.
@@ -905,11 +890,9 @@
 
     </div>
 
-    <!-- PDF Şablonu İzole Render Alanı -->
     <div id="pdf-template-wrapper"></div>
 
 
-    <!-- KAYDIRMA (SWIPE) LOGIC SCRIPT -->
     <script>
         let touchstartX = 0;
         let touchstartY = 0;
@@ -1063,7 +1046,6 @@
     </script>
 
 
-    <!-- VHESAP SCRIPT -->
     <script>
         // GLOBAL STATE & UTILS
         let globalRates = null; // YENİ: JSON'dan gelen global oranlar
@@ -2497,7 +2479,6 @@
     </script>
 
 
-    <!-- VANALIZ SCRIPT -->
     <script>
         const vanalizToday = new Date();
         const pastDate = new Date(vanalizToday);
