@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-H0WX0KCEM6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vhesap & Vanaliz - Finans Portalı</title>
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vhesap">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
+
+    <script>
+      try {
+          if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                      registration.unregister().then(function(isUnregistered) {
+                          if(isUnregistered) { console.log('Eski ServiceWorker silindi, güncel sürüm çekiliyor.'); }
+                      }).catch(function(e) { console.warn('ServiceWorker unregister hatası:', e); });
+                  }
+              }).catch(function(e) { console.warn('ServiceWorker kayıtları alınamadı:', e); });
+          }
+      } catch (e) { console.warn('ServiceWorker erişimi engellendi:', e); }
+      
+      if ('caches' in window) {
+          try {
+              caches.keys().then(names => { names.forEach(name => { caches.delete(name); }); }).catch(function(e) { console.warn('Cache temizleme hatası:', e); });
+          } catch(e) {}
+      }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Light Theme */
+            --apple-bg: #f4f4f5;
+            --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
+            --apple-card: #ffffff;
+            --apple-card-border: rgba(0, 0, 0, 0.06);
+            --apple-text: #18181b;
+            --apple-text-muted: #71717a;
+            --apple-yellow: #d97706; 
+            --apple-yellow-hover: #b45309;
+            --apple-yellow-light: #fef08a;
+            --apple-border: rgba(217, 119, 6, 0.15);
+            --apple-glow: rgba(217, 119, 6, 0.08);
+            --apple-badge-bg: rgba(217, 119, 6, 0.05);
+            --apple-badge-text: #b45309;
+            --apple-badge-border: rgba(217, 119, 6, 0.15);
+            --apple-nav-bg: rgba(255, 255, 255, 0.85);
+            --apple-nav-border: rgba(0, 0, 0, 0.08);
+            --apple-modal-bg: #ffffff;
+            --apple-input-text: #d97706;
+            --apple-input-bg: #f4f4f5;
+            --apple-input-border: rgba(0, 0, 0, 0.04);
+            --menu-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        body.dark {
+            /* Dark Theme */
+            --apple-bg: #000000;
+            --apple-container-bg: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+            --apple-card: rgba(24, 24, 27, 0.7);
+            --apple-card-border: rgba(255, 255, 255, 0.04);
+            --apple-text: #f4f4f5;
+            --apple-text-muted: #a1a1aa;
+            --apple-yellow: #f59e0b;
+            --apple-yellow-hover: #d97706;
+            --apple-yellow-light: #fef08a;
+            --apple-border: rgba(245, 158, 11, 0.15);
+            --apple-glow: rgba(245, 158, 11, 0.25);
+            --apple-badge-bg: rgba(161, 161, 170, 0.12);
+            --apple-badge-text: #f59e0b;
+            --apple-badge-border: rgba(161, 161, 170, 0.25);
+            --apple-nav-bg: rgba(39, 39, 42, 0.75);
+            --apple-nav-border: rgba(255, 255, 255, 0.06);
+            --apple-modal-bg: #121214;
+            --apple-input-text: #f59e0b;
+            --apple-input-bg: #18181b;
+            --apple-input-border: rgba(255, 255, 255, 0.04);
+            --menu-shadow: 0 15px 50px rgba(0,0,0,0.5);
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; 
+            height: 100vh; height: 100dvh;
+            overflow: hidden; 
+            background-color: var(--apple-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        #vhesap-viewport {
+            color: var(--apple-text); display: flex; justify-content: center; align-items: flex-start;
+            position: absolute; top: 0; left: 0; width: 100vw; 
+            height: 100vh; height: 100dvh; overflow-y: auto;
+            background-color: var(--apple-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        input, select, textarea, button {
+            -webkit-appearance: none; appearance: none; outline: none; background: transparent; font-family: inherit; touch-action: manipulation;
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
+
+        .apple-container {
+            background: var(--apple-container-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            width: 100%; max-width: 500px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative;
+            padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 641px) {
+            #vhesap-viewport { padding: 40px 0; }
+            .apple-container { height: auto; min-height: 890px; max-height: none; border-radius: 36px; border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); overflow: hidden; }
+        }
+
+        .input-card { background: var(--apple-card); border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; border: 1px solid var(--apple-card-border); transition: all 0.3s; }
+        .input-card:focus-within { border-color: var(--apple-yellow); box-shadow: 0 0 15px var(--apple-glow); transform: translateY(-1px); }
+        .apple-input, .apple-select { width: 100%; border: none; color: var(--apple-yellow); font-size: 16px; font-weight: 600; padding: 4px 0; background: transparent; }
+        .apple-select option { background: var(--apple-card); color: var(--apple-text); }
+        .label-text { color: var(--apple-text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; display: block; font-weight: 700; }
+        
+        .action-btn { background: linear-gradient(135deg, var(--apple-yellow) 0%, var(--apple-yellow-hover) 100%); width: 100%; min-height: 50px; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 14px; margin-top: 12px; color: #000000; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px -10px var(--apple-glow); transition: all 0.2s; }
+        .action-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; }
+        .modal-content { background: var(--apple-card); height: 100%; width: 100%; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(128, 128, 128, 0.1); padding-top: env(safe-area-inset-top); }
+        .modal-content-feedback { height: auto; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; }
+        
+        /* Apple Style Glass Menu */
+        .global-theme-btn { position: absolute; top: 24px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; }
+        .global-theme-btn:active { transform: scale(0.9); }
+        
+        .glass-dropdown { position: absolute; top: 16px; right: 16px; width: 220px; background: var(--apple-nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--apple-nav-border); border-radius: 20px; padding: 6px; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform-origin: top right; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; box-shadow: var(--menu-shadow); }
+        .glass-dropdown.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .glass-menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: var(--apple-text); font-size: 13px; font-weight: 600; text-align: left; transition: background 0.2s; cursor: pointer; }
+        .glass-menu-item:hover, .glass-menu-item:active { background: var(--apple-badge-bg); }
+        .glass-menu-item i { width: 18px; text-align: center; color: var(--apple-text-muted); font-size: 14px; }
+    </style>
+</head>
+<body class="dark selection:bg-amber-500/30">
+
+    <div id="offline-blocker" style="display: none;" class="fixed inset-0 bg-black/95 z-[9999] flex-col items-center justify-center text-white backdrop-blur-md">
+        <i class="fa-solid fa-wifi text-6xl text-[var(--apple-yellow)] mb-6 opacity-50"></i>
+        <h2 class="text-2xl font-black mb-2 tracking-tight">Bağlantı Koptu</h2>
+        <p class="text-center text-[#a1a1aa] max-w-xs text-xs font-semibold leading-relaxed">Analitik veri akışı ve güncel hesaplamalar için aktif bir internet bağlantısı gereklidir. Lütfen ağınızı kontrol edin.</p>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="modal" onclick="closeFeedbackOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-2" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-yellow)] flex items-center gap-2" id="feedback-title"><i class="fa-solid fa-comment-dots text-blue-500"></i> Hata / Öneri</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Uygulama Geri Bildirimi</p>
+                </div>
+                <button onclick="closeFeedback()" class="w-9 h-9 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom">
+                <form action="https://formsubmit.co/ttanalizci@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <input type="hidden" name="_subject" value="Vhesap & Vanaliz - Yeni Geri Bildirim!">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="Bildirim_Turu" id="feedback-type" value="Hata / Öneri">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="input-card !mb-0 !p-3">
+                            <span class="label-text">Ad Soyad (İsteğe Bağlı)</span>
+                            <input type="text" name="Ad_Soyad" class="apple-input text-sm" placeholder="İsim">
+                        </div>
+                        <div class="input-card !mb-0 !p-3">
+                            <span class="label-text">Telefon (İsteğe Bağlı)</span>
+                            <input type="tel" name="Telefon" class="apple-input text-sm" placeholder="5xx">
+                        </div>
+                    </div>
+
+                    <div class="input-card !p-3">
+                        <span class="label-text">E-posta (Zorunlu - Yanıt için)</span>
+                        <input type="email" name="email" required class="apple-input text-sm" placeholder="mail@ornek.com">
+                    </div>
+
+                    <div id="hata-fields" class="space-y-4">
+                        <div class="input-card !p-3">
+                            <span class="label-text">Hangi Ekranda Sorun / Öneri Var?</span>
+                            <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg mt-1 px-3 py-1.5 flex items-center">
+                                <select name="İlgili_Ekran" class="apple-select text-sm w-full outline-none appearance-none bg-transparent">
+                                    <option value="Belirtilmedi">Seçiniz...</option>
+                                    <option value="Bireysel - İhtiyaç">Bireysel - İhtiyaç</option>
+                                    <option value="Bireysel - Konut">Bireysel - Konut</option>
+                                    <option value="Bireysel - Taşıt">Bireysel - Taşıt</option>
+                                    <option value="Ticari - Taksitli">Ticari - Taksitli</option>
+                                    <option value="Ticari - Rotatif">Ticari - Rotatif</option>
+                                    <option value="Ticari - Spot">Ticari - Spot</option>
+                                    <option value="Ticari - İskonto">Ticari - İskonto</option>
+                                    <option value="Vadeli / Mevduat">Vadeli / Mevduat</option>
+                                    <option value="Vanaliz Portalı">Vanaliz Portalı</option>
+                                    <option value="Diğer (Genel)">Diğer (Genel)</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-4 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div class="input-card !p-3">
+                            <span class="label-text">Mevcut Durum / Hata Nedir?</span>
+                            <textarea name="Mevcut_Durum" rows="2" class="apple-input text-sm w-full resize-none" placeholder="Örn: Uygulama taksiti hatalı hesaplıyor / Şu özellik eksik..."></textarea>
+                        </div>
+
+                        <div class="input-card !p-3">
+                            <span class="label-text">Nasıl Olmalı / Öneriniz Nedir?</span>
+                            <textarea name="Beklenti_Oneri" rows="2" class="apple-input text-sm w-full resize-none" placeholder="Örn: Taksit tutarının böyle çıkması gerekiyor / Şöyle bir buton olmalı..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-card !p-3">
+                        <span class="label-text">Ek Açıklama / Detaylar</span>
+                        <textarea name="Aciklama" required rows="3" class="apple-input text-sm w-full resize-none" placeholder="Lütfen durumu detaylıca açıklayın..."></textarea>
+                    </div>
+
+                    <div class="input-card !p-3 border-dashed border-2 border-[var(--apple-border)] bg-[var(--apple-badge-bg)]">
+                        <span class="label-text flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-up"></i> Ekran Görüntüsü Yükle (Faydalı Olur)</span>
+                        <input type="file" name="attachment" accept="image/*" class="w-full text-xs text-[var(--apple-text-muted)] mt-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-[var(--apple-yellow)] file:text-black hover:file:opacity-90 transition-all cursor-pointer">
+                    </div>
+
+                    <button type="submit" class="action-btn !mt-2 mb-2"><i class="fa-regular fa-paper-plane mr-2"></i> GÖNDER</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
+        <div id="vhesap-viewport">
+            <div class="apple-container" id="main-container">
+                <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
+                    
+                    <!-- Yeni Menü Butonu (Apple Stili) -->
+                    <button id="main-menu-toggle" class="global-theme-btn" onclick="toggleMenu(event)" title="Menü">
+                        <i class="fa-solid fa-ellipsis text-xl text-[var(--apple-text)]"></i>
+                    </button>
+
+                    <!-- Glassmorphism Açılır Menü -->
+                    <div id="glass-menu" class="glass-dropdown">
+                        <button class="glass-menu-item" onclick="toggleGlobalThemeFromMenu(event)">
+                            <i id="menu-theme-icon" class="fa-solid fa-sun"></i>
+                            <span id="menu-theme-text">Gündüz Moduna Geç</span>
+                        </button>
+                        
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+                        
+                        <button class="glass-menu-item group" onclick="window.location.href='vanaliz.html'">
+                            <i class="fa-solid fa-chart-line group-hover:text-amber-500 transition-colors"></i>
+                            <span>Vanaliz'e Geç</span>
+                        </button>
+                        
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+                        
+                        <button class="glass-menu-item group" onclick="openFeedbackModal('geribildirim', event)">
+                            <i class="fa-solid fa-comment-dots group-hover:text-blue-500 transition-colors"></i>
+                            <span>Hata / Öneri Bildir</span>
+                        </button>
+                        
+                        <button class="glass-menu-item group" onclick="openFeedbackModal('degerlendirme', event)">
+                            <i class="fa-regular fa-star group-hover:text-amber-500 transition-colors"></i>
+                            <span>Değerlendir</span>
+                        </button>
+                    </div>
+
+                    <div class="mb-8 mt-12 sm:mt-8">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 mb-4 shadow-inner">
+                            <i class="fa-solid fa-chart-pie text-3xl text-amber-500"></i>
+                        </div>
+                        <h1 class="text-4xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
+                        <p class="text-xs text-amber-500/80 uppercase font-extrabold tracking-widest mt-1.5">GELİŞMİŞ FİNANSAL SİMÜLASYON</p>
+                    </div>
+
+                    <p class="text-[var(--apple-text-muted)] text-xs px-2 mb-8 leading-relaxed font-medium">
+                        Lütfen gerçekleştirmek istediğiniz finansal analiz ve kredi amortisman türüne göre ilgili kokpiti seçiniz.
+                    </p>
+
+                    <div class="space-y-4">
+                        <button onclick="window.location.href='bireysel.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-user-tie text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Bireysel Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">İhtiyaç, Konut, Taşıt, Ek Hesap</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+
+                        <button onclick="window.location.href='ticari.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-briefcase text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Ticari Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Taksitli, Rotatif, Spot, İskonto</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+
+                        <button onclick="window.location.href='vadeli.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-vault text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Vadeli Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Mevduat: TL, USD, EUR, ALTIN</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+                    </div>
+
+                    <!-- Alt kısım sadece telif yazısı için bırakıldı -->
+                    <div class="mt-auto pt-8 pb-4 sm:pt-12 sm:pb-4 w-full flex justify-center">
+                        <div class="text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
+                            Hassas Hesaplama & Karar Destek Altyapısı © 2026
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Apple Tarzı Akıllı Menü Yönetimi
+        let menuTimeout;
+
+        function toggleMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('glass-menu');
+            const isActive = menu.classList.contains('active');
+
+            if (isActive) {
+                closeMenu();
+            } else {
+                menu.classList.add('active');
+                resetMenuTimer();
+            }
+        }
+
+        function closeMenu() {
+            const menu = document.getElementById('glass-menu');
+            menu.classList.remove('active');
+            clearTimeout(menuTimeout);
+        }
+
+        function resetMenuTimer() {
+            clearTimeout(menuTimeout);
+            menuTimeout = setTimeout(() => {
+                closeMenu();
+            }, 3000);
+        }
+
+        // Menü içi tıklamalarda zamanlayıcıyı sıfırla ki hemen kapanmasın
+        document.getElementById('glass-menu').addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetMenuTimer();
+        });
+
+        // Dışarı tıklanınca menüyü kapat
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#glass-menu') && !e.target.closest('#main-menu-toggle')) {
+                closeMenu();
+            }
+        });
+
+        // Tema ve Geri Bildirim JS Mantığı
+        function toggleGlobalThemeFromMenu(e) {
+            if (e) e.stopPropagation();
+            const isDark = document.body.classList.toggle('dark');
+            localStorage.setItem('vhesap_global_theme', isDark ? 'dark' : 'light');
+            updateMenuThemeIcon(isDark);
+            
+            // Temayı değiştirince menü hemen kapansın
+            closeMenu();
+        }
+
+        function updateMenuThemeIcon(isDark) {
+            const icon = document.getElementById('menu-theme-icon');
+            const text = document.getElementById('menu-theme-text');
+            if (isDark) {
+                icon.className = 'fa-solid fa-sun';
+                text.textContent = 'Gündüz Moduna Geç';
+            } else {
+                icon.className = 'fa-solid fa-moon';
+                text.textContent = 'Gece Moduna Geç';
+            }
+        }
+
+        function openFeedbackModal(type, e) {
+            if (e) e.stopPropagation();
+            closeMenu(); // Formu açarken menüyü kapat
+            
+            const modal = document.getElementById('feedback-modal');
+            const title = document.getElementById('feedback-title');
+            const typeInput = document.getElementById('feedback-type');
+            const hataFields = document.getElementById('hata-fields');
+            
+            if (type === 'geribildirim') {
+                title.innerHTML = '<i class="fa-solid fa-comment-dots text-blue-500"></i> Hata / Öneri Bildir';
+                typeInput.value = 'Hata veya Öneri Bildirimi';
+                hataFields.style.display = 'block';
+            } else {
+                title.innerHTML = '<i class="fa-regular fa-star text-amber-500"></i> Uygulamayı Değerlendir';
+                typeInput.value = 'Genel Uygulama Değerlendirmesi';
+                hataFields.style.display = 'none';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedback-modal').style.display = 'none';
+        }
+
+        function closeFeedbackOutside(e) {
+            if(e.target.id === 'feedback-modal') closeFeedback();
+        }
+
+        function checkConnection() {
+            const blocker = document.getElementById('offline-blocker');
+            if(blocker) { blocker.style.display = navigator.onLine ? 'none' : 'flex'; }
+        }
+
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+
+        window.onload = () => {
+            checkConnection();
+            const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
+            if (savedTheme === 'light') { 
+                document.body.classList.remove('dark'); 
+                updateMenuThemeIcon(false);
+            } else { 
+                document.body.classList.add('dark'); 
+                updateMenuThemeIcon(true);
+            }
+        };
+    </script>
+</body>
+</html>

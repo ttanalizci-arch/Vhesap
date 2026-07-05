@@ -1,0 +1,56 @@
+{
+  "bireysel": {
+    "ihtiyac": {
+      "rate": "4.09",
+      "type": "aylik"
+    },
+    "konut": {
+      "rate": "2.89",
+      "type": "aylik"
+    },
+    "arac": {
+      "rate": "3.89",
+      "type": "aylik"
+    },
+    "ekhesap": {
+      "rate": "4.25",
+      "type": "aylik"
+    }
+  },
+  "ticari": {
+    "taksitli": {
+      "rate": "48.00",
+      "type": "yillik"
+    },
+    "rotatif": {
+      "rate": "45.00",
+      "type": "yillik"
+    },
+    "spot": {
+      "rate": "47",
+      "type": "yillik"
+    },
+    "iskonto": {
+      "rate": "49",
+      "type": "yillik"
+    }
+  },
+  "vadeli": {
+    "tl": {
+      "rate": "41",
+      "type": "yillik"
+    },
+    "usd": {
+      "rate": "2.50",
+      "type": "yillik"
+    },
+    "eur": {
+      "rate": "1.50",
+      "type": "yillik"
+    },
+    "altin": {
+      "rate": "0.50",
+      "type": "yillik"
+    }
+  }
+}

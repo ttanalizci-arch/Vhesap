@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vhesap - Yönetim Paneli</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --amber: #FF9F0A; 
+            --bg-dark: #000000;
+            --surface: #1C1C1E;
+            --surface-light: #2C2C2E;
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #F2F2F7;
+            --text-muted: #8E8E93;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 100px;
+        }
+
+        .container { width: 100%; max-width: 600px; }
+
+        .header {
+            text-align: center; margin-bottom: 30px; margin-top: 10px;
+        }
+        .header h1 { font-size: 24px; color: var(--amber); letter-spacing: -0.5px; }
+        .header p { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+        .section {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .section h2 {
+            font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-muted); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px;
+        }
+
+        .rate-item {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .rate-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        
+        .rate-label { font-size: 14px; font-weight: 600; flex: 1; }
+        .rate-controls { display: flex; gap: 10px; align-items: center; }
+
+        .input-wrapper {
+            position: relative; width: 80px;
+        }
+        .input-wrapper input {
+            width: 100%; background: var(--bg-dark); color: var(--amber); font-weight: bold;
+            border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 14px;
+            text-align: right; outline: none; transition: border-color 0.2s;
+        }
+        .input-wrapper input:focus { border-color: var(--amber); }
+
+        /* iOS Segmented Control / Anahtar Tasarımı */
+        .segmented-control {
+            display: flex;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 2px;
+        }
+        .segmented-control input[type="radio"] { display: none; }
+        .segmented-control label {
+            padding: 6px 12px; font-size: 11px; font-weight: 700; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s; border-radius: 6px; user-select: none; text-align: center;
+        }
+        .segmented-control input[type="radio"]:checked + label {
+            background-color: var(--surface-light); color: var(--amber); box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--amber) 0%, #d97706 100%);
+            color: #000; border: none; width: 100%; padding: 16px; border-radius: 16px; font-size: 15px; font-weight: 800;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.2s, opacity 0.2s;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 560px; box-shadow: 0 10px 20px rgba(255, 159, 10, 0.2);
+            z-index: 100;
+        }
+        .btn-save:active { transform: translateX(-50%) scale(0.97); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1><i class="fa-solid fa-sliders"></i> Yönetim Paneli</h1>
+        <p>Faiz Oranları &amp; Tipleri - JSON Dışa Aktarım</p>
+    </div>
+
+    <div class="section" id="bireysel-sec">
+        <h2>Bireysel Finans</h2>
+        <!-- JS tarafından doldurulacak -->
+    </div>
+
+    <div class="section" id="ticari-sec">
+        <h2>Ticari Finans</h2>
+        <!-- JS tarafından doldurulacak -->
+    </div>
+
+    <div class="section" id="vadeli-sec">
+        <h2>Vadeli Finans (Mevduat)</h2>
+        <!-- JS tarafından doldurulacak -->
+    </div>
+</div>
+
+<button class="btn-save" onclick="generateAndDownloadJSON()"><i class="fa-solid fa-download"></i> Rates.json İndir</button>
+
+<script>
+    const config = {
+        bireysel: [
+            { id: 'ihtiyac', label: 'İhtiyaç Kredisi', defaultRate: '4.25', defaultType: 'aylik' },
+            { id: 'konut', label: 'Konut Kredisi', defaultRate: '3.15', defaultType: 'aylik' },
+            { id: 'arac', label: 'Taşıt Kredisi', defaultRate: '3.89', defaultType: 'aylik' },
+            { id: 'ekhesap', label: 'Ek Hesap (KMH)', defaultRate: '5.00', defaultType: 'aylik' }
+        ],
+        ticari: [
+            { id: 'taksitli', label: 'Ticari Taksitli', defaultRate: '48.00', defaultType: 'yillik' },
+            { id: 'rotatif', label: 'Rotatif Kredi', defaultRate: '45.00', defaultType: 'yillik' },
+            { id: 'spot', label: 'Spot Kredi', defaultRate: '42.00', defaultType: 'yillik' },
+            { id: 'iskonto', label: 'İskonto / İştira', defaultRate: '42.00', defaultType: 'yillik' }
+        ],
+        vadeli: [
+            { id: 'tl', label: 'Mevduat (TL)', defaultRate: '45.00', defaultType: 'yillik' },
+            { id: 'usd', label: 'Mevduat (USD)', defaultRate: '2.50', defaultType: 'yillik' },
+            { id: 'eur', label: 'Mevduat (EUR)', defaultRate: '1.50', defaultType: 'yillik' },
+            { id: 'altin', label: 'Mevduat (ALTIN)', defaultRate: '0.50', defaultType: 'yillik' }
+        ]
+    };
+
+    function renderSections() {
+        Object.keys(config).forEach(cat => {
+            const container = document.getElementById(`${cat}-sec`);
+            config[cat].forEach(item => {
+                const html = `
+                <div class="rate-item" data-cat="${cat}" data-sub="${item.id}">
+                    <div class="rate-label">${item.label}</div>
+                    <div class="rate-controls">
+                        <div class="input-wrapper">
+                            <input type="text" class="rate-input" value="${item.defaultRate}">
+                        </div>
+                        <div class="segmented-control">
+                            <input type="radio" name="${cat}-${item.id}-type" id="${cat}-${item.id}-aylik" value="aylik" ${item.defaultType === 'aylik' ? 'checked' : ''}>
+                            <label for="${cat}-${item.id}-aylik">Aylık</label>
+                            <input type="radio" name="${cat}-${item.id}-type" id="${cat}-${item.id}-yillik" value="yillik" ${item.defaultType === 'yillik' ? 'checked' : ''}>
+                            <label for="${cat}-${item.id}-yillik">Yıllık</label>
+                        </div>
+                    </div>
+                </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        });
+    }
+
+    renderSections();
+
+    function generateAndDownloadJSON() {
+        const data = { bireysel: {}, ticari: {}, vadeli: {} };
+        
+        document.querySelectorAll('.rate-item').forEach(item => {
+            const cat = item.dataset.cat;
+            const sub = item.dataset.sub;
+            const rate = item.querySelector('.rate-input').value.replace(',', '.');
+            const type = item.querySelector('input[type="radio"]:checked').value;
+            
+            data[cat][sub] = { rate: rate, type: type };
+        });
+
+        const jsonString = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'rates.json';
+        document.body.appendChild(a);
+        a.click();
+        
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        const btn = document.querySelector('.btn-save');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "<i class='fa-solid fa-check'></i> Başarıyla İndirildi";
+        btn.style.background = "linear-gradient(135deg, #30d158 0%, #28a745 100%)";
+        btn.style.color = "#FFF";
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = "";
+            btn.style.color = "";
+        }, 2000);
+    }
+</script>
+</body>
+</html>
