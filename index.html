@@ -246,6 +246,40 @@
         </div>
     </div>
 
+    <!-- About Modal -->
+    <div id="about-modal" class="modal" onclick="closeAboutOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-3" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-text)] flex items-center gap-2"><i class="fa-solid fa-circle-info text-amber-500"></i> Hakkında</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Hakkında & Metodoloji</p>
+                </div>
+                <button onclick="closeAbout()" class="w-9 h-9 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom space-y-5">
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--apple-yellow)] mb-1.5">Vhesap Ne Yapmayı Amaçlıyor?</h3>
+                    <p class="text-xs text-[var(--apple-text)] leading-relaxed opacity-90">Vhesap; kredi, mevduat ve diğer bankacılık hesaplamalarını herkes için anlaşılır, hızlı ve erişilebilir hâle getirmeyi amaçlayan bir finansal hesaplama platformudur. Amacımız, karmaşık bankacılık hesaplamalarını sadeleştirerek finansal okuryazarlığı desteklemek ve kullanıcılarımızın karar süreçlerine güvenilir simülasyonlar ile katkı sağlamaktır.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--apple-yellow)] mb-1.5">Hesaplama Metodolojimiz</h3>
+                    <p class="text-xs text-[var(--apple-text)] leading-relaxed opacity-90">Platformumuzdaki hesaplamalar; güncel BDDK düzenlemeleri, yürürlükteki vergi mevzuatı (BSMV, KKDF ve stopaj oranları), kıstelyevm esasları ve bankacılık sektöründe yaygın olarak kullanılan faiz hesaplama yöntemleri dikkate alınarak geliştirilmiştir.<br><br>Mevzuat ve piyasa koşullarındaki değişiklikler doğrultusunda hesaplama modellerimiz düzenli olarak gözden geçirilmekte ve güncellenmektedir.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--apple-yellow)] mb-1.5">Geri Bildirim</h3>
+                    <p class="text-xs text-[var(--apple-text)] leading-relaxed opacity-90">Doğru ve güvenilir sonuçlar sunabilmek için hesaplama altyapımızı sürekli geliştiriyoruz. Bununla birlikte, finansal ürünler ve mevzuatlar zaman içinde değişebildiğinden farklı sonuçlarla karşılaşırsanız bizimle iletişime geçebilirsiniz.<br><br>Önerileriniz, eleştirileriniz ve hata bildirimleriniz platformumuzun gelişimine önemli katkı sağlar. Geri bildirimleriniz için şimdiden teşekkür ederiz.</p>
+                </div>
+
+                <div class="p-3 bg-[var(--apple-badge-bg)] border border-[var(--apple-badge-border)] rounded-xl mt-2 mb-2">
+                    <p class="text-[10px] text-[var(--apple-text-muted)] leading-relaxed"><strong class="text-[var(--apple-text)]">Not:</strong> Platformda sunulan hesaplamalar bilgilendirme ve simülasyon amacı taşımaktadır. Nihai finansal koşullar ilgili banka veya finans kuruluşunun uygulamaları ile yürürlükteki mevzuata göre farklılık gösterebilir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
         <div id="vhesap-viewport">
             <div class="apple-container" id="main-container">
@@ -280,6 +314,13 @@
                         <button class="glass-menu-item group" onclick="openFeedbackModal('degerlendirme', event)">
                             <i class="fa-regular fa-star group-hover:text-amber-500 transition-colors"></i>
                             <span>Değerlendir</span>
+                        </button>
+
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+
+                        <button class="glass-menu-item group" onclick="openAboutModal(event)">
+                            <i class="fa-solid fa-circle-info group-hover:text-amber-500 transition-colors"></i>
+                            <span>Hakkında</span>
                         </button>
                     </div>
 
@@ -442,6 +483,22 @@
         function closeFeedbackOutside(e) {
             if(e.target.id === 'feedback-modal') closeFeedback();
         }
+
+        // --- Yeni Eklenen Hakkında Modal Fonksiyonları ---
+        function openAboutModal(e) {
+            if (e) e.stopPropagation();
+            closeMenu(); // Formu açarken menüyü kapat
+            document.getElementById('about-modal').style.display = 'flex';
+        }
+
+        function closeAbout() {
+            document.getElementById('about-modal').style.display = 'none';
+        }
+
+        function closeAboutOutside(e) {
+            if(e.target.id === 'about-modal') closeAbout();
+        }
+        // ------------------------------------------------
 
         function checkConnection() {
             const blocker = document.getElementById('offline-blocker');
