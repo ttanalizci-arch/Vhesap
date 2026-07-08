@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="tr" class="h-full">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0WX0KCEM6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-H0WX0KCEM6');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vanaliz PRO - Gelişmiş Finansal Analiz & CFO Portalı</title>
@@ -98,10 +106,10 @@
     </div>
 
     <div id="app-content" class="pb-24">
-        <!-- Navigation -->
-        <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+        <!-- Navigation - Improved Safe Area Support -->
+        <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-4 pb-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm" style="padding-top: max(0.75rem, env(safe-area-inset-top));">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='anapanel.html'">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ff9f0a] to-[#d97c00] flex items-center justify-center shadow-lg shadow-[#ff9f0a]/20 border border-white/10">
                         <i data-lucide="bar-chart-2" class="text-white w-5 h-5"></i>
                     </div>
@@ -110,9 +118,10 @@
                         <span class="text-[9px] text-[var(--k-text-muted)] uppercase tracking-widest font-semibold">CFO Seviyesi Analiz</span>
                     </div>
                 </div>
+                <!-- Improved Mobile Home Button Touch Target -->
                 <div class="sm:hidden">
-                    <button class="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--k-border)] text-[var(--k-text-muted)] hover:text-[var(--k-text)]" onclick="window.location.href='index.html'" title="Ana Sayfa">
-                        <i class="fa-solid fa-house text-sm"></i>
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center border border-[var(--k-border)] text-[var(--k-text-muted)] hover:text-[var(--k-text)] hover:bg-[var(--k-hover)] transition-all" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfa">
+                        <i class="fa-solid fa-house text-base"></i>
                     </button>
                 </div>
             </div>
@@ -125,8 +134,9 @@
                         <input type="text" id="income-input" inputmode="numeric" class="w-full bg-transparent text-[var(--k-text)] text-sm font-black focus:outline-none" placeholder="0,00" onblur="updateIncome(this.value)" onfocus="this.value = this.value.replace(/\D/g, '')" />
                     </div>
                 </div>
-                <button class="hidden sm:flex w-9 h-9 rounded-full items-center justify-center border border-[var(--k-border)] text-[var(--k-text-muted)] hover:text-[#ff9f0a] hover:bg-[var(--k-hover)] transition-all" onclick="window.location.href='index.html'" title="Ana Sayfa">
-                    <i class="fa-solid fa-house text-sm"></i>
+                <!-- Improved Desktop Home Button Touch Target -->
+                <button class="hidden sm:flex w-10 h-10 rounded-full items-center justify-center border border-[var(--k-border)] text-[var(--k-text-muted)] hover:text-[#ff9f0a] hover:bg-[var(--k-hover)] transition-all" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfa">
+                    <i class="fa-solid fa-house text-base"></i>
                 </button>
             </div>
         </nav>
@@ -455,6 +465,23 @@
     <div id="pdf-template-wrapper"></div>
 
     <script>
+        // Google Analytics Kapsamlı Takip Fonksiyonu
+        function gtagTrack(action, category, label, value) {
+            if (typeof gtag !== 'undefined') {
+                let params = { 'event_category': category };
+                if (label) params['event_label'] = label;
+                if (value !== undefined) params['value'] = value;
+                gtag('event', action, params);
+            }
+        }
+
+        // Sayfada kalma süresi takibi
+        let pageStartTime = Date.now();
+        window.addEventListener('beforeunload', () => {
+            let timeSpent = Math.round((Date.now() - pageStartTime) / 1000);
+            gtagTrack('time_spent', 'Engagement', window.location.pathname, timeSpent);
+        });
+
         const VERGI_CARPANI = 1.30;
         let globalIncome = 0;
         let activeLoans = []; 
@@ -658,6 +685,7 @@
         };
 
         window.saveTempLoan = () => {
+            gtagTrack('feature_use', 'Vanaliz', 'Add_Temp_Loan');
             const tutar = parseFloat(document.getElementById('temp-tutar').value) || 0;
             const vade = parseInt(document.getElementById('temp-vade').value) || 0;
             if(tutar <= 0 || vade <= 0) { showToast("Tutar ve vade sıfırdan büyük olmalıdır."); return; }
@@ -974,6 +1002,7 @@
         }
 
         window.runDebtClosureSim = (valStr) => {
+            gtagTrack('feature_use', 'Vanaliz', 'Debt_Closure_Sim');
             const avRes = document.getElementById('avalanche-result'); const snRes = document.getElementById('snowball-result');
             let amount = parseFloat(valStr.toString().replace(/\./g, '').replace(',', '.'));
             if (isNaN(amount) || amount <= 0 || summary.kalanAnapara <= 0) {
@@ -1075,6 +1104,7 @@
         };
 
         window.shareDeepLink = (id) => {
+            gtagTrack('feature_use', 'Vanaliz', 'Share_Link');
             const loan = activeLoans.find(l => l.id === id); if(!loan) return;
             const link = `${window.location.origin}${window.location.pathname}?dna=${btoa(JSON.stringify(loan))}`;
             navigator.clipboard.writeText(link).then(() => showToast("PRO Kredi DNA linki kopyalandı!")).catch(e => {
@@ -1084,6 +1114,7 @@
 
         // TEKİL KREDİ PDF ÜRETİCİSİ (VERGİ VE TARİH DESTEKLİ)
         window.downloadSinglePDF = (id) => {
+            gtagTrack('download_pdf', 'Vanaliz', 'Single_Loan_PDF');
             const loan = activeLoans.find(l => l.id === id);
             if(!loan) return;
             
@@ -1200,6 +1231,7 @@
         };
 
         window.generateGlobalPDF = () => {
+            gtagTrack('download_pdf', 'Vanaliz', 'Global_CFO_Report');
             const wrapper = document.getElementById('pdf-template-wrapper');
             const dStr = new Date().toLocaleDateString('tr-TR') + ' ' + new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             let tgRatio = globalIncome > 0 ? ((summary.taksit / globalIncome) * 100).toFixed(1) : 0;
