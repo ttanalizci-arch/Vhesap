@@ -2,256 +2,218 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" id="metaDescription" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
+    
     <style>
-        /* TASARIM SİSTEMİ & RENK DEĞİŞKENLERİ */
+        /* APPLE TASARIM MİMARİSİ (index.html ile Birebir Uyumlu) */
         :root {
-            --bg: #050505; 
-            --card: #111111; 
-            --border: #222222; 
-            --border-hover: #333333;
-            --text: #e5e5e5; 
-            --text-strong: #ffffff;
-            --text-body: #d1d1d1;
-            --muted: #888888; 
-            --amber: #F59E0B; 
-            --radius: 16px; 
-            --radius-sm: 10px;
-            --icon-bg: #1a1a1a;
-            --image-bg: #0a0a0a;
-            --nav-bg: rgba(5,5,5,0.95);
-            --input-bg: #0a0a0a;
-            --cat-bg: #1a1a1a;
-            --toast-bg: #1a1a1a;
-            --toast-text: #ffffff;
+            --apple-bg: #f4f4f5;
+            --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
+            --apple-card: #ffffff;
+            --apple-card-border: rgba(0, 0, 0, 0.06);
+            --apple-text: #18181b;
+            --apple-text-muted: #71717a;
+            --apple-yellow: #d97706; 
+            --apple-yellow-hover: #b45309;
+            --apple-border: rgba(217, 119, 6, 0.15);
+            --apple-nav-bg: rgba(255, 255, 255, 0.85);
+            --apple-input-bg: #f4f4f5;
         }
 
-        /* GÜNDÜZ MODU (LIGHT MODE) DEĞİŞKENLERİ */
-        body.light-mode {
-            --bg: #f3f4f6;
-            --card: #ffffff;
-            --border: #e5e7eb;
-            --border-hover: #d1d5db;
-            --text: #374151;
-            --text-strong: #111827;
-            --text-body: #4b5563;
-            --muted: #6b7280;
-            --icon-bg: #fef3c7;
-            --image-bg: #f9fafb;
-            --nav-bg: rgba(243,244,246,0.95);
-            --input-bg: #f9fafb;
-            --cat-bg: #f3f4f6;
-            --toast-bg: #ffffff;
-            --toast-text: #111827;
+        body.dark {
+            --apple-bg: #000000;
+            --apple-container-bg: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+            --apple-card: rgba(24, 24, 27, 0.7);
+            --apple-card-border: rgba(255, 255, 255, 0.04);
+            --apple-text: #f4f4f5;
+            --apple-text-muted: #a1a1aa;
+            --apple-yellow: #f59e0b;
+            --apple-yellow-hover: #d97706;
+            --apple-border: rgba(245, 158, 11, 0.15);
+            --apple-nav-bg: rgba(39, 39, 42, 0.75);
+            --apple-input-bg: #18181b;
         }
 
-        html { scroll-behavior: smooth; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; transition: background-color 0.3s, color 0.3s; }
-        a { text-decoration: none; color: inherit; }
-        .container { width: 100%; max-width: 900px; margin: auto; padding: 40px 20px 80px; }
+        body { background-color: var(--apple-bg); color: var(--apple-text); transition: background-color 0.3s; scroll-behavior: smooth;}
         
-        /* HEADER */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; transition: border-color 0.3s; }
-        .logo { display: flex; align-items: center; gap: 15px; }
-        .logo-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--icon-bg); display: flex; justify-content: center; align-items: center; font-size: 22px; color: var(--amber); border: 1px solid var(--border); transition: 0.3s; }
-        .logo h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-strong); transition: color 0.3s; }
-        .logo p { font-size: 11px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
-        
-        /* BUTONLAR */
-        .btn { cursor: pointer; border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
-        .btn-primary { background: var(--amber); color: #000; }
-        .btn-primary:hover { background: #d97706; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-strong); }
-        .btn-outline:hover { border-color: var(--muted); }
-        
-        /* KULLANICI & MENÜ ALANI */
-        .auth-area { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
-        .user-info .author { font-size: 14px; font-weight: 600; color: var(--text-strong); }
-        .user-info .date { font-size: 12px; color: var(--muted); }
+        /* OKUMA İLERLEME ÇUBUĞU */
+        #progressBar { position: fixed; top: 0; left: 0; height: 4px; background: var(--apple-yellow); z-index: 9999; width: 0%; transition: width 0.2s ease-out; }
 
-        /* HERO BÖLÜMÜ */
-        .hero { margin-bottom: 30px; }
-        .hero h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; color: var(--text-strong); transition: color 0.3s; }
-        .hero p { color: var(--muted); font-size: 16px; max-width: 650px; }
-        
-        /* KATEGORİ İNDEKSİ */
-        .index-wrapper { position: sticky; top: 0; background: var(--nav-bg); backdrop-filter: blur(10px); z-index: 100; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; margin-top: -10px; transition: background-color 0.3s, border-color 0.3s; }
-        .index-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
-        .index-scroll::-webkit-scrollbar { display: none; }
-        .cat-pill { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 500; white-space: nowrap; transition: 0.2s; color: var(--text); }
-        .cat-pill:hover { border-color: var(--amber); color: var(--amber); }
-
-        /* KATEGORİ BAŞLIKLARI VE GRID */
-        .cat-title { font-size: 22px; margin: 40px 0 20px; color: var(--text-strong); border-bottom: 1px solid var(--border); padding-bottom: 10px; scroll-margin-top: 80px; display: flex; align-items: center; gap: 10px; transition: color 0.3s, border-color 0.3s; }
-        .cat-title::before { content: ""; display: inline-block; width: 4px; height: 20px; background: var(--amber); border-radius: 2px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        
-        /* KARTLAR */
-        .post-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; cursor: pointer; display: flex; flex-direction: column; }
-        .post-card:hover { border-color: var(--border-hover); transform: translateY(-3px); }
-        .post-image { height: 120px; background: var(--image-bg); display: flex; justify-content: center; align-items: center; font-size: 35px; color: var(--amber); border-bottom: 1px solid var(--border); transition: 0.3s; }
-        .post-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .post-title { font-size: 17px; font-weight: 600; margin-bottom: 10px; color: var(--text-strong); line-height: 1.4; transition: color 0.3s; }
-        .post-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .post-footer { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--amber); font-weight: 600; border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto; transition: border-color 0.3s; }
-        
-        /* OKUMA EKRANI (ARTICLE) */
-        .viewer { display: none; }
-        .article { background: transparent; padding: 0; }
-        .article-header { margin-bottom: 40px; }
-        .article h1 { font-size: 34px; font-weight: 700; margin-bottom: 20px; color: var(--text-strong); letter-spacing: -1px; line-height: 1.2; transition: color 0.3s; }
-        .article-meta { display: flex; gap: 20px; color: var(--muted); font-size: 13px; border-bottom: 1px solid var(--border); padding-bottom: 25px; transition: border-color 0.3s; }
-        .article-body { font-size: 17px; color: var(--text-body); transition: color 0.3s; }
-        .article-body h2 { font-size: 22px; color: var(--text-strong); margin: 40px 0 15px; font-weight: 600; }
-        .article-body p { margin-bottom: 20px; }
-        .article-body ul { margin-left: 20px; margin-bottom: 20px; }
-        .article-body li { margin-bottom: 10px; }
-        
-        /* YORUMLAR */
-        .comments { margin-top: 60px; border-top: 1px solid var(--border); padding-top: 40px; transition: border-color 0.3s; }
-        .comments-title { font-size: 20px; margin-bottom: 20px; color: var(--text-strong); font-weight: 600; transition: color 0.3s; }
-        
-        /* GİRİŞ UYARISI BÖLÜMÜ */
-        .login-warning { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 30px 20px; text-align: center; margin-bottom: 30px; transition: 0.3s; }
-        .login-warning p { color: var(--muted); margin-bottom: 15px; font-size: 14px; }
-        
-        .comment-box { display: none; margin-bottom: 30px; }
-        textarea { width: 100%; height: 100px; padding: 15px; border-radius: var(--radius-sm); background: var(--input-bg); border: 1px solid var(--border); color: var(--text); resize: none; font-size: 14px; transition: 0.3s; }
-        textarea:focus { outline: none; border-color: var(--amber); }
-        .comment-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .char-count { font-size: 12px; color: var(--muted); }
-        
-        .comment { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-sm); margin-bottom: 15px; transition: 0.3s; }
-        .comment-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        
-        .loading { display: flex; justify-content: center; padding: 40px; font-size: 14px; color: var(--muted); }
-        .toast { position: fixed; right: 20px; bottom: 20px; background: var(--toast-bg); color: var(--toast-text); padding: 15px 20px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: none; z-index: 9999; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: 0.3s; }
-        
-        @media(max-width:700px) {
-            .container { padding: 20px 15px 80px; }
-            .header { flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
-            .hero { margin-bottom: 20px; }
-            .hero h2 { font-size: 22px; margin-bottom: 8px; }
-            .hero p { font-size: 14px; }
-            .cat-title { font-size: 18px; margin: 25px 0 15px; }
-            
-            /* MOBİL KOMPAKT LİSTE GÖRÜNÜMÜ (7-8 Makale Sığdırma) */
-            .grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
-            .post-card { flex-direction: row; align-items: center; padding: 12px; height: 75px; }
-            .post-image { width: 50px; height: 50px; min-width: 50px; border-bottom: none; border-radius: 10px; font-size: 22px; }
-            .post-content { padding: 0 0 0 15px; justify-content: center; }
-            .post-title { font-size: 14px; margin-bottom: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
-            .post-desc { display: none; } /* Açıklamaları mobilde gizle */
-            .post-footer { display: none; } /* Okumaya başla yazısını mobilde gizle */
-            
-            /* Makale İçi Mobil Ayarları */
-            .article h1 { font-size: 24px; }
-            .article-meta { flex-direction: column; gap: 8px; padding-bottom: 15px; }
-            .article-body { font-size: 15px; }
-            .article-body h2 { font-size: 18px; margin: 25px 0 10px; }
+        /* YAZDIRMA (PRINT) FORMATI */
+        @media print {
+            body { background: white !important; color: black !important; }
+            #header, #homePage, .comments, #progressBar, .no-print { display: none !important; }
+            #viewer { display: block !important; padding: 0 !important; margin: 0 !important; }
+            .article-body { font-size: 14pt; }
         }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
+
+        /* KATEGORİ İNDEKSİ (YAPIŞKAN) */
+        .index-wrapper { position: sticky; top: 0; background: var(--apple-nav-bg); backdrop-filter: blur(20px); z-index: 50; padding: 10px 0; border-bottom: 1px solid var(--apple-card-border); }
+        .index-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding: 0 5px; }
+        
+        /* MAKALELER İÇİN TERİM TOOLTIP'İ */
+        .tooltip-text { border-bottom: 1px dashed var(--apple-yellow); cursor: help; position: relative; }
+        .tooltip-text:hover::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); padding: 8px 12px; border-radius: 8px; font-size: 12px; white-space: nowrap; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
     </style>
 </head>
-<body>
+<body class="dark selection:bg-amber-500/30">
 
-    <!-- TİTREME ÖNLEYİCİ: Sayfa yüklenirken index.html'deki temayı anında yakala -->
     <script>
-        // Sayfa açılır açılmaz index.html'de belirlenen (veya daha önce kaydedilen) temayı uygula
-        const savedThemeInit = localStorage.getItem("vhesap_global_theme");
-        if (savedThemeInit === "light") {
-            document.body.classList.add("light-mode");
+        if (localStorage.getItem("vhesap_global_theme") === "light" || localStorage.getItem("vhesap_theme") === "light") {
+            document.body.classList.remove("dark");
         }
     </script>
 
-    <div class="toast" id="toast"></div>
+    <div id="progressBar"></div>
 
-    <main class="container">
-        <!-- HEADER -->
-        <header class="header">
-            <div class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-calculator"></i></div>
+    <div id="toast" class="fixed right-5 bottom-5 px-5 py-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] shadow-2xl z-[9999] hidden text-sm font-semibold backdrop-blur-xl"></div>
+
+    <main class="w-full max-w-4xl mx-auto min-h-screen flex flex-col relative px-4 sm:px-6 py-6 sm:py-10">
+        
+        <header id="header" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-[var(--apple-card-border)]">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-12 h-12 rounded-2xl bg-[var(--apple-card)] flex items-center justify-center text-[var(--apple-yellow)] border border-[var(--apple-card-border)] shadow-sm">
+                    <i class="fa-solid fa-book-open text-xl"></i>
+                </div>
                 <div>
-                    <h1>Vhesap Rehber</h1>
-                    <p>Finansal Analiz & Makaleler</p>
+                    <h1 class="text-2xl font-bold tracking-tight text-[var(--apple-text)]">Vhesap Rehber</h1>
+                    <p class="text-xs uppercase tracking-widest text-[var(--apple-text-muted)] font-semibold mt-0.5">Finansal Kütüphane</p>
                 </div>
             </div>
-            <div class="auth-area">
-                <!-- EV İKONU -->
-                <a href="index.html" class="btn btn-outline" title="Ana Sayfa"><i class="fa-solid fa-house"></i></a>
+            
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <a href="index.html" class="flex-1 sm:flex-none flex justify-center items-center h-10 px-4 rounded-xl border border-[var(--apple-card-border)] bg-[var(--apple-card)] hover:border-[var(--apple-yellow)] transition-colors"><i class="fa-solid fa-house"></i></a>
                 
-                <button id="loginBtn" class="btn btn-primary"><i class="fa-brands fa-google"></i> Giriş Yap</button>
-                <div id="userArea" style="display:none;align-items:center;gap:10px;">
-                    <img id="userPhoto" class="avatar" alt="Kullanıcı">
-                    <div class="user-info">
-                        <div id="userName" class="author"></div>
-                        <div class="date">Üye</div>
+                <button id="loginBtn" class="flex-[3] sm:flex-none flex justify-center items-center h-10 px-5 rounded-xl bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-black font-bold text-sm shadow-lg hover:scale-95 transition-transform"><i class="fa-brands fa-google mr-2"></i> Giriş Yap</button>
+                
+                <div id="userArea" class="hidden items-center gap-3 w-full sm:w-auto p-1.5 pr-4 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)]">
+                    <img id="userPhoto" class="w-8 h-8 rounded-full object-cover border border-[var(--apple-border)]" alt="Kullanıcı">
+                    <div class="flex flex-col">
+                        <span id="userName" class="text-sm font-bold truncate max-w-[100px]"></span>
+                        <span id="userRoleBadge" class="text-[10px] uppercase font-bold text-[var(--apple-text-muted)]">Üye</span>
                     </div>
-                    <button id="logoutBtn" class="btn btn-outline" style="padding: 6px 12px; margin-left: 5px; font-size: 12px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    <button id="logoutBtn" class="ml-2 text-[var(--apple-text-muted)] hover:text-red-500 transition-colors"><i class="fa-solid fa-right-from-bracket"></i></button>
                 </div>
             </div>
         </header>
 
-        <!-- ANA SAYFA -->
-        <div id="homePage">
-            <div class="hero">
-                <h2>Veriye Dayalı Kararlar Verin.</h2>
-                <p>Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan kapsamlı finans indeksine hoş geldiniz.</p>
+        <div id="homePage" class="flex-1">
+            <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tight mb-2">Veriye Dayalı Kararlar Verin.</h2>
+                    <p class="text-[var(--apple-text-muted)] text-sm max-w-xl leading-relaxed">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan kapsamlı finans indeksine hoş geldiniz.</p>
+                </div>
+                <div class="relative w-full sm:w-64 flex-shrink-0">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--apple-text-muted)]"></i>
+                    <input type="text" id="searchInput" placeholder="Makale veya konu ara..." class="w-full h-11 pl-11 pr-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] text-sm outline-none focus:border-[var(--apple-yellow)] transition-colors">
+                </div>
             </div>
+
+            <button id="adminPanelBtn" class="hidden w-full sm:w-auto mb-6 px-6 py-3 rounded-xl border border-[var(--apple-yellow)] text-[var(--apple-yellow)] bg-amber-500/10 font-bold hover:bg-amber-500 hover:text-black transition-colors"><i class="fa-solid fa-pen-nib mr-2"></i> Yeni Makale Ekle</button>
             
-            <div id="postsContent">
-                <div class="loading">İçerikler yükleniyor...</div>
+            <div id="postsContent" class="space-y-8"><div class="flex justify-center p-10"><i class="fa-solid fa-spinner fa-spin text-2xl text-[var(--apple-yellow)]"></i></div></div>
+        </div>
+
+        <div id="adminEditor" class="hidden flex-1">
+            <button id="closeEditorBtn" class="mb-6 text-sm font-semibold text-[var(--apple-text-muted)] hover:text-white flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Editörü Kapat</button>
+            <div class="p-6 rounded-3xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] space-y-5 shadow-2xl">
+                <h2 class="text-2xl font-bold border-b border-[var(--apple-card-border)] pb-4 mb-2">Yeni Makale Yayına Al</h2>
+                <div>
+                    <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">Makale Başlığı</label>
+                    <input type="text" id="editTitle" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)]">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">Kategori</label>
+                        <input type="text" id="editCategory" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)]" placeholder="Bireysel Finans, Yatırım...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">İkon (FontAwesome)</label>
+                        <input type="text" id="editIcon" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)]" value="fa-file-lines">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2 flex justify-between">
+                        <span>Makale İçeriği (HTML Formatı)</span>
+                        <a href="https://wordhtml.com/" target="_blank" class="text-[var(--apple-yellow)] underline">HTML Dönüştürücü Kullan</a>
+                    </label>
+                    <textarea id="editBody" class="w-full h-80 p-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] font-mono text-sm leading-relaxed" placeholder="<h2>Başlık</h2> <p>İçerik...</p>"></textarea>
+                </div>
+                <button id="publishPostBtn" class="w-full h-14 rounded-xl bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-black font-black text-lg hover:scale-[0.99] transition-transform"><i class="fa-solid fa-paper-plane mr-2"></i> Yayına Al</button>
             </div>
         </div>
 
-        <!-- OKUMA EKRANI -->
-        <div id="viewer" class="viewer">
-            <article class="article">
-                <div class="article-header">
-                    <button class="btn btn-outline" id="backBtn" style="margin-bottom: 25px;"><i class="fa-solid fa-arrow-left"></i> İndekse Dön</button>
-                    <h1 id="articleTitle"></h1>
-                    <div class="article-meta">
-                        <div><i class="fa-regular fa-folder"></i> <span id="articleCategory"></span></div>
-                        <div><i class="fa-regular fa-comments"></i> <span id="commentCount">0 Yorum</span></div>
+        <div id="viewer" class="hidden flex-1 bg-[var(--apple-card)] p-5 sm:p-10 rounded-3xl border border-[var(--apple-card-border)] shadow-xl relative">
+            <div class="no-print flex justify-between items-center mb-8">
+                <button id="backBtn" class="text-sm font-bold text-[var(--apple-text-muted)] hover:text-white flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
+                <div class="flex gap-3">
+                    <button onclick="window.print()" class="w-10 h-10 rounded-full bg-[var(--apple-input-bg)] flex items-center justify-center border border-[var(--apple-card-border)] hover:text-[var(--apple-yellow)] transition-colors" title="PDF / Yazdır"><i class="fa-solid fa-print"></i></button>
+                    <button id="deleteActivePostBtn" class="hidden w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors" title="Makaleyi Sil"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+
+            <article>
+                <div class="flex items-center gap-3 mb-4">
+                    <span id="articleCategory" class="px-3 py-1 rounded-lg bg-[var(--apple-border)] text-[var(--apple-yellow)] text-xs font-bold uppercase tracking-wider"></span>
+                    <span id="articleReadTime" class="text-xs font-semibold text-[var(--apple-text-muted)]"><i class="fa-regular fa-clock mr-1"></i> 3 dk okuma</span>
+                </div>
+                <h1 id="articleTitle" class="text-3xl sm:text-4xl font-black leading-tight mb-8"></h1>
+                
+                <div id="articleBody" class="prose prose-invert max-w-none text-base sm:text-lg leading-loose text-[var(--apple-text)]">
+                    </div>
+            </article>
+            
+            <section class="mt-16 pt-10 border-t border-[var(--apple-card-border)] no-print">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-regular fa-comments text-[var(--apple-yellow)]"></i> Okuyucu Yorumları (<span id="commentCount">0</span>)</h3>
+                
+                <div id="loginWarning" class="p-6 rounded-2xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] text-center mb-8">
+                    <i class="fa-regular fa-comment-dots text-4xl text-[var(--apple-text-muted)] mb-3"></i>
+                    <p class="text-sm text-[var(--apple-text-muted)] mb-4">Bu makale hakkında görüş bildirmek ve diğer okuyucularla etkileşime geçmek için giriş yapmalısınız.</p>
+                    <button id="warningLoginBtn" class="px-6 py-2.5 rounded-xl border border-[var(--apple-card-border)] bg-[var(--apple-card)] font-bold hover:border-[var(--apple-yellow)] transition-colors"><i class="fa-brands fa-google mr-2"></i> Google ile Giriş Yap</button>
+                </div>
+
+                <div id="commentBox" class="hidden mb-8 relative">
+                    <textarea id="commentText" maxlength="500" placeholder="Bu makale hakkında ne düşünüyorsunuz? (Maks. 500 karakter)" class="w-full h-28 p-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm resize-none transition-colors"></textarea>
+                    <div class="flex justify-between items-center mt-2">
+                        <span id="charCount" class="text-xs font-semibold text-[var(--apple-text-muted)]">0/500</span>
+                        <button id="sendComment" class="px-6 py-2.5 rounded-xl bg-[var(--apple-yellow)] text-black font-bold text-sm hover:bg-[var(--apple-yellow-hover)] transition-colors">Yorumu Gönder</button>
                     </div>
                 </div>
                 
-                <div class="article-body" id="articleBody"></div>
-                
-                <section class="comments">
-                    <h3 class="comments-title">Tartışma & Yorumlar</h3>
-                    
-                    <div id="loginWarning" class="login-warning">
-                        <i class="fa-regular fa-comment-dots" style="font-size: 30px; color: var(--muted); margin-bottom: 10px;"></i>
-                        <p>Bu makale hakkında görüş bildirmek ve diğer okuyucularla etkileşime geçmek için giriş yapmalısınız.</p>
-                        <button class="btn btn-outline" id="warningLoginBtn"><i class="fa-brands fa-google"></i> Google ile Giriş</button>
-                    </div>
-
-                    <div id="commentBox" class="comment-box">
-                        <textarea id="commentText" maxlength="500" placeholder="Bu makale hakkında ne düşünüyorsunuz? (Maks. 500 karakter)"></textarea>
-                        <div class="comment-actions">
-                            <span class="char-count" id="charCount">0/500</span>
-                            <button id="sendComment" class="btn btn-primary">Yorumu Gönder</button>
-                        </div>
-                    </div>
-                    
-                    <div id="commentsList">
-                        <div class="loading">Yorumlar yükleniyor...</div>
-                    </div>
-                </section>
-            </article>
+                <div id="commentsList" class="space-y-4"></div>
+            </section>
         </div>
     </main>
+
+    <style>
+        .prose h2 { font-size: 1.5rem; font-weight: 800; color: var(--apple-text-strong); margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { font-size: 1.25rem; font-weight: 700; color: var(--apple-text-strong); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1.25rem; opacity: 0.9; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; opacity: 0.9; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose strong { color: var(--apple-yellow); }
+    </style>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+        // ==========================================
+        // YETKİLENDİRME & SİSTEM DEĞİŞKENLERİ
+        // ==========================================
+        const SUPER_ADMIN_EMAIL = "Vhesap.com@gmail.com"; 
 
         const firebaseConfig = {
             apiKey: "AIzaSyCXCeJn7Nyz1hfYt0RRcW5yPOtDxgDpE_4",
@@ -270,76 +232,109 @@
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
+        let isSuperAdmin = false;
+        let isWriter = false;
+        
         let activePost = null;
+        let activePostTitle = "";
         let toastTimeout; 
         let unsubscribeComments = null;
         let loadedPosts = []; 
         const SPAM_COOLDOWN_MS = 60000; 
 
-        // --- TEMA (DARK/LIGHT) CANLI SENKRONİZASYONU ---
-        // SEKME SENKRONİZASYONU: index.html'de 'vhesap_global_theme' değiştiğinde blog.html anında tepki verir
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'vhesap_global_theme') {
-                if (e.newValue === "light") {
-                    document.body.classList.add("light-mode");
-                } else {
-                    document.body.classList.remove("light-mode");
-                }
+        // TEMA SENKRONİZASYONU (index.html dinleme)
+        function updateThemeUI(theme) {
+            if (theme === "light") document.body.classList.add("light-mode");
+            else document.body.classList.remove("light-mode");
+        }
+        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
+
+        // OKUMA ÇUBUĞU (PROGRESS BAR)
+        window.addEventListener('scroll', () => {
+            if(document.getElementById('viewer').style.display === 'block' || document.getElementById('viewer').style.display === 'flex') {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById('progressBar').style.width = scrolled + "%";
+            } else {
+                document.getElementById('progressBar').style.width = "0%";
             }
         });
 
-        // 39 MAKALELİK SABİT VERİ SETİ
-        const initialPosts = [
-            { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, birçok kişi için acil ihtiyaçların karşılanmasında önemli bir yöntemdir. Ancak sadece faize bakmak yetmez.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li>Aylık taksit tutarı ve toplam geri ödeme</li><li>Erken ödeme avantajı ve ara ödeme etkisi</li><li>Vergi, yasal kesintiler ve komisyonlar</li></ul><p>Vhesap ile saniyeler içerisinde farklı senaryoları karşılaştırın.</p>` },
-            { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı acil durumlar için pratik olsa da günlük yüksek faiziyle dikkat gerektirir.</p><h2>Günlük Faiz Mantığı</h2><p>Hafta sonları ve resmi tatiller dahil her gün faiz işler. KMH sadece kısa vadeli çözümler için kullanılmalıdır.</p>` },
-            { id: "p3", category: "Bireysel Finans", title: "Taşıt Kredisi Tahsis Ücretleri ve Kasko Maliyeti", icon: "fa-car", body: `<p>Araç kredilerinde dosya masrafı, zorunlu kasko ve sigorta toplam maliyeti ciddi şekilde artırır. Efektif faiz oranına (Yıllık Maliyet Oranı) mutlaka bakılmalıdır.</p>` },
-            { id: "p4", category: "Bireysel Finans", title: "Konut Kredilerinde Ekspertiz Değeri ve Limitler", icon: "fa-house-user", body: `<p>Evin satış bedelinin tamamına kredi çekemezsiniz.</p><h2>Kredi Limiti</h2><p>Ekspertiz değerine göre BDDK'nın belirlediği sınırlamalarla, evin değerinin %80'i veya %90'ı kadar kredi kullandırılır.</p>` },
-            { id: "p5", category: "Ticari Finans", title: "Ticari Finans Yönetimi: İşletmeler İçin Profesyonel Kredi Analizi", icon: "fa-briefcase", body: `<p>İşletmeler için doğru finansman seçilmezse nakit akışı bozulur.</p><h2>Ticari Krediler</h2><p>Rotatif ve spot kredilerde günlük bakiye, tahakkuk dönemleri ve komisyonlar asıl maliyeti oluşturur.</p>` },
-            { id: "p6", category: "Ticari Finans", title: "Ticari Kredi Kartı vs Bireysel Kredi Kartı", icon: "fa-building", body: `<p>İşletme sahipleri harcamalarını ayırmak için ticari kart kullanmalıdır.</p><h2>Farklar Nelerdir?</h2><p>Ticari kartlarda yasal taksit sınırları esnektir ve vergi avantajı sağlar.</p>` },
-            { id: "p7", category: "Ticari Finans", title: "Esnaf Kredileri ve Hazine Destekli Krediler", icon: "fa-store", body: `<p>Esnaf ve sanatkarlar, Kooperatifler üzerinden Hazine destekli ucuz krediler kullanabilir.</p><p>Piyasa şartlarına göre yarı yarıya daha ucuzdur ancak katı şartları vardır.</p>` },
-            { id: "p8", category: "Ticari Finans", title: "Döviz Kredisi Kimler Kullanabilir?", icon: "fa-earth-europe", body: `<p>Bireylerin döviz kredisi kullanması yasaktır.</p><h2>İhracatçı Şartı</h2><p>Sadece döviz geliri olan işletmeler bu kredileri kullanabilirler.</p>` },
-            { id: "p9", category: "Ticari Finans", title: "Enflasyon Muhasebesinin Kobilere Etkisi", icon: "fa-book-open", body: `<p>Enflasyon muhasebesi, stok ve duran varlıkların güncel değere çekilmesini sağlar, böylece işletmeler sanal kârlar üzerinden vergi ödemez.</p>` },
-            { id: "p10", category: "Ticari Finans", title: "Tedarikçi Finansmanı ve Açık Hesap", icon: "fa-truck-fast", body: `<p>İşletmeler mal alımında peşin ödeme yerine banka garantili tedarikçi finansmanı kullanarak vade kazanabilirler.</p>` },
-            { id: "p11", category: "Ticari Finans", title: "İşletmeler İçin POS Komisyonları ve Bloke Gün", icon: "fa-cash-register", body: `<p>E-ticaret ve mağazalarda POS ödemelerini ertesi gün almak maliyetlidir. Nakit akışı güçlüyse blokeli çalışmak kârlıdır.</p>` },
-            { id: "p12", category: "Mevduat", title: "Vadeli Mevduat Hesaplama: Birikimlerinizden Maksimum Getiri", icon: "fa-coins", body: `<p>Vadeli mevduat risksizdir ancak bankalar arası farklar büyüktür. Brüt faiz, stopaj kesintisi ve bileşik faiz etkisini hesaplamadan yatırım yapmayın.</p>` },
-            { id: "p13", category: "Yatırım", title: "Konut Kredisi mi, Kirada Kalmak mı?", icon: "fa-house", body: `<p>Kira çarpanı 200 aydan yüksek bir evi krediyle almak yerine, mevduata yatırıp kirada oturmak finansal açıdan daha kârlı olabilir.</p>` },
-            { id: "p14", category: "Yatırım", title: "Enflasyon Korumalı Yatırım Araçları", icon: "fa-shield-halved", body: `<p>Enflasyona karşı Hisse senedi fonları, altın ve dövize endeksli eurobondlar tercih edilebilir.</p>` },
-            { id: "p15", category: "Yatırım", title: "Kur Korumalı Mevduatın (KKM) Alternatifleri", icon: "fa-money-bill-trend-up", body: `<p>KKM yerine yüksek faizli mevduatlar ve günlük likidite sunan para piyasası fonları öne çıkmaktadır.</p>` },
-            { id: "p16", category: "Yatırım", title: "BES (Bireysel Emeklilik) ve %30 Devlet Katkısı", icon: "fa-piggy-bank", body: `<p>BES'te her ödemeye devlet %30 ekler. Tamamını almak için 10 yıl sistemde kalmak ve 56 yaşını doldurmak şarttır.</p>` },
-            { id: "p17", category: "Yatırım", title: "Fiziki Altın mı, Banka Altın Hesabı mı?", icon: "fa-gem", body: `<p>Fiziki altında saklama riski ve işçilik vardır. Güvenlik ve hızlı nakde dönme için banka altın hesapları tercih edilmelidir.</p>` },
-            { id: "p18", category: "Yatırım", title: "Yeni Başlayanlar İçin Yatırım Fonları", icon: "fa-chart-line", body: `<p>Hisse seçemiyorsanız, profesyonellerin yönettiği yatırım fonları (TEFAS) en risksiz ve kolay borsa yatırımıdır.</p>` },
-            { id: "p19", category: "Yatırım", title: "Borsada Hisse Senedi vs Borsa Yatırım Fonu (ETF)", icon: "fa-arrow-trend-up", body: `<p>ETF'ler bir endeksi (örneğin teknoloji hisselerini) topluca almanızı sağlar ve riski dağıtır.</p>` },
-            { id: "p20", category: "Yatırım", title: "Mevduat Merdiveni Stratejisi", icon: "fa-stairs", body: `<p>Faizlerin dalgalı olduğu dönemlerde paranızı farklı vadelere (32 gün, 92 gün vb.) bölerek bağlamak fırsatları kaçırmanızı engeller.</p>` },
-            { id: "p21", category: "Analiz", title: "Vanaliz Nedir? Kararlarınızı Veriye Dayalı Analiz Edin", icon: "fa-chart-pie", body: `<p>Vanaliz, finansal stresinizi ölçer ve alternatif maliyet analizi yaparak "Kredi kapatmak mı, parayı işletmek mi kârlı?" sorusunu çözer.</p>` },
-            { id: "p22", category: "Kredi Kartı", title: "Kredi Kartı Asgari Ödeme Tuzağı", icon: "fa-credit-card", body: `<p>Sadece asgari tutarı ödemek borcu katlar. Asgari ödeme sarmalından kurtulmak için borcu ihtiyaç kredisiyle yapılandırmak en iyisidir.</p>` },
-            { id: "p23", category: "Kredi Kartı", title: "Nakit Avans ve Taksitli Nakit Avans Farkı", icon: "fa-money-bill", body: `<p>Tek çekim nakit avansta günlük faiz işler, taksitli avans ise sabit plan sunarak sürprizleri engeller.</p>` },
-            { id: "p24", category: "Kredi Kartı", title: "Kredi Kartı Puanları ve Mil Stratejileri", icon: "fa-plane-departure", body: `<p>Kampanyaları takip edip gerekli harcamalarınızı milde toplayarak her yıl bedava yurt dışı bileti kazanabilirsiniz.</p>` },
-            { id: "p25", category: "Kredi", title: "Ara Ödeme (Balon Ödeme) ile Kredi Kısaltma", icon: "fa-scissors", body: `<p>Ara ödeme sonrası taksit tutarını sabit tutup vadeyi kısaltmak toplam faiz yükünü en aza indiren yöntemdir.</p>` },
-            { id: "p26", category: "Kredi", title: "Refinansman (Kredi Yapılandırma) Rehberi", icon: "fa-rotate", body: `<p>Faizler düştüğünde, erken kapama cezasına rağmen yeni kredinin toplam faizi düşük kalıyorsa hemen yapılandırma yapılmalıdır.</p>` },
-            { id: "p27", category: "Kredi", title: "İpotekli İhtiyaç Kredisi Şartları", icon: "fa-key", body: `<p>Evinizi ipotek ettirerek ekspertiz değerine kadar yüksek tutarlı ve düşük faizli kredi çekebilirsiniz.</p>` },
-            { id: "p28", category: "Kredi", title: "Teminatlı vs Teminatsız Kredi Seçimi", icon: "fa-scale-unbalanced", body: `<p>Teminatlı (rehinli) kredilerin limitleri yüksek, bankanın riski az olduğu için faizleri standart kredilere göre daha düşüktür.</p>` },
-            { id: "p29", category: "Finansal Rehber", title: "KKB Puanı (Kredi Notu) Nasıl Yükselir?", icon: "fa-arrow-trend-up", body: `<p>Kredi kartı borcunun tamamını ödemek, limitleri boş tutmak ve sık başvuru yapmamak notu hızla yükseltir.</p>` },
-            { id: "p30", category: "Finansal Rehber", title: "Findeks Risk Raporu Okuma Sanatı", icon: "fa-file-invoice", body: `<p>1-30 gün arası gecikmeler uyarı, 90 gün yasal takiptir. Bankalar bu rapordaki gecikme trendine göre onay verir.</p>` },
-            { id: "p31", category: "Finansal Rehber", title: "50/30/20 Bütçe Kuralı ile Finans Yönetimi", icon: "fa-wallet", body: `<p>Kazancınızın %50'sini ihtiyaçlara, %30'unu isteklere, %20'sini ise yatırıma ve birikime ayırarak finansal özgürlüğe ulaşın.</p>` },
-            { id: "p32", category: "Finansal Rehber", title: "Finansal Okuryazarlığın 5 Altın Kuralı", icon: "fa-graduation-cap", body: `<p>Bütçe yapın, acil durum fonu kurun, bileşik faizi kullanın, kötü borçtan kaçının ve yatırım sepeti yapın.</p>` },
-            { id: "p33", category: "Vergi", title: "BSMV ve KKDF Nedir? Ne Zaman Kesilir?", icon: "fa-scale-balanced", body: `<p>Bireysel kredilerde faiz üzerinden toplam %30 (BSMV + KKDF) vergi devlete ödenir. Konut kredileri bu vergiden muaftır.</p>` },
-            { id: "p34", category: "Vergi", title: "Erken Kredi Kapatma Cezası (Konut Kredisi)", icon: "fa-gavel", body: `<p>İhtiyaç kredisinde ceza yoktur ancak konut kredisinde kalan anaparanın %2'sine kadar tazminat ödenir.</p>` },
-            { id: "p35", category: "Sigorta", title: "Kredi Hayat Sigortası İptali ve İade Süreci", icon: "fa-heart-pulse", body: `<p>Kredinizi erken kapattığınızda, hayat sigortasının kullanılmayan aylarına ait primleri bankadan iade alabilirsiniz.</p>` },
-            { id: "p36", category: "Ekonomi", title: "Merkez Bankası (TCMB) Faiz Kararları", icon: "fa-building-columns", body: `<p>TCMB faiz artırdığında yeni kredi maliyetleri artar, ancak daha önceden çekilmiş sabit faizli kredilerin taksitleri değişmez.</p>` },
-            { id: "p37", category: "Hukuk", title: "Kredi Kefaletinde Yasal Sorumluluklar", icon: "fa-handshake", body: `<p>Müteselsil kefil olduğunuzda, asıl borçlu bir taksiti bile geciktirse banka borcu direkt sizden tahsil edebilir.</p>` },
-            { id: "p38", category: "Hukuk", title: "Senetle Araç veya Ev Almanın Hukuki Riskleri", icon: "fa-file-signature", body: `<p>Senet çok güçlü bir evraktır. Ödenmezse direkt haciz başlar ve senedin üzerinde satıcı tarafından tahrifat yapılma riski yüksektir.</p>` },
-            { id: "p39", category: "Gayrimenkul", title: "Tersine İpotek (Reverse Mortgage) Sistemi", icon: "fa-house-chimney", body: `<p>Emeklilerin evlerini bankaya ipotek ederek ömür boyu maaş aldıkları, vefat sonrası evin bankaya geçtiği bir sistemdir.</p>` }
-        ];
-
+        // TOAST MESAJI
         function toast(text) {
             const t = document.getElementById("toast");
             t.innerHTML = text;
             t.style.display = "block";
             if (toastTimeout) clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => { t.style.display = "none"; }, 2500);
+            toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
-        // Kategori Gruplama ve Render İşlemi
+        // 39 MAKALELİK SABİT VERİ SETİ (Performans için önbellek - Seed)
+        const initialPosts = [
+            { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, ev, araç veya acil nakit ihtiyaçlarının karşılanmasında en önemli yöntemdir. Ancak birçok tüketici sadece aylık faiz oranına bakarak büyük bir hata yapar.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li><strong>Aylık Taksit Tutarı:</strong> Bütçenizi sarsmayacak, sürdürülebilir bir ödeme olmalıdır.</li><li><strong>Toplam Geri Ödeme:</strong> Vade uzadıkça aylık taksit düşer ancak bankaya ödeyeceğiniz toplam tutar devasa boyutlara ulaşır.</li><li><strong>Tahsis Ücreti ve Sigortalar:</strong> Kredi tahsis ücreti (dosya masrafı) ve zorunlu tutulan hayat sigortaları maliyeti artırır.</li></ul><p>Vhesap Bireysel Finans modülü sayesinde kredi kullanmadan önce tüm bu değişkenleri tek ekranda görebilir, erken ödeme senaryolarını saniyeler içerisinde simüle edebilirsiniz.</p>` },
+            { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı (Avans Hesap veya Ek Hesap), banka hesabınızda para kalmadığında acil nakit ihtiyaçlarınızı karşılamak için size tanımlanan kredili bir limittir.</p><h2>Günlük Faiz Mantığı Nasıl Çalışır?</h2><p>İhtiyaç kredilerinin aksine, KMH limitinden harcadığınız her tutar için faiz "günlük" olarak işlemeye başlar. Cuma günü çekilen bir nakit, pazartesi geri yatırılsa dahi hafta sonu için tam faiz ödenir.</p><h2>Dikkat Edilmesi Gerekenler</h2><ul><li>Ay sonunda kesilen faiz üzerinden ayrıca %15 BSMV ve %15 KKDF vergisi alınır.</li><li>Hesaba giren ilk para, otomatik olarak KMH borcunuzu ve faizini keser.</li><li>KMH, uzun vadeli borçlanma aracı değil, sadece birkaç günlük acil nakit aracı olarak kullanılmalıdır.</li></ul>` },
+            { id: "p3", category: "Bireysel Finans", title: "Taşıt Kredisi Tahsis Ücretleri ve Kasko Maliyeti", icon: "fa-car", body: `<p>Araç alımlarında kullanılan taşıt kredileri, genellikle ipotekli (araç rehinli) olduğu için ihtiyaç kredilerine göre daha düşük faiz oranları sunar. Ancak görünmeyen maliyetler oldukça yüksektir.</p><h2>Görünmeyen Maliyetler Nelerdir?</h2><ul><li><strong>Zorunlu Kasko:</strong> Bankalar, kredi süresi boyunca araca kasko yapılmasını zorunlu tutar. Hatta bazı bankalar kaskonun kendi sigorta şirketlerinden yapılmasını şart koşabilir.</li><li><strong>Rehin Tesis Ücreti:</strong> Aracın ruhsatına banka tarafından satılamaz (rehin) ibaresi konulması için ödenen ücrettir.</li><li><strong>Dosya Masrafı:</strong> Kredi tutarının binde 5'i kadar kesilen yasal masraftır.</li></ul><p>Taşıt kredisi çekerken sadece aylık faiz oranına değil, bankanın size sunduğu <strong>Yıllık Maliyet Oranına</strong> bakarak karar vermelisiniz.</p>` },
+            { id: "p4", category: "Bireysel Finans", title: "Konut Kredilerinde Ekspertiz Değeri ve Limitler", icon: "fa-house-user", body: `<p>Hayalinizdeki evi bulduğunuzda, satış fiyatının tamamına konut kredisi çekemezsiniz. Kredi limiti, evin satış fiyatına değil, bankanın atadığı bağımsız değerleme uzmanının (eksperin) belirlediği değere göre verilir.</p><h2>BDDK Kredi Sınırlandırmaları</h2><p>Bankacılık Düzenleme ve Denetleme Kurumu (BDDK), enerji sınıfına (A, B, C) ve evin değerine göre kredi kullanım oranlarını sınırlar.</p><ul><li>Enerji kimlik belgesi iyi olan sıfır konutlarda, ekspertiz değerinin %90'ına kadar kredi kullanılabilir.</li><li>İkinci el konutlarda ise evin değerine bağlı olarak bu oran %80 veya daha aşağıya düşebilir.</li></ul><p>Kredi çekmeden önce ekspertiz sürecinin masraflı olduğunu ve rapor çıkmadan kesin kredi limitinin belli olmayacağını unutmamalısınız.</p>` },
+            { id: "p5", category: "Ticari Finans", title: "Ticari Finans Yönetimi: İşletmeler İçin Profesyonel Kredi Analizi", icon: "fa-briefcase", body: `<p>İşletmeler için finansman yönetimi sadece kredi çekmekten ibaret değildir. Yanlış finansman modeli seçimi, şirketin tüm kârlılığını faiz giderlerine kurban etmesine neden olabilir.</p><h2>Ticari Kredilerde Yapılan En Büyük Hata</h2><p>Birçok KOBİ, sadece aylık faiz oranına odaklanarak kredi çeker. Oysa ticari finansmanda:</p><ul><li><strong>Rotatif Krediler:</strong> Kullanılan gün kadar faiz ödenir, erken kapanabilir.</li><li><strong>Spot Krediler:</strong> Vade sonuna kadar faiz sabittir ancak erken kapanması genellikle zordur veya maliyetlidir.</li><li><strong>İskonto/İştira:</strong> Çek ve senetlerin vadesinden önce nakde çevrilmesidir, kesinti (iskonto) oranları gizli maliyet barındırır.</li></ul><p>İşletmeler nakit akış tablolarına uygun olarak doğru kredi türünü seçmelidir.</p>` },
+            { id: "p6", category: "Ticari Finans", title: "Ticari Kredi Kartı vs Bireysel Kredi Kartı", icon: "fa-building", body: `<p>Şirket sahipleri, işletme harcamalarını kesinlikle şahsi kredi kartlarından yapmamalıdır. Bunun hem vergisel hem de finansal ciddi dezavantajları vardır.</p><h2>Neden Ticari Kredi Kartı?</h2><ul><li><strong>Taksit Esnekliği:</strong> BDDK'nın bireysel kartlara uyguladığı sert taksit sınırlamaları ticari kartlar için geçerli değildir. Ticari kartlarda uzun taksit imkanları bulunur.</li><li><strong>Vergi Avantajı:</strong> Ticari kartla yapılan ve faturalandırılan harcamalar, doğrudan şirket gideri olarak gösterilip vergiden düşülebilir.</li><li><strong>Şirket Kredi Notu:</strong> Ticari kartın düzenli ödenmesi, şirketinizin bankalar nezdindeki KKB notunu hızla yükseltir.</li></ul>` },
+            { id: "p7", category: "Ticari Finans", title: "Esnaf Kredileri ve Hazine Destekli Krediler", icon: "fa-store", body: `<p>Esnaf ve sanatkarlar, standart banka kredileri kullanmak yerine, devlet destekli esnaf kredilerini tercih ederek çok ciddi finansman avantajı sağlayabilirler.</p><h2>Hazine Destekli Krediler Nasıl Alınır?</h2><p>Bu krediler Esnaf ve Sanatkarlar Kredi ve Kefalet Kooperatifleri (ESKKK) aracılığıyla verilir. Devlet (Hazine), faizin %50'sini sübvanse eder. Bu sayede piyasaya göre yarı yarıya ucuz kredi kullanmış olursunuz. Ancak üyelik, kesintiler ve kefil bulma zorunluluğu gibi katı şartları vardır.</p>` },
+            { id: "p8", category: "Ticari Finans", title: "Döviz Kredisi Kimler Kullanabilir?", icon: "fa-earth-europe", body: `<p>Türkiye'de kur riskinden korunmak amacıyla bireylerin (tüketicilerin) Döviz (Dolar, Euro vb.) cinsinden kredi kullanması kanunen yasaklanmıştır. Sadece belirli şartları taşıyan ticari işletmeler bu krediye erişebilir.</p><h2>İhracatçı ve Döviz Geliri Şartı</h2><p>Bir şirketin döviz kredisi kullanabilmesi için döviz kazandırıcı faaliyetinin (ihracat, turizm geliri vb.) olması şarttır. Bu kuralın amacı, şirketin bilançosunda oluşabilecek kur şoklarını önlemektir. Geliri TL, borcu Dolar olan bir şirket kur artışında iflas edebilir.</p>` },
+            { id: "p9", category: "Ticari Finans", title: "Enflasyon Muhasebesinin Kobilere Etkisi", icon: "fa-book-open", body: `<p>Yüksek enflasyon dönemlerinde şirket bilançoları gerçek değerini yitirir. Yıllar önce alınmış bir makinenin veya deponun defter değeri komik rakamlarda kalırken, satıldığında oluşan devasa fark üzerinden haksız vergi ödenir.</p><h2>Enflasyon Muhasebesi Ne İşe Yarar?</h2><p>Bu sistem, şirket aktifinde bulunan stokların, demirbaşların ve gayrimenkullerin güncel enflasyon oranlarına göre yeniden değerlenmesini sağlar. Böylece işletmeler "fiktif (sanal) kârlar" üzerinden değil, gerçek kârları üzerinden vergilendirilir.</p>` },
+            { id: "p10", category: "Ticari Finans", title: "Tedarikçi Finansmanı ve Açık Hesap", icon: "fa-truck-fast", body: `<p>Ticarette mal alımında peşin ödeme yapmak nakit akışını yorar. Bu nedenle "Açık Hesap" veya "Tedarikçi Finansmanı" modelleri kullanılır.</p><h2>Açık Hesap vs Tedarikçi Finansmanı</h2><ul><li><strong>Açık Hesap:</strong> Alıcı ve satıcının aralarında anlaştığı vadeli çalışma şeklidir. Banka devrede yoktur. Tahsilat riski satıcıdadır.</li><li><strong>Tedarikçi Finansmanı (DBS vb.):</strong> Banka araya girer. Satıcı, faturasını bankaya verir ve parasını hemen alır. Alıcı ise malın bedelini vade sonunda bankaya öder. Her iki taraf için de güvenlidir.</li></ul>` },
+            { id: "p11", category: "Ticari Finans", title: "İşletmeler İçin POS Komisyonları ve Bloke Gün", icon: "fa-cash-register", body: `<p>Mağazalar veya e-ticaret siteleri, tahsilat yaparken bankaların sunduğu POS cihazlarını kullanırlar. Burada iki farklı maliyet modeli vardır:</p><h2>Ertesi Gün vs Blokeli Çalışma</h2><ul><li><strong>Ertesi Gün Hesaba Geçme:</strong> Müşterinin çektiği tutar ertesi gün yatar ancak banka yüksek oranda POS komisyonu keser.</li><li><strong>Blokeli (Vadeli) Çalışma:</strong> Tutar üzerinden komisyon kesilmez veya çok az kesilir ancak banka parayı 30-45 gün boyunca bloke eder. Nakit akışı güçlü firmalar blokeli çalışarak kârlılıklarını artırabilirler.</li></ul>` },
+            { id: "p12", category: "Mevduat", title: "Vadeli Mevduat Hesaplama: Birikimlerinizden Maksimum Getiri", icon: "fa-coins", body: `<p>Vadeli mevduat, anapara garantisi sunduğu için en popüler düşük riskli yatırım aracıdır. Ancak sadece bankanın vitrine koyduğu faiz oranına bakmak yanıltıcıdır.</p><h2>Mevduatta Net Kazanç Nasıl Bulunur?</h2><p>Bankanın verdiği oran "Brüt Yıllık Faiz"dir. Vade sonunda faiz geliri üzerinden devlet stopaj (vergi) kesintisi yapar. Geriye kalan "Net Kazanç"tır. Elde ettiğiniz net kazanç enflasyonun altındaysa, paranız alım gücü olarak eriyor demektir.</p>` },
+            { id: "p13", category: "Yatırım", title: "Konut Kredisi mi, Kirada Kalmak mı?", icon: "fa-house", body: `<p>Ev almak en temel yatırım aracıdır. Ancak faizlerin ve ev fiyatlarının çok yüksek olduğu dönemlerde "Kredi çekip ev almak mı, yoksa kirada kalıp parayı işletmek mi?" sorusu gündeme gelir.</p><h2>Kira Çarpanı Analizi</h2><p>Bir evin satış fiyatını, o evin aylık kira getirisine böldüğünüzde amortisman ayını verir. Eğer bir ev kendini 250 - 300 aydan uzun sürede amorti ediyorsa finansal olarak "pahalı" kabul edilir. Bu durumda nakit paranızı mevduatta veya fonlarda değerlendirip o evin kirasını ödemek matematiksel olarak daha mantıklı olabilir.</p>` },
+            { id: "p14", category: "Yatırım", title: "Enflasyon Korumalı Yatırım Araçları", icon: "fa-shield-halved", body: `<p>Enflasyon oranının banka faizlerini aştığı dönemlerde "nakitte kalmak" servetin erimesi anlamına gelir. Paranın satın alma gücünü korumak için enflasyona endeksli araçlar seçilmelidir.</p><h2>Enflasyon Kalkanları Nelerdir?</h2><ul><li><strong>Hisse Senetleri:</strong> Enflasyon şirketlerin kârını nominal olarak artırdığı için hisse piyasaları uzun vadede enflasyonu yener.</li><li><strong>Fiziki Varlıklar:</strong> Altın, gümüş ve gayrimenkul arzı kısıtlı olduğu için değer kaybına karşı koruma sağlar.</li><li><strong>Dövize Endeksli Fonlar:</strong> Yabancı para birimlerine yatırım yapan fonlar, kur artışlarından pozitif etkilenir.</li></ul>` },
+            { id: "p15", category: "Yatırım", title: "Kur Korumalı Mevduatın (KKM) Alternatifleri", icon: "fa-money-bill-trend-up", body: `<p>Kur Korumalı Mevduat (KKM) sisteminin sonlandırılmasıyla, yatırımcılar yeni risksiz getiri arayışlarına girdiler.</p><h2>Parayı Nereye Yönlendirmeli?</h2><ul><li><strong>Para Piyasası Fonları:</strong> Gecelik faiz oranlarına endeksli çalışırlar. Likiditesi yüksektir, istediğiniz gün bozabilirsiniz.</li><li><strong>Yüksek Faizli TL Mevduat:</strong> Merkez Bankası'nın faiz artırımlarıyla cazip hale gelmiş ve reel getiri sunmaya başlamıştır.</li></ul>` },
+            { id: "p16", category: "Yatırım", title: "BES (Bireysel Emeklilik) ve %30 Devlet Katkısı", icon: "fa-piggy-bank", body: `<p>Bireysel Emeklilik Sistemi (BES), uzun vadeli tasarruf yapma disiplini kazandıran ve devlet teşvikiyle desteklenen bir araçtır.</p><h2>%30 Devlet Katkısının Şartları</h2><p>Sisteme yatırdığınız her 100 TL için devlet 30 TL katkı payı yatırır. Bu katkının tamamını hak etmek için sistemde en az 10 yıl kalmanız ve 56 yaşınızı doldurarak emekli olmanız gerekir.</p>` },
+            { id: "p17", category: "Yatırım", title: "Fiziki Altın mı, Banka Altın Hesabı mı?", icon: "fa-gem", body: `<p>Altın yatırımı yapacak kişilerin önünde iki ana seçenek vardır: Kuyumcudan fiziki altın almak veya bankadan gram altın hesabı açmak.</p><h2>Karşılaştırma</h2><ul><li><strong>Fiziki Altın:</strong> Saklama ve çalınma riski vardır. İşçilikli altın alınırsa satarken zarar edilir.</li><li><strong>Banka Altın Hesabı:</strong> Hırsızlık riski sıfırdır. İnternetten 7/24 alınıp satılabilir. Ancak bankaların alış ve satış kurları arasındaki fark (makas) bazen çok yüksek olabilir.</li></ul>` },
+            { id: "p18", category: "Yatırım", title: "Yeni Başlayanlar İçin Yatırım Fonları", icon: "fa-chart-line", body: `<p>Borsaya girmek istiyor ancak şirket bilançosu okumayı bilmiyorsanız, en iyi çözüm Yatırım Fonlarıdır.</p><h2>Yatırım Fonu Nedir?</h2><p>Yatırımcıların parasının bir havuzda toplanarak, finans uzmanları tarafından yönetildiği sistemdir. TEFAS (Türkiye Elektronik Fon Alım Satım Platformu) üzerinden tüm fonlar her bankadan kolayca alınıp satılabilir. Riskinizi profesyonellere devretmiş olursunuz.</p>` },
+            { id: "p19", category: "Yatırım", title: "Borsada Hisse Senedi vs Borsa Yatırım Fonu (ETF)", icon: "fa-arrow-trend-up", body: `<p>Yatırımcılar tek bir şirketin hissesini almak yerine ETF (Borsa Yatırım Fonu) alarak risklerini minimize edebilirler.</p><h2>ETF'lerin Avantajı Nedir?</h2><p>Örneğin teknoloji sektörüne inanıyorsunuz. Hangi şirketin büyüyeceğini seçmek risktir. "Teknoloji Endeksi ETF'i" aldığınızda, sektördeki en büyük 20 şirketin hissesine aynı anda ortak olursunuz. ETF'ler borsa saatleri içerisinde hisse senedi gibi anında alınıp satılabilir.</p>` },
+            { id: "p20", category: "Yatırım", title: "Mevduat Merdiveni Stratejisi", icon: "fa-stairs", body: `<p>Faiz oranlarının sürekli değiştiği dönemlerde tüm birikiminizi tek bir vadeye bağlamak fırsatları kaçırmanıza neden olabilir.</p><h2>Merdiven Stratejisi Nasıl Uygulanır?</h2><p>Yatırımınızı bölün. Bir kısmını 32 günlük, bir kısmını 92 günlük, diğer kısmını 181 günlük mevduata bağlayın. Böylece her ay nakde dönen bir tutarınız olur. Faizler artarsa kısa vadeden dönen parayı yüksek faizle bağlar, düşerse uzun vadedeki kısımlarla yüksek getiriyi korursunuz.</p>` },
+            { id: "p21", category: "Analiz", title: "Vanaliz Nedir? Kararlarınızı Veriye Dayalı Analiz Edin", icon: "fa-chart-pie", body: `<p>Vanaliz, Vhesap platformu içerisinde yer alan akıllı, veriye dayalı finansal analiz modülüdür.</p><h2>Neleri Analiz Eder?</h2><ul><li><strong>Finansal Stres Oranı:</strong> Kredi taksitinin, aylık net gelirinize oranını hesaplar. %40'ın üzeri riskli kabul edilir.</li><li><strong>Alternatif Getiri Karşılaştırması:</strong> Peşin almak ile kredi çekmek arasındaki matematiksel farkı hesaplar ve en kârlı seçeneği sunar.</li></ul>` },
+            { id: "p22", category: "Kredi Kartı", title: "Kredi Kartı Asgari Ödeme Tuzağı", icon: "fa-credit-card", body: `<p>Kredi kartı ekstrenizin tamamını ödeyemediğinizde sadece "Asgari Ödeme Tutarını" ödemek büyük bir tuzaktır.</p><h2>Asgari Ödeme Neden Tehlikelidir?</h2><p>Asgari tutarı ödediğinizde, kalan borç üzerinden yüksek akdi faiz ve vergiler işler. Aylar boyunca asgari öderseniz anapara azalmaz, borcunuz kartopu gibi büyür. Kapatamıyorsanız düşük faizli ihtiyaç kredisi çekip kartı sıfırlamak en iyisidir.</p>` },
+            { id: "p23", category: "Kredi Kartı", title: "Nakit Avans ve Taksitli Nakit Avans Farkı", icon: "fa-money-bill", body: `<p>Kredi kartı limitinden ATM'den nakit para çekmek kullanım türüne göre farklı maliyetler yaratır.</p><h2>Tek Çekim vs Taksitli Avans</h2><ul><li><strong>Tek Çekim Nakit Avans:</strong> Çektiğiniz günden itibaren ekstre kesilene kadar günlük faiz işler, pahalıdır.</li><li><strong>Taksitli Nakit Avans:</strong> Çekilen nakdi aylara bölersiniz. İhtiyaç kredisi mantığıyla çalışır, faiz sabittir ve sürpriz maliyet çıkarmaz.</li></ul>` },
+            { id: "p24", category: "Kredi Kartı", title: "Kredi Kartı Puanları ve Mil Stratejileri", icon: "fa-plane-departure", body: `<p>Doğru kredi kartı kullanımı size bedava tatiller ve uçak biletleri kazandırabilir.</p><h2>Mil ve Puan Stratejisi</h2><p>Havayolu ortaklı kartlarla zorunlu harcamalarınızı (market, yakıt) yapıp ekstreyi vadesinde öderseniz sıfır faizle mil biriktirirsiniz. Bankaların sektör kampanyalarını takip ederek kazancınızı katlayabilirsiniz.</p>` },
+            { id: "p25", category: "Kredi", title: "Ara Ödeme (Balon Ödeme) ile Kredi Kısaltma", icon: "fa-scissors", body: `<p>Kredi öderken, elinize geçen toplu bir parayı kredinize "Ara Ödeme" olarak yatırmak faiz yükünüzü çok azaltır.</p><h2>Taksit mi, Vade mi Düşmeli?</h2><p>Aylık ödemelerde zorlanmıyorsanız, ara ödeme yaptıktan sonra taksit tutarını sabit tutup kredi vadesini kısaltmak finansal açıdan en kârlı yöntemdir. Bankaya ödeyeceğiniz toplam faizi minimuma indirir.</p>` },
+            { id: "p26", category: "Kredi", title: "Refinansman (Kredi Yapılandırma) Rehberi", icon: "fa-rotate", body: `<p>Faiz oranlarının yüksek olduğu bir dönemde kredi çektiniz, ancak daha sonra faizler düştü. Bu durumda eski krediyi kapatıp yeni ucuz oranla devam etmeye Refinansman denir.</p><h2>Ne Zaman Kârlıdır?</h2><p>Konut kredilerinde banka %1-2 erken kapama cezası alır. Faiz indiriminin size sağlayacağı kâr, ödeyeceğiniz ceza ve yeni dosya masraflarından yüksekse refinansman yapmak mantıklıdır.</p>` },
+            { id: "p27", category: "Kredi", title: "İpotekli İhtiyaç Kredisi Şartları", icon: "fa-key", body: `<p>Standart ihtiyaç kredisi limitlerinin (örn: 200 bin TL) yetersiz kaldığı büyük nakit ihtiyaçlarında İpotekli Kredi kullanılır.</p><h2>Nasıl Çalışır?</h2><p>Kendinize ait olan konutu bankaya rehin vererek, evin ekspertiz değerine kadar yüksek tutarlı ve uzun vadeli kredi çekebilirsiniz. Ancak borç ödenmezse bankanın evi satma hakkı vardır.</p>` },
+            { id: "p28", category: "Kredi", title: "Teminatlı vs Teminatsız Kredi Seçimi", icon: "fa-scale-unbalanced", body: `<p>Bankalar kredi verirken aldıkları riske göre faiz belirler.</p><ul><li><strong>Teminatsız Krediler:</strong> Sadece gelir belgenize dayalı standart kredilerdir. Bankanın riski yüksek olduğu için faizleri yüksektir.</li><li><strong>Teminatlı Krediler:</strong> Konut, taşıt veya mevduat karşılığı verilir. Banka riski garanti altına aldığı için piyasadaki en düşük faizli kredilerdir.</li></ul>` },
+            { id: "p29", category: "Finansal Rehber", title: "KKB Puanı (Kredi Notu) Nasıl Yükselir?", icon: "fa-arrow-trend-up", body: `<p>Findeks Kredi Notu, bankacılık sistemindeki karnenizdir ve 0-1900 arası değişir.</p><h2>Notu Hızlı Yükseltmenin Yolları</h2><ul><li>Kredi kartı ekstrelerinizin asgarisini değil, tamamını vadesinde ödeyin.</li><li>Kredi limitlerinizi sonuna kadar doldurmayın, %30-%40 kullanım oranında kalın.</li><li>Kısa sürede çok fazla kredi başvurusu yapmayın, ret almak notu düşürür.</li></ul>` },
+            { id: "p30", category: "Finansal Rehber", title: "Findeks Risk Raporu Okuma Sanatı", icon: "fa-file-invoice", body: `<p>Banka sadece skora değil, Findeks Risk Raporunuzun detaylarına bakar.</p><h2>Raporda Neler Görünür?</h2><p>Açık ve kapalı tüm borçlarınız görünür. En önemlisi Gecikme Takvimidir. 1-30 gün arası gecikme sarı uyarı, 90 gün ve üzeri yasal takiptir. Temiz bir geçmiş kredi almayı çok kolaylaştırır.</p>` },
+            { id: "p31", category: "Finansal Rehber", title: "50/30/20 Bütçe Kuralı ile Finans Yönetimi", icon: "fa-wallet", body: `<p>Kişisel finans yönetiminin en basit ve etkili kuralıdır.</p><h2>Nasıl Dağıtılır?</h2><ul><li><strong>%50 İhtiyaçlar:</strong> Kira, fatura, mutfak gibi zorunlu giderler.</li><li><strong>%30 İstekler:</strong> Dışarıda yemek, tatil, hobiler gibi esnek harcamalar.</li><li><strong>%20 Birikim/Yatırım:</strong> Geleceğiniz için BES, borsa veya mevduata ayrılan zorunlu pay.</li></ul>` },
+            { id: "p32", category: "Finansal Rehber", title: "Finansal Okuryazarlığın 5 Altın Kuralı", icon: "fa-graduation-cap", body: `<p>Finansal bağımsızlığa ulaşmak için şu kuralları uygulayın:</p><ol><li><strong>Acil Durum Fonu:</strong> En az 3 aylık giderinizi güvenli bir yerde hazır tutun.</li><li><strong>Bütçe Yapın:</strong> Paranızın nereye gittiğini takip edin.</li><li><strong>Kötü Borçtan Kaçının:</strong> Sadece tüketim için borçlanmayın.</li><li><strong>Bileşik Faizi Kullanın:</strong> Kazanılan faizin üzerine faiz işleterek erken yatırım yapın.</li><li><strong>Çeşitlendirme:</strong> Tüm yatırımı tek bir araca bağlamayın, riski dağıtın.</li></ol>` },
+            { id: "p33", category: "Vergi", title: "BSMV ve KKDF Nedir? Ne Zaman Kesilir?", icon: "fa-scale-balanced", body: `<p>Bireysel krediler (ihtiyaç, taşıt) kullandığınızda bankaya ödediğiniz faiz tutarı üzerinden devlet iki vergi keser:</p><ul><li><strong>KKDF:</strong> Kaynak Kullanımını Destekleme Fonu (%15).</li><li><strong>BSMV:</strong> Banka ve Sigorta Muameleleri Vergisi (%15). Toplamda %30 vergi ödersiniz.</li></ul><p>Not: Devlet konut alımını desteklemek için konut kredilerini bu vergilerden tamamen muaf tutmuştur.</p>` },
+            { id: "p34", category: "Vergi", title: "Erken Kredi Kapatma Cezası (Konut Kredisi)", icon: "fa-gavel", body: `<p>İhtiyaç ve taşıt kredilerini vadesinden önce kapatırsanız banka ceza (tazminat) alamaz. Ancak <strong>Konut Kredilerinde</strong> durum farklıdır.</p><p>Tüketici Kanununa göre banka; kalan vadesi 36 aya kadar olan konut kredilerinde kalan anaparanın %1'i, 36 aydan uzun olanlarda ise %2'si oranında Erken Ödeme Cezası alma hakkına sahiptir.</p>` },
+            { id: "p35", category: "Sigorta", title: "Kredi Hayat Sigortası İptali ve İade Süreci", icon: "fa-heart-pulse", body: `<p>Kredi kullanırken vefat durumuna karşı yapılan Hayat Sigortası peşin tahsil edilir. Ancak kredinizi örneğin yarısında erken kapatırsanız, sigortanın geri kalan kısmı boşa düşer.</p><h2>Nasıl İade Alınır?</h2><p>Otomatik iade olmaz. Krediyi kapattıktan hemen sonra sigorta şirketini veya bankanızı arayarak poliçe iptali talep etmelisiniz. Kullanılmayan günlerin primi yasal olarak hesabınıza iade edilir.</p>` },
+            { id: "p36", category: "Ekonomi", title: "Merkez Bankası (TCMB) Faiz Kararları", icon: "fa-building-columns", body: `<p>TCMB'nin politika faizi kararları ekonomideki paranın maliyetini belirler.</p><ul><li><strong>Faiz Artırımı:</strong> Mevduat getirisi yükselir, kredi çekmek pahalanır, tüketim düşer ve enflasyonun yavaşlaması hedeflenir.</li><li><strong>Faiz İndirimi:</strong> Krediler ucuzlar, tüketim ve yatırım artar, ancak enflasyon ve kur artışı riski doğar.</li></ul><p>Not: Daha önce çektiğiniz sabit taksitli kredilerin ödemesi bu değişimlerden etkilenmez.</p>` },
+            { id: "p37", category: "Hukuk", title: "Kredi Kefaletinde Yasal Sorumluluklar", icon: "fa-handshake", body: `<p>Birine kefil olmak, sadece imza atmak değil borcun altına hukuken girmektir.</p><h2>Müteselsil Kefalet</h2><p>Bankalar sözleşmelerde "Müteselsil (Zincirleme) Kefil" ibaresini kullanır. Bu sayede, asıl borçlu bir taksiti bile geciktirdiği an, banka asıl borçluya gitmek zorunda kalmadan doğrudan kefilin maaşına haciz koyma ve parayı tahsil etme hakkına sahip olur.</p>` },
+            { id: "p38", category: "Hukuk", title: "Senetle Araç veya Ev Almanın Hukuki Riskleri", icon: "fa-file-signature", body: `<p>Bankadan kredi onayı alamayanlar genellikle senetle satış yapan yerlere yönelirler. Ancak bu büyük riskler barındırır.</p><p>Senet hukuki yaptırımı çok güçlü bir evraktır. Ödenmediği gün doğrudan hızlı icra takibi (haciz) başlatılabilir. Ayrıca boş senede imza atılması veya rakamlarda tahrifat yapılması riski yüksektir. Bankacılık sistemi çok daha güvenlidir.</p>` },
+            { id: "p39", category: "Gayrimenkul", title: "Tersine İpotek (Reverse Mortgage) Sistemi", icon: "fa-house-chimney", body: `<p>Türkiye'de yeni yaygınlaşan, genellikle emekliler için geliştirilmiş bir finansman sistemidir.</p><h2>Sistem Nasıl Çalışır?</h2><p>Sahip olduğunuz evi bankaya ipotek ederek ömür boyu aylık maaş bağlanmasını sağlarsınız. Evinizde kira ödemeden yaşamaya devam edersiniz. Vefat durumunda banka evi satar, ödediği parayı tahsil edip kalanı mirasçılara devreder.</p>` }
+        ];
+
+        // --- RENDER VE İŞLEV FONKSİYONLARI ---
+
+        // Kelime sayısına göre Tahmini Okuma Süresi
+        function getReadTime(htmlContent) {
+            const text = htmlContent.replace(/<[^>]*>?/gm, '');
+            const wordCount = text.split(/\s+/).length;
+            const time = Math.ceil(wordCount / 200); // Ort. 200 kelime/dk
+            return time < 1 ? 1 : time;
+        }
+
+        // Dinamik URL Router (Eğer ?yazi=id varsa direkt o makaleyi aç)
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const yaziId = params.get('yazi');
+            if(yaziId && loadedPosts.length > 0) {
+                const post = loadedPosts.find(p => p.id === yaziId);
+                if(post) {
+                    openPost(post.id, false); // false = URL'yi tekrar değiştirme
+                }
+            }
+        }
+
         function renderGroupedPosts(postsArray) {
             const categories = [...new Set(postsArray.map(p => p.category))];
             
@@ -354,16 +349,19 @@
             categories.forEach(cat => {
                 const catId = cat.replace(/\s+/g, '-').toLowerCase();
                 contentHtml += `<h3 class="cat-title" id="cat-${catId}">${cat}</h3>`;
-                contentHtml += `<div class="grid">`;
+                contentHtml += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`; // Tailwind Grid
                 
                 postsArray.filter(p => p.category === cat).forEach(p => {
                     contentHtml += `
-                    <div class="post-card" data-id="${p.id}">
-                        <div class="post-image"><i class="fa-solid ${p.icon || 'fa-file-lines'}"></i></div>
-                        <div class="post-content">
-                            <div class="post-title">${p.title}</div>
-                            <div class="post-desc">${(p.body || "").replace(/<[^>]+>/g, "").substring(0, 115)}...</div>
-                            <div class="post-footer"><span>Makaleyi Oku →</span></div>
+                    <div class="bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-[var(--apple-yellow)] transition-all cursor-pointer flex flex-col" onclick="openPost('${p.id}')">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-[var(--apple-yellow)] flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid ${p.icon || 'fa-file-lines'}"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-[var(--apple-text)] leading-snug mb-2">${p.title}</h4>
+                        <p class="text-xs text-[var(--apple-text-muted)] line-clamp-3 mb-4 flex-grow">${(p.body || "").replace(/<[^>]+>/g, "").substring(0, 100)}...</p>
+                        <div class="text-[10px] font-bold text-[var(--apple-yellow)] uppercase tracking-wider mt-auto flex justify-between">
+                            <span>Okumaya Başla →</span>
+                            <span>⏱️ ${getReadTime(p.body)} dk</span>
                         </div>
                     </div>`;
                 });
@@ -371,8 +369,22 @@
             });
 
             document.getElementById("postsContent").innerHTML = indexHtml + contentHtml;
-            document.querySelectorAll(".post-card").forEach(card => card.onclick = () => openPost(card.dataset.id));
         }
+
+        // CANLI ARAMA
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = loadedPosts.filter(p => 
+                p.title.toLowerCase().includes(val) || 
+                p.category.toLowerCase().includes(val) || 
+                p.body.toLowerCase().includes(val)
+            );
+            if(filtered.length === 0) {
+                document.getElementById("postsContent").innerHTML = `<div class="py-10 text-center text-[var(--apple-text-muted)]">Aradığınız kriterlere uygun makale bulunamadı.</div>`;
+            } else {
+                renderGroupedPosts(filtered);
+            }
+        });
 
         async function fetchAndRenderPosts() {
             try {
@@ -389,38 +401,114 @@
                     querySnapshot.forEach(doc => { loadedPosts.push({ id: doc.id, ...doc.data() }); });
                 }
                 renderGroupedPosts(loadedPosts);
+                checkUrlParams(); // Sayfa yüklendiğinde URL'de yazı varsa aç
             } catch (error) {
+                console.warn("Veritabanı erişimi engellendi, makaleler önbellekten (fallback) yükleniyor.");
                 loadedPosts = initialPosts;
                 renderGroupedPosts(loadedPosts);
+                checkUrlParams();
             }
         }
 
-        function openPost(id) {
+        window.openPost = function(id, changeUrl = true) {
             activePost = id;
             const p = loadedPosts.find(x => x.id === id);
             if(!p) return;
 
             document.getElementById("homePage").style.display = "none";
-            document.getElementById("viewer").style.display = "block";
+            document.getElementById("viewer").style.display = "flex";
             document.getElementById("articleTitle").innerHTML = p.title;
             document.getElementById("articleCategory").innerHTML = p.category;
+            document.getElementById("articleReadTime").innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${getReadTime(p.body)} dk okuma`;
+            
+            // Editörden silme butonunu kontrol et
+            const delBtn = document.getElementById("deleteActivePostBtn");
+            if (isSuperAdmin || (isWriter && p.authorEmail === currentUser?.email)) {
+                delBtn.style.display = "flex";
+                delBtn.onclick = () => { deletePost(p.id); };
+            } else {
+                delBtn.style.display = "none";
+            }
+
+            // Makale gövdesini oluştur
             document.getElementById("articleBody").innerHTML = p.body;
             document.title = `${p.title} | Vhesap`;
             
-            logEvent(analytics, 'view_post', { post_id: p.id, title: p.title, category: p.category });
-            
+            // URL YAPISINI GÜNCELLE (Paylaşılabilir Link İçin)
+            if(changeUrl) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?yazi=' + p.id;
+                window.history.pushState({path:newUrl}, '', newUrl);
+            }
+
+            logEvent(analytics, 'view_post', { post_id: p.id, title: p.title });
             loadComments();
             window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        window.deletePost = async function(id) {
+            if(!confirm("Bu makaleyi kalıcı olarak silmek istediğinize emin misiniz?")) return;
+            try {
+                await deleteDoc(doc(db, "posts", id));
+                toast("Makale silindi.");
+                document.getElementById("backBtn").click(); // Geri dön
+                fetchAndRenderPosts(); // Listeyi yenile
+            } catch (e) {
+                toast("Silme yetkiniz reddedildi.");
+            }
         }
 
         document.getElementById("backBtn").onclick = () => {
             document.getElementById("viewer").style.display = "none";
             document.getElementById("homePage").style.display = "block";
             document.title = "Vhesap | Finans Rehberi";
+            
+            // URL'yi temizle
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({path:cleanUrl}, '', cleanUrl);
+
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
+        // --- ADMİN EDİTÖR ---
+        document.getElementById("adminPanelBtn").onclick = () => {
+            document.getElementById("homePage").style.display = "none";
+            document.getElementById("adminEditor").style.display = "block";
+        };
+
+        document.getElementById("closeEditorBtn").onclick = () => {
+            document.getElementById("adminEditor").style.display = "none";
+            document.getElementById("homePage").style.display = "block";
+        };
+
+        document.getElementById("publishPostBtn").onclick = async () => {
+            const title = document.getElementById("editTitle").value.trim();
+            const cat = document.getElementById("editCategory").value.trim();
+            const icon = document.getElementById("editIcon").value.trim();
+            const bodyHtml = document.getElementById("editBody").value.trim();
+
+            if(!title || !cat || !bodyHtml) return toast("Başlık, Kategori ve İçerik zorunludur.");
+            
+            const btn = document.getElementById("publishPostBtn");
+            btn.disabled = true; btn.innerHTML = "Kaydediliyor...";
+
+            try {
+                await addDoc(collection(db, "posts"), {
+                    title: title, category: cat, icon: icon, body: bodyHtml,
+                    authorEmail: currentUser.email, authorUid: currentUser.uid, createdAt: serverTimestamp()
+                });
+                toast("Makale yayına alındı!");
+                document.getElementById("editTitle").value = ""; document.getElementById("editCategory").value = ""; document.getElementById("editBody").value = "";
+                document.getElementById("closeEditorBtn").click();
+                fetchAndRenderPosts();
+            } catch(e) {
+                toast("Makale eklenemedi. Admin yetkiniz reddedildi.");
+            } finally {
+                btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-2"></i> Yayına Al`;
+            }
+        };
+
+        // --- YORUMLAR ---
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -431,7 +519,7 @@
                 commentsData.sort((a, b) => (b.createdAt?.toMillis() || Date.now()) - (a.createdAt?.toMillis() || Date.now()));
 
                 let html = "";
-                document.getElementById("commentCount").innerHTML = commentsData.length + " Yorum";
+                document.getElementById("commentCount").innerHTML = commentsData.length;
 
                 if (commentsData.length === 0) {
                     html = `<div class="loading">Henüz yorum yapılmamış. İlk yorumu siz yazın.</div>`;
@@ -439,32 +527,64 @@
                     commentsData.forEach(d => {
                         const tarih = d.createdAt ? d.createdAt.toDate().toLocaleString("tr-TR") : "Az önce";
                         const txt = document.createElement("div"); txt.textContent = d.text;
+                        
+                        let delBtn = isSuperAdmin ? `<button onclick="deleteComment('${d.id}')" class="absolute top-4 right-4 text-red-500 opacity-50 hover:opacity-100 transition-opacity"><i class="fa-solid fa-trash"></i></button>` : "";
+
                         html += `
-                        <div class="comment">
-                            <div class="comment-top">
-                                <img src="${d.authorPhoto}" class="avatar" referrerpolicy="no-referrer">
-                                <div><div class="author">${d.authorName}</div><div class="date">${tarih}</div></div>
+                        <div class="p-5 rounded-2xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] relative">
+                            ${delBtn}
+                            <div class="flex items-center gap-3 mb-3">
+                                <img src="${d.authorPhoto}" class="w-10 h-10 rounded-full border border-[var(--apple-border)]" referrerpolicy="no-referrer">
+                                <div>
+                                    <div class="text-sm font-bold text-[var(--apple-text)]">${d.authorName}</div>
+                                    <div class="text-[10px] text-[var(--apple-text-muted)]">${tarih}</div>
+                                </div>
                             </div>
-                            <div>${txt.innerHTML}</div>
+                            <div class="text-sm text-[var(--apple-text)] opacity-90">${txt.innerHTML}</div>
                         </div>`;
                     });
                 }
                 document.getElementById("commentsList").innerHTML = html;
-            }, error => {
-                document.getElementById("commentsList").innerHTML = `<div class="loading">Yorumlar yüklenemedi.</div>`;
             });
         }
 
-        // Karakter Sayacı
-        document.getElementById("commentText").addEventListener("input", function() {
-            const length = this.value.length;
-            document.getElementById("charCount").innerText = `${length}/500`;
-            if (length >= 500) document.getElementById("charCount").style.color = "var(--amber)";
-            else document.getElementById("charCount").style.color = "var(--muted)";
-        });
+        window.deleteComment = async function(commentId) {
+            if(!confirm("Bu yorumu silmek istediğinize emin misiniz?")) return;
+            try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
+        }
 
-        // --- AUTH & RATE LIMITING ---
-        onAuthStateChanged(auth, user => {
+        // --- AUTH, ROL YÖNETİMİ & RATE LIMITING ---
+        async function checkUserRole(user) {
+            isSuperAdmin = (user.email === SUPER_ADMIN_EMAIL);
+            isWriter = false;
+            
+            if(!isSuperAdmin) {
+                try {
+                    // Firebase Firestore kurallarından geçebilmek için roles tablosunu oku
+                    const roleDoc = await getDoc(doc(db, "roles", user.uid));
+                    if(roleDoc.exists() && roleDoc.data().role === 'writer') {
+                        isWriter = true;
+                    }
+                } catch(e) {
+                    console.log("Rol okuma hatası veya normal kullanıcı.");
+                }
+            }
+
+            // Arayüzü güncelle
+            const roleBadge = document.getElementById("userRoleBadge");
+            if(isSuperAdmin) {
+                roleBadge.innerHTML = '<span class="text-red-500">Super Admin</span>';
+                document.getElementById("adminPanelBtn").style.display = "block";
+            } else if (isWriter) {
+                roleBadge.innerHTML = '<span class="text-amber-500">Yazar</span>';
+                document.getElementById("adminPanelBtn").style.display = "block";
+            } else {
+                roleBadge.innerHTML = 'Okuyucu Üye';
+                document.getElementById("adminPanelBtn").style.display = "none";
+            }
+        }
+
+        onAuthStateChanged(auth, async user => {
             if (user) {
                 currentUser = user;
                 document.getElementById("loginBtn").style.display = "none";
@@ -473,13 +593,19 @@
                 document.getElementById("userName").innerHTML = user.displayName;
                 document.getElementById("loginWarning").style.display = "none";
                 document.getElementById("commentBox").style.display = "block";
+                
+                await checkUserRole(user);
             } else {
-                currentUser = null;
-                document.getElementById("loginBtn").style.display = "inline-flex";
+                currentUser = null; isSuperAdmin = false; isWriter = false;
+                document.getElementById("loginBtn").style.display = "flex";
                 document.getElementById("userArea").style.display = "none";
                 document.getElementById("loginWarning").style.display = "block";
                 document.getElementById("commentBox").style.display = "none";
+                document.getElementById("adminPanelBtn").style.display = "none";
             }
+            
+            // Silme butonlarını yetkiye göre yeniden render etmek istersen:
+            // fetchAndRenderPosts(); // Opsiyonel, ana sayfada silme butonu koyarsan aktif et
         });
 
         const handleLogin = async () => {
@@ -493,21 +619,22 @@
         document.getElementById("warningLoginBtn").onclick = handleLogin;
         document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); toast("Çıkış yapıldı."); };
 
+        document.getElementById("commentText").addEventListener("input", function() {
+            const length = this.value.length;
+            document.getElementById("charCount").innerText = `${length}/500`;
+            document.getElementById("charCount").style.color = (length >= 500) ? "var(--apple-yellow)" : "var(--apple-text-muted)";
+        });
+
         document.getElementById("sendComment").onclick = async () => {
             if (!currentUser) return;
             const text = document.getElementById("commentText").value.trim();
-            if (text.length < 5) return toast("Yorumunuz çok kısa (En az 5 karakter).");
-            if (text.length > 500) return toast("Yorumunuz 500 karakter sınırını aşıyor.");
+            if (text.length < 5) return toast("Yorumunuz çok kısa.");
+            if (text.length > 500) return toast("Yorumunuz sınırı aşıyor.");
 
-            // Anti-Spam (60 Saniye)
             const lastCommentStr = localStorage.getItem("vhesap_last_comment_time");
             const now = Date.now();
-            if (lastCommentStr) {
-                const lastTime = parseInt(lastCommentStr, 10);
-                if (now - lastTime < SPAM_COOLDOWN_MS) {
-                    const kalanSaniye = Math.ceil((SPAM_COOLDOWN_MS - (now - lastTime)) / 1000);
-                    return toast(`Lütfen ${kalanSaniye} saniye bekleyip tekrar deneyin.`);
-                }
+            if (lastCommentStr && (now - parseInt(lastCommentStr, 10) < SPAM_COOLDOWN_MS)) {
+                return toast(`Lütfen ${Math.ceil((SPAM_COOLDOWN_MS - (now - parseInt(lastCommentStr, 10))) / 1000)} saniye bekleyin.`);
             }
 
             const btn = document.getElementById("sendComment");
@@ -519,14 +646,22 @@
                     authorPhoto: currentUser.photoURL, text: text, createdAt: serverTimestamp()
                 });
                 
+                // Arka planda AJAX ile e-posta bildirimi (Super Admin'e)
+                fetch("https://formsubmit.co/ajax/" + SUPER_ADMIN_EMAIL, {
+                    method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        _subject: "Vhesap Makale Yorumu", Makale: activePostTitle, Yorumu_Yazan: currentUser.displayName,
+                        Eposta: currentUser.email, Mesaj: text
+                    })
+                }).catch(() => {}); // Hata verse de UI'yi etkilemesin
+
                 localStorage.setItem("vhesap_last_comment_time", now.toString());
                 document.getElementById("commentText").value = ""; 
                 document.getElementById("charCount").innerText = "0/500";
                 toast("Yorumunuz başarıyla eklendi.");
-                
                 logEvent(analytics, 'add_comment', { post_id: activePost });
             } catch (e) { 
-                toast("Yorum gönderilemedi. Lütfen bağlantınızı kontrol edin."); 
+                toast("Bağlantı sorunu."); 
             } finally { 
                 btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; 
             }
