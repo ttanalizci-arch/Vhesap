@@ -6,45 +6,39 @@
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" id="metaDescription" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
+    <!-- Tailwind ve FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     
     <style>
-        /* APPLE TASARIM MİMARİSİ (index.html ile Birebir Uyumlu) */
         :root {
             --apple-bg: #f4f4f5;
-            --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
             --apple-card: #ffffff;
             --apple-card-border: rgba(0, 0, 0, 0.06);
             --apple-text: #18181b;
             --apple-text-muted: #71717a;
             --apple-yellow: #d97706; 
             --apple-yellow-hover: #b45309;
-            --apple-border: rgba(217, 119, 6, 0.15);
             --apple-nav-bg: rgba(255, 255, 255, 0.85);
             --apple-input-bg: #f4f4f5;
         }
 
         body.dark {
             --apple-bg: #000000;
-            --apple-container-bg: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
             --apple-card: rgba(24, 24, 27, 0.7);
             --apple-card-border: rgba(255, 255, 255, 0.04);
             --apple-text: #f4f4f5;
             --apple-text-muted: #a1a1aa;
             --apple-yellow: #f59e0b;
             --apple-yellow-hover: #d97706;
-            --apple-border: rgba(245, 158, 11, 0.15);
             --apple-nav-bg: rgba(39, 39, 42, 0.75);
             --apple-input-bg: #18181b;
         }
 
         body { background-color: var(--apple-bg); color: var(--apple-text); transition: background-color 0.3s; scroll-behavior: smooth;}
         
-        /* OKUMA İLERLEME ÇUBUĞU */
-        #progressBar { position: fixed; top: 0; left: 0; height: 4px; background: var(--apple-yellow); z-index: 9999; width: 0%; transition: width 0.2s ease-out; }
+        #progressBar { position: fixed; top: 0; left: 0; height: 3px; background: var(--apple-yellow); z-index: 9999; width: 0%; transition: width 0.2s ease-out; }
 
-        /* YAZDIRMA (PRINT) FORMATI */
         @media print {
             body { background: white !important; color: black !important; }
             #header, #homePage, .comments, #progressBar, .no-print { display: none !important; }
@@ -52,16 +46,13 @@
             .article-body { font-size: 14pt; }
         }
 
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
 
-        /* KATEGORİ İNDEKSİ (YAPIŞKAN) */
-        .index-wrapper { position: sticky; top: 0; background: var(--apple-nav-bg); backdrop-filter: blur(20px); z-index: 50; padding: 10px 0; border-bottom: 1px solid var(--apple-card-border); }
+        .index-wrapper { position: sticky; top: 0; background: var(--apple-nav-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 50; padding: 12px 0; border-bottom: 1px solid var(--apple-card-border); }
         .index-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding: 0 5px; }
         
-        /* MAKALELER İÇİN TERİM TOOLTIP'İ */
         .tooltip-text { border-bottom: 1px dashed var(--apple-yellow); cursor: help; position: relative; }
         .tooltip-text:hover::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); padding: 8px 12px; border-radius: 8px; font-size: 12px; white-space: nowrap; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 100; }
     </style>
@@ -76,13 +67,24 @@
 
     <div id="progressBar"></div>
 
-    <div id="toast" class="fixed right-5 bottom-5 px-5 py-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] shadow-2xl z-[9999] hidden text-sm font-semibold backdrop-blur-xl"></div>
+    <div id="confirmModal" class="fixed inset-0 bg-black/80 z-[10000] hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-[var(--apple-card)] p-6 rounded-3xl w-[90%] max-w-sm border border-[var(--apple-card-border)] shadow-2xl">
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-[var(--apple-text)]"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> İşlem Onayı</h3>
+            <p id="confirmMessage" class="text-sm text-[var(--apple-text-muted)] mb-6 leading-relaxed"></p>
+            <div class="flex gap-3">
+                <button id="confirmCancelBtn" class="flex-1 py-3 rounded-xl bg-[var(--apple-input-bg)] text-[var(--apple-text)] text-sm font-bold border border-[var(--apple-card-border)]">Vazgeç</button>
+                <button id="confirmOkBtn" class="flex-1 py-3 rounded-xl bg-red-500 text-white text-sm font-bold shadow-lg shadow-red-500/20">Evet, Onaylıyorum</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed right-5 bottom-5 px-5 py-3 rounded-2xl bg-[var(--apple-card)] text-[var(--apple-text)] border border-[var(--apple-card-border)] shadow-2xl z-[9999] hidden text-sm font-semibold backdrop-blur-xl"></div>
 
     <main class="w-full max-w-4xl mx-auto min-h-screen flex flex-col relative px-4 sm:px-6 py-6 sm:py-10">
         
-        <header id="header" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-[var(--apple-card-border)]">
+        <header id="header" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-6 border-b border-[var(--apple-card-border)]">
             <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='index.html'">
-                <div class="w-12 h-12 rounded-2xl bg-[var(--apple-card)] flex items-center justify-center text-[var(--apple-yellow)] border border-[var(--apple-card-border)] shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-[var(--apple-input-bg)] flex items-center justify-center text-[var(--apple-yellow)] border border-[var(--apple-card-border)] shadow-sm">
                     <i class="fa-solid fa-book-open text-xl"></i>
                 </div>
                 <div>
@@ -97,7 +99,7 @@
                 <button id="loginBtn" class="flex-[3] sm:flex-none flex justify-center items-center h-10 px-5 rounded-xl bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-black font-bold text-sm shadow-lg hover:scale-95 transition-transform"><i class="fa-brands fa-google mr-2"></i> Giriş Yap</button>
                 
                 <div id="userArea" class="hidden items-center gap-3 w-full sm:w-auto p-1.5 pr-4 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)]">
-                    <img id="userPhoto" class="w-8 h-8 rounded-full object-cover border border-[var(--apple-border)]" alt="Kullanıcı">
+                    <img id="userPhoto" class="w-8 h-8 rounded-full object-cover border border-[var(--apple-card-border)]" alt="Kullanıcı">
                     <div class="flex flex-col">
                         <span id="userName" class="text-sm font-bold truncate max-w-[100px]"></span>
                         <span id="userRoleBadge" class="text-[10px] uppercase font-bold text-[var(--apple-text-muted)]">Üye</span>
@@ -108,38 +110,66 @@
         </header>
 
         <div id="homePage" class="flex-1">
-            <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+            <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 <div>
-                    <h2 class="text-3xl font-black tracking-tight mb-2">Veriye Dayalı Kararlar Verin.</h2>
-                    <p class="text-[var(--apple-text-muted)] text-sm max-w-xl leading-relaxed">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan kapsamlı finans indeksine hoş geldiniz.</p>
+                    <h2 class="text-2xl sm:text-3xl font-black tracking-tight mb-2">Veriye Dayalı Kararlar.</h2>
+                    <p class="text-[var(--apple-text-muted)] text-xs sm:text-sm max-w-xl leading-relaxed">Kredi, mevduat ve bireysel finans yönetimi üzerine hazırlanan kapsamlı finans indeksine hoş geldiniz.</p>
                 </div>
+                <!-- CANLI ARAMA MOTORU -->
                 <div class="relative w-full sm:w-64 flex-shrink-0">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--apple-text-muted)]"></i>
-                    <input type="text" id="searchInput" placeholder="Makale veya konu ara..." class="w-full h-11 pl-11 pr-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] text-sm outline-none focus:border-[var(--apple-yellow)] transition-colors">
+                    <input type="text" id="searchInput" placeholder="Makale veya konu ara..." class="w-full h-11 pl-11 pr-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] text-sm outline-none focus:border-[var(--apple-yellow)] transition-colors text-[var(--apple-text)]">
                 </div>
             </div>
 
-            <button id="adminPanelBtn" class="hidden w-full sm:w-auto mb-6 px-6 py-3 rounded-xl border border-[var(--apple-yellow)] text-[var(--apple-yellow)] bg-amber-500/10 font-bold hover:bg-amber-500 hover:text-black transition-colors"><i class="fa-solid fa-pen-nib mr-2"></i> Yeni Makale Ekle</button>
+            <!-- ADMİN YÖNETİM BUTONLARI -->
+            <div id="adminActionButtons" class="hidden flex flex-col sm:flex-row gap-3 mb-6">
+                <button id="openEditorBtn" class="flex-1 px-6 py-3 rounded-xl border border-[var(--apple-yellow)] text-[var(--apple-yellow)] bg-amber-500/10 font-bold hover:bg-amber-500 hover:text-black transition-colors"><i class="fa-solid fa-pen-nib mr-2"></i> Yeni Makale Ekle</button>
+                <button id="openRoleManagerBtn" class="hidden flex-1 px-6 py-3 rounded-xl border border-blue-500 text-blue-500 bg-blue-500/10 font-bold hover:bg-blue-500 hover:text-white transition-colors"><i class="fa-solid fa-users-gear mr-2"></i> Yetki Yönetimi (Yazar Ekle)</button>
+            </div>
             
-            <div id="postsContent" class="space-y-8"><div class="flex justify-center p-10"><i class="fa-solid fa-spinner fa-spin text-2xl text-[var(--apple-yellow)]"></i></div></div>
+            <div id="postsContent" class="space-y-6 sm:space-y-8"><div class="flex justify-center p-10"><i class="fa-solid fa-spinner fa-spin text-2xl text-[var(--apple-yellow)]"></i></div></div>
+        </div>
+
+        <div id="roleManagerModal" class="fixed inset-0 bg-black/80 z-[9000] hidden flex items-center justify-center backdrop-blur-sm p-4">
+            <div class="bg-[var(--apple-card)] p-6 rounded-3xl w-full max-w-lg border border-[var(--apple-card-border)] shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-[var(--apple-text)]"><i class="fa-solid fa-users-gear text-blue-500 mr-2"></i> Yazar Yönetimi</h2>
+                    <button id="closeRoleModalBtn" class="w-8 h-8 rounded-full bg-[var(--apple-input-bg)] flex items-center justify-center text-[var(--apple-text-muted)] hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="mb-6 bg-[var(--apple-input-bg)] p-4 rounded-xl border border-[var(--apple-card-border)]">
+                    <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">Yeni Yazar E-posta Adresi</label>
+                    <div class="flex gap-2">
+                        <input type="email" id="newWriterEmail" placeholder="ornek@gmail.com" class="flex-1 p-3 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] outline-none focus:border-blue-500 text-sm text-[var(--apple-text)]">
+                        <button id="addWriterBtn" class="px-5 py-3 rounded-xl bg-blue-500 text-white font-bold text-sm hover:bg-blue-600 transition-colors">Ekle</button>
+                    </div>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] mt-2">Eklediğiniz mail adresi ile giriş yapan kişiler "Makale Ekleme" yetkisine sahip olur.</p>
+                </div>
+
+                <h3 class="text-sm font-bold text-[var(--apple-text)] mb-3">Mevcut Yazarlar</h3>
+                <div id="writersList" class="flex-1 overflow-y-auto space-y-2 pr-2">
+                    <div class="text-sm text-[var(--apple-text-muted)] text-center py-4">Yazarlar Yükleniyor...</div>
+                </div>
+            </div>
         </div>
 
         <div id="adminEditor" class="hidden flex-1">
-            <button id="closeEditorBtn" class="mb-6 text-sm font-semibold text-[var(--apple-text-muted)] hover:text-white flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Editörü Kapat</button>
+            <button id="closeEditorBtn" class="mb-6 text-sm font-bold text-[var(--apple-text-muted)] hover:text-white flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Editörü Kapat</button>
             <div class="p-6 rounded-3xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] space-y-5 shadow-2xl">
-                <h2 class="text-2xl font-bold border-b border-[var(--apple-card-border)] pb-4 mb-2">Yeni Makale Yayına Al</h2>
+                <h2 class="text-2xl font-bold border-b border-[var(--apple-card-border)] pb-4 mb-2 text-[var(--apple-text)]">Yeni Makale Yayına Al</h2>
                 <div>
                     <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">Makale Başlığı</label>
-                    <input type="text" id="editTitle" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)]">
+                    <input type="text" id="editTitle" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-[var(--apple-text)]">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">Kategori</label>
-                        <input type="text" id="editCategory" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)]" placeholder="Bireysel Finans, Yatırım...">
+                        <input type="text" id="editCategory" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-[var(--apple-text)]" placeholder="Bireysel Finans, Yatırım...">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-[var(--apple-text-muted)] uppercase mb-2">İkon (FontAwesome)</label>
-                        <input type="text" id="editIcon" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)]" value="fa-file-lines">
+                        <input type="text" id="editIcon" class="w-full p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-[var(--apple-text)]" value="fa-file-lines">
                     </div>
                 </div>
                 <div>
@@ -147,7 +177,7 @@
                         <span>Makale İçeriği (HTML Formatı)</span>
                         <a href="https://wordhtml.com/" target="_blank" class="text-[var(--apple-yellow)] underline">HTML Dönüştürücü Kullan</a>
                     </label>
-                    <textarea id="editBody" class="w-full h-80 p-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] font-mono text-sm leading-relaxed" placeholder="<h2>Başlık</h2> <p>İçerik...</p>"></textarea>
+                    <textarea id="editBody" class="w-full h-80 p-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] font-mono text-sm leading-relaxed text-[var(--apple-text)]" placeholder="<h2>Başlık</h2> <p>İçerik...</p>"></textarea>
                 </div>
                 <button id="publishPostBtn" class="w-full h-14 rounded-xl bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-black font-black text-lg hover:scale-[0.99] transition-transform"><i class="fa-solid fa-paper-plane mr-2"></i> Yayına Al</button>
             </div>
@@ -157,7 +187,7 @@
             <div class="no-print flex justify-between items-center mb-8">
                 <button id="backBtn" class="text-sm font-bold text-[var(--apple-text-muted)] hover:text-white flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
                 <div class="flex gap-3">
-                    <button onclick="window.print()" class="w-10 h-10 rounded-full bg-[var(--apple-input-bg)] flex items-center justify-center border border-[var(--apple-card-border)] hover:text-[var(--apple-yellow)] transition-colors" title="PDF / Yazdır"><i class="fa-solid fa-print"></i></button>
+                    <button onclick="window.print()" class="w-10 h-10 rounded-full bg-[var(--apple-input-bg)] flex items-center justify-center border border-[var(--apple-card-border)] hover:text-[var(--apple-yellow)] transition-colors" title="PDF / Yazdır"><i class="fa-solid fa-print text-[var(--apple-text)]"></i></button>
                     <button id="deleteActivePostBtn" class="hidden w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors" title="Makaleyi Sil"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
@@ -167,23 +197,22 @@
                     <span id="articleCategory" class="px-3 py-1 rounded-lg bg-[var(--apple-border)] text-[var(--apple-yellow)] text-xs font-bold uppercase tracking-wider"></span>
                     <span id="articleReadTime" class="text-xs font-semibold text-[var(--apple-text-muted)]"><i class="fa-regular fa-clock mr-1"></i> 3 dk okuma</span>
                 </div>
-                <h1 id="articleTitle" class="text-3xl sm:text-4xl font-black leading-tight mb-8"></h1>
+                <h1 id="articleTitle" class="text-3xl sm:text-4xl font-black leading-tight mb-8 text-[var(--apple-text)]"></h1>
                 
-                <div id="articleBody" class="prose prose-invert max-w-none text-base sm:text-lg leading-loose text-[var(--apple-text)]">
-                    </div>
+                <div id="articleBody" class="prose prose-invert max-w-none text-base sm:text-lg leading-loose text-[var(--apple-text)]"></div>
             </article>
             
             <section class="mt-16 pt-10 border-t border-[var(--apple-card-border)] no-print">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-regular fa-comments text-[var(--apple-yellow)]"></i> Okuyucu Yorumları (<span id="commentCount">0</span>)</h3>
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 text-[var(--apple-text)]"><i class="fa-regular fa-comments text-[var(--apple-yellow)]"></i> Okuyucu Yorumları (<span id="commentCount">0</span>)</h3>
                 
                 <div id="loginWarning" class="p-6 rounded-2xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] text-center mb-8">
                     <i class="fa-regular fa-comment-dots text-4xl text-[var(--apple-text-muted)] mb-3"></i>
                     <p class="text-sm text-[var(--apple-text-muted)] mb-4">Bu makale hakkında görüş bildirmek ve diğer okuyucularla etkileşime geçmek için giriş yapmalısınız.</p>
-                    <button id="warningLoginBtn" class="px-6 py-2.5 rounded-xl border border-[var(--apple-card-border)] bg-[var(--apple-card)] font-bold hover:border-[var(--apple-yellow)] transition-colors"><i class="fa-brands fa-google mr-2"></i> Google ile Giriş Yap</button>
+                    <button id="warningLoginBtn" class="px-6 py-2.5 rounded-xl border border-[var(--apple-card-border)] bg-[var(--apple-card)] font-bold text-[var(--apple-text)] hover:border-[var(--apple-yellow)] transition-colors"><i class="fa-brands fa-google mr-2"></i> Google ile Giriş Yap</button>
                 </div>
 
                 <div id="commentBox" class="hidden mb-8 relative">
-                    <textarea id="commentText" maxlength="500" placeholder="Bu makale hakkında ne düşünüyorsunuz? (Maks. 500 karakter)" class="w-full h-28 p-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm resize-none transition-colors"></textarea>
+                    <textarea id="commentText" maxlength="500" placeholder="Bu makale hakkında ne düşünüyorsunuz? (Maks. 500 karakter)" class="w-full h-28 p-4 rounded-xl bg-[var(--apple-input-bg)] text-[var(--apple-text)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm resize-none transition-colors"></textarea>
                     <div class="flex justify-between items-center mt-2">
                         <span id="charCount" class="text-xs font-semibold text-[var(--apple-text-muted)]">0/500</span>
                         <button id="sendComment" class="px-6 py-2.5 rounded-xl bg-[var(--apple-yellow)] text-black font-bold text-sm hover:bg-[var(--apple-yellow-hover)] transition-colors">Yorumu Gönder</button>
@@ -196,8 +225,8 @@
     </main>
 
     <style>
-        .prose h2 { font-size: 1.5rem; font-weight: 800; color: var(--apple-text-strong); margin-top: 2rem; margin-bottom: 1rem; }
-        .prose h3 { font-size: 1.25rem; font-weight: 700; color: var(--apple-text-strong); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose h2 { font-size: 1.5rem; font-weight: 800; margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; }
         .prose p { margin-bottom: 1.25rem; opacity: 0.9; }
         .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; opacity: 0.9; }
         .prose li { margin-bottom: 0.5rem; }
@@ -208,12 +237,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-        // ==========================================
-        // YETKİLENDİRME & SİSTEM DEĞİŞKENLERİ
-        // ==========================================
-        const SUPER_ADMIN_EMAIL = "Vhesap.com@gmail.com"; 
+        const SUPER_ADMIN_EMAIL = "vhesap.com@gmail.com"; 
 
         const firebaseConfig = {
             apiKey: "AIzaSyCXCeJn7Nyz1hfYt0RRcW5yPOtDxgDpE_4",
@@ -242,16 +268,16 @@
         let loadedPosts = []; 
         const SPAM_COOLDOWN_MS = 60000; 
 
-        // TEMA SENKRONİZASYONU (index.html dinleme)
+        // TEMA SENKRONİZASYONU
         function updateThemeUI(theme) {
             if (theme === "light") document.body.classList.add("light-mode");
             else document.body.classList.remove("light-mode");
         }
         window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
 
-        // OKUMA ÇUBUĞU (PROGRESS BAR)
+        // PROGRESS BAR
         window.addEventListener('scroll', () => {
-            if(document.getElementById('viewer').style.display === 'block' || document.getElementById('viewer').style.display === 'flex') {
+            if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
                 const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
                 const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                 const scrolled = (winScroll / height) * 100;
@@ -261,7 +287,7 @@
             }
         });
 
-        // TOAST MESAJI
+        // TOAST & CUSTOM CONFIRM
         function toast(text) {
             const t = document.getElementById("toast");
             t.innerHTML = text;
@@ -270,7 +296,19 @@
             toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
-        // 39 MAKALELİK SABİT VERİ SETİ (Performans için önbellek - Seed)
+        function askConfirm(message, callback) {
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('confirmMessage').innerText = message;
+            modal.style.display = 'flex';
+            
+            document.getElementById('confirmCancelBtn').onclick = () => { modal.style.display = 'none'; };
+            document.getElementById('confirmOkBtn').onclick = () => { 
+                modal.style.display = 'none'; 
+                callback(); 
+            };
+        }
+
+        // 39 MAKALELİK SABİT VERİ SETİ (Performans için önbellek)
         const initialPosts = [
             { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, ev, araç veya acil nakit ihtiyaçlarının karşılanmasında en önemli yöntemdir. Ancak birçok tüketici sadece aylık faiz oranına bakarak büyük bir hata yapar.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li><strong>Aylık Taksit Tutarı:</strong> Bütçenizi sarsmayacak, sürdürülebilir bir ödeme olmalıdır.</li><li><strong>Toplam Geri Ödeme:</strong> Vade uzadıkça aylık taksit düşer ancak bankaya ödeyeceğiniz toplam tutar devasa boyutlara ulaşır.</li><li><strong>Tahsis Ücreti ve Sigortalar:</strong> Kredi tahsis ücreti (dosya masrafı) ve zorunlu tutulan hayat sigortaları maliyeti artırır.</li></ul><p>Vhesap Bireysel Finans modülü sayesinde kredi kullanmadan önce tüm bu değişkenleri tek ekranda görebilir, erken ödeme senaryolarını saniyeler içerisinde simüle edebilirsiniz.</p>` },
             { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı (Avans Hesap veya Ek Hesap), banka hesabınızda para kalmadığında acil nakit ihtiyaçlarınızı karşılamak için size tanımlanan kredili bir limittir.</p><h2>Günlük Faiz Mantığı Nasıl Çalışır?</h2><p>İhtiyaç kredilerinin aksine, KMH limitinden harcadığınız her tutar için faiz "günlük" olarak işlemeye başlar. Cuma günü çekilen bir nakit, pazartesi geri yatırılsa dahi hafta sonu için tam faiz ödenir.</p><h2>Dikkat Edilmesi Gerekenler</h2><ul><li>Ay sonunda kesilen faiz üzerinden ayrıca %15 BSMV ve %15 KKDF vergisi alınır.</li><li>Hesaba giren ilk para, otomatik olarak KMH borcunuzu ve faizini keser.</li><li>KMH, uzun vadeli borçlanma aracı değil, sadece birkaç günlük acil nakit aracı olarak kullanılmalıdır.</li></ul>` },
@@ -313,25 +351,19 @@
             { id: "p39", category: "Gayrimenkul", title: "Tersine İpotek (Reverse Mortgage) Sistemi", icon: "fa-house-chimney", body: `<p>Türkiye'de yeni yaygınlaşan, genellikle emekliler için geliştirilmiş bir finansman sistemidir.</p><h2>Sistem Nasıl Çalışır?</h2><p>Sahip olduğunuz evi bankaya ipotek ederek ömür boyu aylık maaş bağlanmasını sağlarsınız. Evinizde kira ödemeden yaşamaya devam edersiniz. Vefat durumunda banka evi satar, ödediği parayı tahsil edip kalanı mirasçılara devreder.</p>` }
         ];
 
-        // --- RENDER VE İŞLEV FONKSİYONLARI ---
-
-        // Kelime sayısına göre Tahmini Okuma Süresi
         function getReadTime(htmlContent) {
             const text = htmlContent.replace(/<[^>]*>?/gm, '');
             const wordCount = text.split(/\s+/).length;
-            const time = Math.ceil(wordCount / 200); // Ort. 200 kelime/dk
+            const time = Math.ceil(wordCount / 200); 
             return time < 1 ? 1 : time;
         }
 
-        // Dinamik URL Router (Eğer ?yazi=id varsa direkt o makaleyi aç)
         function checkUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const yaziId = params.get('yazi');
             if(yaziId && loadedPosts.length > 0) {
                 const post = loadedPosts.find(p => p.id === yaziId);
-                if(post) {
-                    openPost(post.id, false); // false = URL'yi tekrar değiştirme
-                }
+                if(post) openPost(post.id, false); 
             }
         }
 
@@ -341,27 +373,31 @@
             let indexHtml = `<div class="index-wrapper"><div class="index-scroll container" style="padding:0; margin:auto;">`;
             categories.forEach(cat => {
                 const catId = cat.replace(/\s+/g, '-').toLowerCase();
-                indexHtml += `<a href="#cat-${catId}" class="cat-pill">${cat}</a>`;
+                indexHtml += `<a href="#cat-${catId}" class="px-4 py-2 rounded-full bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-sm font-semibold text-[var(--apple-text)] whitespace-nowrap hover:border-[var(--apple-yellow)] hover:text-[var(--apple-yellow)] transition-colors">${cat}</a>`;
             });
             indexHtml += `</div></div>`;
 
             let contentHtml = '';
             categories.forEach(cat => {
                 const catId = cat.replace(/\s+/g, '-').toLowerCase();
-                contentHtml += `<h3 class="cat-title" id="cat-${catId}">${cat}</h3>`;
-                contentHtml += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`; // Tailwind Grid
+                contentHtml += `<h3 class="text-xl font-bold mt-8 mb-4 text-[var(--apple-text)] flex items-center gap-2" id="cat-${catId}"><div class="w-1.5 h-6 bg-[var(--apple-yellow)] rounded-full"></div> ${cat}</h3>`;
+                
+                // MÜKEMMEL MOBİL UYUMLU GRID YAPISI (Apple Style)
+                contentHtml += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">`; 
                 
                 postsArray.filter(p => p.category === cat).forEach(p => {
                     contentHtml += `
-                    <div class="bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-[var(--apple-yellow)] transition-all cursor-pointer flex flex-col" onclick="openPost('${p.id}')">
-                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-[var(--apple-yellow)] flex items-center justify-center text-xl mb-4">
+                    <div class="bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all cursor-pointer flex flex-row sm:flex-col items-center sm:items-start gap-4" onclick="openPost('${p.id}')">
+                        <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-amber-500/10 text-[var(--apple-yellow)] flex items-center justify-center text-xl sm:text-2xl sm:mb-2">
                             <i class="fa-solid ${p.icon || 'fa-file-lines'}"></i>
                         </div>
-                        <h4 class="text-base font-bold text-[var(--apple-text)] leading-snug mb-2">${p.title}</h4>
-                        <p class="text-xs text-[var(--apple-text-muted)] line-clamp-3 mb-4 flex-grow">${(p.body || "").replace(/<[^>]+>/g, "").substring(0, 100)}...</p>
-                        <div class="text-[10px] font-bold text-[var(--apple-yellow)] uppercase tracking-wider mt-auto flex justify-between">
-                            <span>Okumaya Başla →</span>
-                            <span>⏱️ ${getReadTime(p.body)} dk</span>
+                        <div class="flex-1 min-w-0 flex flex-col justify-center w-full">
+                            <h4 class="text-sm sm:text-base font-bold text-[var(--apple-text)] leading-tight mb-1 sm:mb-3 line-clamp-2">${p.title}</h4>
+                            <p class="hidden sm:block text-xs text-[var(--apple-text-muted)] line-clamp-3 mb-4">${(p.body || "").replace(/<[^>]+>/g, "").substring(0, 100)}...</p>
+                            <div class="text-[10px] font-bold text-[var(--apple-yellow)] uppercase tracking-wider mt-auto flex justify-between items-center w-full">
+                                <span class="hidden sm:inline">Okumaya Başla →</span>
+                                <span>⏱️ ${getReadTime(p.body)} dk</span>
+                            </div>
                         </div>
                     </div>`;
                 });
@@ -380,7 +416,7 @@
                 p.body.toLowerCase().includes(val)
             );
             if(filtered.length === 0) {
-                document.getElementById("postsContent").innerHTML = `<div class="py-10 text-center text-[var(--apple-text-muted)]">Aradığınız kriterlere uygun makale bulunamadı.</div>`;
+                document.getElementById("postsContent").innerHTML = `<div class="py-10 text-center text-[var(--apple-text-muted)] font-semibold">Aradığınız kriterlere uygun makale bulunamadı.</div>`;
             } else {
                 renderGroupedPosts(filtered);
             }
@@ -401,7 +437,7 @@
                     querySnapshot.forEach(doc => { loadedPosts.push({ id: doc.id, ...doc.data() }); });
                 }
                 renderGroupedPosts(loadedPosts);
-                checkUrlParams(); // Sayfa yüklendiğinde URL'de yazı varsa aç
+                checkUrlParams(); 
             } catch (error) {
                 console.warn("Veritabanı erişimi engellendi, makaleler önbellekten (fallback) yükleniyor.");
                 loadedPosts = initialPosts;
@@ -421,20 +457,26 @@
             document.getElementById("articleCategory").innerHTML = p.category;
             document.getElementById("articleReadTime").innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${getReadTime(p.body)} dk okuma`;
             
-            // Editörden silme butonunu kontrol et
             const delBtn = document.getElementById("deleteActivePostBtn");
-            if (isSuperAdmin || (isWriter && p.authorEmail === currentUser?.email)) {
+            if (isSuperAdmin || (isWriter && p.authorEmail === currentUser?.email?.toLowerCase())) {
                 delBtn.style.display = "flex";
-                delBtn.onclick = () => { deletePost(p.id); };
+                delBtn.onclick = () => {
+                    askConfirm("Bu makaleyi kalıcı olarak silmek istediğinize emin misiniz?", async () => {
+                        try {
+                            await deleteDoc(doc(db, "posts", p.id));
+                            toast("Makale silindi.");
+                            document.getElementById("backBtn").click(); 
+                            fetchAndRenderPosts(); 
+                        } catch (e) { toast("Silme yetkiniz reddedildi."); }
+                    });
+                };
             } else {
                 delBtn.style.display = "none";
             }
 
-            // Makale gövdesini oluştur
             document.getElementById("articleBody").innerHTML = p.body;
             document.title = `${p.title} | Vhesap`;
             
-            // URL YAPISINI GÜNCELLE (Paylaşılabilir Link İçin)
             if(changeUrl) {
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?yazi=' + p.id;
                 window.history.pushState({path:newUrl}, '', newUrl);
@@ -445,24 +487,11 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
-        window.deletePost = async function(id) {
-            if(!confirm("Bu makaleyi kalıcı olarak silmek istediğinize emin misiniz?")) return;
-            try {
-                await deleteDoc(doc(db, "posts", id));
-                toast("Makale silindi.");
-                document.getElementById("backBtn").click(); // Geri dön
-                fetchAndRenderPosts(); // Listeyi yenile
-            } catch (e) {
-                toast("Silme yetkiniz reddedildi.");
-            }
-        }
-
         document.getElementById("backBtn").onclick = () => {
             document.getElementById("viewer").style.display = "none";
             document.getElementById("homePage").style.display = "block";
             document.title = "Vhesap | Finans Rehberi";
             
-            // URL'yi temizle
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
 
@@ -470,8 +499,7 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
-        // --- ADMİN EDİTÖR ---
-        document.getElementById("adminPanelBtn").onclick = () => {
+        document.getElementById("openEditorBtn").onclick = () => {
             document.getElementById("homePage").style.display = "none";
             document.getElementById("adminEditor").style.display = "block";
         };
@@ -495,7 +523,7 @@
             try {
                 await addDoc(collection(db, "posts"), {
                     title: title, category: cat, icon: icon, body: bodyHtml,
-                    authorEmail: currentUser.email, authorUid: currentUser.uid, createdAt: serverTimestamp()
+                    authorEmail: currentUser.email.toLowerCase(), createdAt: serverTimestamp()
                 });
                 toast("Makale yayına alındı!");
                 document.getElementById("editTitle").value = ""; document.getElementById("editCategory").value = ""; document.getElementById("editBody").value = "";
@@ -508,7 +536,60 @@
             }
         };
 
-        // --- YORUMLAR ---
+        // YAZAR YÖNETİMİ
+        document.getElementById("openRoleManagerBtn").onclick = () => {
+            document.getElementById("roleManagerModal").style.display = "flex";
+            loadWriters();
+        };
+
+        document.getElementById("closeRoleModalBtn").onclick = () => {
+            document.getElementById("roleManagerModal").style.display = "none";
+        };
+
+        async function loadWriters() {
+            if(!isSuperAdmin) return;
+            try {
+                const q = query(collection(db, "roles"), where("role", "==", "writer"));
+                const snapshot = await getDocs(q);
+                let html = "";
+                snapshot.forEach(doc => {
+                    html += `
+                    <div class="flex justify-between items-center p-4 bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-xl">
+                        <span class="text-sm font-bold text-[var(--apple-text)]">${doc.id}</span>
+                        <button onclick="removeWriter('${doc.id}')" class="text-red-500 w-8 h-8 rounded-full hover:bg-red-500/10 transition-colors" title="Yetkiyi Al"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+                });
+                document.getElementById("writersList").innerHTML = html || "<div class='text-sm text-center py-4 text-[var(--apple-text-muted)]'>Kayıtlı yazar bulunmuyor.</div>";
+            } catch(e) {
+                document.getElementById("writersList").innerHTML = "<div class='text-sm text-red-500'>Yazarlar yüklenemedi.</div>";
+            }
+        }
+
+        document.getElementById("addWriterBtn").onclick = async () => {
+            const email = document.getElementById("newWriterEmail").value.trim().toLowerCase();
+            if(!email) return toast("E-posta adresi girin.");
+            
+            try {
+                // Email'i document ID olarak kullanıyoruz
+                await setDoc(doc(db, "roles", email), { role: "writer", addedAt: serverTimestamp() });
+                document.getElementById("newWriterEmail").value = "";
+                toast("Yazar yetkisi verildi!");
+                loadWriters();
+            } catch(e) {
+                toast("Yazar eklenemedi.");
+            }
+        };
+
+        window.removeWriter = function(email) {
+            askConfirm(`"${email}" adresinin yazar yetkisini silmek istediğinize emin misiniz?`, async () => {
+                try {
+                    await deleteDoc(doc(db, "roles", email));
+                    toast("Yetki kaldırıldı.");
+                    loadWriters();
+                } catch(e) { toast("İşlem başarısız."); }
+            });
+        };
+
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -528,13 +609,13 @@
                         const tarih = d.createdAt ? d.createdAt.toDate().toLocaleString("tr-TR") : "Az önce";
                         const txt = document.createElement("div"); txt.textContent = d.text;
                         
-                        let delBtn = isSuperAdmin ? `<button onclick="deleteComment('${d.id}')" class="absolute top-4 right-4 text-red-500 opacity-50 hover:opacity-100 transition-opacity"><i class="fa-solid fa-trash"></i></button>` : "";
+                        let delBtn = isSuperAdmin ? `<button onclick="deleteCommentWrapper('${d.id}')" class="absolute top-4 right-4 text-red-500 opacity-50 hover:opacity-100 transition-opacity"><i class="fa-solid fa-trash"></i></button>` : "";
 
                         html += `
                         <div class="p-5 rounded-2xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] relative">
                             ${delBtn}
                             <div class="flex items-center gap-3 mb-3">
-                                <img src="${d.authorPhoto}" class="w-10 h-10 rounded-full border border-[var(--apple-border)]" referrerpolicy="no-referrer">
+                                <img src="${d.authorPhoto}" class="w-10 h-10 rounded-full border border-[var(--apple-card-border)] object-cover" referrerpolicy="no-referrer">
                                 <div>
                                     <div class="text-sm font-bold text-[var(--apple-text)]">${d.authorName}</div>
                                     <div class="text-[10px] text-[var(--apple-text-muted)]">${tarih}</div>
@@ -548,39 +629,44 @@
             });
         }
 
-        window.deleteComment = async function(commentId) {
-            if(!confirm("Bu yorumu silmek istediğinize emin misiniz?")) return;
-            try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
+        window.deleteCommentWrapper = function(commentId) {
+            askConfirm("Bu yorumu silmek istediğinize emin misiniz?", async () => {
+                try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
+            });
         }
 
-        // --- AUTH, ROL YÖNETİMİ & RATE LIMITING ---
         async function checkUserRole(user) {
-            isSuperAdmin = (user.email === SUPER_ADMIN_EMAIL);
+            const userEmail = user.email.toLowerCase();
+            isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
             isWriter = false;
             
             if(!isSuperAdmin) {
                 try {
-                    // Firebase Firestore kurallarından geçebilmek için roles tablosunu oku
-                    const roleDoc = await getDoc(doc(db, "roles", user.uid));
+                    const roleDoc = await getDoc(doc(db, "roles", userEmail));
                     if(roleDoc.exists() && roleDoc.data().role === 'writer') {
                         isWriter = true;
                     }
-                } catch(e) {
-                    console.log("Rol okuma hatası veya normal kullanıcı.");
-                }
+                } catch(e) {}
             }
 
-            // Arayüzü güncelle
             const roleBadge = document.getElementById("userRoleBadge");
+            const adminPanelBtn = document.getElementById("adminActionButtons");
+            const roleManagerBtn = document.getElementById("openRoleManagerBtn");
+            const editorBtn = document.getElementById("openEditorBtn");
+
             if(isSuperAdmin) {
-                roleBadge.innerHTML = '<span class="text-red-500">Super Admin</span>';
-                document.getElementById("adminPanelBtn").style.display = "block";
+                roleBadge.innerHTML = '<span class="text-red-500">Kurucu</span>';
+                adminPanelBtn.style.display = "flex";
+                roleManagerBtn.style.display = "block"; // Süper Admin yönetebilir
+                editorBtn.style.display = "block";
             } else if (isWriter) {
                 roleBadge.innerHTML = '<span class="text-amber-500">Yazar</span>';
-                document.getElementById("adminPanelBtn").style.display = "block";
+                adminPanelBtn.style.display = "flex";
+                roleManagerBtn.style.display = "none"; // Yazar yönetici ekleyemez
+                editorBtn.style.display = "block";
             } else {
                 roleBadge.innerHTML = 'Okuyucu Üye';
-                document.getElementById("adminPanelBtn").style.display = "none";
+                adminPanelBtn.style.display = "none";
             }
         }
 
@@ -601,19 +687,12 @@
                 document.getElementById("userArea").style.display = "none";
                 document.getElementById("loginWarning").style.display = "block";
                 document.getElementById("commentBox").style.display = "none";
-                document.getElementById("adminPanelBtn").style.display = "none";
+                document.getElementById("adminActionButtons").style.display = "none";
             }
-            
-            // Silme butonlarını yetkiye göre yeniden render etmek istersen:
-            // fetchAndRenderPosts(); // Opsiyonel, ana sayfada silme butonu koyarsan aktif et
         });
 
         const handleLogin = async () => {
-            try { 
-                await signInWithPopup(auth, provider); 
-                toast("Giriş başarılı."); 
-                logEvent(analytics, 'login', { method: 'Google' });
-            } catch (e) { toast("Giriş iptal edildi."); }
+            try { await signInWithPopup(auth, provider); toast("Giriş başarılı."); logEvent(analytics, 'login', { method: 'Google' }); } catch (e) { toast("Giriş iptal edildi."); }
         };
         document.getElementById("loginBtn").onclick = handleLogin;
         document.getElementById("warningLoginBtn").onclick = handleLogin;
@@ -646,25 +725,16 @@
                     authorPhoto: currentUser.photoURL, text: text, createdAt: serverTimestamp()
                 });
                 
-                // Arka planda AJAX ile e-posta bildirimi (Super Admin'e)
                 fetch("https://formsubmit.co/ajax/" + SUPER_ADMIN_EMAIL, {
                     method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({
-                        _subject: "Vhesap Makale Yorumu", Makale: activePostTitle, Yorumu_Yazan: currentUser.displayName,
-                        Eposta: currentUser.email, Mesaj: text
-                    })
-                }).catch(() => {}); // Hata verse de UI'yi etkilemesin
+                    body: JSON.stringify({ _subject: "Vhesap Makale Yorumu", Makale: activePostTitle, Yorumu_Yazan: currentUser.displayName, Eposta: currentUser.email, Mesaj: text })
+                }).catch(() => {}); 
 
                 localStorage.setItem("vhesap_last_comment_time", now.toString());
-                document.getElementById("commentText").value = ""; 
-                document.getElementById("charCount").innerText = "0/500";
+                document.getElementById("commentText").value = ""; document.getElementById("charCount").innerText = "0/500";
                 toast("Yorumunuz başarıyla eklendi.");
                 logEvent(analytics, 'add_comment', { post_id: activePost });
-            } catch (e) { 
-                toast("Bağlantı sorunu."); 
-            } finally { 
-                btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; 
-            }
+            } catch (e) { toast("Bağlantı sorunu."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
         };
 
         logEvent(analytics, 'page_view', { page_title: 'Finans Rehberi' });
