@@ -161,7 +161,9 @@
 
     <!-- TİTREME ÖNLEYİCİ: Sayfa yüklenirken index.html'deki temayı anında yakala -->
     <script>
-        if (localStorage.getItem("vhesap_theme") === "light") {
+        // Sayfa açılır açılmaz index.html'de belirlenen (veya daha önce kaydedilen) temayı uygula
+        const savedThemeInit = localStorage.getItem("vhesap_global_theme");
+        if (savedThemeInit === "light") {
             document.body.classList.add("light-mode");
         }
     </script>
@@ -274,24 +276,15 @@
         let loadedPosts = []; 
         const SPAM_COOLDOWN_MS = 60000; 
 
-        // --- TEMA (DARK/LIGHT) CANLI SENKRONİZASYONU (Sadece Dinleme) ---
-
-        // Temayı arayüze uygulama fonksiyonu
-        function updateThemeUI(theme) {
-            if (theme === "light") {
-                document.body.classList.add("light-mode");
-            } else {
-                document.body.classList.remove("light-mode");
-            }
-        }
-
-        // Sayfa açıldığında mevcut temayı uygula
-        updateThemeUI(localStorage.getItem("vhesap_theme") || "dark");
-
-        // SEKME SENKRONİZASYONU: index.html'de tema değişirse bu sayfada da anında canlı değişir
+        // --- TEMA (DARK/LIGHT) CANLI SENKRONİZASYONU ---
+        // SEKME SENKRONİZASYONU: index.html'de 'vhesap_global_theme' değiştiğinde blog.html anında tepki verir
         window.addEventListener('storage', (e) => {
-            if (e.key === 'vhesap_theme') {
-                updateThemeUI(e.newValue);
+            if (e.key === 'vhesap_global_theme') {
+                if (e.newValue === "light") {
+                    document.body.classList.add("light-mode");
+                } else {
+                    document.body.classList.remove("light-mode");
+                }
             }
         });
 
