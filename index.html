@@ -145,11 +145,11 @@
         .modal-content { background: var(--apple-card); height: 100%; width: 100%; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(128, 128, 128, 0.1); padding-top: env(safe-area-inset-top); }
         .modal-content-feedback { height: auto; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; }
         
-        /* Apple Style Glass Menu */
-        .global-theme-btn { position: absolute; top: 24px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; }
+        /* Apple Style Glass Menu - iPhone safe-area padding applied */
+        .global-theme-btn { position: absolute; top: max(24px, calc(env(safe-area-inset-top) + 16px)); right: 24px; width: 44px; height: 44px; border-radius: 50%; background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; }
         .global-theme-btn:active { transform: scale(0.9); }
         
-        .glass-dropdown { position: absolute; top: 16px; right: 16px; width: 220px; background: var(--apple-nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--apple-nav-border); border-radius: 20px; padding: 6px; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform-origin: top right; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; box-shadow: var(--menu-shadow); }
+        .glass-dropdown { position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 16px; width: 220px; background: var(--apple-nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--apple-nav-border); border-radius: 20px; padding: 6px; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform-origin: top right; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; box-shadow: var(--menu-shadow); }
         .glass-dropdown.active { opacity: 1; pointer-events: auto; transform: scale(1); }
         .glass-menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: var(--apple-text); font-size: 13px; font-weight: 600; text-align: left; transition: background 0.2s; cursor: pointer; }
         .glass-menu-item:hover, .glass-menu-item:active { background: var(--apple-badge-bg); }
@@ -164,23 +164,22 @@
         <p class="text-center text-[#a1a1aa] max-w-xs text-xs font-semibold leading-relaxed">Analitik veri akışı ve güncel hesaplamalar için aktif bir internet bağlantısı gereklidir. Lütfen ağınızı kontrol edin.</p>
     </div>
 
-    <!-- Feedback Modal -->
     <div id="feedback-modal" class="modal" onclick="closeFeedbackOutside(event)">
         <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
             <div id="sheet-handle-2" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
             <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
                 <div>
-                    <h2 class="text-xl font-bold text-[var(--apple-yellow)] flex items-center gap-2" id="feedback-title"><i class="fa-solid fa-comment-dots text-blue-500"></i> Hata / Öneri</h2>
+                    <h2 class="text-xl font-bold text-[var(--apple-yellow)] flex items-center gap-2" id="feedback-title"><i class="fa-solid fa-comment-dots text-blue-500"></i> Hata / Öneri Bildir</h2>
                     <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Uygulama Geri Bildirimi</p>
                 </div>
-                <button onclick="closeFeedback()" class="w-9 h-9 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeFeedback()" class="w-10 h-10 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom">
-                <form action="https://formsubmit.co/ttanalizci@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="https://formsubmit.co/ttanalizci@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-4" onsubmit="gtagTrack('submit', 'Feedback', 'Hata_Oneri_Formu')">
                     <input type="hidden" name="_subject" value="Vhesap & Vanaliz - Yeni Geri Bildirim!">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_template" value="table">
-                    <input type="hidden" name="Bildirim_Turu" id="feedback-type" value="Hata / Öneri">
+                    <input type="hidden" name="Bildirim_Turu" id="feedback-type" value="Hata / Öneri Bildirimi">
 
                     <div class="grid grid-cols-2 gap-3">
                         <div class="input-card !mb-0 !p-3">
@@ -246,7 +245,6 @@
         </div>
     </div>
 
-    <!-- About Modal -->
     <div id="about-modal" class="modal" onclick="closeAboutOutside(event)">
         <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
             <div id="sheet-handle-3" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
@@ -255,7 +253,7 @@
                     <h2 class="text-xl font-bold text-[var(--apple-text)] flex items-center gap-2"><i class="fa-solid fa-circle-info text-amber-500"></i> Hakkında</h2>
                     <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Hakkında & Metodoloji</p>
                 </div>
-                <button onclick="closeAbout()" class="w-9 h-9 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeAbout()" class="w-10 h-10 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom space-y-5">
                 <div>
@@ -285,12 +283,12 @@
             <div class="apple-container" id="main-container">
                 <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
                     
-                    <!-- Yeni Menü Butonu (Apple Stili) -->
+                    <!-- Yeni Menü Butonu (Apple Stili, çentik uyumlu) -->
                     <button id="main-menu-toggle" class="global-theme-btn" onclick="toggleMenu(event)" title="Menü">
                         <i class="fa-solid fa-ellipsis text-xl text-[var(--apple-text)]"></i>
                     </button>
 
-                    <!-- Glassmorphism Açılır Menü -->
+                    <!-- Glassmorphism Açılır Menü (Değerlendir Kaldırıldı, Blog Eklendi) -->
                     <div id="glass-menu" class="glass-dropdown">
                         <button class="glass-menu-item" onclick="toggleGlobalThemeFromMenu(event)">
                             <i id="menu-theme-icon" class="fa-solid fa-sun"></i>
@@ -298,25 +296,23 @@
                         </button>
                         
                         <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+
+                        <button class="glass-menu-item group" onclick="gtagTrack('nav_click', 'Menu', 'Blog'); window.location.href='blog.html'">
+                            <i class="fa-solid fa-book-open group-hover:text-amber-500 transition-colors"></i>
+                            <span>Finans Rehberi</span>
+                        </button>
                         
-                        <button class="glass-menu-item group" onclick="window.location.href='vanaliz.html'">
+                        <button class="glass-menu-item group" onclick="gtagTrack('nav_click', 'Menu', 'Vanaliz'); window.location.href='vanaliz.html'">
                             <i class="fa-solid fa-chart-line group-hover:text-amber-500 transition-colors"></i>
                             <span>Vanaliz'e Geç</span>
                         </button>
                         
                         <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
                         
-                        <button class="glass-menu-item group" onclick="openFeedbackModal('geribildirim', event)">
+                        <button class="glass-menu-item group" onclick="openFeedbackModal(event)">
                             <i class="fa-solid fa-comment-dots group-hover:text-blue-500 transition-colors"></i>
                             <span>Hata / Öneri Bildir</span>
                         </button>
-                        
-                        <button class="glass-menu-item group" onclick="openFeedbackModal('degerlendirme', event)">
-                            <i class="fa-regular fa-star group-hover:text-amber-500 transition-colors"></i>
-                            <span>Değerlendir</span>
-                        </button>
-
-                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
 
                         <button class="glass-menu-item group" onclick="openAboutModal(event)">
                             <i class="fa-solid fa-circle-info group-hover:text-amber-500 transition-colors"></i>
@@ -337,7 +333,7 @@
                     </p>
 
                     <div class="space-y-4">
-                        <button onclick="window.location.href='bireysel.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                        <button onclick="gtagTrack('nav_click', 'Home', 'Bireysel'); window.location.href='bireysel.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
                                     <i class="fa-solid fa-user-tie text-xl"></i>
@@ -350,7 +346,7 @@
                             <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
                         </button>
 
-                        <button onclick="window.location.href='ticari.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                        <button onclick="gtagTrack('nav_click', 'Home', 'Ticari'); window.location.href='ticari.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
                                     <i class="fa-solid fa-briefcase text-xl"></i>
@@ -363,7 +359,7 @@
                             <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
                         </button>
 
-                        <button onclick="window.location.href='vadeli.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                        <button onclick="gtagTrack('nav_click', 'Home', 'Vadeli'); window.location.href='vadeli.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
                                     <i class="fa-solid fa-vault text-xl"></i>
@@ -390,6 +386,23 @@
     </div>
 
     <script>
+        // Google Analytics Kapsamlı Takip Fonksiyonu
+        function gtagTrack(action, category, label, value) {
+            if (typeof gtag !== 'undefined') {
+                let params = { 'event_category': category };
+                if (label) params['event_label'] = label;
+                if (value !== undefined) params['value'] = value;
+                gtag('event', action, params);
+            }
+        }
+
+        // Sayfada kalma süresi takibi
+        let pageStartTime = Date.now();
+        window.addEventListener('beforeunload', () => {
+            let timeSpent = Math.round((Date.now() - pageStartTime) / 1000);
+            gtagTrack('time_spent', 'Engagement', window.location.pathname, timeSpent);
+        });
+
         // Apple Tarzı Akıllı Menü Yönetimi
         let menuTimeout;
 
@@ -402,6 +415,7 @@
                 closeMenu();
             } else {
                 menu.classList.add('active');
+                gtagTrack('menu_open', 'Navigation', 'Main_Menu');
                 resetMenuTimer();
             }
         }
@@ -438,7 +452,7 @@
             const isDark = document.body.classList.toggle('dark');
             localStorage.setItem('vhesap_global_theme', isDark ? 'dark' : 'light');
             updateMenuThemeIcon(isDark);
-            
+            gtagTrack('theme_toggle', 'Preference', isDark ? 'Dark' : 'Light');
             // Temayı değiştirince menü hemen kapansın
             closeMenu();
         }
@@ -455,24 +469,16 @@
             }
         }
 
-        function openFeedbackModal(type, e) {
+        function openFeedbackModal(e) {
             if (e) e.stopPropagation();
             closeMenu(); // Formu açarken menüyü kapat
             
             const modal = document.getElementById('feedback-modal');
-            const title = document.getElementById('feedback-title');
-            const typeInput = document.getElementById('feedback-type');
             const hataFields = document.getElementById('hata-fields');
             
-            if (type === 'geribildirim') {
-                title.innerHTML = '<i class="fa-solid fa-comment-dots text-blue-500"></i> Hata / Öneri Bildir';
-                typeInput.value = 'Hata veya Öneri Bildirimi';
-                hataFields.style.display = 'block';
-            } else {
-                title.innerHTML = '<i class="fa-regular fa-star text-amber-500"></i> Uygulamayı Değerlendir';
-                typeInput.value = 'Genel Uygulama Değerlendirmesi';
-                hataFields.style.display = 'none';
-            }
+            hataFields.style.display = 'block';
+            gtagTrack('modal_open', 'Feedback', 'Hata_Oneri');
+            
             modal.style.display = 'flex';
         }
 
@@ -484,10 +490,10 @@
             if(e.target.id === 'feedback-modal') closeFeedback();
         }
 
-        // --- Yeni Eklenen Hakkında Modal Fonksiyonları ---
         function openAboutModal(e) {
             if (e) e.stopPropagation();
-            closeMenu(); // Formu açarken menüyü kapat
+            closeMenu();
+            gtagTrack('modal_open', 'Info', 'About');
             document.getElementById('about-modal').style.display = 'flex';
         }
 
@@ -498,7 +504,6 @@
         function closeAboutOutside(e) {
             if(e.target.id === 'about-modal') closeAbout();
         }
-        // ------------------------------------------------
 
         function checkConnection() {
             const blocker = document.getElementById('offline-blocker');
