@@ -1,109 +1,179 @@
 <!DOCTYPE html>
-<html lang="tr" class="h-full">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
-    <!-- TASARIMI ÇALIŞTIRAN MOTORLAR BURADA -->
-    <script src="BLOCKEDcdn[.]tailwindcss[.]com"BLOCKED;></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     
     <style>
-        /* APPLE TASARIM MİMARİSİ */
+        /* DIŞA BAĞIMLI OLMAYAN, İÇE GÖMÜLÜ SAF APPLE CSS MİMARİSİ */
         :root {
             --apple-bg: #f4f4f5;
-            --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
             --apple-card: #ffffff;
-            --apple-card-border: rgba(0, 0, 0, 0.06);
+            --apple-card-border: rgba(0, 0, 0, 0.08);
             --apple-text: #18181b;
             --apple-text-muted: #71717a;
             --apple-yellow: #d97706; 
             --apple-yellow-hover: #b45309;
-            --apple-border: rgba(217, 119, 6, 0.15);
+            --apple-yellow-light: rgba(217, 119, 6, 0.1);
             --apple-nav-bg: rgba(255, 255, 255, 0.85);
             --apple-input-bg: #f4f4f5;
+            --apple-danger: #ef4444;
+            --apple-danger-light: rgba(239, 68, 68, 0.1);
+            --apple-blue: #3b82f6;
+            --apple-blue-light: rgba(59, 130, 246, 0.1);
         }
 
         body.dark {
             --apple-bg: #000000;
-            --apple-container-bg: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
-            --apple-card: rgba(24, 24, 27, 0.7);
-            --apple-card-border: rgba(255, 255, 255, 0.04);
+            --apple-card: #18181b;
+            --apple-card-border: rgba(255, 255, 255, 0.08);
             --apple-text: #f4f4f5;
             --apple-text-muted: #a1a1aa;
             --apple-yellow: #f59e0b;
             --apple-yellow-hover: #d97706;
-            --apple-border: rgba(245, 158, 11, 0.15);
-            --apple-nav-bg: rgba(39, 39, 42, 0.75);
-            --apple-input-bg: #18181b;
+            --apple-yellow-light: rgba(245, 158, 11, 0.1);
+            --apple-nav-bg: rgba(24, 24, 27, 0.85);
+            --apple-input-bg: #09090b;
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; 
-            height: 100vh; height: 100dvh;
-            overflow: hidden; 
-            background-color: var(--apple-bg);
-            transition: background-color 0.3s ease;
-        }
+        /* Temel Ayarlar */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body, html { width: 100%; height: 100%; background-color: var(--apple-bg); color: var(--apple-text); transition: background-color 0.3s ease; }
+        button, input, textarea { font-family: inherit; border: none; outline: none; }
+        a { text-decoration: none; color: inherit; }
 
-        #vhesap-viewport {
-            color: var(--apple-text); display: flex; justify-content: center; align-items: flex-start;
-            position: absolute; top: 0; left: 0; width: 100vw; 
-            height: 100vh; height: 100dvh; overflow-y: auto;
-            background-color: var(--apple-bg);
-            transition: background-color 0.3s ease;
-        }
-
-        .apple-container {
-            background: var(--apple-container-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            width: 100%; max-width: 900px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative;
-            padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @media (min-width: 641px) {
-            #vhesap-viewport { padding: 40px 0; }
-            .apple-container { height: auto; min-height: 890px; max-height: none; border-radius: 36px; border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); overflow: hidden; }
-        }
+        /* Yerleşim ve Scroll */
+        #vhesap-viewport { width: 100vw; height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; position: relative; }
+        .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 24px; min-height: 100%; display: flex; flex-direction: column; }
         
-        #progressBar { position: absolute; top: 0; left: 0; height: 4px; background: var(--apple-yellow); z-index: 9999; width: 0%; transition: width 0.2s ease-out; }
-
+        #progressBar { position: fixed; top: 0; left: 0; height: 4px; background: var(--apple-yellow); z-index: 9999; width: 0%; transition: width 0.2s ease-out; }
+        
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
 
-        .index-wrapper { position: sticky; top: -1px; background: var(--apple-nav-bg); backdrop-filter: blur(20px); z-index: 50; padding: 10px 0; border-bottom: 1px solid var(--apple-card-border); margin: 0 -24px 20px; px: 24px; }
-        .index-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding: 0 24px; }
+        /* Header Mimarisi */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo-area { display: flex; flex-direction: column; }
+        .logo-title { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; color: var(--apple-text); line-height: 1; }
+        .logo-subtitle { font-size: 10px; color: var(--apple-yellow); text-transform: uppercase; font-weight: 800; letter-spacing: 2px; margin-top: 4px; opacity: 0.9; }
+        
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-primary { background: linear-gradient(to right, var(--apple-yellow), var(--apple-yellow-hover)); color: #000; font-weight: 700; font-size: 13px; height: 40px; padding: 0 20px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-icon:hover { border-color: var(--apple-yellow); color: var(--apple-yellow); }
 
-        /* PROFESYONEL MAKALE OKUMA TİPOGRAFİSİ */
-        #articleBody {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-        }
-        .prose p {
-            text-align: left; 
-            line-height: 1.75;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-            font-size: 16px;
-        }
-        .prose h2 { font-size: 1.5rem; font-weight: 800; color: var(--apple-text); margin-top: 2.5rem; margin-bottom: 1rem; }
-        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; opacity: 0.9; }
-        .prose li { margin-bottom: 0.5rem; }
-        .prose strong { color: var(--apple-yellow); font-weight: 700;}
+        .user-card { display: none; align-items: center; gap: 8px; height: 40px; padding: 4px 12px 4px 4px; border-radius: 12px; background: var(--apple-card); border: 1px solid var(--apple-card-border); }
+        .user-card img { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
+        .user-info { display: flex; flex-direction: column; }
+        .user-info .name { font-size: 11px; font-weight: 700; color: var(--apple-text); max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-info .role { font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--apple-text-muted); }
+        .logout-btn { color: var(--apple-text-muted); cursor: pointer; background: none; margin-left: 4px; font-size: 14px; }
+        .logout-btn:hover { color: var(--apple-danger); }
 
-        @media(min-width: 640px) {
-            .prose p { text-align: justify; font-size: 17px; } 
-        }
+        /* Ana Sayfa Üst Kısım */
+        .home-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+        .home-desc { font-size: 13px; color: var(--apple-text-muted); font-weight: 500; line-height: 1.6; max-width: 450px; }
+        .search-box { position: relative; width: 100%; max-width: 260px; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--apple-text-muted); font-size: 14px; }
+        .search-input { width: 100%; height: 42px; border-radius: 12px; background: var(--apple-card); border: 1px solid var(--apple-card-border); padding: 0 16px 0 42px; color: var(--apple-text); font-size: 14px; transition: 0.2s; }
+        .search-input:focus { border-color: var(--apple-yellow); }
 
-        .glass-btn { background: var(--apple-card); border: 1px solid var(--apple-card-border); transition: all 0.2s; }
-        .glass-btn:hover { border-color: var(--apple-yellow); color: var(--apple-yellow); }
+        /* Kategori İndeksi */
+        .index-wrapper { position: sticky; top: -1px; background: var(--apple-nav-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 50; padding: 12px 0; border-bottom: 1px solid var(--apple-card-border); margin: 0 -24px 20px; }
+        .index-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 24px; scrollbar-width: none; }
+        .index-scroll::-webkit-scrollbar { display: none; }
+        .cat-pill { padding: 8px 16px; border-radius: 20px; background: var(--apple-card); border: 1px solid var(--apple-card-border); font-size: 12px; font-weight: 600; color: var(--apple-text); white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .cat-pill:hover { border-color: var(--apple-yellow); color: var(--apple-yellow); }
+
+        /* Makale Kartları */
+        .cat-title { font-size: 20px; font-weight: 800; color: var(--apple-text); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+        .cat-title span { width: 4px; height: 20px; background: var(--apple-yellow); border-radius: 4px; display: inline-block; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .post-card { background: var(--apple-card); border: 1px solid var(--apple-card-border); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
+        .post-card:hover { border-color: var(--apple-yellow); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .card-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--apple-yellow-light); color: var(--apple-yellow); display: flex; justify-content: center; align-items: center; font-size: 20px; flex-shrink: 0; }
+        .card-title { font-size: 15px; font-weight: 700; line-height: 1.3; color: var(--apple-text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-desc { font-size: 13px; color: var(--apple-text-muted); line-height: 1.5; margin-bottom: 16px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-footer { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--apple-yellow); text-transform: uppercase; letter-spacing: 0.5px; margin-top: auto; }
+
+        /* Admin Butonları */
+        .admin-controls { display: none; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+        .btn-admin { flex: 1; min-width: 150px; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; border: 1px solid; }
+        .btn-add { border-color: var(--apple-yellow); color: var(--apple-yellow); background: var(--apple-yellow-light); }
+        .btn-add:hover { background: var(--apple-yellow); color: #000; }
+        .btn-manage { border-color: var(--apple-blue); color: var(--apple-blue); background: var(--apple-blue-light); }
+        .btn-manage:hover { background: var(--apple-blue); color: #fff; }
+
+        /* Okuma Ekranı (Viewer) */
+        #viewer { display: none; flex-direction: column; flex-1; }
+        .viewer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .btn-danger { width: 36px; height: 36px; border-radius: 10px; background: var(--apple-danger-light); color: var(--apple-danger); border: 1px solid rgba(239, 68, 68, 0.2); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+        .btn-danger:hover { background: var(--apple-danger); color: #fff; }
+        
+        .article-box { background: var(--apple-card); padding: 32px 24px; border-radius: 24px; border: 1px solid var(--apple-card-border); margin-bottom: 24px; }
+        .article-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .badge { padding: 4px 10px; border-radius: 8px; background: var(--apple-yellow-light); color: var(--apple-yellow); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .read-time { font-size: 11px; font-weight: 600; color: var(--apple-text-muted); }
+        .article-title { font-size: 28px; font-weight: 900; line-height: 1.2; margin-bottom: 32px; color: var(--apple-text); }
+        
+        /* Makale İçi A4 Okuma Formatı */
+        .prose p { font-size: 16px; line-height: 1.7; margin-bottom: 24px; color: var(--apple-text); opacity: 0.9; text-align: left; word-wrap: break-word; }
+        .prose h2 { font-size: 22px; font-weight: 800; margin: 40px 0 16px; color: var(--apple-text); }
+        .prose ul { padding-left: 20px; margin-bottom: 24px; opacity: 0.9; }
+        .prose li { margin-bottom: 8px; font-size: 16px; }
+        .prose strong { color: var(--apple-yellow); }
+        @media(min-width: 640px) { .prose p { text-align: justify; font-size: 17px; } .article-box { padding: 40px; } }
+
+        /* Yorum ve Değerlendirme Bölümü */
+        .comments-section { background: var(--apple-card); padding: 24px; border-radius: 24px; border: 1px solid var(--apple-card-border); }
+        .comments-title { font-size: 18px; font-weight: 800; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; color: var(--apple-text); }
+        .comments-title i { color: var(--apple-yellow); }
+        
+        .login-warning { background: var(--apple-input-bg); padding: 24px; border-radius: 16px; border: 1px solid var(--apple-card-border); text-align: center; margin-bottom: 24px; }
+        .login-warning p { font-size: 13px; font-weight: 600; color: var(--apple-text-muted); margin-bottom: 16px; }
+        
+        .comment-form { display: none; margin-bottom: 24px; position: relative; }
+        .comment-input { width: 100%; height: 100px; border-radius: 16px; background: var(--apple-input-bg); border: 1px solid var(--apple-card-border); padding: 16px; font-size: 14px; color: var(--apple-text); resize: none; margin-bottom: 8px; transition: 0.2s; }
+        .comment-input:focus { border-color: var(--apple-yellow); }
+        .comment-form-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .char-count { font-size: 11px; font-weight: 600; color: var(--apple-text-muted); }
+        
+        .comment-item { background: var(--apple-input-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--apple-card-border); margin-bottom: 16px; position: relative; }
+        .comment-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .comment-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--apple-card-border); }
+        .comment-name { font-size: 13px; font-weight: 700; color: var(--apple-text); }
+        .comment-date { font-size: 10px; color: var(--apple-text-muted); }
+        .comment-body { font-size: 14px; line-height: 1.6; color: var(--apple-text); opacity: 0.9; }
+        .comment-del-btn { position: absolute; top: 16px; right: 16px; color: var(--apple-danger); background: none; cursor: pointer; font-size: 14px; opacity: 0.5; }
+        .comment-del-btn:hover { opacity: 1; }
+
+        /* Modallar ve Editör */
+        #adminEditor { display: none; flex-direction: column; flex: 1; }
+        .editor-box { background: var(--apple-card); padding: 24px; border-radius: 24px; border: 1px solid var(--apple-card-border); display: flex; flex-direction: column; gap: 16px; flex: 1; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 11px; font-weight: 800; color: var(--apple-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input { height: 44px; border-radius: 12px; background: var(--apple-input-bg); border: 1px solid var(--apple-card-border); padding: 0 16px; color: var(--apple-text); font-size: 14px; transition: 0.2s; }
+        .form-input:focus { border-color: var(--apple-yellow); }
+        .form-textarea { height: 250px; resize: vertical; padding: 16px; font-family: monospace; font-size: 13px; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--apple-card); width: 100%; max-width: 400px; border-radius: 24px; border: 1px solid var(--apple-card-border); padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        
+        /* Toast Bildirimi */
+        #toast { position: fixed; right: 20px; bottom: 20px; background: var(--apple-card); color: var(--apple-text); border: 1px solid var(--apple-card-border); padding: 14px 20px; border-radius: 16px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 10000; display: none; }
+        
+        .loading-spinner { display: flex; justify-content: center; padding: 40px; font-size: 24px; color: var(--apple-yellow); animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="dark selection:bg-amber-500/30">
+<body class="dark">
 
     <script>
         if (localStorage.getItem("vhesap_global_theme") === "light" || localStorage.getItem("vhesap_theme") === "light") {
@@ -111,171 +181,178 @@
         }
     </script>
 
-    <div id="toast" class="fixed right-5 bottom-5 px-5 py-3 rounded-2xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] shadow-2xl z-[9999] hidden text-sm font-semibold backdrop-blur-xl"></div>
+    <div id="toast"></div>
 
-    <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
-        <div id="vhesap-viewport">
-            <div class="apple-container" id="main-container">
+    <div id="vhesap-viewport">
+        <div class="container">
+            
+            <div id="progressBar"></div>
+
+            <!-- HEADER -->
+            <header class="header">
+                <div class="logo-area">
+                    <h1 class="logo-title">Vhesap</h1>
+                    <p class="logo-subtitle">FİNANS REHBERİ</p>
+                </div>
                 
-                <div id="progressBar"></div>
-
-                <div class="flex flex-col flex-1 w-full p-6 relative">
+                <div class="header-actions">
+                    <!-- Giriş / Kullanıcı -->
+                    <button id="loginBtn" class="btn-primary">
+                        <i class="fa-brands fa-google"></i> Giriş Yap
+                    </button>
                     
-                    <!-- HEADER -->
-                    <div class="flex justify-between items-center w-full mb-8 relative">
-                        <div class="flex flex-col">
-                            <h1 class="text-3xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
-                            <p class="text-[10px] text-amber-500/80 uppercase font-extrabold tracking-widest mt-1">FİNANS REHBERİ</p>
+                    <div id="userArea" class="user-card">
+                        <img id="userPhoto" src="" alt="Kullanıcı">
+                        <div class="user-info">
+                            <span id="userName" class="name"></span>
+                            <span id="userRoleBadge" class="role">Üye</span>
                         </div>
-                        
-                        <!-- SAĞ MENÜ -->
-                        <div class="flex items-center gap-3">
-                            <button id="loginBtn" class="h-10 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs shadow-lg hover:scale-95 transition-transform flex items-center gap-2">
-                                <i class="fa-brands fa-google text-sm"></i> <span class="hidden sm:inline">Giriş Yap</span>
-                            </button>
-                            
-                            <div id="userArea" class="hidden items-center gap-2 h-10 p-1 pr-3 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)]">
-                                <img id="userPhoto" class="w-8 h-8 rounded-lg object-cover" alt="Kullanıcı">
-                                <div class="flex flex-col hidden sm:flex">
-                                    <span id="userName" class="text-[10px] font-bold truncate max-w-[80px]"></span>
-                                    <span id="userRoleBadge" class="text-[9px] uppercase font-bold text-[var(--apple-text-muted)]">Üye</span>
-                                </div>
-                                <button id="logoutBtn" class="ml-1 text-[var(--apple-text-muted)] hover:text-red-500 transition-colors"><i class="fa-solid fa-right-from-bracket"></i></button>
-                            </div>
-
-                            <button onclick="window.location.href='index.html'" class="w-10 h-10 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-text)] flex items-center justify-center shadow-sm hover:border-amber-500 hover:text-amber-500 transition-all">
-                                <i class="fa-solid fa-house"></i>
-                            </button>
-                        </div>
+                        <button id="logoutBtn" class="logout-btn" title="Çıkış Yap"><i class="fa-solid fa-right-from-bracket"></i></button>
                     </div>
 
-                    <!-- ANA SAYFA (LİSTELEME) -->
-                    <div id="homePage" class="flex-1 flex flex-col">
-                        
-                        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <p class="text-[var(--apple-text-muted)] text-xs leading-relaxed font-medium max-w-md">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan detaylı analiz ve okuma kütüphanesi.</p>
-                            
-                            <div class="relative w-full sm:w-64 flex-shrink-0">
-                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--apple-text-muted)] text-sm"></i>
-                                <input type="text" id="searchInput" placeholder="Makale veya kategori ara..." class="w-full h-10 pl-10 pr-4 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-sm outline-none focus:border-[var(--apple-yellow)] transition-colors shadow-sm">
-                            </div>
-                        </div>
+                    <!-- Ev Butonu -->
+                    <button onclick="window.location.href='index.html'" class="btn-icon" title="Ana Sayfa">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
+                </div>
+            </header>
 
-                        <!-- ADMİN KONTROLLERİ -->
-                        <div id="adminPanelControls" class="hidden flex-col sm:flex-row gap-3 mb-6">
-                            <button id="adminPanelBtn" class="flex-1 h-11 rounded-xl border border-[var(--apple-yellow)] text-[var(--apple-yellow)] bg-amber-500/10 font-bold hover:bg-amber-500 hover:text-black transition-colors flex items-center justify-center text-sm"><i class="fa-solid fa-pen-nib mr-2"></i> Yeni Makale Ekle</button>
-                            <button id="writerManageBtn" class="hidden flex-1 h-11 rounded-xl border border-blue-500 text-blue-500 bg-blue-500/10 font-bold hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center text-sm"><i class="fa-solid fa-users-gear mr-2"></i> Yazar Yönetimi</button>
-                        </div>
-                        
-                        <div id="postsContent" class="space-y-6 flex-1 relative">
-                            <!-- İçerikler Buraya Gelecek -->
-                        </div>
+            <!-- ANA SAYFA (LİSTELEME) -->
+            <div id="homePage" style="display: flex; flex-direction: column; flex: 1;">
+                
+                <div class="home-top">
+                    <p class="home-desc">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan detaylı analiz ve okuma kütüphanesi.</p>
+                    
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Makale veya kategori ara...">
                     </div>
+                </div>
 
-                    <!-- YAZAR YÖNETİMİ MODALI -->
-                    <div id="writerManagerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-                        <div class="bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-3xl p-6 w-full max-w-md shadow-2xl">
-                            <div class="flex justify-between items-center mb-6 border-b border-[var(--apple-card-border)] pb-3">
-                                <h2 class="text-lg font-black text-[var(--apple-text)]"><i class="fa-solid fa-users-gear text-blue-500 mr-2"></i> Yazar Yönetimi</h2>
-                                <button id="closeWriterModal" class="w-8 h-8 rounded-full bg-[var(--apple-input-bg)] flex items-center justify-center text-[var(--apple-text-muted)] hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <label class="block text-[10px] font-bold text-[var(--apple-text-muted)] uppercase mb-2 tracking-wider">Yeni Yazar Ekle (Gmail)</label>
-                                <div class="flex gap-2">
-                                    <input type="email" id="newWriterEmail" class="flex-1 px-4 h-10 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm" placeholder="yazar@gmail.com">
-                                    <button id="addWriterBtn" class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black hover:scale-95 transition-transform"><i class="fa-solid fa-plus"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-[10px] font-bold text-[var(--apple-text-muted)] uppercase mb-2 border-b border-[var(--apple-card-border)] pb-2 tracking-wider">Sistemdeki Yazarlar</label>
-                                <ul id="writersList" class="space-y-2 mt-3 max-h-48 overflow-y-auto">
-                                    <li class="text-sm text-[var(--apple-text-muted)] text-center py-4">Yükleniyor...</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ADMİN YENİ MAKALE EDİTÖRÜ -->
-                    <div id="adminEditor" class="hidden flex-1 flex-col">
-                        <button id="closeEditorBtn" class="mb-4 text-xs font-bold text-[var(--apple-text-muted)] hover:text-white flex items-center gap-2 self-start"><i class="fa-solid fa-arrow-left"></i> Vazgeç & Dön</button>
-                        <div class="p-5 rounded-3xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] space-y-4 shadow-sm flex-1">
-                            <h2 class="text-xl font-bold border-b border-[var(--apple-card-border)] pb-3 mb-2">Makale Editörü</h2>
-                            <div>
-                                <label class="block text-[10px] font-bold text-[var(--apple-text-muted)] uppercase mb-1.5 tracking-wider">Makale Başlığı</label>
-                                <input type="text" id="editTitle" class="w-full h-10 px-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm">
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--apple-text-muted)] uppercase mb-1.5 tracking-wider">Kategori</label>
-                                    <input type="text" id="editCategory" class="w-full h-10 px-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm" placeholder="Örn: Yatırım">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--apple-text-muted)] uppercase mb-1.5 tracking-wider">İkon Sınıfı (FA)</label>
-                                    <input type="text" id="editIcon" class="w-full h-10 px-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm" value="fa-file-lines">
-                                </div>
-                            </div>
-                            <div class="flex-1 flex flex-col">
-                                <label class="block text-[10px] font-bold text-[var(--apple-text-muted)] uppercase mb-1.5 tracking-wider">İçerik (HTML)</label>
-                                <textarea id="editBody" class="w-full flex-1 min-h-[250px] p-4 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] font-mono text-xs leading-relaxed" placeholder="<h2>Alt Başlık</h2><p>İçerik buraya...</p>"></textarea>
-                            </div>
-                            <button id="publishPostBtn" class="w-full h-12 rounded-xl bg-gradient-to-r from-[var(--apple-yellow)] to-[var(--apple-yellow-hover)] text-black font-black text-sm hover:scale-[0.99] transition-transform mt-2"><i class="fa-solid fa-paper-plane mr-2"></i> Yayına Al</button>
-                        </div>
-                    </div>
-
-                    <!-- OKUMA EKRANI -->
-                    <div id="viewer" class="hidden flex-1 flex-col relative bg-[var(--apple-bg)] -mx-6 px-6 pt-2 pb-10">
-                        
-                        <div class="flex justify-between items-center mb-6">
-                            <button id="backBtn" class="h-8 px-4 rounded-xl glass-btn text-xs font-bold flex items-center gap-2 shadow-sm"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
-                            <div class="flex gap-2">
-                                <button onclick="window.print()" class="w-8 h-8 rounded-xl glass-btn flex items-center justify-center shadow-sm" title="PDF / Yazdır"><i class="fa-solid fa-print"></i></button>
-                                <button id="deleteActivePostBtn" class="hidden w-8 h-8 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors" title="Makaleyi Sil"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-
-                        <article class="bg-[var(--apple-card)] p-5 sm:p-8 rounded-3xl border border-[var(--apple-card-border)] shadow-md">
-                            <div class="flex items-center gap-3 mb-4">
-                                <span id="articleCategory" class="px-2.5 py-1 rounded-lg bg-[var(--apple-border)] text-[var(--apple-yellow)] text-[10px] font-bold uppercase tracking-wider"></span>
-                                <span id="articleReadTime" class="text-[10px] font-semibold text-[var(--apple-text-muted)]"><i class="fa-regular fa-clock mr-1"></i></span>
-                            </div>
-                            <h1 id="articleTitle" class="text-2xl sm:text-3xl font-black leading-tight mb-8 text-[var(--apple-text)]"></h1>
-                            
-                            <div id="articleBody" class="prose prose-invert max-w-none text-[var(--apple-text)]"></div>
-                        </article>
-                        
-                        <section class="mt-8 bg-[var(--apple-card)] p-5 sm:p-8 rounded-3xl border border-[var(--apple-card-border)] shadow-sm">
-                            <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-[var(--apple-text)]"><i class="fa-solid fa-star text-[var(--apple-yellow)]"></i> Değerlendir & Yorum Yap (<span id="commentCount">0</span>)</h3>
-                            
-                            <div id="loginWarning" class="p-6 rounded-2xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] text-center mb-6">
-                                <p class="text-xs font-semibold text-[var(--apple-text-muted)] mb-4">Bu makaleyi değerlendirmek ve yorum yapmak için güvenli giriş yapmalısınız.</p>
-                                <button id="warningLoginBtn" class="h-10 px-6 rounded-xl border border-[var(--apple-card-border)] bg-[var(--apple-card)] font-bold text-xs hover:border-[var(--apple-yellow)] transition-colors"><i class="fa-brands fa-google mr-2"></i> Google ile Giriş Yap</button>
-                            </div>
-
-                            <div id="commentBox" class="hidden mb-6 relative">
-                                <textarea id="commentText" maxlength="500" placeholder="Bu makale size yardımcı oldu mu? Fikirlerinizi paylaşın... (Maks. 500 karakter)" class="w-full h-24 p-3 rounded-xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] outline-none focus:border-[var(--apple-yellow)] text-sm resize-none transition-colors text-[var(--apple-text)]"></textarea>
-                                <div class="flex justify-between items-center mt-2">
-                                    <span id="charCount" class="text-[10px] font-semibold text-[var(--apple-text-muted)]">0/500</span>
-                                    <button id="sendComment" class="h-9 px-5 rounded-xl bg-[var(--apple-yellow)] text-black font-bold text-xs hover:scale-95 transition-transform shadow-sm">Gönder</button>
-                                </div>
-                            </div>
-                            
-                            <div id="commentsList" class="space-y-4"></div>
-                        </section>
-                    </div>
-
+                <!-- Admin Kontrolleri (Gizli) -->
+                <div id="adminPanelControls" class="admin-controls">
+                    <button id="adminPanelBtn" class="btn-admin btn-add"><i class="fa-solid fa-pen-nib"></i> Yeni Makale Ekle</button>
+                    <button id="writerManageBtn" class="btn-admin btn-manage"><i class="fa-solid fa-users-gear"></i> Yazar Yönetimi</button>
+                </div>
+                
+                <div id="postsContent" style="flex: 1; position: relative;">
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
                 </div>
             </div>
+
+            <!-- YAZAR YÖNETİMİ MODALI -->
+            <div id="writerManagerModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--apple-card-border); padding-bottom: 12px;">
+                        <h2 style="font-size: 18px; font-weight: 800; color: var(--apple-text);"><i class="fa-solid fa-users-gear" style="color: var(--apple-blue); margin-right: 8px;"></i> Yazar Yönetimi</h2>
+                        <button id="closeWriterModal" class="btn-icon" style="width: 32px; height: 32px; border: none; font-size: 16px;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label>Yeni Yazar Ekle (Gmail)</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="email" id="newWriterEmail" class="form-input" style="flex: 1;" placeholder="yazar@gmail.com">
+                            <button id="addWriterBtn" style="width: 44px; height: 44px; border-radius: 12px; background: var(--apple-blue); color: white; cursor: pointer; font-size: 16px; font-weight: bold;"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label style="font-size: 11px; font-weight: 800; color: var(--apple-text-muted); text-transform: uppercase; border-bottom: 1px solid var(--apple-card-border); padding-bottom: 8px; display: block; margin-bottom: 12px;">Sistemdeki Yazarlar</label>
+                        <ul id="writersList" style="list-style: none; max-height: 200px; overflow-y: auto;">
+                            <li style="font-size: 13px; text-align: center; color: var(--apple-text-muted); padding: 16px;">Yükleniyor...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMİN YENİ MAKALE EDİTÖRÜ -->
+            <div id="adminEditor">
+                <button id="closeEditorBtn" class="btn-icon" style="border: none; background: none; width: auto; font-size: 12px; font-weight: 700; margin-bottom: 16px; align-self: flex-start; gap: 8px;">
+                    <i class="fa-solid fa-arrow-left"></i> Vazgeç & Dön
+                </button>
+                <div class="editor-box">
+                    <h2 style="font-size: 20px; font-weight: 800; border-bottom: 1px solid var(--apple-card-border); padding-bottom: 12px; margin-bottom: 8px;">Makale Editörü</h2>
+                    <div class="form-group">
+                        <label>Makale Başlığı</label>
+                        <input type="text" id="editTitle" class="form-input">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <input type="text" id="editCategory" class="form-input" placeholder="Örn: Yatırım">
+                        </div>
+                        <div class="form-group">
+                            <label>İkon Sınıfı (FA)</label>
+                            <input type="text" id="editIcon" class="form-input" value="fa-file-lines">
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>İçerik (HTML)</label>
+                        <textarea id="editBody" class="form-input form-textarea" placeholder="<h2>Alt Başlık</h2><p>İçerik buraya...</p>"></textarea>
+                    </div>
+                    <button id="publishPostBtn" class="btn-primary" style="height: 48px; font-size: 15px; justify-content: center; margin-top: 8px; width: 100%;">
+                        <i class="fa-solid fa-paper-plane"></i> Yayına Al
+                    </button>
+                </div>
+            </div>
+
+            <!-- OKUMA EKRANI -->
+            <div id="viewer">
+                <div class="viewer-header">
+                    <button id="backBtn" class="btn-icon" style="width: auto; padding: 0 16px; font-size: 12px; font-weight: 700; gap: 8px;">
+                        <i class="fa-solid fa-arrow-left"></i> Geri Dön
+                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="window.print()" class="btn-icon" title="PDF / Yazdır"><i class="fa-solid fa-print"></i></button>
+                        <button id="deleteActivePostBtn" class="btn-danger" style="display: none;" title="Makaleyi Sil"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <article class="article-box">
+                    <div class="article-meta">
+                        <span id="articleCategory" class="badge"></span>
+                        <span id="articleReadTime" class="read-time"></span>
+                    </div>
+                    <h1 id="articleTitle" class="article-title"></h1>
+                    
+                    <div id="articleBody" class="prose"></div>
+                </article>
+                
+                <section class="comments-section">
+                    <h3 class="comments-title"><i class="fa-solid fa-star"></i> Değerlendir & Yorum Yap (<span id="commentCount">0</span>)</h3>
+                    
+                    <div id="loginWarning" class="login-warning">
+                        <p>Bu makaleyi değerlendirmek ve yorum yapmak için güvenli giriş yapmalısınız.</p>
+                        <button id="warningLoginBtn" class="btn-icon" style="width: auto; padding: 0 20px; font-size: 13px; font-weight: 700; gap: 8px; margin: 0 auto;">
+                            <i class="fa-brands fa-google"></i> Google ile Giriş Yap
+                        </button>
+                    </div>
+
+                    <div id="commentBox" class="comment-form">
+                        <textarea id="commentText" class="comment-input" maxlength="500" placeholder="Bu makale size yardımcı oldu mu? Fikirlerinizi paylaşın... (Maks. 500 karakter)"></textarea>
+                        <div class="comment-form-bottom">
+                            <span id="charCount" class="char-count">0/500</span>
+                            <button id="sendComment" class="btn-primary" style="height: 36px;">Gönder</button>
+                        </div>
+                    </div>
+                    
+                    <div id="commentsList"></div>
+                </section>
+            </div>
+
         </div>
     </div>
 
-    <!-- FIREBASE & JAVASCRIPT YÜKLEMESİ -->
+    <!-- FIREBASE & JAVASCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
         import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
 
+        // ==========================================
+        // YETKİLENDİRME (SÜPER ADMİN)
+        // ==========================================
         const SUPER_ADMIN_EMAIL = "vhesap.com@gmail.com"; 
 
         const firebaseConfig = {
@@ -284,12 +361,15 @@
             projectId: "vhesap-tr",
             storageBucket: "vhesap-tr.firebasestorage.app",
             messagingSenderId: "705403983274",
-            appId: "1:705403983274:web:497f04d17ef59465eb07d3"
+            appId: "1:705403983274:web:497f04d17ef59465eb07d3",
+            measurementId: "G-Y7T4Z7BB61"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        let analytics;
+        try { analytics = getAnalytics(app); } catch(e) {}
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
@@ -302,6 +382,14 @@
         let loadedPosts = []; 
         const SPAM_COOLDOWN_MS = 60000; 
 
+        // Tema Yönetimi
+        function updateThemeUI(theme) {
+            if (theme === "light") document.body.classList.add("light-mode");
+            else document.body.classList.remove("light-mode");
+        }
+        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
+
+        // Scroll Bar İlerlemesi
         document.getElementById('vhesap-viewport').addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
                 const winScroll = this.scrollTop;
@@ -314,6 +402,7 @@
             }
         });
 
+        // Toast Bildirimi
         function toast(text) {
             const t = document.getElementById("toast");
             t.innerHTML = text; t.style.display = "block";
@@ -321,6 +410,7 @@
             toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
+        // --- 39 MAKALELİK KAPSAMLI VERİ SETİ ---
         const initialPosts = [
             { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, ev, araç veya acil nakit ihtiyaçlarının karşılanmasında en önemli yöntemdir. Ancak birçok tüketici sadece aylık faiz oranına bakarak büyük bir hata yapar.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li><strong>Aylık Taksit Tutarı:</strong> Bütçenizi sarsmayacak, sürdürülebilir bir ödeme olmalıdır.</li><li><strong>Toplam Geri Ödeme:</strong> Vade uzadıkça aylık taksit düşer ancak bankaya ödeyeceğiniz toplam tutar devasa boyutlara ulaşır.</li><li><strong>Tahsis Ücreti ve Sigortalar:</strong> Kredi tahsis ücreti (dosya masrafı) ve zorunlu tutulan hayat sigortaları maliyeti artırır.</li></ul><p>Vhesap Bireysel Finans modülü sayesinde kredi kullanmadan önce tüm bu değişkenleri tek ekranda görebilir, erken ödeme senaryolarını saniyeler içerisinde simüle edebilirsiniz.</p>` },
             { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı (Avans Hesap veya Ek Hesap), banka hesabınızda para kalmadığında acil nakit ihtiyaçlarınızı karşılamak için size tanımlanan kredili bir limittir.</p><h2>Günlük Faiz Mantığı Nasıl Çalışır?</h2><p>İhtiyaç kredilerinin aksine, KMH limitinden harcadığınız her tutar için faiz "günlük" olarak işlemeye başlar. Cuma günü çekilen bir nakit, pazartesi geri yatırılsa dahi hafta sonu için tam faiz ödenir.</p><h2>Dikkat Edilmesi Gerekenler</h2><ul><li>Ay sonunda kesilen faiz üzerinden ayrıca %15 BSMV ve %15 KKDF vergisi alınır.</li><li>Hesaba giren ilk para, otomatik olarak KMH borcunuzu ve faizini keser.</li><li>KMH, uzun vadeli borçlanma aracı değil, sadece birkaç günlük acil nakit aracı olarak kullanılmalıdır.</li></ul>` },
@@ -379,23 +469,21 @@
         function renderGroupedPosts(postsArray) {
             const categories = [...new Set(postsArray.map(p => p.category))];
             let indexHtml = `<div class="index-wrapper"><div class="index-scroll">`;
-            categories.forEach(cat => { indexHtml += `<a href="#cat-${cat.replace(/\s+/g, '-').toLowerCase()}" class="cat-pill">${cat}</a>`; });
+            categories.forEach(cat => { indexHtml += `<button class="cat-pill" onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-').toLowerCase()}').scrollIntoView({behavior:'smooth', block:'start'})">${cat}</button>`; });
             indexHtml += `</div></div>`;
 
             let contentHtml = '';
             categories.forEach(cat => {
-                contentHtml += `<h3 class="text-xl font-bold text-[var(--apple-text)] mt-8 mb-4 flex items-center gap-2" id="cat-${cat.replace(/\s+/g, '-').toLowerCase()}"><span class="w-1 h-5 rounded-full bg-[var(--apple-yellow)] inline-block"></span> ${cat}</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
+                contentHtml += `<h3 class="cat-title" id="cat-${cat.replace(/\s+/g, '-').toLowerCase()}"><span></span> ${cat}</h3><div class="grid">`;
                 postsArray.filter(p => p.category === cat).forEach(p => {
                     contentHtml += `
-                    <div class="bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-[var(--apple-yellow)] transition-all cursor-pointer flex flex-col" onclick="openPost('${p.id}')">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-[var(--apple-yellow)] flex items-center justify-center text-lg">
-                                <i class="fa-solid ${p.icon || 'fa-file-lines'}"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-[var(--apple-text)] leading-snug line-clamp-2">${p.title}</h4>
+                    <div class="post-card" onclick="openPost('${p.id}')">
+                        <div class="card-top">
+                            <div class="card-icon"><i class="fa-solid ${p.icon || 'fa-file-lines'}"></i></div>
+                            <h4 class="card-title">${p.title}</h4>
                         </div>
-                        <p class="text-xs text-[var(--apple-text-muted)] line-clamp-2 mb-3 flex-grow">${(p.body || "").replace(/<[^>]+>/g, "").substring(0, 80)}...</p>
-                        <div class="text-[10px] font-bold text-[var(--apple-yellow)] uppercase tracking-wider mt-auto flex justify-between">
+                        <p class="card-desc">${(p.body || "").replace(/<[^>]+>/g, "").substring(0, 80)}...</p>
+                        <div class="card-footer">
                             <span>İncele →</span><span>⏱️ ${getReadTime(p.body)} dk</span>
                         </div>
                     </div>`;
@@ -411,7 +499,7 @@
             renderGroupedPosts(filtered);
         });
 
-        // 1. BEKLEMEK YOK: ANINDA YÜKLEME
+        // 1. BEKLEMEK YOK: ANINDA YÜKLEME (OPTIMISTIC UI)
         async function fetchAndRenderPosts() {
             if (loadedPosts.length === 0) {
                 loadedPosts = [...initialPosts];
@@ -436,7 +524,7 @@
                     }
                 }
             } catch (error) {
-                console.warn("Sistem yerel verilerle çalışmaya devam ediyor.");
+                console.warn("Çevrimdışı mod: Sistem yerel verilerle çalışmaya devam ediyor.");
             }
         }
 
@@ -449,7 +537,7 @@
             document.getElementById("viewer").style.display = "flex";
             document.getElementById("articleTitle").innerHTML = p.title;
             document.getElementById("articleCategory").innerHTML = p.category;
-            document.getElementById("articleReadTime").innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${getReadTime(p.body)} dk okuma`;
+            document.getElementById("articleReadTime").innerHTML = `<i class="fa-regular fa-clock" style="margin-right:4px;"></i> ${getReadTime(p.body)} dk okuma`;
             
             const delBtn = document.getElementById("deleteActivePostBtn");
             const userMailStr = currentUser?.email ? currentUser.email.toLowerCase() : "";
@@ -467,6 +555,9 @@
             
             document.getElementById('vhesap-viewport').scrollTop = 0;
             loadComments(); 
+            if (typeof analytics !== 'undefined') {
+                logEvent(analytics, 'view_post', { post_id: p.id, title: p.title });
+            }
         }
 
         window.deletePost = async function(id) {
@@ -500,7 +591,7 @@
                 await addDoc(collection(db, "posts"), { title: title, category: cat, icon: icon, body: bodyHtml, authorEmail: userMailStr, createdAt: serverTimestamp() });
                 toast("Makale yayına alındı!"); document.getElementById("closeEditorBtn").click(); fetchAndRenderPosts();
             } catch(e) { toast("Hata. Yetkiniz reddedildi."); } 
-            finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-2"></i> Yayına Al`; }
+            finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane" style="margin-right:8px;"></i> Yayına Al`; }
         };
 
         async function loadWriters() {
@@ -510,14 +601,14 @@
                 let html = "";
                 snap.forEach(doc => {
                     if(doc.data().role === 'writer') {
-                        html += `<li class="flex justify-between items-center p-3 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-sm font-semibold text-[var(--apple-text)]">
+                        html += `<li style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:12px; background:var(--apple-input-bg); margin-bottom:8px; border:1px solid var(--apple-card-border); font-size:13px; font-weight:700;">
                             <span>${doc.id}</span>
-                            <button onclick="removeWriter('${doc.id}')" class="text-red-500 hover:scale-110 transition-transform"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="removeWriter('${doc.id}')" style="background:none; border:none; color:var(--apple-danger); cursor:pointer; font-size:14px;"><i class="fa-solid fa-trash"></i></button>
                         </li>`;
                     }
                 });
-                document.getElementById("writersList").innerHTML = html || "<li class='text-xs text-center text-[var(--apple-text-muted)]'>Henüz yazar yok.</li>";
-            } catch(e) { document.getElementById("writersList").innerHTML = "<li class='text-xs text-red-500'>Liste yüklenemedi.</li>"; }
+                document.getElementById("writersList").innerHTML = html || "<li style='font-size:13px; text-align:center; color:var(--apple-text-muted); padding:16px;'>Henüz yazar yok.</li>";
+            } catch(e) { document.getElementById("writersList").innerHTML = "<li style='font-size:13px; color:var(--apple-danger);'>Liste yüklenemedi.</li>"; }
         }
 
         window.removeWriter = async function(email) {
@@ -534,6 +625,7 @@
             } catch(e) { toast("Hata. Yetkiniz yok."); }
         };
 
+        // --- YORUMLAR ---
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -541,20 +633,20 @@
                 let commentsData = []; snapshot.forEach(doc => commentsData.push({ id: doc.id, ...doc.data() }));
                 commentsData.sort((a, b) => (b.createdAt?.toMillis() || Date.now()) - (a.createdAt?.toMillis() || Date.now()));
                 let html = ""; document.getElementById("commentCount").innerHTML = commentsData.length;
-                if (commentsData.length === 0) { html = `<div class="text-xs text-center text-[var(--apple-text-muted)] py-4">İlk yorumu siz yazın.</div>`; } 
+                if (commentsData.length === 0) { html = `<div style="font-size:13px; text-align:center; color:var(--apple-text-muted); padding:16px;">İlk yorumu siz yazın.</div>`; } 
                 else {
                     commentsData.forEach(d => {
                         const tarih = d.createdAt ? d.createdAt.toDate().toLocaleString("tr-TR") : "Az önce";
                         const txt = document.createElement("div"); txt.textContent = d.text;
-                        let delBtn = isSuperAdmin ? `<button onclick="deleteComment('${d.id}')" class="absolute top-4 right-4 text-red-500 opacity-50 hover:opacity-100"><i class="fa-solid fa-trash text-sm"></i></button>` : "";
+                        let delBtn = isSuperAdmin ? `<button onclick="deleteComment('${d.id}')" class="comment-del-btn"><i class="fa-solid fa-trash"></i></button>` : "";
                         html += `
-                        <div class="p-4 rounded-2xl bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] relative">
+                        <div class="comment-item">
                             ${delBtn}
-                            <div class="flex items-center gap-3 mb-2">
-                                <img src="${d.authorPhoto}" class="w-8 h-8 rounded-full border border-[var(--apple-border)]" referrerpolicy="no-referrer">
-                                <div><div class="text-xs font-bold text-[var(--apple-text)]">${d.authorName}</div><div class="text-[9px] text-[var(--apple-text-muted)]">${tarih}</div></div>
+                            <div class="comment-header">
+                                <img src="${d.authorPhoto}" class="comment-avatar" referrerpolicy="no-referrer">
+                                <div><div class="comment-name">${d.authorName}</div><div class="comment-date">${tarih}</div></div>
                             </div>
-                            <div class="text-sm text-[var(--apple-text)] opacity-90 leading-relaxed">${txt.innerHTML}</div>
+                            <div class="comment-body">${txt.innerHTML}</div>
                         </div>`;
                     });
                 }
@@ -567,6 +659,7 @@
             try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
         }
 
+        // --- AUTH KONTROLÜ ---
         async function checkUserRole(user) {
             const userEmail = user.email ? user.email.toLowerCase() : "";
             isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
@@ -581,11 +674,11 @@
 
             const roleBadge = document.getElementById("userRoleBadge");
             if(isSuperAdmin) {
-                roleBadge.innerHTML = '<span class="text-red-500">Kurucu Admin</span>';
+                roleBadge.innerHTML = '<span style="color:var(--apple-danger);">Kurucu Admin</span>';
                 document.getElementById("adminPanelControls").style.display = "flex";
                 document.getElementById("writerManageBtn").style.display = "flex";
             } else if (isWriter) {
-                roleBadge.innerHTML = '<span class="text-[var(--apple-yellow)]">Yazar</span>';
+                roleBadge.innerHTML = '<span style="color:var(--apple-yellow);">Yazar</span>';
                 document.getElementById("adminPanelControls").style.display = "flex";
                 document.getElementById("writerManageBtn").style.display = "none";
             } else {
@@ -597,20 +690,25 @@
         onAuthStateChanged(auth, async user => {
             if (user) {
                 currentUser = user;
-                document.getElementById("loginBtn").style.display = "none"; document.getElementById("userArea").style.display = "flex";
-                document.getElementById("userPhoto").src = user.photoURL; document.getElementById("userName").innerHTML = user.displayName;
-                document.getElementById("loginWarning").style.display = "none"; document.getElementById("commentBox").style.display = "block";
+                document.getElementById("loginBtn").style.display = "none"; 
+                document.getElementById("userArea").style.display = "flex";
+                document.getElementById("userPhoto").src = user.photoURL; 
+                document.getElementById("userName").innerHTML = user.displayName;
+                document.getElementById("loginWarning").style.display = "none"; 
+                document.getElementById("commentBox").style.display = "block";
                 await checkUserRole(user);
             } else {
                 currentUser = null; isSuperAdmin = false; isWriter = false;
-                document.getElementById("loginBtn").style.display = "flex"; document.getElementById("userArea").style.display = "none";
-                document.getElementById("loginWarning").style.display = "block"; document.getElementById("commentBox").style.display = "none";
+                document.getElementById("loginBtn").style.display = "flex"; 
+                document.getElementById("userArea").style.display = "none";
+                document.getElementById("loginWarning").style.display = "block"; 
+                document.getElementById("commentBox").style.display = "none";
                 document.getElementById("adminPanelControls").style.display = "none";
             }
         });
 
         const handleLogin = async () => { 
-            try { await signInWithPopup(auth, provider); toast("Giriş yapıldı."); } catch (e) { toast("İptal edildi."); } 
+            try { await signInWithPopup(auth, provider); toast("Giriş yapıldı."); if (typeof analytics !== 'undefined') logEvent(analytics, 'login', { method: 'Google' }); } catch (e) { toast("İptal edildi."); } 
         };
         document.getElementById("loginBtn").onclick = handleLogin; document.getElementById("warningLoginBtn").onclick = handleLogin;
         document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); toast("Çıkış yapıldı."); };
@@ -635,9 +733,11 @@
                 localStorage.setItem("vhesap_last_comment_time", Date.now().toString());
                 document.getElementById("commentText").value = ""; document.getElementById("charCount").innerText = "0/500";
                 toast("Yorum eklendi.");
+                if (typeof analytics !== 'undefined') logEvent(analytics, 'add_comment', { post_id: activePost });
             } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Gönder"; }
         };
 
+        if (typeof analytics !== 'undefined') logEvent(analytics, 'page_view', { page_title: 'Finans Rehberi' });
         fetchAndRenderPosts();
     </script>
 </body>
