@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vhesap | Finans Rehberi</title>
-    <meta name="description" id="metaDescription" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
+    <meta name="description" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
-    <!-- İŞTE TASARIMI ÇALIŞTIRAN EN KRİTİK SATIR BURASI -->
+    <!-- TASARIMI ÇALIŞTIRAN MOTORLAR BURADA -->
     <script src="BLOCKEDcdn[.]tailwindcss[.]com"BLOCKED;></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     
     <style>
-        /* APPLE TASARIM MİMARİSİ (Diğer sayfalarla tam uyumlu) */
+        /* APPLE TASARIM MİMARİSİ */
         :root {
             --apple-bg: #f4f4f5;
             --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
@@ -77,7 +77,7 @@
         .index-wrapper { position: sticky; top: -1px; background: var(--apple-nav-bg); backdrop-filter: blur(20px); z-index: 50; padding: 10px 0; border-bottom: 1px solid var(--apple-card-border); margin: 0 -24px 20px; px: 24px; }
         .index-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding: 0 24px; }
 
-        /* PROFESYONEL MAKALE OKUMA (A4 DENEYİMİ) TİPOGRAFİSİ */
+        /* PROFESYONEL MAKALE OKUMA TİPOGRAFİSİ */
         #articleBody {
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -99,7 +99,6 @@
             .prose p { text-align: justify; font-size: 17px; } 
         }
 
-        /* GÖRSEL DÜZENLEMELER */
         .glass-btn { background: var(--apple-card); border: 1px solid var(--apple-card-border); transition: all 0.2s; }
         .glass-btn:hover { border-color: var(--apple-yellow); color: var(--apple-yellow); }
     </style>
@@ -107,7 +106,6 @@
 <body class="dark selection:bg-amber-500/30">
 
     <script>
-        // Tema senkronizasyonu
         if (localStorage.getItem("vhesap_global_theme") === "light" || localStorage.getItem("vhesap_theme") === "light") {
             document.body.classList.remove("dark");
         }
@@ -130,9 +128,8 @@
                             <p class="text-[10px] text-amber-500/80 uppercase font-extrabold tracking-widest mt-1">FİNANS REHBERİ</p>
                         </div>
                         
-                        <!-- SAĞ MENÜ (Giriş Solda, Ev Sağda) -->
+                        <!-- SAĞ MENÜ -->
                         <div class="flex items-center gap-3">
-                            <!-- GİRİŞ / KULLANICI ALANI -->
                             <button id="loginBtn" class="h-10 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs shadow-lg hover:scale-95 transition-transform flex items-center gap-2">
                                 <i class="fa-brands fa-google text-sm"></i> <span class="hidden sm:inline">Giriş Yap</span>
                             </button>
@@ -146,7 +143,6 @@
                                 <button id="logoutBtn" class="ml-1 text-[var(--apple-text-muted)] hover:text-red-500 transition-colors"><i class="fa-solid fa-right-from-bracket"></i></button>
                             </div>
 
-                            <!-- EV İŞARETİ (EN SAĞDA) -->
                             <button onclick="window.location.href='index.html'" class="w-10 h-10 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-[var(--apple-text)] flex items-center justify-center shadow-sm hover:border-amber-500 hover:text-amber-500 transition-all">
                                 <i class="fa-solid fa-house"></i>
                             </button>
@@ -159,23 +155,24 @@
                         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <p class="text-[var(--apple-text-muted)] text-xs leading-relaxed font-medium max-w-md">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan detaylı analiz ve okuma kütüphanesi.</p>
                             
-                            <!-- ARAMA MOTORU -->
                             <div class="relative w-full sm:w-64 flex-shrink-0">
                                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--apple-text-muted)] text-sm"></i>
                                 <input type="text" id="searchInput" placeholder="Makale veya kategori ara..." class="w-full h-10 pl-10 pr-4 rounded-xl bg-[var(--apple-card)] border border-[var(--apple-card-border)] text-sm outline-none focus:border-[var(--apple-yellow)] transition-colors shadow-sm">
                             </div>
                         </div>
 
-                        <!-- ADMİN YÖNETİM BUTONLARI (Gizli) -->
+                        <!-- ADMİN KONTROLLERİ -->
                         <div id="adminPanelControls" class="hidden flex-col sm:flex-row gap-3 mb-6">
                             <button id="adminPanelBtn" class="flex-1 h-11 rounded-xl border border-[var(--apple-yellow)] text-[var(--apple-yellow)] bg-amber-500/10 font-bold hover:bg-amber-500 hover:text-black transition-colors flex items-center justify-center text-sm"><i class="fa-solid fa-pen-nib mr-2"></i> Yeni Makale Ekle</button>
                             <button id="writerManageBtn" class="hidden flex-1 h-11 rounded-xl border border-blue-500 text-blue-500 bg-blue-500/10 font-bold hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center text-sm"><i class="fa-solid fa-users-gear mr-2"></i> Yazar Yönetimi</button>
                         </div>
                         
-                        <div id="postsContent" class="space-y-6 flex-1 relative"><div class="flex justify-center p-10"><i class="fa-solid fa-spinner fa-spin text-2xl text-[var(--apple-yellow)]"></i></div></div>
+                        <div id="postsContent" class="space-y-6 flex-1 relative">
+                            <!-- İçerikler Buraya Gelecek -->
+                        </div>
                     </div>
 
-                    <!-- YAZAR YÖNETİMİ MODALI (Sadece Super Admin) -->
+                    <!-- YAZAR YÖNETİMİ MODALI -->
                     <div id="writerManagerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
                         <div class="bg-[var(--apple-card)] border border-[var(--apple-card-border)] rounded-3xl p-6 w-full max-w-md shadow-2xl">
                             <div class="flex justify-between items-center mb-6 border-b border-[var(--apple-card-border)] pb-3">
@@ -227,7 +224,7 @@
                         </div>
                     </div>
 
-                    <!-- OKUMA EKRANI (A4 MİMARİSİ) -->
+                    <!-- OKUMA EKRANI -->
                     <div id="viewer" class="hidden flex-1 flex-col relative bg-[var(--apple-bg)] -mx-6 px-6 pt-2 pb-10">
                         
                         <div class="flex justify-between items-center mb-6">
@@ -245,11 +242,9 @@
                             </div>
                             <h1 id="articleTitle" class="text-2xl sm:text-3xl font-black leading-tight mb-8 text-[var(--apple-text)]"></h1>
                             
-                            <!-- İÇERİK METNİ BURAYA (A4 Tarzı Akıcı Okuma) -->
                             <div id="articleBody" class="prose prose-invert max-w-none text-[var(--apple-text)]"></div>
                         </article>
                         
-                        <!-- DEĞERLENDİRME & YORUM (Her zaman makalenin en altında) -->
                         <section class="mt-8 bg-[var(--apple-card)] p-5 sm:p-8 rounded-3xl border border-[var(--apple-card-border)] shadow-sm">
                             <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-[var(--apple-text)]"><i class="fa-solid fa-star text-[var(--apple-yellow)]"></i> Değerlendir & Yorum Yap (<span id="commentCount">0</span>)</h3>
                             
@@ -275,15 +270,12 @@
         </div>
     </div>
 
+    <!-- FIREBASE & JAVASCRIPT YÜKLEMESİ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
         import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
-        import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-analytics.js";
 
-        // ==========================================
-        // YETKİLENDİRME (SÜPER ADMİN)
-        // ==========================================
         const SUPER_ADMIN_EMAIL = "vhesap.com@gmail.com"; 
 
         const firebaseConfig = {
@@ -292,15 +284,12 @@
             projectId: "vhesap-tr",
             storageBucket: "vhesap-tr.firebasestorage.app",
             messagingSenderId: "705403983274",
-            appId: "1:705403983274:web:497f04d17ef59465eb07d3",
-            measurementId: "G-Y7T4Z7BB61"
+            appId: "1:705403983274:web:497f04d17ef59465eb07d3"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        let analytics;
-        try { analytics = getAnalytics(app); } catch(e) {}
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
@@ -313,13 +302,6 @@
         let loadedPosts = []; 
         const SPAM_COOLDOWN_MS = 60000; 
 
-        function updateThemeUI(theme) {
-            if (theme === "light") document.body.classList.add("light-mode");
-            else document.body.classList.remove("light-mode");
-        }
-        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
-
-        // Vhesap viewport scroll listener (Okuma Çubuğu)
         document.getElementById('vhesap-viewport').addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
                 const winScroll = this.scrollTop;
@@ -339,7 +321,6 @@
             toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
-        // --- 39 MAKALELİK KAPSAMLI VERİ SETİ ---
         const initialPosts = [
             { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, ev, araç veya acil nakit ihtiyaçlarının karşılanmasında en önemli yöntemdir. Ancak birçok tüketici sadece aylık faiz oranına bakarak büyük bir hata yapar.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li><strong>Aylık Taksit Tutarı:</strong> Bütçenizi sarsmayacak, sürdürülebilir bir ödeme olmalıdır.</li><li><strong>Toplam Geri Ödeme:</strong> Vade uzadıkça aylık taksit düşer ancak bankaya ödeyeceğiniz toplam tutar devasa boyutlara ulaşır.</li><li><strong>Tahsis Ücreti ve Sigortalar:</strong> Kredi tahsis ücreti (dosya masrafı) ve zorunlu tutulan hayat sigortaları maliyeti artırır.</li></ul><p>Vhesap Bireysel Finans modülü sayesinde kredi kullanmadan önce tüm bu değişkenleri tek ekranda görebilir, erken ödeme senaryolarını saniyeler içerisinde simüle edebilirsiniz.</p>` },
             { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı (Avans Hesap veya Ek Hesap), banka hesabınızda para kalmadığında acil nakit ihtiyaçlarınızı karşılamak için size tanımlanan kredili bir limittir.</p><h2>Günlük Faiz Mantığı Nasıl Çalışır?</h2><p>İhtiyaç kredilerinin aksine, KMH limitinden harcadığınız her tutar için faiz "günlük" olarak işlemeye başlar. Cuma günü çekilen bir nakit, pazartesi geri yatırılsa dahi hafta sonu için tam faiz ödenir.</p><h2>Dikkat Edilmesi Gerekenler</h2><ul><li>Ay sonunda kesilen faiz üzerinden ayrıca %15 BSMV ve %15 KKDF vergisi alınır.</li><li>Hesaba giren ilk para, otomatik olarak KMH borcunuzu ve faizini keser.</li><li>KMH, uzun vadeli borçlanma aracı değil, sadece birkaç günlük acil nakit aracı olarak kullanılmalıdır.</li></ul>` },
@@ -430,36 +411,32 @@
             renderGroupedPosts(filtered);
         });
 
-        // 1. BEKLEMEK YOK: ANINDA YÜKLEME (OPTIMISTIC UI)
+        // 1. BEKLEMEK YOK: ANINDA YÜKLEME
         async function fetchAndRenderPosts() {
-            // Arayüzü dondurmadan doğrudan yerel veriyi ekrana basıyoruz
             if (loadedPosts.length === 0) {
                 loadedPosts = [...initialPosts];
                 renderGroupedPosts(loadedPosts); 
                 checkUrlParams(); 
             }
 
-            // 2. ARKA PLAN: Firebase ile sessiz senkronizasyon (Eğer db boşsa yazar, doluysa yenileri getirir)
             try {
                 const q = query(collection(db, "posts"));
                 const querySnapshot = await getDocs(q);
                 
                 if (querySnapshot.empty) {
-                    // Veritabanı boşsa paralel (aynı anda) gönderim yapar, kullanıcıyı asla bekletmez.
                     const promises = initialPosts.map(post => setDoc(doc(db, "posts", post.id), post));
                     Promise.all(promises).catch(e => console.warn(e));
                 } else {
                     let serverPosts = []; 
                     querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
                     
-                    // Sadece sunucudaki makale sayısı farklıysa arayüzü sessizce yenile
                     if (serverPosts.length !== initialPosts.length) {
                         loadedPosts = serverPosts;
                         renderGroupedPosts(loadedPosts);
                     }
                 }
             } catch (error) {
-                console.warn("Çevrimdışı mod veya izin hatası: Sistem yerel verilerle çalışmaya devam ediyor.");
+                console.warn("Sistem yerel verilerle çalışmaya devam ediyor.");
             }
         }
 
@@ -490,9 +467,6 @@
             
             document.getElementById('vhesap-viewport').scrollTop = 0;
             loadComments(); 
-            if (typeof analytics !== 'undefined') {
-                logEvent(analytics, 'view_post', { post_id: p.id, title: p.title });
-            }
         }
 
         window.deletePost = async function(id) {
@@ -529,7 +503,6 @@
             finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-2"></i> Yayına Al`; }
         };
 
-        // Yeni Yazar Ekleme ve Listeleme İşlemleri
         async function loadWriters() {
             if(!isSuperAdmin) return;
             try {
@@ -561,7 +534,6 @@
             } catch(e) { toast("Hata. Yetkiniz yok."); }
         };
 
-        // --- YORUMLAR ---
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -595,7 +567,6 @@
             try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
         }
 
-        // --- AUTH & ROL KONTROLÜ ---
         async function checkUserRole(user) {
             const userEmail = user.email ? user.email.toLowerCase() : "";
             isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
@@ -639,11 +610,7 @@
         });
 
         const handleLogin = async () => { 
-            try { 
-                await signInWithPopup(auth, provider); 
-                toast("Giriş yapıldı."); 
-                if (typeof analytics !== 'undefined') logEvent(analytics, 'login', { method: 'Google' });
-            } catch (e) { toast("İptal edildi."); } 
+            try { await signInWithPopup(auth, provider); toast("Giriş yapıldı."); } catch (e) { toast("İptal edildi."); } 
         };
         document.getElementById("loginBtn").onclick = handleLogin; document.getElementById("warningLoginBtn").onclick = handleLogin;
         document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); toast("Çıkış yapıldı."); };
@@ -668,11 +635,9 @@
                 localStorage.setItem("vhesap_last_comment_time", Date.now().toString());
                 document.getElementById("commentText").value = ""; document.getElementById("charCount").innerText = "0/500";
                 toast("Yorum eklendi.");
-                if (typeof analytics !== 'undefined') logEvent(analytics, 'add_comment', { post_id: activePost });
             } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Gönder"; }
         };
 
-        if (typeof analytics !== 'undefined') logEvent(analytics, 'page_view', { page_title: 'Finans Rehberi' });
         fetchAndRenderPosts();
     </script>
 </body>
