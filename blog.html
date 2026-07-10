@@ -2,10 +2,11 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
+    <!-- İKONLAR İÇİN FONT AWESOME -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -23,6 +24,7 @@
             --amber-light: rgba(245, 158, 11, 0.1);
             --danger: #ef4444;
             --blue: #3b82f6;
+            --radius: 16px; 
             --nav-bg: rgba(5,5,5,0.85);
         }
 
@@ -81,8 +83,8 @@
         .search-input { width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text-strong); padding: 0 15px 0 40px; font-size: 14px; transition: 0.2s; }
         .search-input:focus { border-color: var(--amber); }
 
-        .admin-panel { display: none; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .admin-btn { flex: 1; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: 1px solid; transition: 0.2s; min-width: 150px; }
+        .admin-panel { display: none; gap: 10px; margin-bottom: 20px; }
+        .admin-btn { flex: 1; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: 1px solid; transition: 0.2s; }
         .admin-btn.add { border-color: var(--amber); color: var(--amber); background: var(--amber-light); }
         .admin-btn.add:hover { background: var(--amber); color: #000; }
         .admin-btn.manage { border-color: var(--blue); color: var(--blue); background: rgba(59, 130, 246, 0.1); }
@@ -96,7 +98,7 @@
         .cat-header { font-size: 20px; font-weight: 800; color: var(--text-strong); margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
         .cat-header::before { content: ""; width: 4px; height: 20px; background: var(--amber); border-radius: 4px; }
         .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .post-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
+        .post-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
         .post-card:hover { border-color: var(--amber); transform: translateY(-3px); }
         .post-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .post-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--amber-light); color: var(--amber); display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0; }
@@ -104,50 +106,41 @@
         .post-card-desc { font-size: 13px; color: var(--muted); margin-bottom: 15px; line-height: 1.5; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .post-card-footer { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--amber); text-transform: uppercase; }
 
-        /* OKUMA EKRANI & GİRİŞ DUVARI (PAYWALL) */
+        /* OKUMA EKRANI */
         #viewer { display: none; flex-direction: column; }
         .viewer-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-back { background: var(--card); border: 1px solid var(--border); color: var(--text-strong); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
         .btn-back:hover { border-color: var(--amber); color: var(--amber); }
         
-        .article-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 30px; position: relative; }
+        .article-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 30px; }
         .article-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
         .badge { background: var(--amber-light); color: var(--amber); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .article-title { font-size: 26px; font-weight: 900; color: var(--text-strong); line-height: 1.2; margin-bottom: 30px; }
         
-        /* Makale A4 Formatı */
-        .article-body { font-size: 16px; color: var(--text); line-height: 1.75; text-align: left; word-wrap: break-word; overflow: hidden; }
+        .article-body { font-size: 16px; color: var(--text); line-height: 1.75; text-align: left; word-wrap: break-word; }
         .article-body h2 { font-size: 22px; color: var(--text-strong); font-weight: 800; margin: 35px 0 15px; }
         .article-body p { margin-bottom: 20px; opacity: 0.9; }
         .article-body ul { padding-left: 20px; margin-bottom: 20px; }
         .article-body li { margin-bottom: 8px; opacity: 0.9; }
-        .article-body strong { color: var(--amber); font-weight: bold; }
+        .article-body strong { color: var(--amber); }
 
         @media (min-width: 600px) {
             .article-box { padding: 40px; }
             .article-title { font-size: 32px; }
-            .article-body { font-size: 17px; text-align: justify; } /* Bilgisayarda iki yana yasla */
+            .article-body { font-size: 17px; text-align: justify; }
         }
 
-        /* GİRİŞ DUVARI (Duman Efekti) */
-        .paywall-active { max-height: 250px; position: relative; }
-        .paywall-active::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, transparent, var(--card)); pointer-events: none; }
-        .paywall-cta-box { text-align: center; background: var(--input-bg); border: 1px solid var(--amber); border-radius: 16px; padding: 30px 20px; margin-top: -20px; position: relative; z-index: 10; display: none; }
-        .paywall-cta-box h3 { font-size: 18px; color: var(--text-strong); margin-bottom: 10px; font-weight: 800; }
-        .paywall-cta-box p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-
         /* YORUMLAR */
-        #commentSection { display: none; } /* Giriş yapılana kadar gizli */
         .comments-section { background: var(--input-bg); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
         .comments-title { font-size: 20px; font-weight: 800; color: var(--text-strong); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .comments-title i { color: var(--amber); }
-
-        .comment-box { margin-bottom: 25px; }
+        .login-warning { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 25px; }
+        .login-warning p { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 15px; }
+        .comment-box { display: none; margin-bottom: 25px; }
         .comment-textarea { width: 100%; height: 100px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; font-size: 14px; color: var(--text-strong); resize: none; margin-bottom: 10px; transition: 0.2s; }
         .comment-textarea:focus { border-color: var(--amber); }
         .comment-actions { display: flex; justify-content: space-between; align-items: center; }
         .char-count { font-size: 12px; color: var(--muted); font-weight: 600; }
-        
         .comment-item { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; position: relative; }
         .comment-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         .comment-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
@@ -157,24 +150,42 @@
         .btn-del-comment { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--danger); cursor: pointer; font-size: 14px; opacity: 0.5; }
         .btn-del-comment:hover { opacity: 1; }
 
-        /* MODALLAR & EDİTÖR */
+        /* MODALLAR & FORM GENEL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; width: 100%; max-width: 450px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-title { font-size: 18px; font-weight: 800; color: var(--text-strong); }
         .btn-close { background: var(--input-bg); border: none; width: 32px; height: 32px; border-radius: 50%; color: var(--text-strong); cursor: pointer; }
-
         .form-group { margin-bottom: 15px; }
         .form-label { display: block; font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
         .form-input { width: 100%; height: 44px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 0 15px; color: var(--text-strong); font-size: 14px; }
+        .form-input:focus { border-color: var(--amber); }
+
+        /* GELİŞMİŞ EDİTÖR (WYSIWYG) VE İKON SEÇİCİ EKRANI */
+        #adminEditor { display: none; flex-direction: column; }
+        .editor-container { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
         
-        #adminEditor { display: none; flex-direction: column; background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
+        /* Görsel İkon Seçici */
         .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px; max-height: 140px; overflow-y: auto; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; }
-        .icon-item { height: 40px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; }
+        .icon-grid::-webkit-scrollbar { width: 4px; }
+        .icon-item { height: 40px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .icon-item:hover { border-color: var(--amber); color: var(--amber); }
         .icon-item.selected { background: var(--amber); color: #000; border-color: var(--amber); }
+
+        /* Zengin Metin Araç Çubuğu */
         .toolbar { display: flex; gap: 5px; background: var(--input-bg); padding: 8px; border: 1px solid var(--border); border-bottom: none; border-radius: 12px 12px 0 0; overflow-x: auto; scrollbar-width: none; }
-        .toolbar-btn { min-width: 32px; height: 32px; padding: 0 8px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text-strong); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .toolbar::-webkit-scrollbar { display: none; }
+        .toolbar-btn { min-width: 32px; height: 32px; padding: 0 8px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text-strong); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; transition: 0.2s; }
+        .toolbar-btn:hover { background: var(--border); color: var(--amber); }
+        .toolbar-divider { width: 1px; background: var(--border); margin: 0 4px; }
+        
+        /* Zengin Metin İçerik Alanı */
         .rich-textarea { width: 100%; min-height: 300px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 0 0 12px 12px; padding: 15px; color: var(--text-strong); font-size: 15px; line-height: 1.7; overflow-y: auto; outline: none; }
+        .rich-textarea:focus { border-color: var(--amber); }
+        .rich-textarea[empty="true"]::before { content: attr(placeholder); color: var(--muted); pointer-events: none; display: block; }
+        .rich-textarea h2 { font-size: 22px; font-weight: 800; margin: 15px 0 10px; color: var(--text-strong); }
+        .rich-textarea h3 { font-size: 18px; font-weight: 800; margin: 15px 0 10px; color: var(--text-strong); }
+        .rich-textarea ul, .rich-textarea ol { padding-left: 20px; margin-bottom: 15px; }
 
         #toast { position: fixed; bottom: 20px; right: 20px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); padding: 15px 20px; border-radius: 16px; font-size: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; }
         .loading { text-align: center; padding: 40px; color: var(--amber); font-size: 24px; }
@@ -196,7 +207,7 @@
 
     <div id="toast"></div>
 
-    <div class="viewport">
+    <div class="viewport" id="vhesap-viewport">
         <div class="container">
             
             <div id="progressBar"></div>
@@ -274,56 +285,62 @@
                 </div>
             </div>
 
-            <!-- ZENGİN METİN EDİTÖRÜ (Admin) -->
+            <!-- ZENGİN METİN EDİTÖRÜ (WYSIWYG) -->
             <div id="adminEditor">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <button id="closeEditorBtn" class="btn-back" style="background:none; border:none; padding:0;"><i class="fa-solid fa-arrow-left"></i> Vazgeç & Dön</button>
-                    <h2 class="comments-title" style="margin:0;">Profesyonel Makale Editörü</h2>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Makale Başlığı</label>
-                    <input type="text" id="editTitle" class="form-input" placeholder="Okuyucuyu çekecek etkili bir başlık...">
-                </div>
-                
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom: 15px;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Kategori Seçimi</label>
-                        <input type="text" id="editCategory" class="form-input" placeholder="Örn: Bireysel Finans, Yatırım">
+                <div class="editor-container">
+                    <h2 class="comments-title" style="border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px;">Profesyonel Makale Editörü</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Makale Başlığı</label>
+                        <input type="text" id="editTitle" class="form-input" placeholder="Okuyucuyu çekecek etkili bir başlık...">
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Vitrin İkonu</label>
-                        <div id="iconPickerGrid" class="icon-grid"></div>
-                        <input type="hidden" id="selectedIconInput" value="fa-file-lines">
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Kategori Seçimi</label>
+                            <input type="text" id="editCategory" class="form-input" placeholder="Örn: Bireysel Finans, Yatırım">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Vitrin İkonu</label>
+                            <!-- Görsel İkon Grid Sistemi -->
+                            <div id="iconPickerGrid" class="icon-grid"></div>
+                            <input type="hidden" id="selectedIconInput" value="fa-file-lines">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Makale İçeriği</label>
-                    <div class="toolbar">
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('bold')" title="Kalın"><i class="fa-solid fa-bold"></i></button>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('italic')" title="İtalik"><i class="fa-solid fa-italic"></i></button>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('underline')" title="Altı Çizili"><i class="fa-solid fa-underline"></i></button>
-                        <div style="width:1px; background:var(--border); margin:0 4px;"></div>
-                        <button type="button" class="toolbar-btn" onclick="formatBlock('H2')" title="Ana Alt Başlık">H2</button>
-                        <button type="button" class="toolbar-btn" onclick="formatBlock('H3')" title="Küçük Başlık">H3</button>
-                        <button type="button" class="toolbar-btn" onclick="formatBlock('P')" title="Normal Paragraf">P</button>
-                        <div style="width:1px; background:var(--border); margin:0 4px;"></div>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('insertUnorderedList')" title="Maddeli Liste"><i class="fa-solid fa-list-ul"></i></button>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('insertOrderedList')" title="Numaralı Liste"><i class="fa-solid fa-list-ol"></i></button>
-                        <div style="width:1px; background:var(--border); margin:0 4px;"></div>
-                        <button type="button" class="toolbar-btn" onclick="addLink()" title="Link Ekle"><i class="fa-solid fa-link"></i></button>
-                        <button type="button" class="toolbar-btn" onclick="formatDoc('removeFormat')" title="Temizle"><i class="fa-solid fa-eraser"></i></button>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Makale İçeriği</label>
+                        <!-- Zengin Metin Araç Çubuğu -->
+                        <div class="toolbar">
+                            <button type="button" class="toolbar-btn" onclick="formatDoc('bold')" title="Kalın (Bold)"><i class="fa-solid fa-bold"></i></button>
+                            <button type="button" class="toolbar-btn" onclick="formatDoc('italic')" title="İtalik"><i class="fa-solid fa-italic"></i></button>
+                            <button type="button" class="toolbar-btn" onclick="formatDoc('underline')" title="Altı Çizili"><i class="fa-solid fa-underline"></i></button>
+                            <div class="toolbar-divider"></div>
+                            <button type="button" class="toolbar-btn" onclick="formatBlock('H2')" title="Ana Alt Başlık">H2</button>
+                            <button type="button" class="toolbar-btn" onclick="formatBlock('H3')" title="Küçük Başlık">H3</button>
+                            <button type="button" class="toolbar-btn" onclick="formatBlock('P')" title="Normal Paragraf">P</button>
+                            <div class="toolbar-divider"></div>
+                            <button type="button" class="toolbar-btn" onclick="formatDoc('insertUnorderedList')" title="Maddeli Liste"><i class="fa-solid fa-list-ul"></i></button>
+                            <button type="button" class="toolbar-btn" onclick="formatDoc('insertOrderedList')" title="Numaralı Liste"><i class="fa-solid fa-list-ol"></i></button>
+                            <div class="toolbar-divider"></div>
+                            <button type="button" class="toolbar-btn" onclick="addLink()" title="Link Ekle"><i class="fa-solid fa-link"></i></button>
+                            <button type="button" class="toolbar-btn" onclick="formatDoc('removeFormat')" title="Biçimlendirmeyi Temizle"><i class="fa-solid fa-eraser"></i></button>
+                        </div>
+                        <!-- Düzenlenebilir İçerik Alanı -->
+                        <div id="editBody" contenteditable="true" class="rich-textarea" placeholder="Makale içeriğinizi buraya yazmaya başlayın..."></div>
                     </div>
-                    <div id="editBody" contenteditable="true" class="rich-textarea" placeholder="Makale içeriğini buraya yaz..."></div>
+                    
+                    <button id="publishPostBtn" class="btn-primary" style="height: 48px; font-size: 15px; justify-content: center; width: 100%; margin-top: 10px;">
+                        <i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al
+                    </button>
                 </div>
-                
-                <button id="publishPostBtn" class="btn-primary" style="height: 48px; font-size: 15px; justify-content: center; width: 100%; margin-top: 10px;">
-                    <i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al
-                </button>
             </div>
 
-            <!-- OKUMA EKRANI & GİRİŞ DUVARI (PAYWALL) -->
+            <!-- OKUMA EKRANI -->
             <div id="viewer">
                 <div class="viewer-actions">
                     <button id="backBtn" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
@@ -333,31 +350,24 @@
                     </div>
                 </div>
 
-                <!-- Makale Kutusu -->
                 <article class="article-box">
                     <div class="article-meta">
                         <span id="articleCategory" class="badge"></span>
                         <span id="articleReadTime" style="font-size:12px; color:var(--muted); font-weight:600;"><i class="fa-regular fa-clock"></i></span>
                     </div>
                     <h1 id="articleTitle" class="article-title"></h1>
-                    
                     <div id="articleBody" class="article-body prose"></div>
                 </article>
                 
-                <!-- GİRİŞ YAPMAYA ZORLAYAN KUTU (PAYWALL) -->
-                <div id="paywallCTA" class="paywall-cta-box">
-                    <h3>Makalenin Devamını Oku</h3>
-                    <p>Tamamını okumak ve finansal analizlere erişmek için hemen ücretsiz giriş yapın.</p>
-                    <button id="paywallLoginBtn" class="btn-primary" style="margin: 0 auto; width: 100%; max-width: 250px; justify-content: center;">
-                        <i class="fa-brands fa-google"></i> Google ile Giriş Yap
-                    </button>
-                </div>
-                
-                <!-- YORUMLAR (Giriş Yapılana Kadar Gizli Kalır) -->
-                <section id="commentSection" class="comments-section">
+                <section class="comments-section">
                     <h3 class="comments-title"><i class="fa-solid fa-star"></i> Değerlendirme & Yorumlar (<span id="commentCount">0</span>)</h3>
                     
-                    <div id="commentBox" class="comment-box" style="display: block;">
+                    <div id="loginWarning" class="login-warning">
+                        <p>Bu makale size yardımcı oldu mu? Görüş bildirmek için güvenli giriş yapmalısınız.</p>
+                        <button id="warningLoginBtn" class="btn-back" style="margin:0 auto;"><i class="fa-brands fa-google"></i> Google ile Giriş Yap</button>
+                    </div>
+
+                    <div id="commentBox" class="comment-box">
                         <textarea id="commentText" class="comment-textarea" maxlength="500" placeholder="Fikirlerinizi bizimle paylaşın... (Maks. 500 karakter)"></textarea>
                         <div class="comment-actions">
                             <span id="charCount" class="char-count">0/500</span>
@@ -372,7 +382,6 @@
         </div>
     </div>
 
-    <!-- FIREBASE & JAVASCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
@@ -401,18 +410,23 @@
         let toastTimeout; 
         let unsubscribeComments = null;
         let loadedPosts = []; 
+        const SPAM_COOLDOWN_MS = 60000; 
 
-        // Kaydırma Çubuğu
-        window.addEventListener('scroll', function() {
+        // Tema Yönetimi
+        function updateThemeUI(theme) {
+            if (theme === "light") { document.body.classList.remove("dark"); document.body.classList.add("light-mode"); } 
+            else { document.body.classList.remove("light-mode"); document.body.classList.add("dark"); }
+        }
+        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
+
+        document.getElementById('vhesap-viewport').addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
-                const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const winScroll = this.scrollTop;
+                const height = this.scrollHeight - this.clientHeight;
                 let scrolled = (winScroll / height) * 100;
                 if(isNaN(scrolled)) scrolled = 0;
                 document.getElementById('progressBar').style.width = scrolled + "%";
-            } else { 
-                document.getElementById('progressBar').style.width = "0%"; 
-            }
+            } else { document.getElementById('progressBar').style.width = "0%"; }
         });
 
         function toast(text) {
@@ -422,14 +436,42 @@
             toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
-        // EDİTÖR İKON VE ARAÇ ÇUBUĞU
-        window.formatDoc = function(cmd, value=null) { document.execCommand(cmd, false, value); document.getElementById('editBody').focus(); };
-        window.formatBlock = function(blockType) { document.execCommand('formatBlock', false, `<${blockType}>`); document.getElementById('editBody').focus(); };
-        window.addLink = function() { const url = prompt('Bağlantı (Link):', 'https://'); if(url) document.execCommand('createLink', false, url); };
+        // ZENGİN METİN EDİTÖRÜ (WYSIWYG) FONKSİYONLARI
+        window.formatDoc = function(cmd, value=null) {
+            document.execCommand(cmd, false, value);
+            document.getElementById('editBody').focus();
+        };
+        window.formatBlock = function(blockType) {
+            document.execCommand('formatBlock', false, `<${blockType}>`);
+            document.getElementById('editBody').focus();
+        };
+        window.addLink = function() {
+            const url = prompt('Bağlantı (Link) adresini girin:', 'https://');
+            if(url) { document.execCommand('createLink', false, url); }
+        };
+
+        // Placeholder kontrolü
+        const richTextarea = document.getElementById('editBody');
+        richTextarea.addEventListener('input', function() {
+            if(this.innerHTML.trim() === '' || this.innerHTML === '<br>') { this.setAttribute('empty', 'true'); } 
+            else { this.setAttribute('empty', 'false'); }
+        });
+
+        // GÖRSEL İKON SEÇİCİ (Grid Kurulumu)
+        const fontAwesomeIcons = [
+            'fa-file-lines', 'fa-calculator', 'fa-coins', 'fa-chart-pie', 'fa-chart-line', 
+            'fa-money-bill', 'fa-money-bill-transfer', 'fa-wallet', 'fa-house', 'fa-house-user', 
+            'fa-car', 'fa-building', 'fa-briefcase', 'fa-store', 'fa-earth-europe', 
+            'fa-book-open', 'fa-truck-fast', 'fa-cash-register', 'fa-shield-halved', 'fa-piggy-bank', 
+            'fa-gem', 'fa-arrow-trend-up', 'fa-credit-card', 'fa-plane-departure', 'fa-scissors', 
+            'fa-rotate', 'fa-key', 'fa-scale-unbalanced', 'fa-file-invoice', 'fa-graduation-cap', 
+            'fa-scale-balanced', 'fa-gavel', 'fa-heart-pulse', 'fa-building-columns', 'fa-handshake', 
+            'fa-house-chimney', 'fa-percent', 'fa-chart-bar', 'fa-landmark'
+        ];
         
-        const fontAwesomeIcons = [ 'fa-file-lines', 'fa-calculator', 'fa-coins', 'fa-chart-pie', 'fa-chart-line', 'fa-money-bill', 'fa-money-bill-transfer', 'fa-wallet', 'fa-house', 'fa-house-user', 'fa-car', 'fa-building', 'fa-briefcase', 'fa-store', 'fa-earth-europe', 'fa-book-open', 'fa-truck-fast', 'fa-cash-register', 'fa-shield-halved', 'fa-piggy-bank', 'fa-gem', 'fa-arrow-trend-up', 'fa-credit-card', 'fa-plane-departure', 'fa-scissors', 'fa-rotate', 'fa-key', 'fa-scale-unbalanced', 'fa-file-invoice', 'fa-graduation-cap', 'fa-scale-balanced', 'fa-gavel', 'fa-heart-pulse', 'fa-building-columns', 'fa-handshake', 'fa-house-chimney' ];
         function initIconPicker() {
             const grid = document.getElementById('iconPickerGrid');
+            const hiddenInput = document.getElementById('selectedIconInput');
             let html = '';
             fontAwesomeIcons.forEach(icon => {
                 const isSelected = (icon === 'fa-file-lines') ? 'selected' : '';
@@ -437,13 +479,15 @@
             });
             grid.innerHTML = html;
         }
+
         window.selectIcon = function(iconClass, element) {
             document.querySelectorAll('.icon-item').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected'); document.getElementById('selectedIconInput').value = iconClass;
+            element.classList.add('selected');
+            document.getElementById('selectedIconInput').value = iconClass;
         };
         initIconPicker();
 
-        // --- 39 MAKALELİK LİSTE ---
+        // --- 39 MAKALELİK KAPSAMLI VERİ SETİ ---
         const initialPosts = [
             { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, ev, araç veya acil nakit ihtiyaçlarının karşılanmasında en önemli yöntemdir. Ancak birçok tüketici sadece aylık faiz oranına bakarak büyük bir hata yapar.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li><strong>Aylık Taksit Tutarı:</strong> Bütçenizi sarsmayacak, sürdürülebilir bir ödeme olmalıdır.</li><li><strong>Toplam Geri Ödeme:</strong> Vade uzadıkça aylık taksit düşer ancak bankaya ödeyeceğiniz toplam tutar devasa boyutlara ulaşır.</li><li><strong>Tahsis Ücreti ve Sigortalar:</strong> Kredi tahsis ücreti (dosya masrafı) ve zorunlu tutulan hayat sigortaları maliyeti artırır.</li></ul><p>Vhesap Bireysel Finans modülü sayesinde kredi kullanmadan önce tüm bu değişkenleri tek ekranda görebilir, erken ödeme senaryolarını saniyeler içerisinde simüle edebilirsiniz.</p>` },
             { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı (Avans Hesap veya Ek Hesap), banka hesabınızda para kalmadığında acil nakit ihtiyaçlarınızı karşılamak için size tanımlanan kredili bir limittir.</p><h2>Günlük Faiz Mantığı Nasıl Çalışır?</h2><p>İhtiyaç kredilerinin aksine, KMH limitinden harcadığınız her tutar için faiz "günlük" olarak işlemeye başlar. Cuma günü çekilen bir nakit, pazartesi geri yatırılsa dahi hafta sonu için tam faiz ödenir.</p><h2>Dikkat Edilmesi Gerekenler</h2><ul><li>Ay sonunda kesilen faiz üzerinden ayrıca %15 BSMV ve %15 KKDF vergisi alınır.</li><li>Hesaba giren ilk para, otomatik olarak KMH borcunuzu ve faizini keser.</li><li>KMH, uzun vadeli borçlanma aracı değil, sadece birkaç günlük acil nakit aracı olarak kullanılmalıdır.</li></ul>` },
@@ -499,11 +543,13 @@
             }
         }
 
-        // MAKALELERİ EKRANA ÇİZ
         function renderGroupedPosts(postsArray) {
             const categories = [...new Set(postsArray.map(p => p.category))];
+            
             let indexHtml = `<div class="index-bar">`;
-            categories.forEach(cat => { indexHtml += `<button class="cat-pill" onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-').toLowerCase()}').scrollIntoView({behavior:'smooth', block:'start'})">${cat}</button>`; });
+            categories.forEach(cat => { 
+                indexHtml += `<button class="cat-pill" onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-').toLowerCase()}').scrollIntoView({behavior:'smooth', block:'start'})">${cat}</button>`; 
+            });
             indexHtml += `</div>`;
 
             let contentHtml = '';
@@ -533,71 +579,32 @@
             renderGroupedPosts(filtered);
         });
 
-        // 1. BEKLEMEK YOK: SADECE OKUMA (HATA GİDERİLDİ)
+        // 1. BEKLEMEK YOK: ANINDA YÜKLEME (OPTIMISTIC UI)
         async function fetchAndRenderPosts() {
-            // Anında yerel bellekteki makaleleri ekrana bas (Sıfır Donma)
-            loadedPosts = [...initialPosts];
-            renderGroupedPosts(loadedPosts); 
-            checkUrlParams(); 
+            if (loadedPosts.length === 0) {
+                loadedPosts = [...initialPosts];
+                renderGroupedPosts(loadedPosts); 
+                checkUrlParams(); 
+            }
 
-            // Arka planda Firebase'den SADECE OKUMA yap (Kaydetme komutu iptal edildi)
             try {
                 const q = query(collection(db, "posts"));
                 const querySnapshot = await getDocs(q);
                 
-                if (!querySnapshot.empty) {
+                if (querySnapshot.empty) {
+                    const promises = initialPosts.map(post => setDoc(doc(db, "posts", post.id), post));
+                    Promise.all(promises).catch(e => console.warn(e));
+                } else {
                     let serverPosts = []; 
                     querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
                     
-                    // Admin yeni yazı eklediyse listeyi güncelle
-                    let combinedPosts = [...initialPosts];
-                    serverPosts.forEach(sp => {
-                        const index = combinedPosts.findIndex(ip => ip.id === sp.id);
-                        if (index > -1) combinedPosts[index] = sp; 
-                        else combinedPosts.push(sp); 
-                    });
-
-                    // Yeniden eskiye doğru sırala
-                    combinedPosts.sort((a, b) => {
-                        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-                        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-                        return timeB - timeA;
-                    });
-
-                    // Eğer sayı veya içerik değiştiyse çaktırmadan yenile
-                    if (loadedPosts.length !== combinedPosts.length) {
-                        loadedPosts = combinedPosts;
+                    if (serverPosts.length !== initialPosts.length) {
+                        loadedPosts = serverPosts;
                         renderGroupedPosts(loadedPosts);
                     }
                 }
             } catch (error) {
-                console.warn("Bağlantı sağlanamadı, lokal okuma devam ediyor.");
-            }
-        }
-
-        // MAKALEYİ EKRANA BAS (PAYWALL - GİRİŞ DUVARI MANTIĞI İLE)
-        function renderArticleContent() {
-            if(!activePost) return;
-            const p = loadedPosts.find(x => x.id === activePost);
-            if(!p) return;
-
-            const bodyDiv = document.getElementById("articleBody");
-            const ctaBox = document.getElementById("paywallCTA");
-            const commentSec = document.getElementById("commentSection");
-
-            bodyDiv.innerHTML = p.body;
-
-            // Eğer Giriş Yapılmışsa TAMAMINI GÖSTER
-            if (currentUser || isSuperAdmin || isWriter) {
-                bodyDiv.className = "article-body prose"; 
-                ctaBox.style.display = "none";
-                commentSec.style.display = "block";
-            } 
-            // Giriş YAPILMAMIŞSA DUVAR GÖSTER (PAYWALL)
-            else {
-                bodyDiv.className = "article-body prose paywall-active"; 
-                ctaBox.style.display = "block";
-                commentSec.style.display = "none";
+                console.warn("Çevrimdışı mod: Sistem yerel verilerle çalışıyor.");
             }
         }
 
@@ -610,7 +617,7 @@
             document.getElementById("viewer").style.display = "flex";
             document.getElementById("articleTitle").innerHTML = p.title;
             document.getElementById("articleCategory").innerHTML = p.category;
-            document.getElementById("articleReadTime").innerHTML = `<i class="fa-regular fa-clock" style="margin-right:5px;"></i> ${getReadTime(p.body)} dk`;
+            document.getElementById("articleReadTime").innerHTML = `⏱️ ${getReadTime(p.body)} dk okuma`;
             
             const delBtn = document.getElementById("deleteActivePostBtn");
             const userMailStr = currentUser?.email ? currentUser.email.toLowerCase() : "";
@@ -618,9 +625,7 @@
                 delBtn.style.display = "flex"; delBtn.onclick = () => { deletePost(p.id); };
             } else { delBtn.style.display = "none"; }
 
-            // İçeriği duruma göre bas (Giriş Duvarı)
-            renderArticleContent();
-
+            document.getElementById("articleBody").innerHTML = p.body;
             document.title = `${p.title} | Vhesap`;
             
             if(changeUrl) {
@@ -628,7 +633,7 @@
                 window.history.pushState({path:newUrl}, '', newUrl);
             }
             
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            document.getElementById('vhesap-viewport').scrollTop = 0;
             loadComments(); 
         }
 
@@ -644,7 +649,7 @@
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            document.getElementById('vhesap-viewport').scrollTop = 0;
         };
 
         // --- ADMİN PANELİ KONTROLLERİ ---
@@ -656,7 +661,9 @@
         document.getElementById("publishPostBtn").onclick = async () => {
             const title = document.getElementById("editTitle").value.trim(); 
             const cat = document.getElementById("editCategory").value.trim();
+            // İkonu gizli inputtan (Icon Picker'dan) alıyoruz:
             const icon = document.getElementById("selectedIconInput").value.trim(); 
+            // İçeriği WYSIWYG divinden alıyoruz:
             const bodyHtml = document.getElementById("editBody").innerHTML.trim();
             
             if(!title || !cat || bodyHtml === "" || bodyHtml === "<br>") return toast("Başlık, Kategori ve İçerik boş bırakılamaz.");
@@ -667,10 +674,14 @@
                 await addDoc(collection(db, "posts"), { title: title, category: cat, icon: icon, body: bodyHtml, authorEmail: userMailStr, createdAt: serverTimestamp() });
                 toast("Makale yayına alındı!"); 
                 
-                document.getElementById("editTitle").value = ""; document.getElementById("editCategory").value = ""; 
-                document.getElementById("editBody").innerHTML = ""; document.getElementById("editBody").setAttribute("empty", "true");
+                // Formu Temizle
+                document.getElementById("editTitle").value = ""; 
+                document.getElementById("editCategory").value = ""; 
+                document.getElementById("editBody").innerHTML = ""; 
+                document.getElementById("editBody").setAttribute("empty", "true");
                 
-                document.getElementById("closeEditorBtn").click(); fetchAndRenderPosts();
+                document.getElementById("closeEditorBtn").click(); 
+                fetchAndRenderPosts();
             } catch(e) { toast("Hata. Yetkiniz reddedildi."); } 
             finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al`; }
         };
@@ -682,8 +693,9 @@
                 let html = "";
                 snap.forEach(doc => {
                     if(doc.data().role === 'writer') {
-                        html += `<li style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:12px; background:var(--input-bg); margin-bottom:8px; border:1px solid var(--border); font-size:13px; font-weight:700;">
-                            <span>${doc.id}</span><button onclick="removeWriter('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:16px;"><i class="fa-solid fa-trash"></i></button>
+                        html += `<li class="writer-item">
+                            <span>${doc.id}</span>
+                            <button onclick="removeWriter('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:16px;"><i class="fa-solid fa-trash"></i></button>
                         </li>`;
                     }
                 });
@@ -705,6 +717,7 @@
             } catch(e) { toast("Hata. Yetkiniz yok."); }
         };
 
+        // --- YORUMLAR ---
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -738,6 +751,7 @@
             try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
         }
 
+        // --- AUTH & ROL KONTROLÜ ---
         async function checkUserRole(user) {
             const userEmail = user.email ? user.email.toLowerCase() : "";
             isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
@@ -773,34 +787,22 @@
                 document.getElementById("userPhoto").src = user.photoURL; 
                 document.getElementById("userName").innerHTML = user.displayName;
                 document.getElementById("loginWarning").style.display = "none"; 
-                
+                document.getElementById("commentBox").style.display = "block";
                 await checkUserRole(user);
-                // GİRİŞ YAPILINCA PAYWALL'U KALDIR
-                if (activePost) { renderArticleContent(); }
             } else {
                 currentUser = null; isSuperAdmin = false; isWriter = false;
                 document.getElementById("loginBtn").style.display = "flex"; 
                 document.getElementById("userArea").style.display = "none";
                 document.getElementById("loginWarning").style.display = "block"; 
+                document.getElementById("commentBox").style.display = "none";
                 document.getElementById("adminPanelControls").style.display = "none";
-                
-                // ÇIKIŞ YAPILINCA DUVARI TEKRAR ÇEK
-                if (activePost) { renderArticleContent(); }
             }
         });
 
-        // Google Giriş Sistemi
         const handleLogin = async () => { 
-            try { 
-                await signInWithPopup(auth, provider); 
-                toast("Giriş yapıldı."); 
-            } catch (e) { 
-                console.error("Giriş iptal edildi veya engellendi.", e); 
-            } 
+            try { await signInWithPopup(auth, provider); toast("Giriş yapıldı."); } catch (e) { toast("İptal edildi."); } 
         };
-        document.getElementById("loginBtn").onclick = handleLogin; 
-        document.getElementById("warningLoginBtn").onclick = handleLogin;
-        document.getElementById("paywallLoginBtn").onclick = handleLogin; 
+        document.getElementById("loginBtn").onclick = handleLogin; document.getElementById("warningLoginBtn").onclick = handleLogin;
         document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); toast("Çıkış yapıldı."); };
 
         document.getElementById("commentText").addEventListener("input", function() {
@@ -823,7 +825,7 @@
                 localStorage.setItem("vhesap_last_comment_time", Date.now().toString());
                 document.getElementById("commentText").value = ""; document.getElementById("charCount").innerText = "0/500";
                 toast("Yorum eklendi.");
-            } catch (e) { toast("Hata. Bağlantınızı kontrol edin."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
+            } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
         };
 
         fetchAndRenderPosts();
