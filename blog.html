@@ -6,8 +6,10 @@
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
-    <!-- İKONLAR İÇİN FONT AWESOME -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="BLOCKEDgstatic[.]com"BLOCKED;>
+    <link rel="preconnect" href="BLOCKEDapis[.]google[.]com"BLOCKED;>
     
     <style>
         /* %100 SAF CSS TASARIM SİSTEMİ */
@@ -212,7 +214,6 @@
             
             <div id="progressBar"></div>
 
-            <!-- HEADER -->
             <header class="header">
                 <div class="logo-area">
                     <div class="logo-icon"><i class="fa-solid fa-book-open"></i></div>
@@ -242,7 +243,6 @@
                 </div>
             </header>
 
-            <!-- ANA SAYFA -->
             <div id="homePage">
                 <div class="home-top">
                     <p class="home-desc">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan detaylı analiz ve okuma kütüphanesi.</p>
@@ -262,7 +262,6 @@
                 </div>
             </div>
 
-            <!-- YAZAR MODALI -->
             <div id="writerManagerModal" class="modal">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -285,7 +284,6 @@
                 </div>
             </div>
 
-            <!-- ZENGİN METİN EDİTÖRÜ (WYSIWYG) -->
             <div id="adminEditor">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <button id="closeEditorBtn" class="btn-back" style="background:none; border:none; padding:0;"><i class="fa-solid fa-arrow-left"></i> Vazgeç & Dön</button>
@@ -306,7 +304,6 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label">Vitrin İkonu</label>
-                            <!-- Görsel İkon Grid Sistemi -->
                             <div id="iconPickerGrid" class="icon-grid"></div>
                             <input type="hidden" id="selectedIconInput" value="fa-file-lines">
                         </div>
@@ -314,7 +311,6 @@
                     
                     <div class="form-group">
                         <label class="form-label">Makale İçeriği</label>
-                        <!-- Zengin Metin Araç Çubuğu -->
                         <div class="toolbar">
                             <button type="button" class="toolbar-btn" onclick="formatDoc('bold')" title="Kalın (Bold)"><i class="fa-solid fa-bold"></i></button>
                             <button type="button" class="toolbar-btn" onclick="formatDoc('italic')" title="İtalik"><i class="fa-solid fa-italic"></i></button>
@@ -330,7 +326,6 @@
                             <button type="button" class="toolbar-btn" onclick="addLink()" title="Link Ekle"><i class="fa-solid fa-link"></i></button>
                             <button type="button" class="toolbar-btn" onclick="formatDoc('removeFormat')" title="Biçimlendirmeyi Temizle"><i class="fa-solid fa-eraser"></i></button>
                         </div>
-                        <!-- Düzenlenebilir İçerik Alanı -->
                         <div id="editBody" contenteditable="true" class="rich-textarea" placeholder="Makale içeriğinizi buraya yazmaya başlayın..."></div>
                     </div>
                     
@@ -340,7 +335,6 @@
                 </div>
             </div>
 
-            <!-- OKUMA EKRANI -->
             <div id="viewer">
                 <div class="viewer-actions">
                     <button id="backBtn" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
@@ -544,7 +538,14 @@
         }
 
         function renderGroupedPosts(postsArray) {
-            const categories = [...new Set(postsArray.map(p => p.category))];
+            // Mükerrer makaleleri ID'sine göre tekilleştir (Filtreleme)
+            const uniquePosts = Array.from(new Map(postsArray.map(item => [item.id, item])).values());
+            
+            const categories = [...new Set(uniquePosts.map(p => p.category))];
+            const container = document.getElementById("postsContent");
+            
+            // Mükerrer basımı önlemek için kapsayıcıyı tamamen temizle
+            container.innerHTML = ""; 
             
             let indexHtml = `<div class="index-bar">`;
             categories.forEach(cat => { 
@@ -555,7 +556,7 @@
             let contentHtml = '';
             categories.forEach(cat => {
                 contentHtml += `<h3 class="cat-header" id="cat-${cat.replace(/\s+/g, '-').toLowerCase()}">${cat}</h3><div class="post-grid">`;
-                postsArray.filter(p => p.category === cat).forEach(p => {
+                uniquePosts.filter(p => p.category === cat).forEach(p => {
                     contentHtml += `
                     <div class="post-card" onclick="openPost('${p.id}')">
                         <div class="post-card-top">
@@ -570,7 +571,8 @@
                 });
                 contentHtml += `</div>`;
             });
-            document.getElementById("postsContent").innerHTML = indexHtml + contentHtml;
+            
+            container.innerHTML = indexHtml + contentHtml;
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -827,6 +829,23 @@
                 toast("Yorum eklendi.");
             } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
         };
+
+        // Tarayıcı Geri/İleri butonları için URL-Ekran Senkronizasyonu (Popstate)
+        window.addEventListener('popstate', (event) => {
+            const yaziId = new URLSearchParams(window.location.search).get('yazi');
+            if (yaziId && loadedPosts.length > 0) {
+                // Eğer URL'de bir makale ID'si varsa onu aç
+                const post = loadedPosts.find(p => p.id === yaziId);
+                if (post) openPost(post.id, false); 
+            } else {
+                // URL temizse (ana sayfaysa) okuma ekranını kapatıp ana sayfayı göster
+                document.getElementById("viewer").style.display = "none";
+                document.getElementById("adminEditor").style.display = "none";
+                document.getElementById("homePage").style.display = "flex";
+                document.title = "Vhesap | Finans Rehberi";
+                if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
+            }
+        });
 
         fetchAndRenderPosts();
     </script>
