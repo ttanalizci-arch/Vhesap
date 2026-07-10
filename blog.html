@@ -6,8 +6,10 @@
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
+    <!-- İKONLAR İÇİN FONT AWESOME -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     
+    <!-- Firebase ve Google Identity bağlantılarını hızlandırır -->
     <link rel="preconnect" href="BLOCKEDgstatic[.]com"BLOCKED;>
     <link rel="preconnect" href="BLOCKEDapis[.]google[.]com"BLOCKED;>
     
@@ -65,6 +67,7 @@
         .header-right { display: flex; align-items: center; gap: 10px; }
         .btn-primary { background: var(--amber); color: #000; font-weight: 700; font-size: 13px; height: 40px; padding: 0 16px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-primary:hover { transform: scale(0.96); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
         .user-card { display: none; align-items: center; gap: 8px; height: 40px; padding: 4px 12px 4px 4px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); }
         .user-card img { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
@@ -77,7 +80,9 @@
         .btn-home { width: 40px; height: 40px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
         .btn-home:hover { border-color: var(--amber); color: var(--amber); }
 
-        /* ANA SAYFA */
+        /* ANA SAYFA - KESİN ÇÖZÜM: Yana kaymayı önler */
+        #homePage { display: flex; flex-direction: column; width: 100%; }
+        
         .home-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
         .home-desc { font-size: 13px; color: var(--muted); max-width: 450px; font-weight: 500; }
         .search-wrapper { position: relative; width: 100%; max-width: 280px; }
@@ -177,7 +182,7 @@
         /* Zengin Metin Araç Çubuğu */
         .toolbar { display: flex; gap: 5px; background: var(--input-bg); padding: 8px; border: 1px solid var(--border); border-bottom: none; border-radius: 12px 12px 0 0; overflow-x: auto; scrollbar-width: none; }
         .toolbar::-webkit-scrollbar { display: none; }
-        .toolbar-btn { min-width: 32px; height: 32px; padding: 0 8px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text-strong); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; transition: 0.2s; }
+        .toolbar-btn { min-width: 32px; height: 32px; padding: 0 8px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text-strong); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: flex-shrink: 0; transition: 0.2s; }
         .toolbar-btn:hover { background: var(--border); color: var(--amber); }
         .toolbar-divider { width: 1px; background: var(--border); margin: 0 4px; }
         
@@ -214,6 +219,7 @@
             
             <div id="progressBar"></div>
 
+            <!-- HEADER -->
             <header class="header">
                 <div class="logo-area">
                     <div class="logo-icon"><i class="fa-solid fa-book-open"></i></div>
@@ -224,7 +230,8 @@
                 </div>
                 
                 <div class="header-right">
-                    <button id="loginBtn" class="btn-primary">
+                    <!-- Butonlar başta disabled, Firebase durumu okuyana kadar basılamaz -->
+                    <button id="loginBtn" class="btn-primary" disabled>
                         <i class="fa-brands fa-google"></i> <span class="btn-text">Giriş Yap</span>
                     </button>
                     
@@ -243,6 +250,7 @@
                 </div>
             </header>
 
+            <!-- ANA SAYFA -->
             <div id="homePage">
                 <div class="home-top">
                     <p class="home-desc">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan detaylı analiz ve okuma kütüphanesi.</p>
@@ -262,6 +270,7 @@
                 </div>
             </div>
 
+            <!-- YAZAR MODALI -->
             <div id="writerManagerModal" class="modal">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -284,6 +293,7 @@
                 </div>
             </div>
 
+            <!-- ZENGİN METİN EDİTÖRÜ (WYSIWYG) -->
             <div id="adminEditor">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <button id="closeEditorBtn" class="btn-back" style="background:none; border:none; padding:0;"><i class="fa-solid fa-arrow-left"></i> Vazgeç & Dön</button>
@@ -304,6 +314,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label">Vitrin İkonu</label>
+                            <!-- Görsel İkon Grid Sistemi -->
                             <div id="iconPickerGrid" class="icon-grid"></div>
                             <input type="hidden" id="selectedIconInput" value="fa-file-lines">
                         </div>
@@ -311,6 +322,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Makale İçeriği</label>
+                        <!-- Zengin Metin Araç Çubuğu -->
                         <div class="toolbar">
                             <button type="button" class="toolbar-btn" onclick="formatDoc('bold')" title="Kalın (Bold)"><i class="fa-solid fa-bold"></i></button>
                             <button type="button" class="toolbar-btn" onclick="formatDoc('italic')" title="İtalik"><i class="fa-solid fa-italic"></i></button>
@@ -326,6 +338,7 @@
                             <button type="button" class="toolbar-btn" onclick="addLink()" title="Link Ekle"><i class="fa-solid fa-link"></i></button>
                             <button type="button" class="toolbar-btn" onclick="formatDoc('removeFormat')" title="Biçimlendirmeyi Temizle"><i class="fa-solid fa-eraser"></i></button>
                         </div>
+                        <!-- Düzenlenebilir İçerik Alanı -->
                         <div id="editBody" contenteditable="true" class="rich-textarea" placeholder="Makale içeriğinizi buraya yazmaya başlayın..."></div>
                     </div>
                     
@@ -335,6 +348,7 @@
                 </div>
             </div>
 
+            <!-- OKUMA EKRANI -->
             <div id="viewer">
                 <div class="viewer-actions">
                     <button id="backBtn" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
@@ -358,7 +372,7 @@
                     
                     <div id="loginWarning" class="login-warning">
                         <p>Bu makale size yardımcı oldu mu? Görüş bildirmek için güvenli giriş yapmalısınız.</p>
-                        <button id="warningLoginBtn" class="btn-back" style="margin:0 auto;"><i class="fa-brands fa-google"></i> Google ile Giriş Yap</button>
+                        <button id="warningLoginBtn" class="btn-back" style="margin:0 auto;" disabled><i class="fa-brands fa-google"></i> Google ile Giriş Yap</button>
                     </div>
 
                     <div id="commentBox" class="comment-box">
@@ -413,6 +427,13 @@
         }
         window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
 
+        // Zaman Aşımı (Idle Timeout) için aktivite dinleyici
+        document.addEventListener("click", () => {
+            if (currentUser) {
+                localStorage.setItem("vhesap_last_activity", Date.now().toString());
+            }
+        });
+
         document.getElementById('vhesap-viewport').addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
                 const winScroll = this.scrollTop;
@@ -444,14 +465,13 @@
             if(url) { document.execCommand('createLink', false, url); }
         };
 
-        // Placeholder kontrolü
         const richTextarea = document.getElementById('editBody');
         richTextarea.addEventListener('input', function() {
             if(this.innerHTML.trim() === '' || this.innerHTML === '<br>') { this.setAttribute('empty', 'true'); } 
             else { this.setAttribute('empty', 'false'); }
         });
 
-        // GÖRSEL İKON SEÇİCİ (Grid Kurulumu)
+        // GÖRSEL İKON SEÇİCİ
         const fontAwesomeIcons = [
             'fa-file-lines', 'fa-calculator', 'fa-coins', 'fa-chart-pie', 'fa-chart-line', 
             'fa-money-bill', 'fa-money-bill-transfer', 'fa-wallet', 'fa-house', 'fa-house-user', 
@@ -465,7 +485,6 @@
         
         function initIconPicker() {
             const grid = document.getElementById('iconPickerGrid');
-            const hiddenInput = document.getElementById('selectedIconInput');
             let html = '';
             fontAwesomeIcons.forEach(icon => {
                 const isSelected = (icon === 'fa-file-lines') ? 'selected' : '';
@@ -538,13 +557,9 @@
         }
 
         function renderGroupedPosts(postsArray) {
-            // Mükerrer makaleleri ID'sine göre tekilleştir (Filtreleme)
             const uniquePosts = Array.from(new Map(postsArray.map(item => [item.id, item])).values());
-            
             const categories = [...new Set(uniquePosts.map(p => p.category))];
             const container = document.getElementById("postsContent");
-            
-            // Mükerrer basımı önlemek için kapsayıcıyı tamamen temizle
             container.innerHTML = ""; 
             
             let indexHtml = `<div class="index-bar">`;
@@ -571,7 +586,6 @@
                 });
                 contentHtml += `</div>`;
             });
-            
             container.innerHTML = indexHtml + contentHtml;
         }
 
@@ -581,7 +595,6 @@
             renderGroupedPosts(filtered);
         });
 
-        // 1. BEKLEMEK YOK: ANINDA YÜKLEME (OPTIMISTIC UI)
         async function fetchAndRenderPosts() {
             if (loadedPosts.length === 0) {
                 loadedPosts = [...initialPosts];
@@ -599,7 +612,6 @@
                 } else {
                     let serverPosts = []; 
                     querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
-                    
                     if (serverPosts.length !== initialPosts.length) {
                         loadedPosts = serverPosts;
                         renderGroupedPosts(loadedPosts);
@@ -646,7 +658,8 @@
         }
 
         document.getElementById("backBtn").onclick = () => {
-            document.getElementById("viewer").style.display = "none"; document.getElementById("homePage").style.display = "flex";
+            document.getElementById("viewer").style.display = "none"; 
+            document.getElementById("homePage").style.display = "flex"; 
             document.title = "Vhesap | Finans Rehberi";
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
@@ -663,9 +676,7 @@
         document.getElementById("publishPostBtn").onclick = async () => {
             const title = document.getElementById("editTitle").value.trim(); 
             const cat = document.getElementById("editCategory").value.trim();
-            // İkonu gizli inputtan (Icon Picker'dan) alıyoruz:
             const icon = document.getElementById("selectedIconInput").value.trim(); 
-            // İçeriği WYSIWYG divinden alıyoruz:
             const bodyHtml = document.getElementById("editBody").innerHTML.trim();
             
             if(!title || !cat || bodyHtml === "" || bodyHtml === "<br>") return toast("Başlık, Kategori ve İçerik boş bırakılamaz.");
@@ -676,7 +687,6 @@
                 await addDoc(collection(db, "posts"), { title: title, category: cat, icon: icon, body: bodyHtml, authorEmail: userMailStr, createdAt: serverTimestamp() });
                 toast("Makale yayına alındı!"); 
                 
-                // Formu Temizle
                 document.getElementById("editTitle").value = ""; 
                 document.getElementById("editCategory").value = ""; 
                 document.getElementById("editBody").innerHTML = ""; 
@@ -783,6 +793,20 @@
 
         onAuthStateChanged(auth, async user => {
             if (user) {
+                // 1 Saatlik Zaman Aşımı Kontrolü (Idle Timeout)
+                const lastActivity = localStorage.getItem("vhesap_last_activity");
+                const oneHour = 3600000; // 1 saat = 3.600.000 ms
+
+                if (lastActivity && (Date.now() - parseInt(lastActivity, 10)) > oneHour) {
+                    await signOut(auth);
+                    localStorage.removeItem("vhesap_last_activity");
+                    toast("Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
+                    return;
+                }
+                
+                // Zaman aşımı yoksa aktiviteyi güncelle
+                localStorage.setItem("vhesap_last_activity", Date.now().toString());
+
                 currentUser = user;
                 document.getElementById("loginBtn").style.display = "none"; 
                 document.getElementById("userArea").style.display = "flex";
@@ -792,8 +816,16 @@
                 document.getElementById("commentBox").style.display = "block";
                 await checkUserRole(user);
             } else {
+                // KULLANICI KESİN GİRİŞ YAPMAMIŞSA BUTONLARI AKTİF ET
                 currentUser = null; isSuperAdmin = false; isWriter = false;
-                document.getElementById("loginBtn").style.display = "flex"; 
+                
+                const loginBtn = document.getElementById("loginBtn");
+                loginBtn.style.display = "flex"; 
+                loginBtn.disabled = false; 
+                
+                const warningLoginBtn = document.getElementById("warningLoginBtn");
+                warningLoginBtn.disabled = false;
+                
                 document.getElementById("userArea").style.display = "none";
                 document.getElementById("loginWarning").style.display = "block"; 
                 document.getElementById("commentBox").style.display = "none";
@@ -802,10 +834,35 @@
         });
 
         const handleLogin = async () => { 
-            try { await signInWithPopup(auth, provider); toast("Giriş yapıldı."); } catch (e) { toast("İptal edildi."); } 
+            // Çift tıklamayı ve Firebase kontrol ederken açmayı engelle
+            if(currentUser) return; 
+            
+            const btn = document.getElementById("loginBtn");
+            if(btn.disabled) return;
+            btn.disabled = true;
+            
+            try { 
+                await signInWithPopup(auth, provider); 
+                localStorage.setItem("vhesap_last_activity", Date.now().toString());
+                toast("Giriş yapıldı."); 
+            } catch (e) { 
+                // Popup zorla kapatılırsa veya kullanıcı vazgeçerse ekranda hata uyarısı bırakma
+                if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+                    toast("Giriş iptal edildi veya hata oluştu."); 
+                }
+            } finally {
+                // Giriş başarısızsa butonu tekrar aç
+                if(!currentUser) btn.disabled = false;
+            }
         };
-        document.getElementById("loginBtn").onclick = handleLogin; document.getElementById("warningLoginBtn").onclick = handleLogin;
-        document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); toast("Çıkış yapıldı."); };
+        document.getElementById("loginBtn").onclick = handleLogin; 
+        document.getElementById("warningLoginBtn").onclick = handleLogin;
+        
+        document.getElementById("logoutBtn").onclick = async () => { 
+            await signOut(auth); 
+            localStorage.removeItem("vhesap_last_activity");
+            toast("Çıkış yapıldı."); 
+        };
 
         document.getElementById("commentText").addEventListener("input", function() {
             const length = this.value.length; document.getElementById("charCount").innerText = `${length}/500`;
@@ -834,14 +891,12 @@
         window.addEventListener('popstate', (event) => {
             const yaziId = new URLSearchParams(window.location.search).get('yazi');
             if (yaziId && loadedPosts.length > 0) {
-                // Eğer URL'de bir makale ID'si varsa onu aç
                 const post = loadedPosts.find(p => p.id === yaziId);
                 if (post) openPost(post.id, false); 
             } else {
-                // URL temizse (ana sayfaysa) okuma ekranını kapatıp ana sayfayı göster
                 document.getElementById("viewer").style.display = "none";
                 document.getElementById("adminEditor").style.display = "none";
-                document.getElementById("homePage").style.display = "flex";
+                document.getElementById("homePage").style.display = "flex"; 
                 document.title = "Vhesap | Finans Rehberi";
                 if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
             }
