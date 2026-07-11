@@ -69,6 +69,15 @@
             --apple-input-bg: #f4f4f5;
             --apple-input-border: rgba(0, 0, 0, 0.04);
             --menu-shadow: 0 10px 40px rgba(0,0,0,0.1);
+
+            /* --- TICKER LIGHT THEME --- */
+            --ticker-bg: transparent;
+            --ticker-text: var(--apple-text);
+            --ticker-muted: var(--apple-text-muted);
+            --ticker-glow: var(--apple-glow);
+            --ticker-bright: var(--apple-yellow);
+            --ticker-btn-bg: var(--apple-yellow);
+            --ticker-btn-text: #000000;
         }
 
         body.dark {
@@ -94,6 +103,15 @@
             --apple-input-bg: #18181b;
             --apple-input-border: rgba(255, 255, 255, 0.04);
             --menu-shadow: 0 15px 50px rgba(0,0,0,0.5);
+
+            /* --- TICKER DARK THEME --- */
+            --ticker-bg: transparent;
+            --ticker-text: var(--apple-text);
+            --ticker-muted: var(--apple-text-muted);
+            --ticker-glow: var(--apple-glow);
+            --ticker-bright: var(--apple-yellow);
+            --ticker-btn-bg: var(--apple-yellow);
+            --ticker-btn-text: #000000;
         }
 
         body, html {
@@ -154,6 +172,113 @@
         .glass-menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: var(--apple-text); font-size: 13px; font-weight: 600; text-align: left; transition: background 0.2s; cursor: pointer; }
         .glass-menu-item:hover, .glass-menu-item:active { background: var(--apple-badge-bg); }
         .glass-menu-item i { width: 18px; text-align: center; color: var(--apple-text-muted); font-size: 14px; }
+
+        /* --- FİNANS ŞERİDİ (TICKER) CSS BAŞLANGICI --- */
+        .ticker-wrapper {
+            position: absolute;
+            top: calc(max(24px, env(safe-area-inset-top) + 16px) + 5px); 
+            left: 24px; 
+            right: 24px; 
+            background-color: transparent; /* Arka plan kaldırıldı */
+            border: none; /* Çerçeve kaldırıldı */
+            display: flex; 
+            align-items: center;
+            height: 34px; 
+            box-shadow: none; /* Gölge kaldırıldı */
+            z-index: 50; 
+        }
+
+        .ticker-content {
+            flex: 1; overflow: hidden; position: relative; height: 100%;
+            /* Çerçevesiz tasarım için kenar solmalarını şeffaf maske ile sağladık */
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 60px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 60px), transparent 100%);
+        }
+
+        .ticker-track { display: flex; height: 100%; width: max-content; animation: scroll 35s linear infinite; }
+        .ticker-content:hover .ticker-track { animation-play-state: paused; }
+
+        .ticker-item {
+            display: flex; align-items: center; padding: 0 15px; 
+            white-space: nowrap; font-size: 0.85rem;
+            transition: text-shadow 0.3s, color 0.3s;
+            color: var(--apple-text); /* Ana metin rengine bağlandı */
+            border-right: none; 
+        }
+
+        .ticker-item.flash .ticker-price, .ticker-item.flash .ticker-symbol-name {
+            color: var(--ticker-bright);
+            text-shadow: 0 0 8px var(--ticker-glow);
+        }
+
+        .ticker-symbol-name { font-weight: 700; margin-right: 6px; color: var(--ticker-muted); }
+        .ticker-price { font-weight: 600; margin-right: 6px; color: var(--apple-text); font-variant-numeric: tabular-nums; transition: color 0.3s; }
+        .ticker-change { font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; color: var(--ticker-bright); }
+
+        .side-container-left {
+            position: relative; display: flex; align-items: center; justify-content: center;
+            padding: 0 12px 0 0; background: transparent; z-index: 20;
+            border-right: none; 
+            height: 100%;
+        }
+
+        .ticker-icon-btn {
+            width: 26px; height: 26px; border-radius: 50%;
+            background-color: var(--ticker-btn-bg); color: var(--ticker-btn-text);
+            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; box-shadow: 0 4px 10px var(--ticker-glow);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .ticker-icon-btn:hover { transform: scale(1.1); background-color: var(--apple-yellow-hover); }
+
+        .converter-bubble {
+            position: absolute; top: 40px; left: 0; 
+            width: 240px; 
+            background: var(--apple-nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--apple-nav-border);
+            border-radius: 16px; box-shadow: var(--menu-shadow);
+            padding: 15px; z-index: 100; display: none; flex-direction: column; gap: 12px;
+            color: var(--apple-text); text-align: left;
+        }
+        .converter-bubble::before {
+            content: ''; position: absolute; top: -6px; left: 20px; 
+            width: 10px; height: 10px; background: var(--apple-nav-bg);
+            border-top: 1px solid var(--apple-nav-border); border-left: 1px solid var(--apple-nav-border);
+            transform: rotate(45deg);
+        }
+        .converter-bubble.show { display: flex; animation: popIn 0.2s ease-out; }
+
+        .bubble-title { font-size: 0.85rem; font-weight: 800; text-align: center; border-bottom: 1px solid var(--apple-nav-border); padding-bottom: 8px; margin: 0; color: var(--apple-text); }
+        .bubble-row { display: flex; flex-direction: column; gap: 5px; }
+        .bubble-row label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ticker-muted); }
+        
+        .bubble-input, .bubble-select {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--apple-input-border); border-radius: 8px;
+            font-size: 0.85rem; outline: none; font-weight: 600; color: var(--apple-input-text); background: var(--apple-input-bg);
+        }
+        .bubble-input:focus, .bubble-select:focus { border-color: var(--ticker-bright); box-shadow: 0 0 8px var(--ticker-glow); }
+
+        .convert-group { display: flex; align-items: center; gap: 5px; }
+        .convert-group select { flex: 1; }
+        .convert-icon { font-size: 0.9rem; opacity: 0.5; color: var(--apple-text); }
+        
+        .bubble-result {
+            background: var(--apple-input-bg); padding: 12px; border-radius: 8px; text-align: center;
+            font-size: 1.2rem; font-weight: 800; color: var(--apple-text); border: 1px dashed var(--apple-nav-border);
+            word-break: break-all;
+        }
+
+        @keyframes popIn { 0% { opacity: 0; transform: translateY(-10px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        @media (max-width: 600px) {
+            .ticker-wrapper { left: 24px; right: 24px; } 
+            .ticker-item { padding: 0 6px; font-size: 0.8rem; }
+            .ticker-symbol-name { font-size: 0.75rem; }
+            .ticker-price { font-size: 0.8rem; }
+            .ticker-change { font-size: 0.75rem; }
+        }
+        /* --- FİNANS ŞERİDİ CSS BİTİŞİ --- */
     </style>
 </head>
 <body class="dark selection:bg-amber-500/30">
@@ -281,14 +406,52 @@
     <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
         <div id="vhesap-viewport">
             <div class="apple-container" id="main-container">
+
                 <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
                     
+                    <!-- YENİ EKLENEN: FİNANS ŞERİDİ BAŞLANGICI -->
+                    <!-- Şerit, doğrudan üç nokta butonunun yanından akacak şekilde konumlandırıldı -->
+                    <div class="ticker-wrapper">
+                        <!-- Sol Çevirici Buton ve Balon -->
+                        <div class="side-container-left">
+                            <button class="ticker-icon-btn" id="converter-btn" title="Döviz Çevirici">💱</button>
+                            
+                            <div class="converter-bubble" id="converter-bubble">
+                                <h4 class="bubble-title">Canlı Çevirici</h4>
+                                
+                                <div class="bubble-row">
+                                    <label>Miktar</label>
+                                    <input type="number" id="conv-amount" class="bubble-input" value="1" min="0" step="any">
+                                </div>
+
+                                <div class="bubble-row">
+                                    <label>Çapraz Çeviri</label>
+                                    <div class="convert-group">
+                                        <select id="conv-from" class="bubble-select"></select>
+                                        <span class="convert-icon">→</span>
+                                        <select id="conv-to" class="bubble-select"></select>
+                                    </div>
+                                </div>
+
+                                <div class="bubble-result" id="conv-result">0.00</div>
+                            </div>
+                        </div>
+
+                        <!-- Kayan Şerit -->
+                        <div class="ticker-content">
+                            <div class="ticker-track" id="ticker-track">
+                                <!-- Javascript ile Doldurulacak -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- YENİ EKLENEN: FİNANS ŞERİDİ BİTİŞİ -->
+
                     <!-- Yeni Menü Butonu (Apple Stili, çentik uyumlu) -->
                     <button id="main-menu-toggle" class="global-theme-btn" onclick="toggleMenu(event)" title="Menü">
                         <i class="fa-solid fa-ellipsis text-xl text-[var(--apple-text)]"></i>
                     </button>
 
-                    <!-- Glassmorphism Açılır Menü (Değerlendir Kaldırıldı, Blog Eklendi) -->
+                    <!-- Glassmorphism Açılır Menü -->
                     <div id="glass-menu" class="glass-dropdown">
                         <button class="glass-menu-item" onclick="toggleGlobalThemeFromMenu(event)">
                             <i id="menu-theme-icon" class="fa-solid fa-sun"></i>
@@ -373,7 +536,6 @@
                         </button>
                     </div>
 
-                    <!-- Alt kısım sadece telif yazısı için bırakıldı -->
                     <div class="mt-auto pt-8 pb-4 sm:pt-12 sm:pb-4 w-full flex justify-center">
                         <div class="text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
                             Hassas Hesaplama & Karar Destek Altyapısı © 2026
@@ -433,13 +595,11 @@
             }, 3000);
         }
 
-        // Menü içi tıklamalarda zamanlayıcıyı sıfırla ki hemen kapanmasın
         document.getElementById('glass-menu').addEventListener('click', (e) => {
             e.stopPropagation();
             resetMenuTimer();
         });
 
-        // Dışarı tıklanınca menüyü kapat
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#glass-menu') && !e.target.closest('#main-menu-toggle')) {
                 closeMenu();
@@ -453,7 +613,6 @@
             localStorage.setItem('vhesap_global_theme', isDark ? 'dark' : 'light');
             updateMenuThemeIcon(isDark);
             gtagTrack('theme_toggle', 'Preference', isDark ? 'Dark' : 'Light');
-            // Temayı değiştirince menü hemen kapansın
             closeMenu();
         }
 
@@ -471,7 +630,7 @@
 
         function openFeedbackModal(e) {
             if (e) e.stopPropagation();
-            closeMenu(); // Formu açarken menüyü kapat
+            closeMenu();
             
             const modal = document.getElementById('feedback-modal');
             const hataFields = document.getElementById('hata-fields');
@@ -513,6 +672,138 @@
         window.addEventListener('online', checkConnection);
         window.addEventListener('offline', checkConnection);
 
+
+        // --- YENİ EKLENEN: FİNANS ŞERİDİ VE ÇEVİRİCİ JS ---
+        const marketData = [
+            { id: 'usd', name: 'USD', price: 46.98, suffix: '₺', change: 0.12 },
+            { id: 'eur', name: 'EUR', price: 53.68, suffix: '₺', change: -0.05 },
+            { id: 'gld', name: 'Altın', price: 6225.55, suffix: '₺', change: 0.85 },
+            { id: 'slv', name: 'Gümüş', price: 90.48, suffix: '₺', change: 1.15 }
+        ];
+
+        const tickerTrack = document.getElementById('ticker-track');
+
+        function formatTickerNumber(num) {
+            if(num > 1000000) return num.toLocaleString('tr-TR', { maximumFractionDigits: 0 });
+            return num.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function createTickerHtml() {
+            let html = '';
+            for(let i=0; i<2; i++) {
+                marketData.forEach(item => {
+                    const isUp = item.change >= 0;
+                    const icon = isUp ? '▲' : '▼';
+                    const changeText = `${icon} %${Math.abs(item.change).toFixed(2)}`;
+
+                    html += `
+                        <div class="ticker-item" id="item-${item.id}-${i}">
+                            <span class="ticker-symbol-name">${item.name}</span>
+                            <span class="ticker-price" id="price-${item.id}-${i}">${formatTickerNumber(item.price)}${item.suffix}</span>
+                            <span class="ticker-change" id="change-${item.id}-${i}">${changeText}</span>
+                        </div>
+                    `;
+                });
+            }
+            if(tickerTrack) tickerTrack.innerHTML = html;
+        }
+
+        const convBtn = document.getElementById('converter-btn');
+        const convBubble = document.getElementById('converter-bubble');
+        const convInputAmount = document.getElementById('conv-amount');
+        const convSelectFrom = document.getElementById('conv-from');
+        const convSelectTo = document.getElementById('conv-to');
+        const convResultEl = document.getElementById('conv-result');
+
+        function populateConverterOptions() {
+            if(!convSelectFrom) return;
+            let optionsHtml = `<option value="try">TL (Türk Lirası)</option>`;
+            marketData.forEach(item => {
+                optionsHtml += `<option value="${item.id}">${item.name}</option>`;
+            });
+            
+            convSelectFrom.innerHTML = optionsHtml;
+            convSelectTo.innerHTML = optionsHtml;
+
+            convSelectFrom.value = 'usd';
+            convSelectTo.value = 'try';
+        }
+
+        function calculateConversion() {
+            if(!convInputAmount) return;
+            const amount = parseFloat(convInputAmount.value) || 0;
+            const fromId = convSelectFrom.value;
+            const toId = convSelectTo.value;
+
+            const fromPrice = fromId === 'try' ? 1 : marketData.find(i => i.id === fromId).price;
+            const toPrice = toId === 'try' ? 1 : marketData.find(i => i.id === toId).price;
+
+            const result = (amount * fromPrice) / toPrice;
+
+            let decimals = 2;
+            if (result < 1 && result > 0) decimals = 6;
+            else if (result > 1000) decimals = 0;
+
+            convResultEl.innerText = result.toLocaleString('tr-TR', { 
+                minimumFractionDigits: decimals, 
+                maximumFractionDigits: decimals 
+            });
+        }
+
+        if(convBtn) {
+            convBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                convBubble.classList.toggle('show');
+                calculateConversion(); 
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (convBubble && convBubble.classList.contains('show')) {
+                if (!convBubble.contains(e.target) && e.target !== convBtn) {
+                    convBubble.classList.remove('show');
+                }
+            }
+        });
+
+        if(convInputAmount) {
+            convInputAmount.addEventListener('input', calculateConversion);
+            convSelectFrom.addEventListener('change', calculateConversion);
+            convSelectTo.addEventListener('change', calculateConversion);
+        }
+
+        function simulateMarket() {
+            marketData.forEach(item => {
+                const randomFluc = (Math.random() - 0.5) * 0.002;
+                const oldPrice = item.price;
+                item.price = oldPrice + (oldPrice * randomFluc);
+                item.change = ((item.price - oldPrice) / oldPrice) * 100;
+
+                for(let i=0; i<2; i++) {
+                    const priceEl = document.getElementById(`price-${item.id}-${i}`);
+                    const changeEl = document.getElementById(`change-${item.id}-${i}`);
+                    const itemEl = document.getElementById(`item-${item.id}-${i}`);
+
+                    if(priceEl && changeEl && itemEl) {
+                        priceEl.innerText = `${formatTickerNumber(item.price)}${item.suffix}`;
+                        const isUp = item.change >= 0;
+                        changeEl.innerText = `${isUp ? '▲' : '▼'} %${Math.abs(item.change).toFixed(2)}`;
+
+                        itemEl.classList.add('flash');
+                        setTimeout(() => {
+                            itemEl.classList.remove('flash');
+                        }, 400);
+                    }
+                }
+            });
+
+            if(convBubble && convBubble.classList.contains('show')) {
+                calculateConversion(); 
+            }
+        }
+        // --- FİNANS ŞERİDİ BİTİŞ ---
+
+        // Mevcut başlatma yapısı
         window.onload = () => {
             checkConnection();
             const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
@@ -523,6 +814,11 @@
                 document.body.classList.add('dark'); 
                 updateMenuThemeIcon(true);
             }
+            
+            // Finans Şeridini Başlat
+            createTickerHtml();
+            populateConverterOptions();
+            setInterval(simulateMarket, 3000);
         };
     </script>
 </body>
