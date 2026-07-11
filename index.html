@@ -450,10 +450,8 @@
                         </button>
                     </div>
 
-                    <div class="mb-8 mt-12 sm:mt-8">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 mb-4 shadow-inner">
-                            <i class="fa-solid fa-chart-pie text-3xl text-amber-500"></i>
-                        </div>
+                    <!-- mt-12 ve sm:mt-8 margin değerleri mt-40 ve sm:mt-36 yapılarak boşluk daha da artırıldı -->
+                    <div class="mb-8 mt-40 sm:mt-36">
                         <h1 class="text-4xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
                         <p class="text-xs text-amber-500/80 uppercase font-extrabold tracking-widest mt-1.5">GELİŞMİŞ FİNANSAL SİMÜLASYON</p>
                     </div>
@@ -562,11 +560,13 @@
             }, 3000);
         }
 
+        // Menü içi tıklamalarda zamanlayıcıyı sıfırla ki hemen kapanmasın
         document.getElementById('glass-menu').addEventListener('click', (e) => {
             e.stopPropagation();
             resetMenuTimer();
         });
 
+        // Dışarı tıklanınca menüyü kapat
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#glass-menu') && !e.target.closest('#main-menu-toggle')) {
                 closeMenu();
@@ -580,6 +580,7 @@
             localStorage.setItem('vhesap_global_theme', isDark ? 'dark' : 'light');
             updateMenuThemeIcon(isDark);
             gtagTrack('theme_toggle', 'Preference', isDark ? 'Dark' : 'Light');
+            // Temayı değiştirince menü hemen kapansın
             closeMenu();
         }
 
@@ -597,7 +598,7 @@
 
         function openFeedbackModal(e) {
             if (e) e.stopPropagation();
-            closeMenu();
+            closeMenu(); // Formu açarken menüyü kapat
             
             const modal = document.getElementById('feedback-modal');
             const hataFields = document.getElementById('hata-fields');
