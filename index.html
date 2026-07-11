@@ -215,60 +215,6 @@
         .ticker-price { font-weight: 600; margin-right: 6px; color: var(--apple-text); font-variant-numeric: tabular-nums; transition: color 0.3s; }
         .ticker-change { font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; color: var(--ticker-bright); }
 
-        .side-container-left {
-            position: relative; display: flex; align-items: center; justify-content: center;
-            padding: 0 12px 0 0; background: transparent; z-index: 20;
-            border-right: none; 
-            height: 100%;
-        }
-
-        .ticker-icon-btn {
-            width: 26px; height: 26px; border-radius: 50%;
-            background-color: var(--ticker-btn-bg); color: var(--ticker-btn-text);
-            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; box-shadow: 0 4px 10px var(--ticker-glow);
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        .ticker-icon-btn:hover { transform: scale(1.1); background-color: var(--apple-yellow-hover); }
-
-        .converter-bubble {
-            position: absolute; top: 40px; left: 0; 
-            width: 240px; 
-            background: var(--apple-nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--apple-nav-border);
-            border-radius: 16px; box-shadow: var(--menu-shadow);
-            padding: 15px; z-index: 100; display: none; flex-direction: column; gap: 12px;
-            color: var(--apple-text); text-align: left;
-        }
-        .converter-bubble::before {
-            content: ''; position: absolute; top: -6px; left: 20px; 
-            width: 10px; height: 10px; background: var(--apple-nav-bg);
-            border-top: 1px solid var(--apple-nav-border); border-left: 1px solid var(--apple-nav-border);
-            transform: rotate(45deg);
-        }
-        .converter-bubble.show { display: flex; animation: popIn 0.2s ease-out; }
-
-        .bubble-title { font-size: 0.85rem; font-weight: 800; text-align: center; border-bottom: 1px solid var(--apple-nav-border); padding-bottom: 8px; margin: 0; color: var(--apple-text); }
-        .bubble-row { display: flex; flex-direction: column; gap: 5px; }
-        .bubble-row label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ticker-muted); }
-        
-        .bubble-input, .bubble-select {
-            width: 100%; padding: 8px 10px; border: 1px solid var(--apple-input-border); border-radius: 8px;
-            font-size: 0.85rem; outline: none; font-weight: 600; color: var(--apple-input-text); background: var(--apple-input-bg);
-        }
-        .bubble-input:focus, .bubble-select:focus { border-color: var(--ticker-bright); box-shadow: 0 0 8px var(--ticker-glow); }
-
-        .convert-group { display: flex; align-items: center; gap: 5px; }
-        .convert-group select { flex: 1; }
-        .convert-icon { font-size: 0.9rem; opacity: 0.5; color: var(--apple-text); }
-        
-        .bubble-result {
-            background: var(--apple-input-bg); padding: 12px; border-radius: 8px; text-align: center;
-            font-size: 1.2rem; font-weight: 800; color: var(--apple-text); border: 1px dashed var(--apple-nav-border);
-            word-break: break-all;
-        }
-
-        @keyframes popIn { 0% { opacity: 0; transform: translateY(-10px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         @media (max-width: 600px) {
@@ -403,40 +349,54 @@
         </div>
     </div>
 
+    <!-- YENİ EKLENEN: ÇEVİRİCİ MODALI -->
+    <div id="converter-modal" class="modal" onclick="closeConverterOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-4" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-text)] flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer text-blue-500"></i> Canlı Çevirici</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Döviz & Maden Çapraz Çeviri</p>
+                </div>
+                <button onclick="closeConverter()" class="w-10 h-10 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom space-y-4">
+                <div class="input-card !p-3">
+                    <span class="label-text">Miktar</span>
+                    <input type="number" id="conv-amount" class="apple-input text-sm w-full" value="1" min="0" step="any">
+                </div>
+
+                <div class="input-card !p-3">
+                    <span class="label-text">Çeviri Yönü</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg flex-1 px-3 py-1.5 flex items-center">
+                            <select id="conv-from" class="apple-select text-sm w-full outline-none appearance-none bg-transparent"></select>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-3 pointer-events-none"></i>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-[var(--apple-text-muted)] text-xs"></i>
+                        <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg flex-1 px-3 py-1.5 flex items-center">
+                            <select id="conv-to" class="apple-select text-sm w-full outline-none appearance-none bg-transparent"></select>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-3 pointer-events-none"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-5 bg-[var(--apple-input-bg)] border border-dashed border-[var(--apple-border)] rounded-2xl text-center mt-2 mb-4">
+                    <span class="text-[10px] text-[var(--apple-text-muted)] uppercase font-bold tracking-widest mb-1 block">Sonuç</span>
+                    <div id="conv-result" class="text-3xl font-black text-[var(--apple-text)] break-all">0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
         <div id="vhesap-viewport">
             <div class="apple-container" id="main-container">
 
                 <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
                     
-                    <!-- YENİ EKLENEN: FİNANS ŞERİDİ BAŞLANGICI -->
-                    <!-- Şerit, doğrudan üç nokta butonunun yanından akacak şekilde konumlandırıldı -->
+                    <!-- FİNANS ŞERİDİ BAŞLANGICI -->
                     <div class="ticker-wrapper">
-                        <!-- Sol Çevirici Buton ve Balon -->
-                        <div class="side-container-left">
-                            <button class="ticker-icon-btn" id="converter-btn" title="Döviz Çevirici">💱</button>
-                            
-                            <div class="converter-bubble" id="converter-bubble">
-                                <h4 class="bubble-title">Canlı Çevirici</h4>
-                                
-                                <div class="bubble-row">
-                                    <label>Miktar</label>
-                                    <input type="number" id="conv-amount" class="bubble-input" value="1" min="0" step="any">
-                                </div>
-
-                                <div class="bubble-row">
-                                    <label>Çapraz Çeviri</label>
-                                    <div class="convert-group">
-                                        <select id="conv-from" class="bubble-select"></select>
-                                        <span class="convert-icon">→</span>
-                                        <select id="conv-to" class="bubble-select"></select>
-                                    </div>
-                                </div>
-
-                                <div class="bubble-result" id="conv-result">0.00</div>
-                            </div>
-                        </div>
-
                         <!-- Kayan Şerit -->
                         <div class="ticker-content">
                             <div class="ticker-track" id="ticker-track">
@@ -444,7 +404,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- YENİ EKLENEN: FİNANS ŞERİDİ BİTİŞİ -->
+                    <!-- FİNANS ŞERİDİ BİTİŞİ -->
 
                     <!-- Yeni Menü Butonu (Apple Stili, çentik uyumlu) -->
                     <button id="main-menu-toggle" class="global-theme-btn" onclick="toggleMenu(event)" title="Menü">
@@ -456,6 +416,13 @@
                         <button class="glass-menu-item" onclick="toggleGlobalThemeFromMenu(event)">
                             <i id="menu-theme-icon" class="fa-solid fa-sun"></i>
                             <span id="menu-theme-text">Gündüz Moduna Geç</span>
+                        </button>
+                        
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+
+                        <button class="glass-menu-item group" onclick="openConverterModal(event)">
+                            <i class="fa-solid fa-money-bill-transfer group-hover:text-blue-500 transition-colors"></i>
+                            <span>Canlı Çevirici</span>
                         </button>
                         
                         <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
@@ -664,6 +631,23 @@
             if(e.target.id === 'about-modal') closeAbout();
         }
 
+        // --- YENİ EKLENEN: ÇEVİRİCİ MODAL JS ---
+        function openConverterModal(e) {
+            if (e) e.stopPropagation();
+            closeMenu();
+            gtagTrack('modal_open', 'Tool', 'Converter');
+            document.getElementById('converter-modal').style.display = 'flex';
+            calculateConversion();
+        }
+
+        function closeConverter() {
+            document.getElementById('converter-modal').style.display = 'none';
+        }
+
+        function closeConverterOutside(e) {
+            if(e.target.id === 'converter-modal') closeConverter();
+        }
+
         function checkConnection() {
             const blocker = document.getElementById('offline-blocker');
             if(blocker) { blocker.style.display = navigator.onLine ? 'none' : 'flex'; }
@@ -708,8 +692,6 @@
             if(tickerTrack) tickerTrack.innerHTML = html;
         }
 
-        const convBtn = document.getElementById('converter-btn');
-        const convBubble = document.getElementById('converter-bubble');
         const convInputAmount = document.getElementById('conv-amount');
         const convSelectFrom = document.getElementById('conv-from');
         const convSelectTo = document.getElementById('conv-to');
@@ -750,22 +732,6 @@
             });
         }
 
-        if(convBtn) {
-            convBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                convBubble.classList.toggle('show');
-                calculateConversion(); 
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (convBubble && convBubble.classList.contains('show')) {
-                if (!convBubble.contains(e.target) && e.target !== convBtn) {
-                    convBubble.classList.remove('show');
-                }
-            }
-        });
-
         if(convInputAmount) {
             convInputAmount.addEventListener('input', calculateConversion);
             convSelectFrom.addEventListener('change', calculateConversion);
@@ -797,7 +763,7 @@
                 }
             });
 
-            if(convBubble && convBubble.classList.contains('show')) {
+            if(document.getElementById('converter-modal') && document.getElementById('converter-modal').style.display === 'flex') {
                 calculateConversion(); 
             }
         }
