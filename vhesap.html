@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vhesap Enterprise - Yönetim Paneli</title>
+    
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Opsiyonel: Canlı ortamda ads.js varsa okur, yoksa kendi taslağını kullanır -->
+    <script src="ads.js" onerror="console.log('ads.js henüz oluşturulmamış veya yerel ortam.')"></script>
+
+    <style>
+        :root {
+            --apple-bg: #f4f4f5;
+            --apple-container-bg: #ffffff;
+            --apple-card: #ffffff;
+            --apple-card-border: rgba(0, 0, 0, 0.08);
+            --apple-text: #18181b;
+            --apple-text-muted: #71717a;
+            --apple-yellow: #d97706; 
+            --apple-sidebar-bg: #e4e4e7;
+            --apple-sidebar-hover: rgba(0,0,0,0.05);
+            --apple-input-bg: #ffffff;
+        }
+
+        body.dark {
+            --apple-bg: #000000;
+            --apple-container-bg: #1c1c1e;
+            --apple-card: #1c1c1e;
+            --apple-card-border: rgba(255, 255, 255, 0.08);
+            --apple-text: #f4f4f5;
+            --apple-text-muted: #a1a1aa;
+            --apple-yellow: #f59e0b;
+            --apple-sidebar-bg: #09090b;
+            --apple-sidebar-hover: rgba(255,255,255,0.05);
+            --apple-input-bg: #18181b;
+        }
+
+        body { background-color: var(--apple-bg); color: var(--apple-text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        .sidebar { background-color: var(--apple-sidebar-bg); border-right: 1px solid var(--apple-card-border); }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; font-size: 15px; font-weight: 600; color: var(--apple-text-muted); cursor: pointer; transition: 0.2s; }
+        .nav-item:hover { background-color: var(--apple-sidebar-hover); color: var(--apple-text); }
+        .nav-item.active { background-color: rgba(245, 158, 11, 0.1); color: var(--apple-yellow); }
+
+        .content-card { background: var(--apple-card); border: 1px solid var(--apple-card-border); border-radius: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.04); overflow: hidden; }
+        
+        .apple-input, .apple-select, .apple-textarea { width: 100%; background: var(--apple-input-bg); border: 1px solid var(--apple-card-border); border-radius: 14px; padding: 12px 16px; color: var(--apple-text); font-size: 15px; outline: none; transition: 0.2s; min-height: 48px; }
+        .apple-input:focus, .apple-select:focus, .apple-textarea:focus { border-color: var(--apple-yellow); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1); }
+        
+        .btn-primary { background: var(--apple-yellow); color: #000; font-weight: 800; padding: 12px 24px; border-radius: 14px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px;}
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
+        .btn-primary:active { transform: translateY(0); box-shadow: none; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .apple-toggle-bg { background: rgba(128,128,128,0.2); transition: all 0.3s ease; }
+        .peer:checked + .apple-toggle-bg { background: var(--apple-yellow); }
+        .peer:checked + .apple-toggle-bg::after { background: #000; }
+
+        #systemToast { position: fixed; top: 20px; right: 20px; background: var(--apple-card); color: var(--apple-yellow); border: 1px solid var(--apple-yellow); padding: 14px 24px; border-radius: 16px; font-weight: 800; font-size: 15px; transform: translateX(150%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2); display: flex; align-items: center; gap: 10px; }
+        #systemToast.show { transform: translateX(0); }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
+
+        #auth-overlay { position: fixed; inset: 0; background: var(--apple-bg); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: var(--apple-card); border: 1px solid var(--apple-card-border); border-radius: 24px; padding: 40px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="dark selection:bg-amber-500/30">
+
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black shadow-lg shadow-amber-500/30 mb-6">
+                <i class="fa-solid fa-lock text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-black text-[var(--apple-text)] tracking-tight mb-2">Yetkili Girişi</h2>
+            <p class="text-sm text-[var(--apple-text-muted)] mb-8 font-medium">Bu panele sadece sistem yöneticisi erişebilir.</p>
+            
+            <button id="loginBtn" class="btn-primary w-full !text-base">
+                <i class="fa-brands fa-google"></i> Google ile Giriş Yap
+            </button>
+            
+            <div id="authError" class="hidden mt-4 p-3 bg-[var(--apple-yellow)]/10 border border-[var(--apple-yellow)]/30 rounded-xl text-[var(--apple-yellow)] text-xs font-bold leading-relaxed">
+                Bu hesap ile giriş yetkiniz bulunmamaktadır. Lütfen yönetici hesabı ile tekrar deneyin.
+                <button id="logoutBtn" class="block w-full mt-2 py-1.5 bg-black/20 rounded font-black hover:bg-black/30 transition-colors">Farklı Hesap Deneyin</button>
+            </div>
+            <div id="authLoading" class="hidden mt-6 flex justify-center">
+                <i class="fa-solid fa-spinner fa-spin text-2xl text-[var(--apple-yellow)]"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="systemToast"><i class="fa-solid fa-circle-info text-lg"></i> <span id="toastMessage">İşlem başarılı.</span></div>
+
+    <div class="flex h-screen w-full overflow-hidden" id="app-wrapper" style="visibility: hidden;">
+        
+        <div id="mobile-overlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-md transition-opacity" onclick="toggleSidebar()"></div>
+
+        <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 w-72 flex flex-col p-5 flex-shrink-0">
+            <div class="flex items-center justify-between px-2 py-4 mb-6">
+                <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.reload()">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black shadow-lg shadow-amber-500/30">
+                        <i class="fa-solid fa-bolt text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-black text-[var(--apple-text)] tracking-tight leading-tight text-xl">Vhesap</h1>
+                        <p class="text-[10px] text-[var(--apple-yellow)] font-black uppercase tracking-widest">Enterprise Panel</p>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] p-2 transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 space-y-2">
+                <div class="nav-item active" onclick="switchTab('dashboard')">
+                    <i class="fa-solid fa-chart-line w-6 text-center"></i> Dashboard
+                </div>
+                <div class="nav-item" onclick="switchTab('rates')">
+                    <i class="fa-solid fa-percent w-6 text-center"></i> Faiz & Oran Yönetimi
+                </div>
+                <div class="nav-item" onclick="switchTab('ads')">
+                    <i class="fa-solid fa-bullhorn w-6 text-center"></i> Reklam Yönetimi
+                </div>
+                <div class="nav-item" onclick="switchTab('analytics')">
+                    <i class="fa-solid fa-chart-pie w-6 text-center"></i> Analytics (GA4)
+                </div>
+                <div class="nav-item hover:text-amber-500 mt-4 border-t border-[var(--apple-card-border)] pt-4" onclick="switchTab('export')">
+                    <i class="fa-solid fa-code w-6 text-center"></i> Sistemi Canlıya Al
+                </div>
+            </nav>
+
+            <div class="mt-auto pt-6 flex flex-col gap-3 border-t border-[var(--apple-card-border)]">
+                <div class="flex items-center gap-3 px-2 py-2 mb-2">
+                    <img id="adminPhoto" src="" alt="Admin" class="w-8 h-8 rounded-full border border-[var(--apple-card-border)]">
+                    <div>
+                        <div class="text-[11px] font-black text-[var(--apple-text)] truncate max-w-[120px]" id="adminName">Admin</div>
+                        <div class="text-[9px] text-[var(--apple-yellow)] font-bold">Yetkili</div>
+                    </div>
+                </div>
+                <button onclick="toggleTheme()" class="nav-item w-full !justify-start !py-2">
+                    <i class="fa-solid fa-moon w-6 text-center" id="themeIcon"></i> Tema Değiştir
+                </button>
+                <a href="index.html" class="nav-item !text-[var(--apple-yellow)] hover:!bg-amber-500/10 !justify-start !py-2">
+                    <i class="fa-solid fa-arrow-right-from-bracket w-6 text-center"></i> Siteye Dön
+                </a>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col h-full overflow-hidden relative w-full">
+            
+            <header class="md:hidden flex items-center justify-between p-4 border-b border-[var(--apple-card-border)] bg-[var(--apple-sidebar-bg)] shrink-0 z-30 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black shadow-md">
+                        <i class="fa-solid fa-bolt text-base"></i>
+                    </div>
+                    <h1 class="font-black text-[var(--apple-text)] tracking-tight text-lg">Vhesap Panel</h1>
+                </div>
+                <button onclick="toggleSidebar()" class="text-[var(--apple-text)] p-2 bg-[var(--apple-card-border)] rounded-xl hover:bg-[var(--apple-yellow)] hover:text-black transition-colors">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </header>
+
+            <main class="flex-1 h-full overflow-y-auto p-4 md:p-10 relative scroll-smooth pb-24 md:pb-10">
+                <div class="max-w-6xl mx-auto space-y-6 md:space-y-8">
+
+                    <!-- TAB: DASHBOARD -->
+                    <div id="tab-dashboard" class="tab-content">
+                        <div class="mb-6 md:mb-8">
+                            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Sisteme Genel Bakış</h2>
+                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Vhesap modüllerinin yerel istatistikleri ve genel performans durumu.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+                            <div class="content-card p-5 md:p-6 border-l-4 border-l-[var(--apple-yellow)]" style="border-left-color: rgba(245, 158, 11, 0.4);">
+                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Kredi Modülü</div>
+                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]">12</div>
+                            </div>
+                            <div class="content-card p-5 md:p-6 border-l-4 border-l-[var(--apple-yellow)]" style="border-left-color: rgba(245, 158, 11, 0.6);">
+                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Aktif Reklam</div>
+                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]" id="dash-active-ads">0</div>
+                            </div>
+                            <div class="content-card p-5 md:p-6 border-l-4 border-l-[var(--apple-yellow)]" style="border-left-color: rgba(245, 158, 11, 0.8);">
+                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Bugün Hesap.</div>
+                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]" id="dash-calculations">0</div>
+                            </div>
+                            <div class="content-card p-5 md:p-6 border-l-4 border-l-[var(--apple-yellow)]">
+                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Bugün Tık.</div>
+                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]" id="dash-ad-clicks">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Grafik Alanı -->
+                        <div class="content-card p-6 md:p-8 mb-6 md:mb-8">
+                            <div class="flex justify-between items-center mb-6 border-b border-[var(--apple-card-border)] pb-4">
+                                <h3 class="text-base md:text-lg font-black text-[var(--apple-text)]"><i class="fa-solid fa-chart-area text-[var(--apple-yellow)] mr-2"></i> Sistem Etkileşim Grafiği</h3>
+                                <div class="flex bg-[var(--apple-input-bg)] p-1 rounded-lg border border-[var(--apple-card-border)]">
+                                    <button class="px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all" id="btn-chart-7" onclick="updateChart(7)">7 Günlük</button>
+                                    <button class="px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all" id="btn-chart-30" onclick="updateChart(30)">30 Günlük</button>
+                                </div>
+                            </div>
+                            <div class="w-full h-64 relative">
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: FAİZ VE ORAN YÖNETİMİ (RATES) -->
+                    <div id="tab-rates" class="tab-content hidden">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black tracking-tight">Faiz & Oran Yönetimi</h2>
+                                <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Bireysel, ticari ve vadeli mevduat oranlarını merkezi olarak güncelleyin.</p>
+                            </div>
+                            <button onclick="saveRates()" class="btn-primary w-full md:w-auto flex-shrink-0 text-base md:text-lg">
+                                <i class="fa-solid fa-floppy-disk"></i> Oranları Kaydet
+                            </button>
+                        </div>
+
+                        <div class="content-card p-5 md:p-8 border-[var(--apple-yellow)]/30 shadow-[0_0_20px_rgba(245,158,11,0.08)] border">
+                            <div id="rates-form-container" class="space-y-6">
+                                <!-- JS ile dinamik doldurulacak -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: REKLAMLAR (ADS) -->
+                    <div id="tab-ads" class="tab-content hidden">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black tracking-tight">Reklam & İçerik Yönetimi</h2>
+                                <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Sitedeki tüm banner, sponsorluk ve AdSense alanlarını yönetin.</p>
+                            </div>
+                            <button onclick="openAdForm()" class="btn-primary w-full md:w-auto flex-shrink-0 text-base md:text-lg">
+                                <i class="fa-solid fa-plus"></i> Yeni Reklam Ekle
+                            </button>
+                        </div>
+
+                        <!-- Form Card & Canlı Önizleme -->
+                        <div id="ad-form-card" class="mb-8 hidden">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <!-- Form -->
+                                <div class="lg:col-span-2 content-card p-5 md:p-8 border-[var(--apple-yellow)]/30 border shadow-[0_0_20px_rgba(245,158,11,0.15)] h-full">
+                                    <div class="flex justify-between items-center mb-6 border-b border-[var(--apple-card-border)] pb-4">
+                                        <h3 class="text-lg md:text-xl font-black text-[var(--apple-yellow)] flex items-center gap-2" id="ad-form-title"><i class="fa-solid fa-pen-nib"></i> Yeni Reklam Ekle</h3>
+                                        <button onclick="closeAdForm()" class="text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] bg-[var(--apple-input-bg)] w-10 h-10 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+                                    </div>
+                                    
+                                    <input type="hidden" id="ad-id">
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                                        <div>
+                                            <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Yerleşim (Slot) Alanı</label>
+                                            <select id="ad-placement" class="apple-select text-base">
+                                                <optgroup label="Genel Yerleşimler">
+                                                    <option value="homeBottom">Sayfa En Altı: Tüm Sayfalar (homeBottom)</option>
+                                                </optgroup>
+                                                <optgroup label="Hesaplama Sonuç Kartları">
+                                                    <option value="bireyselResult">Bireysel Kredi: Sonuç Altı (bireyselResult)</option>
+                                                    <option value="ticariResult">Ticari Kredi: Sonuç & İcmal Altı (ticariResult)</option>
+                                                    <option value="vadeliResult">Vadeli Mevduat: Sonuç Altı (vadeliResult)</option>
+                                                    <option value="converterBottom">Canlı Çevirici: Pencere İçi (converterBottom)</option>
+                                                </optgroup>
+                                                <optgroup label="Tablo ve Ödeme Planları">
+                                                    <option value="planMid">Ödeme Planları: Tablo İçi Satır Arası (planMid)</option>
+                                                </optgroup>
+                                                <optgroup label="Blog ve Vanaliz Modülleri">
+                                                    <option value="blogTop">V-Analiz: Kurtarma Asistanı Altı (blogTop)</option>
+                                                    <option value="blogMid">V-Analiz: DNA Listesi Altı (blogMid)</option>
+                                                    <option value="blogBottom">Blog Makale Sonu / V-Analiz Matris Altı (blogBottom)</option>
+                                                    <option value="blogCategoryEnd">Blog: Kategori Liste Sonu Post-Card (blogCategoryEnd)</option>
+                                                    <option value="vanalizAd">V-Analiz: PDF Rapor Sponsoru (vanalizAd)</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Reklam Türü</label>
+                                            <select id="ad-type" class="apple-select text-base" onchange="toggleAdTypeFields()">
+                                                <option value="Banner">Premium Banner / İçerik / Sponsor</option>
+                                                <option value="AdSense">Google AdSense / Harici Script</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Banner Alanları -->
+                                        <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6" id="banner-fields">
+                                            <div>
+                                                <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Başlık</label>
+                                                <input type="text" id="ad-title" class="apple-input text-base font-bold" placeholder="Örn: Garanti BBVA İhtiyaç Kredisi" oninput="updateLivePreview()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Badge (Etiket)</label>
+                                                <input type="text" id="ad-badge" class="apple-input text-base font-bold" placeholder="Örn: Sponsor, Öne Çıkan" oninput="updateLivePreview()">
+                                            </div>
+                                            <div class="col-span-1 md:col-span-2">
+                                                <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Açıklama</label>
+                                                <input type="text" id="ad-desc" class="apple-input text-base" placeholder="Reklamı açıklayan kısa ve vurucu metin..." oninput="updateLivePreview()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Buton Metni</label>
+                                                <input type="text" id="ad-btn" class="apple-input text-base font-bold" placeholder="Örn: Hemen Başvur" oninput="updateLivePreview()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">FontAwesome İkonu</label>
+                                                <input type="text" id="ad-icon" class="apple-input text-base font-mono" placeholder="Örn: fa-solid fa-building-columns" oninput="updateLivePreview()">
+                                            </div>
+                                            <div class="col-span-1 md:col-span-2">
+                                                <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Yönlendirme Linki (URL)</label>
+                                                <input type="text" id="ad-link" class="apple-input text-base" placeholder="https://...">
+                                            </div>
+                                            
+                                            <div class="flex items-center gap-4 col-span-1 md:col-span-2">
+                                                <label class="flex items-center gap-3 cursor-pointer p-4 bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] rounded-xl w-full">
+                                                    <input type="checkbox" id="ad-transparent" class="hidden peer" onchange="updateLivePreview()">
+                                                    <div class="w-12 h-7 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-5 after:h-5 after:rounded-full peer-checked:after:translate-x-5 transition-all"></div>
+                                                    <span class="text-sm md:text-base font-black text-[var(--apple-text)]">Arkaplan Rengi Kapat (Şeffaf)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- AdSense Alanı -->
+                                        <div class="col-span-1 md:col-span-2 hidden" id="adsense-fields">
+                                            <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">HTML / Script Kodu (AdSense)</label>
+                                            <textarea id="ad-script" rows="6" class="apple-textarea font-mono text-base leading-relaxed" placeholder="<script async src='https://pagead2.googlesyndication...'>...</script>"></textarea>
+                                        </div>
+                                        
+                                        <div class="col-span-1 md:col-span-2 pt-6 border-t border-[var(--apple-card-border)] flex flex-col md:flex-row justify-between items-center bg-[var(--apple-sidebar-bg)] -mx-5 md:-mx-8 -mb-5 md:-mb-8 p-5 md:p-8 rounded-b-20 gap-5 mt-2">
+                                            <label class="flex items-center gap-3 cursor-pointer w-full md:w-auto">
+                                                <input type="checkbox" id="ad-active" class="hidden peer" checked>
+                                                <div class="w-12 h-7 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-5 after:h-5 after:rounded-full peer-checked:after:translate-x-5 transition-all bg-[var(--apple-yellow)]/20 peer-checked:bg-[var(--apple-yellow)]"></div>
+                                                <span class="text-base font-black text-[var(--apple-text)] uppercase tracking-wider">Reklamı Aktif Et</span>
+                                            </label>
+
+                                            <div class="flex gap-4 w-full md:w-auto">
+                                                <button onclick="saveAd()" class="btn-primary w-full md:w-auto text-base md:text-lg shadow-lg shadow-amber-500/20"><i class="fa-solid fa-floppy-disk"></i> Taslağa Kaydet</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Canlı Önizleme -->
+                                <div class="lg:col-span-1 content-card p-6 flex flex-col bg-[var(--apple-sidebar-bg)] border-dashed border-2 border-[var(--apple-card-border)]">
+                                    <h3 class="text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] border-b border-[var(--apple-card-border)] pb-3 mb-6"><i class="fa-solid fa-eye text-[var(--apple-yellow)] mr-2"></i> Canlı Önizleme</h3>
+                                    
+                                    <div id="live-preview-container" class="w-full flex-1">
+                                        <!-- JS Updates Here -->
+                                    </div>
+                                    <p class="text-[10px] text-[var(--apple-text-muted)] font-bold text-center mt-6 uppercase">Not: Gerçek sitede container genişliğine göre boyutlanır.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reklam Listesi -->
+                        <div class="content-card overflow-x-auto">
+                            <table class="w-full text-left whitespace-nowrap min-w-[700px]">
+                                <thead class="bg-[var(--apple-sidebar-bg)] border-b border-[var(--apple-card-border)]">
+                                    <tr>
+                                        <th class="p-4 md:p-5 text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest">Durum</th>
+                                        <th class="p-4 md:p-5 text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest">Yerleşim Slotu</th>
+                                        <th class="p-4 md:p-5 text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest">Başlık / Tür</th>
+                                        <th class="p-4 md:p-5 text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest text-right">İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ads-table-body" class="divide-y divide-[var(--apple-card-border)]">
+                                    <!-- JS ile dolacak -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB: ANALYTICS (GA4) -->
+                    <div id="tab-analytics" class="tab-content hidden">
+                        <div class="mb-6 md:mb-8">
+                            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Analytics (GA4) & Ölçümleme</h2>
+                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Kullanıcı hareketlerini Google Analytics'e aktarın ve hangi metriklerin izleneceğini belirleyin.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                            <div class="content-card p-5 md:p-8">
+                                <div class="flex items-center justify-between mb-8 pb-6 border-b border-[var(--apple-card-border)]">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-[var(--apple-yellow)]/10 flex items-center justify-center rounded-xl text-[var(--apple-yellow)] text-2xl">
+                                            <i class="fa-brands fa-google"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-black text-lg md:text-xl">GA4 Entegrasyonu</h3>
+                                            <p class="text-[10px] md:text-xs text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mt-1">Veri Akışı Durumu</p>
+                                        </div>
+                                    </div>
+                                    <label class="flex items-center cursor-pointer">
+                                        <input type="checkbox" id="ga-enabled" class="hidden peer" onchange="toggleGAFields()">
+                                        <div class="w-14 h-8 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-6 after:h-6 after:rounded-full peer-checked:after:translate-x-6 transition-all bg-[var(--apple-card-border)] peer-checked:bg-[var(--apple-yellow)]"></div>
+                                    </label>
+                                </div>
+
+                                <div id="ga-settings-area">
+                                    <div class="mb-8">
+                                        <label class="block text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Measurement ID (Ölçüm Kimliği)</label>
+                                        <input type="text" id="ga-id" class="apple-input font-mono text-base md:text-lg" placeholder="G-XXXXXXXXXX">
+                                    </div>
+
+                                    <h4 class="text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-3">İzlenecek Dönüşüm Olayları (Events)</h4>
+                                    <div class="bg-[var(--apple-sidebar-bg)] rounded-2xl border border-[var(--apple-card-border)] p-4 md:p-6 space-y-4" id="ga-events-list">
+                                        <!-- JS İle Dolacak -->
+                                    </div>
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-[var(--apple-card-border)]">
+                                    <button onclick="saveAnalyticsConfig()" class="btn-primary w-full text-base py-3"><i class="fa-solid fa-floppy-disk"></i> Analitik Ayarlarını Kaydet</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Analytics Info / Metrik Açıklamaları -->
+                            <div class="space-y-4">
+                                <div class="content-card p-6 bg-[var(--apple-sidebar-bg)] border-none">
+                                    <h4 class="text-sm font-black text-[var(--apple-text)] mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-[var(--apple-yellow)]"></i> Realtime Top Pages</h4>
+                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium leading-relaxed">
+                                        <strong class="text-[var(--apple-text)]">Anlık En Çok Ziyaret Edilen Sayfalar:</strong> Ziyaretçilerin şu anda canlı olarak Vhesap'ın hangi ekranlarında (Bireysel, Ticari, Blog vs.) bulunduğunu gösteren metriktir.
+                                    </p>
+                                </div>
+                                <div class="content-card p-6 bg-[var(--apple-sidebar-bg)] border-none">
+                                    <h4 class="text-sm font-black text-[var(--apple-text)] mb-4 flex items-center gap-2"><i class="fa-solid fa-hand-pointer text-[var(--apple-yellow)]"></i> Events</h4>
+                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium leading-relaxed">
+                                        <strong class="text-[var(--apple-text)]">Etkileşimler / Olaylar:</strong> Kullanıcıların sitedeki eylemleridir. (Örn: Hesapla butonuna basma, reklam tıklaması, PDF rapor indirmesi).
+                                    </p>
+                                </div>
+                                <div class="content-card p-6 bg-[var(--apple-sidebar-bg)] border-none">
+                                    <h4 class="text-sm font-black text-[var(--apple-text)] mb-4 flex items-center gap-2"><i class="fa-solid fa-users text-[var(--apple-yellow)]"></i> Sessions</h4>
+                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium leading-relaxed">
+                                        <strong class="text-[var(--apple-text)]">Oturumlar:</strong> Bir kullanıcının siteye girip çıkana kadar geçirdiği süredir. Toplam bağımsız ziyaret sayısını ifade eder.
+                                    </p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="content-card p-5 bg-[var(--apple-sidebar-bg)] border-none">
+                                        <h4 class="text-sm font-black text-[var(--apple-text)] mb-2"><i class="fa-solid fa-mobile-screen text-[var(--apple-yellow)] mr-1"></i> Devices</h4>
+                                        <p class="text-[10px] text-[var(--apple-text-muted)] font-medium leading-relaxed">
+                                            <strong class="text-[var(--apple-text)]">Cihazlar:</strong> Ziyaretçilerin Mobil, Masaüstü veya Tablet kullanım dağılımı.
+                                        </p>
+                                    </div>
+                                    <div class="content-card p-5 bg-[var(--apple-sidebar-bg)] border-none">
+                                        <h4 class="text-sm font-black text-[var(--apple-text)] mb-2"><i class="fa-solid fa-earth-americas text-[var(--apple-yellow)] mr-1"></i> Countries</h4>
+                                        <p class="text-[10px] text-[var(--apple-text-muted)] font-medium leading-relaxed">
+                                            <strong class="text-[var(--apple-text)]">Ülkeler:</strong> Ziyaretlerin hangi coğrafi konumlardan yapıldığı bilgisi.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: EXPORT (CANLIYA AL) -->
+                    <div id="tab-export" class="tab-content hidden">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black tracking-tight">Sistemi Canlıya Al (Export)</h2>
+                                <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Yaptığınız değişiklikleri canlı ortama taşımak için dosyaları bilgisayarınıza indirin.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                            
+                            <!-- ADS.JS Export -->
+                            <div class="content-card p-0 flex flex-col relative group border-[var(--apple-yellow)]/20 shadow-[0_0_20px_rgba(245,158,11,0.05)] border">
+                                <div class="bg-[#1e1e1e] p-5 flex items-center justify-between border-b border-white/10">
+                                    <div class="flex items-center gap-3 md:gap-4">
+                                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-[var(--apple-yellow)]">
+                                            <i class="fa-solid fa-bullhorn text-lg"></i>
+                                        </div>
+                                        <span class="text-xs md:text-sm font-black text-white tracking-widest uppercase">ads.js</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="copyCode('export-code-ads')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors" title="Kodu Kopyala">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
+                                        <button onclick="downloadFile('export-code-ads', 'ads.js')" class="bg-[var(--apple-yellow)] text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-amber-500/20 hover:opacity-90 flex items-center gap-2">
+                                            <i class="fa-solid fa-download"></i> İndir
+                                        </button>
+                                    </div>
+                                </div>
+                                <pre class="p-5 md:p-8 overflow-x-auto bg-[#1e1e1e] m-0 h-64 md:h-80"><code id="export-code-ads" class="text-amber-400 font-mono text-[11px] md:text-xs leading-relaxed whitespace-pre-wrap"></code></pre>
+                            </div>
+
+                            <!-- RATES.JSON Export -->
+                            <div class="content-card p-0 flex flex-col relative group border-[var(--apple-yellow)]/20 shadow-[0_0_20px_rgba(245,158,11,0.05)] border">
+                                <div class="bg-[#1e1e1e] p-5 flex items-center justify-between border-b border-white/10">
+                                    <div class="flex items-center gap-3 md:gap-4">
+                                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-[var(--apple-yellow)]">
+                                            <i class="fa-solid fa-percent text-lg"></i>
+                                        </div>
+                                        <span class="text-xs md:text-sm font-black text-white tracking-widest uppercase">rates.json</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="copyCode('export-code-rates')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors" title="Kodu Kopyala">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
+                                        <button onclick="downloadFile('export-code-rates', 'rates.json')" class="bg-[var(--apple-yellow)] text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-amber-500/20 hover:opacity-90 flex items-center gap-2">
+                                            <i class="fa-solid fa-download"></i> İndir
+                                        </button>
+                                    </div>
+                                </div>
+                                <pre class="p-5 md:p-8 overflow-x-auto bg-[#1e1e1e] m-0 h-64 md:h-80"><code id="export-code-rates" class="text-amber-400 font-mono text-[11px] md:text-xs leading-relaxed whitespace-pre-wrap"></code></pre>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="mt-6 md:mt-8 content-card p-5 md:p-8 border-t-4 border-t-[var(--apple-yellow)]">
+                            <h4 class="text-base md:text-lg font-black mb-3 flex items-center gap-3"><i class="fa-solid fa-circle-question text-[var(--apple-yellow)] text-xl"></i> İndirilen Dosyaları Ne Yapacağım?</h4>
+                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] leading-relaxed space-y-3 font-medium">
+                                <span class="block"><strong>1.</strong> İlgili kutudaki "İndir" butonuna basarak dosyayı bilgisayarınıza kaydedin.</span>
+                                <span class="block"><strong>2.</strong> Sitenizin barındırıldığı GitHub (veya kendi sunucunuz) dizinine gidin.</span>
+                                <span class="block"><strong>3.</strong> İndirdiğiniz bu yeni dosyaları eski dosyaların üzerine yazacak şekilde klasöre yükleyin (upload).</span>
+                                <span class="block text-[var(--apple-yellow)] font-black mt-4 text-base md:text-lg">İşlem tamam! Reklamlar ve faiz oranları anında tüm ziyaretçiler için güncellenecektir.</span>
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+        // Güvenlik: Sadece bu mail paneli görebilir
+        const AUTHORIZED_EMAIL = "vhesap.com@gmail.com"; 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXCeJn7Nyz1hfYt0RRcW5yPOtDxgDpE_4",
+            authDomain: "vhesap-tr.firebaseapp.com",
+            projectId: "vhesap-tr",
+            storageBucket: "vhesap-tr.firebasestorage.app",
+            messagingSenderId: "705403983274",
+            appId: "1:705403983274:web:497f04d17ef59465eb07d3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const authOverlay = document.getElementById('auth-overlay');
+        const appWrapper = document.getElementById('app-wrapper');
+        const authError = document.getElementById('authError');
+        const loginBtn = document.getElementById('loginBtn');
+        const authLoading = document.getElementById('authLoading');
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                if(user.email.toLowerCase() === AUTHORIZED_EMAIL.toLowerCase()) {
+                    // YETKİLİ GİRİŞ BAŞARILI
+                    authOverlay.style.display = 'none';
+                    appWrapper.style.visibility = 'visible';
+                    document.getElementById('adminPhoto').src = user.photoURL;
+                    document.getElementById('adminName').innerText = user.displayName;
+                    
+                    // Sistemin geri kalanını başlat
+                    initializeAppLogic();
+                } else {
+                    // YETKİSİZ KİŞİ
+                    authLoading.classList.add('hidden');
+                    loginBtn.classList.add('hidden');
+                    authError.classList.remove('hidden');
+                }
+            } else {
+                // ÇIKIŞ YAPILMIŞ DURUM
+                authOverlay.style.display = 'flex';
+                appWrapper.style.visibility = 'hidden';
+                loginBtn.classList.remove('hidden');
+                authError.classList.add('hidden');
+                authLoading.classList.add('hidden');
+            }
+        });
+
+        loginBtn.onclick = async () => {
+            loginBtn.classList.add('hidden');
+            authLoading.classList.remove('hidden');
+            try { await signInWithPopup(auth, provider); } 
+            catch (e) { 
+                loginBtn.classList.remove('hidden');
+                authLoading.classList.add('hidden');
+            }
+        };
+
+        document.getElementById('logoutBtn').onclick = async () => {
+            await signOut(auth);
+        };
+    </script>
+
+    <script>
+        // --- 1. DEFAULT DATA ---
+        const DEFAULT_ADS = [
+            { "id": "ad_1_home", "placement": "homeBottom", "type": "Banner", "title": "Vanaliz PRO - CFO Seviyesinde Analiz", "description": "Kredinizi çekmeden önce matematiksel analiz yapın.", "buttonText": "Hemen İncele", "link": "vanaliz.html", "icon": "fa-solid fa-chart-pie", "badge": "PREMİUM", "transparentBg": false, "active": true, "priority": 10 },
+            { "id": "ad_2_bireysel", "placement": "bireyselResult", "type": "Banner", "title": "İhtiyaç Kredisi Fırsatı", "description": "Size özel %3.99'dan başlayan faiz oranlarıyla nakit cebinizde.", "buttonText": "Başvur", "link": "#", "icon": "fa-solid fa-building-columns", "badge": "SPONSOR", "transparentBg": false, "active": true, "priority": 9 },
+            { "id": "ad_3_ticari", "placement": "ticariResult", "type": "Banner", "title": "KOBİ Destek Finansmanı", "description": "İşletmenizi büyütmek için devlet destekli paketler.", "buttonText": "İncele", "link": "#", "icon": "fa-solid fa-briefcase", "badge": "AFFILIATE", "transparentBg": false, "active": true, "priority": 8 },
+            { "id": "ad_5_plan", "placement": "planMid", "type": "AdSense", "scriptCode": "<div style='padding:15px; background:rgba(245,158,11,0.05); border:1px dashed rgba(245,158,11,0.4); color:#f59e0b; text-align:center; border-radius:12px; font-weight:bold; font-size:12px;'><i class='fa-brands fa-google text-lg mb-1 block'></i> Google AdSense Alanı</div>", "active": true, "priority": 6 }
+        ];
+
+        const DEFAULT_RATES = {
+            "bireysel": { "ihtiyac": { "rate": "4.09", "type": "aylik" }, "konut": { "rate": "2.89", "type": "aylik" }, "arac": { "rate": "3.89", "type": "aylik" }, "ekhesap": { "rate": "4.25", "type": "aylik" } },
+            "ticari": { "taksitli": { "rate": "48.00", "type": "yillik" }, "rotatif": { "rate": "45.00", "type": "yillik" }, "spot": { "rate": "47.00", "type": "yillik" }, "iskonto": { "rate": "49.00", "type": "yillik" } },
+            "vadeli": { "tl": { "rate": "41.00", "type": "yillik" }, "usd": { "rate": "2.50", "type": "yillik" }, "eur": { "rate": "1.50", "type": "yillik" }, "altin": { "rate": "0.50", "type": "yillik" } }
+        };
+
+        const RATE_CATEGORIES = {
+            bireysel: { title: "Bireysel Krediler", items: { ihtiyac: "İhtiyaç", konut: "Konut", arac: "Araç", ekhesap: "Ek Hesap" } },
+            ticari: { title: "Ticari Krediler", items: { taksitli: "Taksitli", rotatif: "Rotatif", spot: "Spot", iskonto: "İskonto" } },
+            vadeli: { title: "Vadeli Mevduat", items: { tl: "TL Mevduat", usd: "Döviz (USD)", eur: "Döviz (EUR)", altin: "Altın" } }
+        };
+
+        let activeAdsList = [];
+        let activeRates = {};
+        let analyticsConfig = { enabled: true, measurementId: "G-H0WX0KCEM6", events: {} };
+        const ALL_EVENTS = ['page_view', 'calculation_start', 'calculation_complete', 'calculation_error', 'ad_impression', 'ad_click', 'payment_plan_open', 'payment_plan_download_pdf'];
+
+        let trafficChartInstance = null;
+
+        // Firebase Auth onayından sonra çağrılır
+        function initializeAppLogic() {
+            initTheme();
+            loadAdsData();
+            loadRatesData();
+            loadAnalyticsConfig();
+            loadDashboardStats();
+            
+            renderRatesForm();
+            renderAdsTable();
+            generateExportCode();
+            renderAnalyticsEvents();
+            initChart();
+            setupLivePreviewListeners();
+        }
+
+        // --- TEMA VE UI YÖNETİMİ ---
+        function initTheme() {
+            const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
+            applyThemeClass(savedTheme);
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            localStorage.setItem('vhesap_global_theme', newTheme);
+            applyThemeClass(newTheme);
+            if(trafficChartInstance) { updateChart(trafficChartInstance.data.labels.length === 7 ? 7 : 30); } // Temaya göre grafiği yenile
+        }
+
+        function applyThemeClass(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (theme === 'light') {
+                document.body.classList.remove('dark');
+                if(icon) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); }
+            } else {
+                document.body.classList.add('dark');
+                if(icon) { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); }
+            }
+        }
+
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            if(tabId === 'export') generateExportCode();
+            if(tabId === 'dashboard') { loadDashboardStats(); if(trafficChartInstance) trafficChartInstance.update(); }
+            
+            if (window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) {
+                toggleSidebar();
+            }
+        }
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('systemToast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // --- DASHBOARD GRAFİK (CHART.JS) ---
+        function initChart() {
+            const ctx = document.getElementById('trafficChart').getContext('2d');
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#71717a';
+
+            trafficChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: getChartMockData(7),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: true } },
+                    scales: {
+                        y: { beginAtZero: true, border: { display: false }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                        x: { border: { display: false }, grid: { display: false } }
+                    },
+                    interaction: { mode: 'index', intersect: false },
+                    elements: { line: { tension: 0.4 }, point: { radius: 0, hoverRadius: 6 } }
+                }
+            });
+        }
+
+        window.updateChart = function(days) {
+            document.getElementById('btn-chart-7').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all";
+            document.getElementById('btn-chart-30').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all";
+            
+            if(days === 7) document.getElementById('btn-chart-7').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all";
+            else document.getElementById('btn-chart-30').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all";
+
+            trafficChartInstance.data = getChartMockData(days);
+            trafficChartInstance.update();
+        }
+
+        function getChartMockData(days) {
+            let labels = []; let data1 = []; let data2 = [];
+            let today = new Date();
+            for(let i=days-1; i>=0; i--) {
+                let d = new Date(today); d.setDate(d.getDate() - i);
+                labels.push(`${d.getDate()}/${d.getMonth()+1}`);
+                data1.push(Math.floor(Math.random() * 50) + 10);
+                data2.push(Math.floor(Math.random() * 30) + 5);
+            }
+            return {
+                labels: labels,
+                datasets: [
+                    { label: 'Hesaplamalar', data: data1, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderWidth: 3, fill: true },
+                    { label: 'Reklam Tık', data: data2, borderColor: '#71717a', borderDash: [5, 5], borderWidth: 2, fill: false }
+                ]
+            };
+        }
+
+        // --- DASHBOARD İSTATİSTİKLERİ ---
+        function loadDashboardStats() {
+            document.getElementById('dash-active-ads').innerText = activeAdsList.filter(a => a.active).length;
+            const today = new Date().toISOString().split('T')[0];
+            const rawStats = localStorage.getItem('vhesap_analytics_stats') || '{}';
+            try {
+                const stats = JSON.parse(rawStats);
+                if (stats[today]) {
+                    document.getElementById('dash-calculations').innerText = stats[today].calculations || 0;
+                    document.getElementById('dash-ad-clicks').innerText = stats[today].ad_clicks || 0;
+                }
+            } catch(e){}
+            const statusLi = document.getElementById('log-adsjs-status');
+            if(window.GLOBAL_ADS) { statusLi.innerHTML = `<i class="fa-solid fa-check-circle text-[var(--apple-yellow)] text-xl"></i> <span>Sistem canlıdaki ads.js ile senkronize çalışıyor.</span>`; } 
+            else { statusLi.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-[var(--apple-yellow)] text-xl"></i> <span>Sistem yerel tarayıcı taslağı üzerinden çalışıyor.</span>`; }
+        }
+
+        // --- FAİZ (RATES) YÖNETİMİ ---
+        function loadRatesData() {
+            const draftRates = localStorage.getItem('vhesap_rates_draft_v2');
+            if (draftRates) { try { activeRates = JSON.parse(draftRates); return; } catch(e){} }
+            activeRates = JSON.parse(JSON.stringify(DEFAULT_RATES));
+        }
+
+        window.setRateType = function(cat, item, type) {
+            document.getElementById(`rate_${cat}_${item}_type`).value = type;
+            const btnAylik = document.getElementById(`btn_${cat}_${item}_aylik`);
+            const btnYillik = document.getElementById(`btn_${cat}_${item}_yillik`);
+            
+            if (type === 'aylik') {
+                btnAylik.className = "px-2.5 py-1.5 text-[9px] md:text-[10px] font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all";
+                btnYillik.className = "px-2.5 py-1.5 text-[9px] md:text-[10px] font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all";
+            } else {
+                btnYillik.className = "px-2.5 py-1.5 text-[9px] md:text-[10px] font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all";
+                btnAylik.className = "px-2.5 py-1.5 text-[9px] md:text-[10px] font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all";
+            }
+        };
+
+        function renderRatesForm() {
+            let html = '';
+            for(const cat in RATE_CATEGORIES) {
+                html += `<h4 class="text-sm md:text-base font-black text-[var(--apple-yellow)] mb-4 mt-8 pb-3 border-b border-[var(--apple-card-border)] uppercase tracking-wider">${RATE_CATEGORIES[cat].title}</h4>`;
+                html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">`;
+                
+                for(const item in RATE_CATEGORIES[cat].items) {
+                    const val = activeRates[cat]?.[item] || { rate: "0.00", type: "yillik" };
+                    html += `
+                    <div class="bg-[var(--apple-sidebar-bg)] p-4 md:p-5 rounded-2xl border border-[var(--apple-card-border)] transition-colors hover:border-[var(--apple-yellow)]/50 focus-within:border-[var(--apple-yellow)] focus-within:shadow-[0_0_15px_rgba(245,158,11,0.15)] flex flex-col justify-between">
+                        <label class="block text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-3">${RATE_CATEGORIES[cat].items[item]}</label>
+                        <div class="flex items-center justify-between gap-3 w-full">
+                            <input type="number" step="0.01" id="rate_${cat}_${item}_val" class="apple-input flex-1 min-w-[60px] !py-2 !px-2 font-black text-lg md:text-xl text-center !text-[var(--apple-yellow)] bg-[var(--apple-input-bg)] shadow-inner" value="${val.rate}">
+                            
+                            <div class="flex bg-[var(--apple-input-bg)] p-1 rounded-lg border border-[var(--apple-card-border)] flex-shrink-0 shadow-sm">
+                                <button type="button" id="btn_${cat}_${item}_aylik" class="px-2.5 py-1.5 text-[9px] md:text-[10px] font-bold rounded-md ${val.type === 'aylik' ? 'bg-[var(--apple-yellow)] text-black shadow-sm' : 'text-[var(--apple-text-muted)] hover:text-[var(--apple-text)]'} transition-all" onclick="setRateType('${cat}', '${item}', 'aylik')">AYLIK</button>
+                                <button type="button" id="btn_${cat}_${item}_yillik" class="px-2.5 py-1.5 text-[9px] md:text-[10px] font-bold rounded-md ${val.type === 'yillik' ? 'bg-[var(--apple-yellow)] text-black shadow-sm' : 'text-[var(--apple-text-muted)] hover:text-[var(--apple-text)]'} transition-all" onclick="setRateType('${cat}', '${item}', 'yillik')">YILLIK</button>
+                            </div>
+                            <input type="hidden" id="rate_${cat}_${item}_type" value="${val.type}">
+                        </div>
+                    </div>`;
+                }
+                html += `</div>`;
+            }
+            document.getElementById('rates-form-container').innerHTML = html;
+        }
+
+        window.saveRates = function() {
+            for(const cat in RATE_CATEGORIES) {
+                if(!activeRates[cat]) activeRates[cat] = {};
+                for(const item in RATE_CATEGORIES[cat].items) {
+                    activeRates[cat][item] = {
+                        rate: document.getElementById(`rate_${cat}_${item}_val`).value,
+                        type: document.getElementById(`rate_${cat}_${item}_type`).value
+                    };
+                }
+            }
+            localStorage.setItem('vhesap_rates_draft_v2', JSON.stringify(activeRates));
+            generateExportCode();
+            showToast("Faiz oranları taslağa kaydedildi. Export sekmesinden çıktı almayı unutmayın!");
+        }
+
+        // --- REKLAM (ADS) YÖNETİMİ VE CANLI ÖNİZLEME ---
+        function loadAdsData() {
+            const draftAds = localStorage.getItem('vhesap_ads_draft_vamber_2');
+            if (draftAds) { try { activeAdsList = JSON.parse(draftAds); return; } catch(e){} }
+            activeAdsList = JSON.parse(JSON.stringify(DEFAULT_ADS));
+            localStorage.setItem('vhesap_ads_draft_vamber_2', JSON.stringify(activeAdsList));
+        }
+
+        window.toggleAdTypeFields = function() {
+            const type = document.getElementById('ad-type').value;
+            if(type === 'Banner') {
+                document.getElementById('banner-fields').classList.remove('hidden');
+                document.getElementById('adsense-fields').classList.add('hidden');
+            } else {
+                document.getElementById('banner-fields').classList.add('hidden');
+                document.getElementById('adsense-fields').classList.remove('hidden');
+            }
+            updateLivePreview();
+        }
+
+        function setupLivePreviewListeners() {
+            const inputs = ['ad-type', 'ad-title', 'ad-badge', 'ad-desc', 'ad-btn', 'ad-icon', 'ad-transparent', 'ad-script'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) { el.addEventListener('input', updateLivePreview); el.addEventListener('change', updateLivePreview); }
+            });
+        }
+
+        window.updateLivePreview = function() {
+            const container = document.getElementById('live-preview-container');
+            const type = document.getElementById('ad-type').value;
+            
+            if (type === 'AdSense') {
+                const scriptCode = document.getElementById('ad-script').value;
+                container.innerHTML = scriptCode ? `<div class="opacity-50 pointer-events-none">${scriptCode}</div>` : `<div class="text-[10px] text-center text-[var(--apple-text-muted)] italic">AdSense kodu bekleniyor...</div>`;
+                return;
+            }
+
+            const title = document.getElementById('ad-title').value || "Örnek Başlık";
+            const badge = document.getElementById('ad-badge').value || "Sponsor";
+            const desc = document.getElementById('ad-desc').value || "Reklam açıklama metni burada görünecektir.";
+            const btn = document.getElementById('ad-btn').value || "İncele";
+            const icon = document.getElementById('ad-icon').value || "fa-solid fa-star";
+            const isTransparent = document.getElementById('ad-transparent').checked;
+
+            const bgClass = isTransparent ? 'bg-[rgba(128,128,128,0.03)]' : 'bg-[var(--apple-card)]';
+            
+            container.innerHTML = `
+                <div class="relative w-full rounded-2xl ${bgClass} border border-[var(--apple-card-border)] p-4 transition-all">
+                    ${badge ? `<span class="absolute -top-2.5 left-4 px-2 py-0.5 bg-[rgba(245,158,11,0.1)] border border-[rgba(245,158,11,0.2)] text-[var(--apple-yellow)] text-[9px] font-black uppercase tracking-wider rounded-md shadow-sm z-10">${badge}</span>` : ''}
+                    <div class="flex items-start gap-3 relative z-0">
+                        <div class="w-10 h-10 rounded-xl bg-[var(--apple-input-bg)] flex items-center justify-center text-[var(--apple-yellow)] flex-shrink-0 border border-[var(--apple-card-border)]">
+                            <i class="${icon} text-lg"></i>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <h4 class="text-sm font-bold text-[var(--apple-text)] leading-tight mb-1">${title}</h4>
+                            <div class="text-[11px] text-[var(--apple-text-muted)] leading-snug mb-3">${desc}</div>
+                            <div class="inline-flex items-center gap-1.5 text-[10px] font-bold text-[var(--apple-text)] bg-[var(--apple-input-bg)] px-2.5 py-1.5 rounded-lg border border-[var(--apple-card-border)]">
+                                ${btn} <i class="fa-solid fa-arrow-right text-[8px]"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.openAdForm = function(adId = null) {
+            document.getElementById('ad-form-card').classList.remove('hidden');
+            document.getElementById('ad-form-title').innerHTML = adId ? '<i class="fa-solid fa-pen-nib"></i> Reklamı Düzenle' : '<i class="fa-solid fa-pen-nib"></i> Yeni Reklam Ekle';
+            
+            if(adId) {
+                const ad = activeAdsList.find(a => a.id === adId);
+                if(ad) {
+                    document.getElementById('ad-id').value = ad.id;
+                    document.getElementById('ad-placement').value = ad.placement;
+                    document.getElementById('ad-type').value = ad.type;
+                    document.getElementById('ad-title').value = ad.title || '';
+                    document.getElementById('ad-badge').value = ad.badge || '';
+                    document.getElementById('ad-desc').value = ad.description || '';
+                    document.getElementById('ad-btn').value = ad.buttonText || '';
+                    document.getElementById('ad-link').value = ad.link || '';
+                    document.getElementById('ad-icon').value = ad.icon || '';
+                    document.getElementById('ad-transparent').checked = ad.transparentBg || false;
+                    document.getElementById('ad-script').value = ad.scriptCode || '';
+                    document.getElementById('ad-active').checked = ad.active;
+                }
+            } else {
+                document.getElementById('ad-id').value = '';
+                document.getElementById('ad-title').value = '';
+                document.getElementById('ad-badge').value = 'Sponsor';
+                document.getElementById('ad-desc').value = '';
+                document.getElementById('ad-btn').value = 'İncele';
+                document.getElementById('ad-link').value = '';
+                document.getElementById('ad-icon').value = 'fa-solid fa-star';
+                document.getElementById('ad-script').value = '';
+                document.getElementById('ad-transparent').checked = false;
+                document.getElementById('ad-active').checked = true;
+            }
+            toggleAdTypeFields();
+            updateLivePreview();
+            document.getElementById('ad-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        window.closeAdForm = function() { document.getElementById('ad-form-card').classList.add('hidden'); }
+
+        window.saveAd = function() {
+            const id = document.getElementById('ad-id').value || 'ad_' + Date.now();
+            const type = document.getElementById('ad-type').value;
+            
+            const newAd = {
+                id: id, placement: document.getElementById('ad-placement').value, type: type,
+                active: document.getElementById('ad-active').checked,
+                priority: activeAdsList.find(a => a.id === id)?.priority || 5
+            };
+
+            if(type === 'Banner') {
+                newAd.title = document.getElementById('ad-title').value.trim();
+                if(!newAd.title) return showToast("Başlık alanı zorunludur!", true);
+                newAd.description = document.getElementById('ad-desc').value;
+                newAd.buttonText = document.getElementById('ad-btn').value;
+                newAd.link = document.getElementById('ad-link').value;
+                newAd.icon = document.getElementById('ad-icon').value;
+                newAd.badge = document.getElementById('ad-badge').value;
+                newAd.transparentBg = document.getElementById('ad-transparent').checked;
+            } else {
+                newAd.scriptCode = document.getElementById('ad-script').value.trim();
+                if(!newAd.scriptCode) return showToast("Script kodu zorunludur!", true);
+            }
+
+            const existingIndex = activeAdsList.findIndex(a => a.id === id);
+            if(existingIndex > -1) { activeAdsList[existingIndex] = newAd; } else { activeAdsList.push(newAd); }
+
+            localStorage.setItem('vhesap_ads_draft_vamber_2', JSON.stringify(activeAdsList));
+            closeAdForm(); renderAdsTable(); generateExportCode(); loadDashboardStats();
+            showToast("Reklam taslağa kaydedildi.");
+        }
+
+        window.deleteAd = function(id) {
+            if(!confirm('Bu reklamı kalıcı olarak silmek istediğinize emin misiniz?')) return;
+            activeAdsList = activeAdsList.filter(a => a.id !== id);
+            localStorage.setItem('vhesap_ads_draft_vamber_2', JSON.stringify(activeAdsList));
+            renderAdsTable(); generateExportCode(); loadDashboardStats(); showToast("Reklam silindi.");
+        }
+
+        function renderAdsTable() {
+            const tbody = document.getElementById('ads-table-body');
+            tbody.innerHTML = '';
+            if(activeAdsList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan=\"4\" class=\"p-8 text-center text-[var(--apple-text-muted)] font-bold\">Kayıtlı reklam bulunmuyor.</td></tr>`; return;
+            }
+            activeAdsList.sort((a,b) => b.priority - a.priority).forEach(ad => {
+                const statusBadge = ad.active ? `<span class=\"bg-[var(--apple-yellow)]/20 border border-[var(--apple-yellow)]/30 text-[var(--apple-yellow)] px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black\">Aktif</span>` : `<span class=\"bg-[var(--apple-card-border)] text-[var(--apple-text-muted)] px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black\">Pasif</span>`;
+                const titleDisplay = ad.type === 'Banner' ? ad.title : '<span class=\"font-mono text-xs md:text-sm text-[var(--apple-yellow)] bg-[var(--apple-yellow)]/10 px-3 py-1 rounded-lg border border-[var(--apple-yellow)]/20\">AdSense Script</span>';
+                const badgeDisplay = ad.badge ? `<span class=\"text-[9px] md:text-[10px] font-black uppercase tracking-widest text-[var(--apple-text-muted)] block mt-1.5\">${ad.badge}</span>` : '';
+                tbody.innerHTML += `
+                    <tr class=\"hover:bg-[var(--apple-sidebar-hover)] transition-colors\">
+                        <td class=\"p-4 md:p-5\">${statusBadge}</td>
+                        <td class=\"p-4 md:p-5 font-mono text-[10px] md:text-xs text-[var(--apple-text-muted)] max-w-[100px] md:max-w-none overflow-hidden text-ellipsis\">${ad.placement}</td>
+                        <td class=\"p-4 md:p-5 font-bold text-sm md:text-base whitespace-normal md:whitespace-nowrap\">${titleDisplay} ${ad.type === 'Banner' ? badgeDisplay : ''}</td>
+                        <td class=\"p-4 md:p-5 text-right whitespace-nowrap\">
+                            <button onclick=\"openAdForm('${ad.id}')\" class=\"w-9 h-9 md:w-11 md:h-11 rounded-xl bg-[var(--apple-yellow)]/10 text-[var(--apple-yellow)] hover:bg-[var(--apple-yellow)] hover:text-black transition-colors mr-2\"><i class=\"fa-solid fa-pen text-sm md:text-base\"></i></button>
+                            <button onclick=\"deleteAd('${ad.id}')\" class=\"w-9 h-9 md:w-11 md:h-11 rounded-xl bg-[var(--apple-card-border)] text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-colors\"><i class=\"fa-solid fa-trash text-sm md:text-base\"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        // --- EXPORT YÖNETİMİ ---
+        function generateExportCode() {
+            const adsJsContent = `// Vhesap Merkezi Reklam & Tanıtım Veritabanı\n// Bu dosya vhesap.html (Enterprise Yönetim Paneli) tarafından otomatik olarak üretilir.\n\nwindow.GLOBAL_ADS = ${JSON.stringify(activeAdsList, null, 2)};\n`;
+            document.getElementById('export-code-ads').innerText = adsJsContent;
+            const ratesJsonContent = JSON.stringify(activeRates, null, 2);
+            document.getElementById('export-code-rates').innerText = ratesJsonContent;
+        }
+
+        window.copyCode = function(elementId) {
+            const code = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(code).then(() => { showToast("Kod panoya kopyalandı."); }).catch(err => { showToast("Kopyalama başarısız, manuel seçin.", true); });
+        }
+
+        window.downloadFile = function(elementId, fileName) {
+            const code = document.getElementById(elementId).innerText;
+            const blob = new Blob([code], { type: elementId.includes('json') ? 'application/json' : 'text/javascript' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast(`${fileName} bilgisayarınıza indirildi.`);
+        }
+
+        // --- ANALYTICS (GA4) YÖNETİMİ ---
+        function loadAnalyticsConfig() {
+            const saved = localStorage.getItem('vhesap_analytics_config');
+            if (saved) { try { const parsed = JSON.parse(saved); analyticsConfig = { ...analyticsConfig, ...parsed }; } catch(e){} }
+            document.getElementById('ga-enabled').checked = analyticsConfig.enabled;
+            document.getElementById('ga-id').value = analyticsConfig.measurementId || '';
+            toggleGAFields();
+        }
+
+        window.toggleGAFields = function() {
+            const isEnabled = document.getElementById('ga-enabled').checked;
+            const area = document.getElementById('ga-settings-area');
+            if(isEnabled) { area.classList.remove('opacity-50', 'pointer-events-none'); } else { area.classList.add('opacity-50', 'pointer-events-none'); }
+        }
+
+        function renderAnalyticsEvents() {
+            const container = document.getElementById('ga-events-list');
+            container.innerHTML = '';
+            ALL_EVENTS.forEach(evName => {
+                const conf = analyticsConfig.events[evName] || { enabled: true };
+                container.innerHTML += `
+                    <div class="flex items-center justify-between pb-3 md:pb-4 border-b border-[var(--apple-card-border)] last:border-0 last:pb-0">
+                        <span class="font-mono text-xs md:text-sm text-[var(--apple-yellow)] font-bold truncate max-w-[200px] md:max-w-none pr-2">${evName}</span>
+                        <label class="flex items-center cursor-pointer shrink-0">
+                            <input type="checkbox" class="hidden peer ev-enable" data-ev="${evName}" ${conf.enabled ? 'checked' : ''}>
+                            <div class="w-10 h-6 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-4 after:h-4 after:rounded-full peer-checked:after:translate-x-4 transition-all bg-[var(--apple-card-border)] peer-checked:bg-[var(--apple-yellow)]"></div>
+                        </label>
+                    </div>`;
+            });
+        }
+
+        window.saveAnalyticsConfig = function() {
+            analyticsConfig.enabled = document.getElementById('ga-enabled').checked;
+            analyticsConfig.measurementId = document.getElementById('ga-id').value.trim();
+            analyticsConfig.events = {};
+            ALL_EVENTS.forEach(evName => {
+                let enCheck = document.querySelector(`.ev-enable[data-ev="${evName}"]`).checked;
+                analyticsConfig.events[evName] = { enabled: enCheck };
+            });
+            localStorage.setItem('vhesap_analytics_config', JSON.stringify(analyticsConfig));
+            showToast("Analytics yapılandırması kaydedildi.");
+        }
+    </script>
+</body>
+</html>
