@@ -11,8 +11,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Identity & API Services for GA4 Data API -->
+    <script src="https://accounts.google.com/gsi/client" async defer onload="gisLoaded()"></script>
+    <script src="https://apis.google.com/js/api.js" async defer onload="gapiLoaded()"></script>
 
-    <!-- Opsiyonel: Canlı ortamda ads.js varsa okur, yoksa kendi taslağını kullanır -->
     <script src="ads.js" onerror="console.log('ads.js henüz oluşturulmamış veya yerel ortam.')"></script>
 
     <style>
@@ -72,6 +75,18 @@
 
         #auth-overlay { position: fixed; inset: 0; background: var(--apple-bg); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .auth-card { background: var(--apple-card); border: 1px solid var(--apple-card-border); border-radius: 24px; padding: 40px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+
+        /* Metric Card Skeleton Effect */
+        .metric-value:empty::before {
+            content: "\00a0";
+            display: inline-block;
+            width: 50%;
+            background: linear-gradient(90deg, var(--apple-sidebar-bg) 25%, var(--apple-card-border) 50%, var(--apple-sidebar-bg) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body class="dark selection:bg-amber-500/30">
@@ -170,13 +185,13 @@
             </header>
 
             <main class="flex-1 h-full overflow-y-auto p-4 md:p-10 relative scroll-smooth pb-24 md:pb-10">
-                <div class="max-w-6xl mx-auto space-y-6 md:space-y-8">
+                <div class="max-w-7xl mx-auto space-y-6 md:space-y-8">
 
                     <!-- TAB: DASHBOARD -->
                     <div id="tab-dashboard" class="tab-content">
                         <div class="mb-6 md:mb-8">
                             <h2 class="text-2xl md:text-3xl font-black tracking-tight">Sisteme Genel Bakış</h2>
-                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Vhesap modüllerinin yerel istatistikleri ve genel performans durumu.</p>
+                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Vhesap modüllerinin istatistikleri ve genel performans durumu (GA4 Verileri).</p>
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
@@ -189,23 +204,23 @@
                                 <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]" id="dash-active-ads">0</div>
                             </div>
                             <div class="content-card p-5 md:p-6 border-l-4 border-l-[var(--apple-yellow)]" style="border-left-color: rgba(245, 158, 11, 0.8);">
-                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Bugün Hesap.</div>
-                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]" id="dash-calculations">0</div>
+                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Hesaplama (GA4)</div>
+                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)] metric-value" id="dash-calculations"></div>
                             </div>
                             <div class="content-card p-5 md:p-6 border-l-4 border-l-[var(--apple-yellow)]">
-                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Bugün Tık.</div>
-                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)]" id="dash-ad-clicks">0</div>
+                                <div class="text-[10px] md:text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest mb-2">Reklam Tık (GA4)</div>
+                                <div class="text-3xl md:text-4xl font-black text-[var(--apple-text)] metric-value" id="dash-ad-clicks"></div>
                             </div>
+                        </div>
+                        
+                        <div class="content-card p-6 md:p-8 mb-6 md:mb-8 flex items-center gap-4 bg-[var(--apple-sidebar-bg)] border-none">
+                            <div id="log-adsjs-status" class="flex items-center gap-3 text-sm font-bold text-[var(--apple-text)]"></div>
                         </div>
 
                         <!-- Grafik Alanı -->
                         <div class="content-card p-6 md:p-8 mb-6 md:mb-8">
                             <div class="flex justify-between items-center mb-6 border-b border-[var(--apple-card-border)] pb-4">
-                                <h3 class="text-base md:text-lg font-black text-[var(--apple-text)]"><i class="fa-solid fa-chart-area text-[var(--apple-yellow)] mr-2"></i> Sistem Etkileşim Grafiği</h3>
-                                <div class="flex bg-[var(--apple-input-bg)] p-1 rounded-lg border border-[var(--apple-card-border)]">
-                                    <button class="px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all" id="btn-chart-7" onclick="updateChart(7)">7 Günlük</button>
-                                    <button class="px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all" id="btn-chart-30" onclick="updateChart(30)">30 Günlük</button>
-                                </div>
+                                <h3 class="text-base md:text-lg font-black text-[var(--apple-text)]"><i class="fa-solid fa-chart-area text-[var(--apple-yellow)] mr-2"></i> Sistem Etkileşim Grafiği (GA4)</h3>
                             </div>
                             <div class="w-full h-64 relative">
                                 <canvas id="trafficChart"></canvas>
@@ -224,11 +239,8 @@
                                 <i class="fa-solid fa-floppy-disk"></i> Oranları Kaydet
                             </button>
                         </div>
-
                         <div class="content-card p-5 md:p-8 border-[var(--apple-yellow)]/30 shadow-[0_0_20px_rgba(245,158,11,0.08)] border">
-                            <div id="rates-form-container" class="space-y-6">
-                                <!-- JS ile dinamik doldurulacak -->
-                            </div>
+                            <div id="rates-form-container" class="space-y-6"></div>
                         </div>
                     </div>
 
@@ -253,25 +265,19 @@
                                         <h3 class="text-lg md:text-xl font-black text-[var(--apple-yellow)] flex items-center gap-2" id="ad-form-title"><i class="fa-solid fa-pen-nib"></i> Yeni Reklam Ekle</h3>
                                         <button onclick="closeAdForm()" class="text-[var(--apple-text-muted)] hover:text-[var(--apple-yellow)] bg-[var(--apple-input-bg)] w-10 h-10 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
                                     </div>
-                                    
                                     <input type="hidden" id="ad-id">
-                                    
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                                         <div>
                                             <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Yerleşim (Slot) Alanı</label>
                                             <select id="ad-placement" class="apple-select text-base">
-                                                <optgroup label="Genel Yerleşimler">
-                                                    <option value="homeBottom">Sayfa En Altı: Tüm Sayfalar (homeBottom)</option>
-                                                </optgroup>
+                                                <optgroup label="Genel Yerleşimler"><option value="homeBottom">Sayfa En Altı: Tüm Sayfalar (homeBottom)</option></optgroup>
                                                 <optgroup label="Hesaplama Sonuç Kartları">
                                                     <option value="bireyselResult">Bireysel Kredi: Sonuç Altı (bireyselResult)</option>
                                                     <option value="ticariResult">Ticari Kredi: Sonuç & İcmal Altı (ticariResult)</option>
                                                     <option value="vadeliResult">Vadeli Mevduat: Sonuç Altı (vadeliResult)</option>
                                                     <option value="converterBottom">Canlı Çevirici: Pencere İçi (converterBottom)</option>
                                                 </optgroup>
-                                                <optgroup label="Tablo ve Ödeme Planları">
-                                                    <option value="planMid">Ödeme Planları: Tablo İçi Satır Arası (planMid)</option>
-                                                </optgroup>
+                                                <optgroup label="Tablo ve Ödeme Planları"><option value="planMid">Ödeme Planları: Tablo İçi Satır Arası (planMid)</option></optgroup>
                                                 <optgroup label="Blog ve Vanaliz Modülleri">
                                                     <option value="blogTop">V-Analiz: Kurtarma Asistanı Altı (blogTop)</option>
                                                     <option value="blogMid">V-Analiz: DNA Listesi Altı (blogMid)</option>
@@ -288,34 +294,31 @@
                                                 <option value="AdSense">Google AdSense / Harici Script</option>
                                             </select>
                                         </div>
-
-                                        <!-- Banner Alanları -->
                                         <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6" id="banner-fields">
                                             <div>
                                                 <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Başlık</label>
-                                                <input type="text" id="ad-title" class="apple-input text-base font-bold" placeholder="Örn: Garanti BBVA İhtiyaç Kredisi" oninput="updateLivePreview()">
+                                                <input type="text" id="ad-title" class="apple-input text-base font-bold" oninput="updateLivePreview()">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Badge (Etiket)</label>
-                                                <input type="text" id="ad-badge" class="apple-input text-base font-bold" placeholder="Örn: Sponsor, Öne Çıkan" oninput="updateLivePreview()">
+                                                <input type="text" id="ad-badge" class="apple-input text-base font-bold" oninput="updateLivePreview()">
                                             </div>
                                             <div class="col-span-1 md:col-span-2">
                                                 <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Açıklama</label>
-                                                <input type="text" id="ad-desc" class="apple-input text-base" placeholder="Reklamı açıklayan kısa ve vurucu metin..." oninput="updateLivePreview()">
+                                                <input type="text" id="ad-desc" class="apple-input text-base" oninput="updateLivePreview()">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Buton Metni</label>
-                                                <input type="text" id="ad-btn" class="apple-input text-base font-bold" placeholder="Örn: Hemen Başvur" oninput="updateLivePreview()">
+                                                <input type="text" id="ad-btn" class="apple-input text-base font-bold" oninput="updateLivePreview()">
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">FontAwesome İkonu</label>
-                                                <input type="text" id="ad-icon" class="apple-input text-base font-mono" placeholder="Örn: fa-solid fa-building-columns" oninput="updateLivePreview()">
+                                                <input type="text" id="ad-icon" class="apple-input text-base font-mono" oninput="updateLivePreview()">
                                             </div>
                                             <div class="col-span-1 md:col-span-2">
                                                 <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Yönlendirme Linki (URL)</label>
-                                                <input type="text" id="ad-link" class="apple-input text-base" placeholder="https://...">
+                                                <input type="text" id="ad-link" class="apple-input text-base">
                                             </div>
-                                            
                                             <div class="flex items-center gap-4 col-span-1 md:col-span-2">
                                                 <label class="flex items-center gap-3 cursor-pointer p-4 bg-[var(--apple-input-bg)] border border-[var(--apple-card-border)] rounded-xl w-full">
                                                     <input type="checkbox" id="ad-transparent" class="hidden peer" onchange="updateLivePreview()">
@@ -324,39 +327,28 @@
                                                 </label>
                                             </div>
                                         </div>
-
-                                        <!-- AdSense Alanı -->
                                         <div class="col-span-1 md:col-span-2 hidden" id="adsense-fields">
                                             <label class="block text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">HTML / Script Kodu (AdSense)</label>
-                                            <textarea id="ad-script" rows="6" class="apple-textarea font-mono text-base leading-relaxed" placeholder="<script async src='https://pagead2.googlesyndication...'>...</script>"></textarea>
+                                            <textarea id="ad-script" rows="6" class="apple-textarea font-mono text-base leading-relaxed"></textarea>
                                         </div>
-                                        
                                         <div class="col-span-1 md:col-span-2 pt-6 border-t border-[var(--apple-card-border)] flex flex-col md:flex-row justify-between items-center bg-[var(--apple-sidebar-bg)] -mx-5 md:-mx-8 -mb-5 md:-mb-8 p-5 md:p-8 rounded-b-20 gap-5 mt-2">
                                             <label class="flex items-center gap-3 cursor-pointer w-full md:w-auto">
                                                 <input type="checkbox" id="ad-active" class="hidden peer" checked>
                                                 <div class="w-12 h-7 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-5 after:h-5 after:rounded-full peer-checked:after:translate-x-5 transition-all bg-[var(--apple-yellow)]/20 peer-checked:bg-[var(--apple-yellow)]"></div>
                                                 <span class="text-base font-black text-[var(--apple-text)] uppercase tracking-wider">Reklamı Aktif Et</span>
                                             </label>
-
                                             <div class="flex gap-4 w-full md:w-auto">
                                                 <button onclick="saveAd()" class="btn-primary w-full md:w-auto text-base md:text-lg shadow-lg shadow-amber-500/20"><i class="fa-solid fa-floppy-disk"></i> Taslağa Kaydet</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <!-- Canlı Önizleme -->
                                 <div class="lg:col-span-1 content-card p-6 flex flex-col bg-[var(--apple-sidebar-bg)] border-dashed border-2 border-[var(--apple-card-border)]">
                                     <h3 class="text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] border-b border-[var(--apple-card-border)] pb-3 mb-6"><i class="fa-solid fa-eye text-[var(--apple-yellow)] mr-2"></i> Canlı Önizleme</h3>
-                                    
-                                    <div id="live-preview-container" class="w-full flex-1">
-                                        <!-- JS Updates Here -->
-                                    </div>
-                                    <p class="text-[10px] text-[var(--apple-text-muted)] font-bold text-center mt-6 uppercase">Not: Gerçek sitede container genişliğine göre boyutlanır.</p>
+                                    <div id="live-preview-container" class="w-full flex-1"></div>
                                 </div>
                             </div>
                         </div>
-
                         <!-- Reklam Listesi -->
                         <div class="content-card overflow-x-auto">
                             <table class="w-full text-left whitespace-nowrap min-w-[700px]">
@@ -368,91 +360,174 @@
                                         <th class="p-4 md:p-5 text-xs uppercase font-black text-[var(--apple-text-muted)] tracking-widest text-right">İşlem</th>
                                     </tr>
                                 </thead>
-                                <tbody id="ads-table-body" class="divide-y divide-[var(--apple-card-border)]">
-                                    <!-- JS ile dolacak -->
-                                </tbody>
+                                <tbody id="ads-table-body" class="divide-y divide-[var(--apple-card-border)]"></tbody>
                             </table>
                         </div>
                     </div>
 
                     <!-- TAB: ANALYTICS (GA4) -->
                     <div id="tab-analytics" class="tab-content hidden">
-                        <div class="mb-6 md:mb-8">
-                            <h2 class="text-2xl md:text-3xl font-black tracking-tight">Analytics (GA4) & Ölçümleme</h2>
-                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Kullanıcı hareketlerini Google Analytics'e aktarın ve hangi metriklerin izleneceğini belirleyin.</p>
+                        
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black tracking-tight">Analytics (GA4) Dashboard</h2>
+                                <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Vhesap verileri doğrudan Google Analytics Data API üzerinden canlı çekilmektedir.</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span id="ga4-status-badge" class="px-3 py-1.5 rounded-lg text-xs font-black bg-[var(--apple-card-border)] text-[var(--apple-text-muted)]"><i class="fa-solid fa-circle-notch fa-spin mr-1"></i> GA4 API Bekleniyor</span>
+                                <button onclick="authenticateGA4()" class="btn-primary flex-shrink-0 text-sm h-10 min-h-[40px] px-4"><i class="fa-brands fa-google"></i> Yetkilendir</button>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                            <div class="content-card p-5 md:p-8">
-                                <div class="flex items-center justify-between mb-8 pb-6 border-b border-[var(--apple-card-border)]">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-[var(--apple-yellow)]/10 flex items-center justify-center rounded-xl text-[var(--apple-yellow)] text-2xl">
-                                            <i class="fa-brands fa-google"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-black text-lg md:text-xl">GA4 Entegrasyonu</h3>
-                                            <p class="text-[10px] md:text-xs text-[var(--apple-text-muted)] font-bold uppercase tracking-widest mt-1">Veri Akışı Durumu</p>
-                                        </div>
-                                    </div>
-                                    <label class="flex items-center cursor-pointer">
-                                        <input type="checkbox" id="ga-enabled" class="hidden peer" onchange="toggleGAFields()">
-                                        <div class="w-14 h-8 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-6 after:h-6 after:rounded-full peer-checked:after:translate-x-6 transition-all bg-[var(--apple-card-border)] peer-checked:bg-[var(--apple-yellow)]"></div>
-                                    </label>
+                        <!-- GA4 Setup Area -->
+                        <div class="content-card p-5 md:p-6 mb-8 border border-[var(--apple-yellow)]/30 bg-[var(--apple-sidebar-bg)]">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">GA4 Property ID</label>
+                                    <input type="text" id="ga-property-id" class="apple-input font-mono text-sm" placeholder="Örn: 345678901">
                                 </div>
-
-                                <div id="ga-settings-area">
-                                    <div class="mb-8">
-                                        <label class="block text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Measurement ID (Ölçüm Kimliği)</label>
-                                        <input type="text" id="ga-id" class="apple-input font-mono text-base md:text-lg" placeholder="G-XXXXXXXXXX">
-                                    </div>
-
-                                    <h4 class="text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-3">İzlenecek Dönüşüm Olayları (Events)</h4>
-                                    <div class="bg-[var(--apple-sidebar-bg)] rounded-2xl border border-[var(--apple-card-border)] p-4 md:p-6 space-y-4" id="ga-events-list">
-                                        <!-- JS İle Dolacak -->
-                                    </div>
+                                <div>
+                                    <label class="block text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">OAuth Client ID</label>
+                                    <input type="text" id="ga-client-id" class="apple-input font-mono text-sm" placeholder="XXXXX.apps.googleusercontent.com">
                                 </div>
+                            </div>
+                            <p class="text-[10px] text-[var(--apple-text-muted)] font-bold mt-3">Raporları çekebilmek için Data API v1 yetkisine sahip bir Client ID ve GA4 Mülk No gereklidir.</p>
+                        </div>
 
-                                <div class="mt-8 pt-6 border-t border-[var(--apple-card-border)]">
-                                    <button onclick="saveAnalyticsConfig()" class="btn-primary w-full text-base py-3"><i class="fa-solid fa-floppy-disk"></i> Analitik Ayarlarını Kaydet</button>
+                        <!-- 1. Genel Bakış -->
+                        <h3 class="text-lg font-black text-[var(--apple-text)] mb-4 border-b border-[var(--apple-card-border)] pb-2">1. Genel Bakış (Son 30 Gün)</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                            <div class="content-card p-4"><div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Aktif Kullanıcı</div><div class="text-2xl font-black metric-value" id="ga-active-users"></div></div>
+                            <div class="content-card p-4"><div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Toplam Kullanıcı</div><div class="text-2xl font-black metric-value" id="ga-total-users"></div></div>
+                            <div class="content-card p-4"><div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Yeni Kullanıcı</div><div class="text-2xl font-black metric-value" id="ga-new-users"></div></div>
+                            <div class="content-card p-4"><div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Oturum Sayısı</div><div class="text-2xl font-black metric-value" id="ga-sessions"></div></div>
+                            <div class="content-card p-4"><div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Sayfa Görüntüleme</div><div class="text-2xl font-black metric-value" id="ga-page-views"></div></div>
+                            <div class="content-card p-4"><div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Ort. Etkileşim</div><div class="text-2xl font-black metric-value" id="ga-avg-time"></div></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <!-- 2. Gerçek Zamanlı -->
+                            <div class="lg:col-span-1 content-card p-6 border-t-4 border-t-red-500 flex flex-col">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-satellite-dish text-red-500 mr-2"></i> 2. Gerçek Zamanlı (Son 30 Dk)</h3>
+                                <div class="text-center mb-6">
+                                    <div class="text-6xl font-black text-[var(--apple-text)] metric-value" id="ga-rt-active"></div>
+                                    <div class="text-xs text-[var(--apple-text-muted)] font-bold uppercase mt-2">Şu An Sitede</div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-[10px] font-black text-[var(--apple-text-muted)] uppercase mb-2">Aktif Sayfalar</h4>
+                                    <ul id="ga-rt-pages" class="space-y-2 text-xs font-medium text-[var(--apple-text)]">
+                                        <li class="flex justify-between items-center bg-[var(--apple-sidebar-bg)] p-2 rounded"><span class="metric-value w-full"></span></li>
+                                        <li class="flex justify-between items-center bg-[var(--apple-sidebar-bg)] p-2 rounded"><span class="metric-value w-full"></span></li>
+                                    </ul>
                                 </div>
                             </div>
                             
-                            <!-- Analytics Info / Metrik Açıklamaları -->
-                            <div class="space-y-4">
-                                <div class="content-card p-6 bg-[var(--apple-sidebar-bg)] border-none">
-                                    <h4 class="text-sm font-black text-[var(--apple-text)] mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-[var(--apple-yellow)]"></i> Realtime Top Pages</h4>
-                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium leading-relaxed">
-                                        <strong class="text-[var(--apple-text)]">Anlık En Çok Ziyaret Edilen Sayfalar:</strong> Ziyaretçilerin şu anda canlı olarak Vhesap'ın hangi ekranlarında (Bireysel, Ticari, Blog vs.) bulunduğunu gösteren metriktir.
-                                    </p>
+                            <!-- 3. Sayfa Analizi -->
+                            <div class="lg:col-span-2 content-card p-6">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-file-lines text-[var(--apple-yellow)] mr-2"></i> 3. Sayfa Analizi & Performans (10)</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm">
+                                        <thead class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] border-b border-[var(--apple-card-border)]">
+                                            <tr><th class="pb-2">Sayfa Yolu</th><th class="pb-2 text-right">Görüntüleme</th><th class="pb-2 text-right">Ort. Süre</th></tr>
+                                        </thead>
+                                        <tbody id="ga-top-pages" class="divide-y divide-[var(--apple-card-border)]">
+                                            <tr><td class="py-3"><span class="metric-value block w-32"></span></td><td></td><td></td></tr>
+                                            <tr><td class="py-3"><span class="metric-value block w-24"></span></td><td></td><td></td></tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="content-card p-6 bg-[var(--apple-sidebar-bg)] border-none">
-                                    <h4 class="text-sm font-black text-[var(--apple-text)] mb-4 flex items-center gap-2"><i class="fa-solid fa-hand-pointer text-[var(--apple-yellow)]"></i> Events</h4>
-                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium leading-relaxed">
-                                        <strong class="text-[var(--apple-text)]">Etkileşimler / Olaylar:</strong> Kullanıcıların sitedeki eylemleridir. (Örn: Hesapla butonuna basma, reklam tıklaması, PDF rapor indirmesi).
-                                    </p>
-                                </div>
-                                <div class="content-card p-6 bg-[var(--apple-sidebar-bg)] border-none">
-                                    <h4 class="text-sm font-black text-[var(--apple-text)] mb-4 flex items-center gap-2"><i class="fa-solid fa-users text-[var(--apple-yellow)]"></i> Sessions</h4>
-                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium leading-relaxed">
-                                        <strong class="text-[var(--apple-text)]">Oturumlar:</strong> Bir kullanıcının siteye girip çıkana kadar geçirdiği süredir. Toplam bağımsız ziyaret sayısını ifade eder.
-                                    </p>
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="content-card p-5 bg-[var(--apple-sidebar-bg)] border-none">
-                                        <h4 class="text-sm font-black text-[var(--apple-text)] mb-2"><i class="fa-solid fa-mobile-screen text-[var(--apple-yellow)] mr-1"></i> Devices</h4>
-                                        <p class="text-[10px] text-[var(--apple-text-muted)] font-medium leading-relaxed">
-                                            <strong class="text-[var(--apple-text)]">Cihazlar:</strong> Ziyaretçilerin Mobil, Masaüstü veya Tablet kullanım dağılımı.
-                                        </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                            <!-- 4. Trafik Kaynakları -->
+                            <div class="content-card p-6">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-arrow-right-to-bracket text-[var(--apple-yellow)] mr-2"></i> 4. Trafik Kaynakları</h3>
+                                <div class="w-full h-64 relative"><canvas id="trafficSourcesChart"></canvas></div>
+                            </div>
+                            <!-- 5. Kullanıcı Analizi -->
+                            <div class="content-card p-6">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-users text-[var(--apple-yellow)] mr-2"></i> 5. Kullanıcı Analizi (Cihazlar)</h3>
+                                <div class="w-full h-64 relative"><canvas id="deviceCategoryChart"></canvas></div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Hesaplama Analizi (Vhesap'a Özel) -->
+                        <h3 class="text-lg font-black text-[var(--apple-text)] mt-10 mb-4 border-b border-[var(--apple-card-border)] pb-2 flex items-center gap-2"><i class="fa-solid fa-calculator text-[var(--apple-yellow)]"></i> 6. Hesaplama Analizi (Vhesap'a Özel)</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="content-card p-5 bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20">
+                                <div class="text-[10px] uppercase font-black text-amber-600 mb-1">Toplam Hesaplama</div>
+                                <div class="text-3xl font-black metric-value" id="ga-calc-total"></div>
+                            </div>
+                            <div class="content-card p-5">
+                                <div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Bugün</div>
+                                <div class="text-2xl font-black metric-value" id="ga-calc-today"></div>
+                            </div>
+                            <div class="content-card p-5">
+                                <div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">Son 7 Gün</div>
+                                <div class="text-2xl font-black metric-value" id="ga-calc-7d"></div>
+                            </div>
+                            <div class="content-card p-5">
+                                <div class="text-[10px] uppercase font-black text-[var(--apple-text-muted)] mb-1">En Çok Kullanılan</div>
+                                <div class="text-lg font-black mt-1 text-[var(--apple-text)] metric-value" id="ga-calc-top"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="lg:col-span-2 content-card p-6">
+                                <h4 class="text-xs font-black text-[var(--apple-text-muted)] uppercase mb-4">Son 30 Gün Hesaplama Trendi</h4>
+                                <div class="w-full h-64 relative"><canvas id="calculationTrendChart"></canvas></div>
+                            </div>
+                            <div class="lg:col-span-1 content-card p-6">
+                                <h4 class="text-xs font-black text-[var(--apple-text-muted)] uppercase mb-4">Modül Dağılımı</h4>
+                                <div class="w-full h-64 relative"><canvas id="calculatorTypeChart"></canvas></div>
+                            </div>
+                        </div>
+
+                        <!-- 7, 8, 9 Analytics Combined Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                            <!-- 7. Events -->
+                            <div class="content-card p-6">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-bolt text-[var(--apple-yellow)] mr-2"></i> 7. Events (Olaylar)</h3>
+                                <ul id="ga-events-list-data" class="space-y-3 text-sm">
+                                    <li class="flex justify-between items-center"><span class="font-mono text-xs">calculation_start</span> <span class="font-black metric-value w-10"></span></li>
+                                    <li class="flex justify-between items-center"><span class="font-mono text-xs">calculation_complete</span> <span class="font-black metric-value w-10"></span></li>
+                                    <li class="flex justify-between items-center"><span class="font-mono text-xs">payment_plan_view</span> <span class="font-black metric-value w-10"></span></li>
+                                    <li class="flex justify-between items-center"><span class="font-mono text-xs">calculation_error</span> <span class="font-black metric-value w-10"></span></li>
+                                </ul>
+                            </div>
+                            
+                            <!-- 8. Reklam Analizi -->
+                            <div class="content-card p-6 bg-gradient-to-b from-[var(--apple-card)] to-[var(--apple-sidebar-bg)]">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-bullhorn text-[var(--apple-yellow)] mr-2"></i> 8. Reklam Analizi</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-end border-b border-[var(--apple-card-border)] pb-2">
+                                        <div class="text-[10px] font-black uppercase text-[var(--apple-text-muted)]">Gösterim (ad_impression)</div>
+                                        <div class="text-xl font-black metric-value w-16 text-right" id="ga-ad-imp"></div>
                                     </div>
-                                    <div class="content-card p-5 bg-[var(--apple-sidebar-bg)] border-none">
-                                        <h4 class="text-sm font-black text-[var(--apple-text)] mb-2"><i class="fa-solid fa-earth-americas text-[var(--apple-yellow)] mr-1"></i> Countries</h4>
-                                        <p class="text-[10px] text-[var(--apple-text-muted)] font-medium leading-relaxed">
-                                            <strong class="text-[var(--apple-text)]">Ülkeler:</strong> Ziyaretlerin hangi coğrafi konumlardan yapıldığı bilgisi.
-                                        </p>
+                                    <div class="flex justify-between items-end border-b border-[var(--apple-card-border)] pb-2">
+                                        <div class="text-[10px] font-black uppercase text-[var(--apple-text-muted)]">Tıklama (ad_click)</div>
+                                        <div class="text-xl font-black metric-value w-16 text-right" id="ga-ad-click"></div>
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <div class="text-[10px] font-black uppercase text-[var(--apple-yellow)]">Ortalama CTR</div>
+                                        <div class="text-xl font-black text-[var(--apple-yellow)] metric-value w-12 text-right" id="ga-ad-ctr"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 9. PDF Analizi -->
+                            <div class="content-card p-6">
+                                <h3 class="text-sm font-black text-[var(--apple-text)] mb-4 uppercase tracking-widest"><i class="fa-solid fa-file-pdf text-red-500 mr-2"></i> 9. PDF Rapor Analizi</h3>
+                                <div class="flex flex-col h-full justify-center gap-6 pb-6">
+                                    <div class="text-center">
+                                        <div class="text-4xl font-black text-[var(--apple-text)] metric-value mx-auto w-20" id="ga-pdf-down"></div>
+                                        <div class="text-xs font-bold text-[var(--apple-text-muted)] uppercase tracking-widest mt-2">İndirilen PDF (pdf_download)</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
                     <!-- TAB: EXPORT (CANLIYA AL) -->
@@ -463,63 +538,30 @@
                                 <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Yaptığınız değişiklikleri canlı ortama taşımak için dosyaları bilgisayarınıza indirin.</p>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                            
-                            <!-- ADS.JS Export -->
+                            <!-- ADS.JS -->
                             <div class="content-card p-0 flex flex-col relative group border-[var(--apple-yellow)]/20 shadow-[0_0_20px_rgba(245,158,11,0.05)] border">
                                 <div class="bg-[#1e1e1e] p-5 flex items-center justify-between border-b border-white/10">
-                                    <div class="flex items-center gap-3 md:gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-[var(--apple-yellow)]">
-                                            <i class="fa-solid fa-bullhorn text-lg"></i>
-                                        </div>
-                                        <span class="text-xs md:text-sm font-black text-white tracking-widest uppercase">ads.js</span>
-                                    </div>
+                                    <div class="flex items-center gap-3 md:gap-4"><div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-[var(--apple-yellow)]"><i class="fa-solid fa-bullhorn text-lg"></i></div><span class="text-xs md:text-sm font-black text-white tracking-widest uppercase">ads.js</span></div>
                                     <div class="flex gap-2">
-                                        <button onclick="copyCode('export-code-ads')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors" title="Kodu Kopyala">
-                                            <i class="fa-solid fa-copy"></i>
-                                        </button>
-                                        <button onclick="downloadFile('export-code-ads', 'ads.js')" class="bg-[var(--apple-yellow)] text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-amber-500/20 hover:opacity-90 flex items-center gap-2">
-                                            <i class="fa-solid fa-download"></i> İndir
-                                        </button>
+                                        <button onclick="copyCode('export-code-ads')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-copy"></i></button>
+                                        <button onclick="downloadFile('export-code-ads', 'ads.js')" class="bg-[var(--apple-yellow)] text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-amber-500/20"><i class="fa-solid fa-download"></i> İndir</button>
                                     </div>
                                 </div>
                                 <pre class="p-5 md:p-8 overflow-x-auto bg-[#1e1e1e] m-0 h-64 md:h-80"><code id="export-code-ads" class="text-amber-400 font-mono text-[11px] md:text-xs leading-relaxed whitespace-pre-wrap"></code></pre>
                             </div>
-
-                            <!-- RATES.JSON Export -->
+                            <!-- RATES.JSON -->
                             <div class="content-card p-0 flex flex-col relative group border-[var(--apple-yellow)]/20 shadow-[0_0_20px_rgba(245,158,11,0.05)] border">
                                 <div class="bg-[#1e1e1e] p-5 flex items-center justify-between border-b border-white/10">
-                                    <div class="flex items-center gap-3 md:gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-[var(--apple-yellow)]">
-                                            <i class="fa-solid fa-percent text-lg"></i>
-                                        </div>
-                                        <span class="text-xs md:text-sm font-black text-white tracking-widest uppercase">rates.json</span>
-                                    </div>
+                                    <div class="flex items-center gap-3 md:gap-4"><div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-[var(--apple-yellow)]"><i class="fa-solid fa-percent text-lg"></i></div><span class="text-xs md:text-sm font-black text-white tracking-widest uppercase">rates.json</span></div>
                                     <div class="flex gap-2">
-                                        <button onclick="copyCode('export-code-rates')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors" title="Kodu Kopyala">
-                                            <i class="fa-solid fa-copy"></i>
-                                        </button>
-                                        <button onclick="downloadFile('export-code-rates', 'rates.json')" class="bg-[var(--apple-yellow)] text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-amber-500/20 hover:opacity-90 flex items-center gap-2">
-                                            <i class="fa-solid fa-download"></i> İndir
-                                        </button>
+                                        <button onclick="copyCode('export-code-rates')" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-bold transition-colors"><i class="fa-solid fa-copy"></i></button>
+                                        <button onclick="downloadFile('export-code-rates', 'rates.json')" class="bg-[var(--apple-yellow)] text-black px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-amber-500/20"><i class="fa-solid fa-download"></i> İndir</button>
                                     </div>
                                 </div>
                                 <pre class="p-5 md:p-8 overflow-x-auto bg-[#1e1e1e] m-0 h-64 md:h-80"><code id="export-code-rates" class="text-amber-400 font-mono text-[11px] md:text-xs leading-relaxed whitespace-pre-wrap"></code></pre>
                             </div>
-                            
                         </div>
-                        
-                        <div class="mt-6 md:mt-8 content-card p-5 md:p-8 border-t-4 border-t-[var(--apple-yellow)]">
-                            <h4 class="text-base md:text-lg font-black mb-3 flex items-center gap-3"><i class="fa-solid fa-circle-question text-[var(--apple-yellow)] text-xl"></i> İndirilen Dosyaları Ne Yapacağım?</h4>
-                            <p class="text-sm md:text-base text-[var(--apple-text-muted)] leading-relaxed space-y-3 font-medium">
-                                <span class="block"><strong>1.</strong> İlgili kutudaki "İndir" butonuna basarak dosyayı bilgisayarınıza kaydedin.</span>
-                                <span class="block"><strong>2.</strong> Sitenizin barındırıldığı GitHub (veya kendi sunucunuz) dizinine gidin.</span>
-                                <span class="block"><strong>3.</strong> İndirdiğiniz bu yeni dosyaları eski dosyaların üzerine yazacak şekilde klasöre yükleyin (upload).</span>
-                                <span class="block text-[var(--apple-yellow)] font-black mt-4 text-base md:text-lg">İşlem tamam! Reklamlar ve faiz oranları anında tüm ziyaretçiler için güncellenecektir.</span>
-                            </p>
-                        </div>
-
                     </div>
 
                 </div>
@@ -527,22 +569,17 @@
         </div>
     </div>
 
+    <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
-        // Güvenlik: Sadece bu mail paneli görebilir
         const AUTHORIZED_EMAIL = "vhesap.com@gmail.com"; 
-
         const firebaseConfig = {
-            apiKey: "AIzaSyCXCeJn7Nyz1hfYt0RRcW5yPOtDxgDpE_4",
-            authDomain: "vhesap-tr.firebaseapp.com",
-            projectId: "vhesap-tr",
-            storageBucket: "vhesap-tr.firebasestorage.app",
-            messagingSenderId: "705403983274",
-            appId: "1:705403983274:web:497f04d17ef59465eb07d3"
+            apiKey: "AIzaSyCXCeJn7Nyz1hfYt0RRcW5yPOtDxgDpE_4", authDomain: "vhesap-tr.firebaseapp.com",
+            projectId: "vhesap-tr", storageBucket: "vhesap-tr.firebasestorage.app",
+            messagingSenderId: "705403983274", appId: "1:705403983274:web:497f04d17ef59465eb07d3"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
@@ -556,52 +593,36 @@
         onAuthStateChanged(auth, user => {
             if (user) {
                 if(user.email.toLowerCase() === AUTHORIZED_EMAIL.toLowerCase()) {
-                    // YETKİLİ GİRİŞ BAŞARILI
-                    authOverlay.style.display = 'none';
-                    appWrapper.style.visibility = 'visible';
+                    authOverlay.style.display = 'none'; appWrapper.style.visibility = 'visible';
                     document.getElementById('adminPhoto').src = user.photoURL;
                     document.getElementById('adminName').innerText = user.displayName;
-                    
-                    // Sistemin geri kalanını başlat
                     initializeAppLogic();
                 } else {
-                    // YETKİSİZ KİŞİ
-                    authLoading.classList.add('hidden');
-                    loginBtn.classList.add('hidden');
-                    authError.classList.remove('hidden');
+                    authLoading.classList.add('hidden'); loginBtn.classList.add('hidden'); authError.classList.remove('hidden');
                 }
             } else {
-                // ÇIKIŞ YAPILMIŞ DURUM
-                authOverlay.style.display = 'flex';
-                appWrapper.style.visibility = 'hidden';
-                loginBtn.classList.remove('hidden');
-                authError.classList.add('hidden');
-                authLoading.classList.add('hidden');
+                authOverlay.style.display = 'flex'; appWrapper.style.visibility = 'hidden';
+                loginBtn.classList.remove('hidden'); authError.classList.add('hidden'); authLoading.classList.add('hidden');
             }
         });
-
-        loginBtn.onclick = async () => {
-            loginBtn.classList.add('hidden');
-            authLoading.classList.remove('hidden');
-            try { await signInWithPopup(auth, provider); } 
-            catch (e) { 
-                loginBtn.classList.remove('hidden');
-                authLoading.classList.add('hidden');
-            }
-        };
-
-        document.getElementById('logoutBtn').onclick = async () => {
-            await signOut(auth);
-        };
+        loginBtn.onclick = async () => { loginBtn.classList.add('hidden'); authLoading.classList.remove('hidden'); try { await signInWithPopup(auth, provider); } catch (e) { loginBtn.classList.remove('hidden'); authLoading.classList.add('hidden'); } };
+        document.getElementById('logoutBtn').onclick = async () => { await signOut(auth); };
     </script>
 
     <script>
-        // --- 1. DEFAULT DATA ---
+        // --- 1. DEFAULT DATA (Yeni 11 Vhesap Tanıtım Reklamı) ---
         const DEFAULT_ADS = [
-            { "id": "ad_1_home", "placement": "homeBottom", "type": "Banner", "title": "Vanaliz PRO - CFO Seviyesinde Analiz", "description": "Kredinizi çekmeden önce matematiksel analiz yapın.", "buttonText": "Hemen İncele", "link": "vanaliz.html", "icon": "fa-solid fa-chart-pie", "badge": "PREMİUM", "transparentBg": false, "active": true, "priority": 10 },
-            { "id": "ad_2_bireysel", "placement": "bireyselResult", "type": "Banner", "title": "İhtiyaç Kredisi Fırsatı", "description": "Size özel %3.99'dan başlayan faiz oranlarıyla nakit cebinizde.", "buttonText": "Başvur", "link": "#", "icon": "fa-solid fa-building-columns", "badge": "SPONSOR", "transparentBg": false, "active": true, "priority": 9 },
-            { "id": "ad_3_ticari", "placement": "ticariResult", "type": "Banner", "title": "KOBİ Destek Finansmanı", "description": "İşletmenizi büyütmek için devlet destekli paketler.", "buttonText": "İncele", "link": "#", "icon": "fa-solid fa-briefcase", "badge": "AFFILIATE", "transparentBg": false, "active": true, "priority": 8 },
-            { "id": "ad_5_plan", "placement": "planMid", "type": "AdSense", "scriptCode": "<div style='padding:15px; background:rgba(245,158,11,0.05); border:1px dashed rgba(245,158,11,0.4); color:#f59e0b; text-align:center; border-radius:12px; font-weight:bold; font-size:12px;'><i class='fa-brands fa-google text-lg mb-1 block'></i> Google AdSense Alanı</div>", "active": true, "priority": 6 }
+            { "id": "ad_1700000000001", "placement": "homeBottom", "type": "Banner", "title": "Vanaliz PRO - CFO Seviyesinde Analiz", "description": "Kredilerinizi çekmeden önce matematiksel analiz yapın, zarar etmekten kurtulun. Üstelik tamamen ücretsiz!", "buttonText": "Hemen İncele", "link": "vanaliz.html", "icon": "fa-solid fa-chart-pie", "badge": "ÖNE ÇIKAN", "transparentBg": false, "active": true, "priority": 10 },
+            { "id": "ad_1700000000002", "placement": "bireyselResult", "type": "Banner", "title": "Gizli Maliyetleri Anında Görün", "description": "İhtiyaç, Taşıt ve Konut kredisi hesaplamalarında KKDF ve BSMV gibi gizli maliyetleri şeffafça inceleyin.", "buttonText": "Kredi Hesapla", "link": "bireysel.html", "icon": "fa-solid fa-building-columns", "badge": "BİREYSEL", "transparentBg": false, "active": true, "priority": 9 },
+            { "id": "ad_1700000000003", "placement": "ticariResult", "type": "Banner", "title": "İşletmenizin Finansal Rotası", "description": "Rotatif, Spot ve İskonto kredi maliyetlerini kuruşu kuruşuna hesaplayın. Ticari risklerinizi minimize edin.", "buttonText": "Ticari Panele Git", "link": "ticari.html", "icon": "fa-solid fa-briefcase", "badge": "TİCARİ", "transparentBg": false, "active": true, "priority": 8 },
+            { "id": "ad_1700000000004", "placement": "vadeliResult", "type": "Banner", "title": "Net Getirinizi Önceden Bilin", "description": "Paranızı bağlamadan önce net getiriyi hesaplayın, vergi ve stopaj kesintilerini vade öncesinde netleştirin.", "buttonText": "Mevduat Hesapla", "link": "vadeli.html", "icon": "fa-solid fa-piggy-bank", "badge": "VADELİ", "transparentBg": false, "active": true, "priority": 7 },
+            { "id": "ad_1700000000005", "placement": "converterBottom", "type": "Banner", "title": "Anlık Çapraz Kur Çevirici", "description": "Döviz ve altın kurlarını anlık olarak çapraz çevirin, yatırımlarınızı hızlı ve hatasız planlayın.", "buttonText": "Çeviriciyi Aç", "link": "#", "icon": "fa-solid fa-arrow-right-arrow-left", "badge": "ARAÇLAR", "transparentBg": true, "active": true, "priority": 6 },
+            { "id": "ad_1700000000006", "placement": "planMid", "type": "Banner", "title": "Ödeme Planlarını PDF Olarak İndirin", "description": "Hesapladığınız karmaşık ödeme planlarını tek tıkla profesyonel PDF raporlarına dönüştürün.", "buttonText": "Nasıl Yapılır?", "link": "#", "icon": "fa-solid fa-file-pdf", "badge": "ÖZELLİK", "transparentBg": true, "active": true, "priority": 5 },
+            { "id": "ad_1700000000007", "placement": "blogTop", "type": "Banner", "title": "Esnek Ödeme Motorunu Keşfedin", "description": "Ara ödemeli, balon ödemeli veya azalan taksitli kendi esnek ödeme planlarınızı saniyeler içinde oluşturun.", "buttonText": "Hemen Dene", "link": "bireysel.html", "icon": "fa-solid fa-sliders", "badge": "PRO ÖZELLİK", "transparentBg": false, "active": true, "priority": 8 },
+            { "id": "ad_1700000000008", "placement": "blogMid", "type": "Banner", "title": "Ücretsiz Finans Okuryazarlığı Rehberi", "description": "Ekonomi, yatırım, vergi ve kredi dünyasındaki son gelişmeleri uzmanların kaleminden Vhesap Blog'da okuyun.", "buttonText": "Makalelere Göz At", "link": "blog.html", "icon": "fa-solid fa-book-open", "badge": "REHBER", "transparentBg": true, "active": true, "priority": 9 },
+            { "id": "ad_1700000000009", "placement": "blogBottom", "type": "Banner", "title": "Toplu Para Asistanı (Çığ & Kartopu)", "description": "Elinize geçen ekstra nakitle hangi borcunuzu kapatırsanız en çok kâra geçeceğinizi Vanaliz ile öğrenin.", "buttonText": "Vanaliz'e Git", "link": "vanaliz.html", "icon": "fa-solid fa-mountain", "badge": "ASİSTAN", "transparentBg": false, "active": true, "priority": 4 },
+            { "id": "ad_1700000000010", "placement": "blogCategoryEnd", "type": "Banner", "title": "Akıllı Kurtarma Asistanı", "description": "Finansal stres (T/G) oranınız yüksek mi? Algoritmamız size en uygun borç yapılandırma reçetesini sunsun.", "buttonText": "Stres Testi Yap", "link": "vanaliz.html", "icon": "fa-solid fa-shield-heart", "badge": "YENİ", "transparentBg": true, "active": true, "priority": 3 },
+            { "id": "ad_1700000000011", "placement": "vanalizAd", "type": "Banner", "title": "Vhesap: Kapsamlı Finans Portalı", "description": "Türkiye'nin en gelişmiş, ücretsiz finansal hesaplama ve simülasyon portalı. Hemen sık kullanılanlara ekleyin.", "buttonText": "Keşfet", "link": "index.html", "icon": "fa-solid fa-compass", "badge": "SİSTEM", "transparentBg": true, "active": true, "priority": 10 }
         ];
 
         const DEFAULT_RATES = {
@@ -618,28 +639,32 @@
 
         let activeAdsList = [];
         let activeRates = {};
-        let analyticsConfig = { enabled: true, measurementId: "G-H0WX0KCEM6", events: {} };
-        const ALL_EVENTS = ['page_view', 'calculation_start', 'calculation_complete', 'calculation_error', 'ad_impression', 'ad_click', 'payment_plan_open', 'payment_plan_download_pdf'];
+        
+        // --- GA4 CHARTS REFERENCES ---
+        let trafficChartInstance, trafficSourcesChart, deviceCategoryChart, calculationTrendChart, calculatorTypeChart;
 
-        let trafficChartInstance = null;
-
-        // Firebase Auth onayından sonra çağrılır
         function initializeAppLogic() {
-            initTheme();
-            loadAdsData();
+            initTheme(); 
+            loadAdsData(); 
             loadRatesData();
-            loadAnalyticsConfig();
-            loadDashboardStats();
             
-            renderRatesForm();
-            renderAdsTable();
+            // UI Initialization
+            renderRatesForm(); 
+            renderAdsTable(); 
             generateExportCode();
-            renderAnalyticsEvents();
-            initChart();
+            initGA4Charts(); 
+            
+            document.getElementById('dash-active-ads').innerText = activeAdsList.filter(a => a.active).length;
+            const statusLi = document.getElementById('log-adsjs-status');
+            if(window.GLOBAL_ADS) { 
+                statusLi.innerHTML = `<i class="fa-solid fa-check-circle text-[var(--apple-yellow)] text-xl"></i> <span>Sistem canlıdaki ads.js ile senkronize çalışıyor.</span>`; 
+            } else { 
+                statusLi.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-[var(--apple-yellow)] text-xl"></i> <span>Sistem yerel tarayıcı taslağı üzerinden çalışıyor.</span>`; 
+            }
             setupLivePreviewListeners();
         }
 
-        // --- TEMA VE UI YÖNETİMİ ---
+        // --- THEME & UI ---
         function initTheme() {
             const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
             applyThemeClass(savedTheme);
@@ -650,7 +675,7 @@
             const newTheme = isDark ? 'light' : 'dark';
             localStorage.setItem('vhesap_global_theme', newTheme);
             applyThemeClass(newTheme);
-            if(trafficChartInstance) { updateChart(trafficChartInstance.data.labels.length === 7 ? 7 : 30); } // Temaya göre grafiği yenile
+            updateAllChartsTheme();
         }
 
         function applyThemeClass(theme) {
@@ -672,7 +697,6 @@
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
             if(tabId === 'export') generateExportCode();
-            if(tabId === 'dashboard') { loadDashboardStats(); if(trafficChartInstance) trafficChartInstance.update(); }
             
             if (window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) {
                 toggleSidebar();
@@ -693,78 +717,9 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // --- DASHBOARD GRAFİK (CHART.JS) ---
-        function initChart() {
-            const ctx = document.getElementById('trafficChart').getContext('2d');
-            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-            Chart.defaults.color = '#71717a';
-
-            trafficChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: getChartMockData(7),
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { enabled: true } },
-                    scales: {
-                        y: { beginAtZero: true, border: { display: false }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
-                        x: { border: { display: false }, grid: { display: false } }
-                    },
-                    interaction: { mode: 'index', intersect: false },
-                    elements: { line: { tension: 0.4 }, point: { radius: 0, hoverRadius: 6 } }
-                }
-            });
-        }
-
-        window.updateChart = function(days) {
-            document.getElementById('btn-chart-7').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all";
-            document.getElementById('btn-chart-30').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-all";
-            
-            if(days === 7) document.getElementById('btn-chart-7').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all";
-            else document.getElementById('btn-chart-30').className = "px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md bg-[var(--apple-yellow)] text-black shadow-sm transition-all";
-
-            trafficChartInstance.data = getChartMockData(days);
-            trafficChartInstance.update();
-        }
-
-        function getChartMockData(days) {
-            let labels = []; let data1 = []; let data2 = [];
-            let today = new Date();
-            for(let i=days-1; i>=0; i--) {
-                let d = new Date(today); d.setDate(d.getDate() - i);
-                labels.push(`${d.getDate()}/${d.getMonth()+1}`);
-                data1.push(Math.floor(Math.random() * 50) + 10);
-                data2.push(Math.floor(Math.random() * 30) + 5);
-            }
-            return {
-                labels: labels,
-                datasets: [
-                    { label: 'Hesaplamalar', data: data1, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderWidth: 3, fill: true },
-                    { label: 'Reklam Tık', data: data2, borderColor: '#71717a', borderDash: [5, 5], borderWidth: 2, fill: false }
-                ]
-            };
-        }
-
-        // --- DASHBOARD İSTATİSTİKLERİ ---
-        function loadDashboardStats() {
-            document.getElementById('dash-active-ads').innerText = activeAdsList.filter(a => a.active).length;
-            const today = new Date().toISOString().split('T')[0];
-            const rawStats = localStorage.getItem('vhesap_analytics_stats') || '{}';
-            try {
-                const stats = JSON.parse(rawStats);
-                if (stats[today]) {
-                    document.getElementById('dash-calculations').innerText = stats[today].calculations || 0;
-                    document.getElementById('dash-ad-clicks').innerText = stats[today].ad_clicks || 0;
-                }
-            } catch(e){}
-            const statusLi = document.getElementById('log-adsjs-status');
-            if(window.GLOBAL_ADS) { statusLi.innerHTML = `<i class="fa-solid fa-check-circle text-[var(--apple-yellow)] text-xl"></i> <span>Sistem canlıdaki ads.js ile senkronize çalışıyor.</span>`; } 
-            else { statusLi.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-[var(--apple-yellow)] text-xl"></i> <span>Sistem yerel tarayıcı taslağı üzerinden çalışıyor.</span>`; }
-        }
-
         // --- FAİZ (RATES) YÖNETİMİ ---
         function loadRatesData() {
-            const draftRates = localStorage.getItem('vhesap_rates_draft_v2');
+            const draftRates = localStorage.getItem('vhesap_rates_draft_v3');
             if (draftRates) { try { activeRates = JSON.parse(draftRates); return; } catch(e){} }
             activeRates = JSON.parse(JSON.stringify(DEFAULT_RATES));
         }
@@ -820,17 +775,18 @@
                     };
                 }
             }
-            localStorage.setItem('vhesap_rates_draft_v2', JSON.stringify(activeRates));
+            localStorage.setItem('vhesap_rates_draft_v3', JSON.stringify(activeRates));
             generateExportCode();
             showToast("Faiz oranları taslağa kaydedildi. Export sekmesinden çıktı almayı unutmayın!");
         }
 
         // --- REKLAM (ADS) YÖNETİMİ VE CANLI ÖNİZLEME ---
         function loadAdsData() {
-            const draftAds = localStorage.getItem('vhesap_ads_draft_vamber_2');
+            // Önbelleği temizlemek için anahtarı v4 yapıyoruz
+            const draftAds = localStorage.getItem('vhesap_ads_draft_v4');
             if (draftAds) { try { activeAdsList = JSON.parse(draftAds); return; } catch(e){} }
             activeAdsList = JSON.parse(JSON.stringify(DEFAULT_ADS));
-            localStorage.setItem('vhesap_ads_draft_vamber_2', JSON.stringify(activeAdsList));
+            localStorage.setItem('vhesap_ads_draft_v4', JSON.stringify(activeAdsList));
         }
 
         window.toggleAdTypeFields = function() {
@@ -928,7 +884,9 @@
             document.getElementById('ad-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        window.closeAdForm = function() { document.getElementById('ad-form-card').classList.add('hidden'); }
+        window.closeAdForm = function() { 
+            document.getElementById('ad-form-card').classList.add('hidden'); 
+        }
 
         window.saveAd = function() {
             const id = document.getElementById('ad-id').value || 'ad_' + Date.now();
@@ -957,36 +915,42 @@
             const existingIndex = activeAdsList.findIndex(a => a.id === id);
             if(existingIndex > -1) { activeAdsList[existingIndex] = newAd; } else { activeAdsList.push(newAd); }
 
-            localStorage.setItem('vhesap_ads_draft_vamber_2', JSON.stringify(activeAdsList));
-            closeAdForm(); renderAdsTable(); generateExportCode(); loadDashboardStats();
+            localStorage.setItem('vhesap_ads_draft_v4', JSON.stringify(activeAdsList));
+            closeAdForm(); 
+            renderAdsTable(); 
+            generateExportCode(); 
+            document.getElementById('dash-active-ads').innerText = activeAdsList.filter(a => a.active).length;
             showToast("Reklam taslağa kaydedildi.");
         }
 
         window.deleteAd = function(id) {
             if(!confirm('Bu reklamı kalıcı olarak silmek istediğinize emin misiniz?')) return;
             activeAdsList = activeAdsList.filter(a => a.id !== id);
-            localStorage.setItem('vhesap_ads_draft_vamber_2', JSON.stringify(activeAdsList));
-            renderAdsTable(); generateExportCode(); loadDashboardStats(); showToast("Reklam silindi.");
+            localStorage.setItem('vhesap_ads_draft_v4', JSON.stringify(activeAdsList));
+            renderAdsTable(); 
+            generateExportCode(); 
+            document.getElementById('dash-active-ads').innerText = activeAdsList.filter(a => a.active).length;
+            showToast("Reklam silindi.");
         }
 
         function renderAdsTable() {
             const tbody = document.getElementById('ads-table-body');
             tbody.innerHTML = '';
             if(activeAdsList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan=\"4\" class=\"p-8 text-center text-[var(--apple-text-muted)] font-bold\">Kayıtlı reklam bulunmuyor.</td></tr>`; return;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-[var(--apple-text-muted)] font-bold">Kayıtlı reklam bulunmuyor.</td></tr>`; return;
             }
             activeAdsList.sort((a,b) => b.priority - a.priority).forEach(ad => {
-                const statusBadge = ad.active ? `<span class=\"bg-[var(--apple-yellow)]/20 border border-[var(--apple-yellow)]/30 text-[var(--apple-yellow)] px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black\">Aktif</span>` : `<span class=\"bg-[var(--apple-card-border)] text-[var(--apple-text-muted)] px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black\">Pasif</span>`;
-                const titleDisplay = ad.type === 'Banner' ? ad.title : '<span class=\"font-mono text-xs md:text-sm text-[var(--apple-yellow)] bg-[var(--apple-yellow)]/10 px-3 py-1 rounded-lg border border-[var(--apple-yellow)]/20\">AdSense Script</span>';
-                const badgeDisplay = ad.badge ? `<span class=\"text-[9px] md:text-[10px] font-black uppercase tracking-widest text-[var(--apple-text-muted)] block mt-1.5\">${ad.badge}</span>` : '';
+                const statusBadge = ad.active ? `<span class="bg-[var(--apple-yellow)]/20 border border-[var(--apple-yellow)]/30 text-[var(--apple-yellow)] px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black">Aktif</span>` : `<span class="bg-[var(--apple-card-border)] text-[var(--apple-text-muted)] px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black">Pasif</span>`;
+                const titleDisplay = ad.type === 'Banner' ? ad.title : '<span class="font-mono text-xs md:text-sm text-[var(--apple-yellow)] bg-[var(--apple-yellow)]/10 px-3 py-1 rounded-lg border border-[var(--apple-yellow)]/20">AdSense Script</span>';
+                const badgeDisplay = ad.badge ? `<span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-[var(--apple-text-muted)] block mt-1.5">${ad.badge}</span>` : '';
                 tbody.innerHTML += `
-                    <tr class=\"hover:bg-[var(--apple-sidebar-hover)] transition-colors\">
-                        <td class=\"p-4 md:p-5\">${statusBadge}</td>
-                        <td class=\"p-4 md:p-5 font-mono text-[10px] md:text-xs text-[var(--apple-text-muted)] max-w-[100px] md:max-w-none overflow-hidden text-ellipsis\">${ad.placement}</td>
-                        <td class=\"p-4 md:p-5 font-bold text-sm md:text-base whitespace-normal md:whitespace-nowrap\">${titleDisplay} ${ad.type === 'Banner' ? badgeDisplay : ''}</td>
-                        <td class=\"p-4 md:p-5 text-right whitespace-nowrap\">
-                            <button onclick=\"openAdForm('${ad.id}')\" class=\"w-9 h-9 md:w-11 md:h-11 rounded-xl bg-[var(--apple-yellow)]/10 text-[var(--apple-yellow)] hover:bg-[var(--apple-yellow)] hover:text-black transition-colors mr-2\"><i class=\"fa-solid fa-pen text-sm md:text-base\"></i></button>
-                            <button onclick=\"deleteAd('${ad.id}')\" class=\"w-9 h-9 md:w-11 md:h-11 rounded-xl bg-[var(--apple-card-border)] text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-colors\"><i class=\"fa-solid fa-trash text-sm md:text-base\"></i></button>
+                    <tr class="hover:bg-[var(--apple-sidebar-hover)] transition-colors">
+                        <td class="p-4 md:p-5">${statusBadge}</td>
+                        <td class="p-4 md:p-5 font-mono text-[10px] md:text-xs text-[var(--apple-text-muted)] max-w-[100px] md:max-w-none overflow-hidden text-ellipsis">${ad.placement}</td>
+                        <td class="p-4 md:p-5 font-bold text-sm md:text-base whitespace-normal md:whitespace-nowrap">${titleDisplay} ${ad.type === 'Banner' ? badgeDisplay : ''}</td>
+                        <td class="p-4 md:p-5 text-right whitespace-nowrap">
+                            <button onclick="openAdForm('${ad.id}')" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-[var(--apple-yellow)]/10 text-[var(--apple-yellow)] hover:bg-[var(--apple-yellow)] hover:text-black transition-colors mr-2"><i class="fa-solid fa-pen text-sm md:text-base"></i></button>
+                            <button onclick="deleteAd('${ad.id}')" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-[var(--apple-card-border)] text-[var(--apple-text-muted)] hover:text-[var(--apple-text)] transition-colors"><i class="fa-solid fa-trash text-sm md:text-base"></i></button>
                         </td>
                     </tr>`;
             });
@@ -996,13 +960,18 @@
         function generateExportCode() {
             const adsJsContent = `// Vhesap Merkezi Reklam & Tanıtım Veritabanı\n// Bu dosya vhesap.html (Enterprise Yönetim Paneli) tarafından otomatik olarak üretilir.\n\nwindow.GLOBAL_ADS = ${JSON.stringify(activeAdsList, null, 2)};\n`;
             document.getElementById('export-code-ads').innerText = adsJsContent;
+            
             const ratesJsonContent = JSON.stringify(activeRates, null, 2);
             document.getElementById('export-code-rates').innerText = ratesJsonContent;
         }
 
         window.copyCode = function(elementId) {
             const code = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(code).then(() => { showToast("Kod panoya kopyalandı."); }).catch(err => { showToast("Kopyalama başarısız, manuel seçin.", true); });
+            navigator.clipboard.writeText(code).then(() => { 
+                showToast("Kod panoya kopyalandı."); 
+            }).catch(err => { 
+                showToast("Kopyalama başarısız, manuel seçin.", true); 
+            });
         }
 
         window.downloadFile = function(elementId, fileName) {
@@ -1016,47 +985,166 @@
             showToast(`${fileName} bilgisayarınıza indirildi.`);
         }
 
-        // --- ANALYTICS (GA4) YÖNETİMİ ---
-        function loadAnalyticsConfig() {
-            const saved = localStorage.getItem('vhesap_analytics_config');
-            if (saved) { try { const parsed = JSON.parse(saved); analyticsConfig = { ...analyticsConfig, ...parsed }; } catch(e){} }
-            document.getElementById('ga-enabled').checked = analyticsConfig.enabled;
-            document.getElementById('ga-id').value = analyticsConfig.measurementId || '';
-            toggleGAFields();
+        // ==========================================
+        // GOOGLE ANALYTICS 4 (GA4) DATA API LOGIC
+        // ==========================================
+        
+        let tokenClient;
+        let isGapiReady = false;
+
+        window.gapiLoaded = function() {
+            gapi.load('client', async () => {
+                await gapi.client.init({ discoveryDocs: ['https://analyticsdata.googleapis.com/$discovery/rest?version=v1beta'] });
+                isGapiReady = true;
+            });
+        }
+        
+        window.gisLoaded = function() {
+            // Token Client initialized when user clicks auth button
         }
 
-        window.toggleGAFields = function() {
-            const isEnabled = document.getElementById('ga-enabled').checked;
-            const area = document.getElementById('ga-settings-area');
-            if(isEnabled) { area.classList.remove('opacity-50', 'pointer-events-none'); } else { area.classList.add('opacity-50', 'pointer-events-none'); }
+        window.authenticateGA4 = function() {
+            const clientId = document.getElementById('ga-client-id').value.trim();
+            if(!clientId) return showToast('Lütfen OAuth Client ID giriniz.', true);
+            
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: clientId,
+                scope: 'https://www.googleapis.com/auth/analytics.readonly',
+                callback: (tokenResponse) => {
+                    if (tokenResponse.error) return showToast('Yetkilendirme başarısız.', true);
+                    document.getElementById('ga4-status-badge').innerHTML = '<i class="fa-solid fa-check text-green-500 mr-1"></i> GA4 Aktif';
+                    document.getElementById('ga4-status-badge').className = "px-3 py-1.5 rounded-lg text-xs font-black bg-green-500/10 text-green-500";
+                    fetchGA4Reports();
+                },
+            });
+            tokenClient.requestAccessToken({prompt: 'consent'});
         }
 
-        function renderAnalyticsEvents() {
-            const container = document.getElementById('ga-events-list');
-            container.innerHTML = '';
-            ALL_EVENTS.forEach(evName => {
-                const conf = analyticsConfig.events[evName] || { enabled: true };
-                container.innerHTML += `
-                    <div class="flex items-center justify-between pb-3 md:pb-4 border-b border-[var(--apple-card-border)] last:border-0 last:pb-0">
-                        <span class="font-mono text-xs md:text-sm text-[var(--apple-yellow)] font-bold truncate max-w-[200px] md:max-w-none pr-2">${evName}</span>
-                        <label class="flex items-center cursor-pointer shrink-0">
-                            <input type="checkbox" class="hidden peer ev-enable" data-ev="${evName}" ${conf.enabled ? 'checked' : ''}>
-                            <div class="w-10 h-6 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-4 after:h-4 after:rounded-full peer-checked:after:translate-x-4 transition-all bg-[var(--apple-card-border)] peer-checked:bg-[var(--apple-yellow)]"></div>
-                        </label>
-                    </div>`;
+        async function fetchGA4Reports() {
+            const propertyId = document.getElementById('ga-property-id').value.trim();
+            if(!propertyId) return showToast('Lütfen GA4 Property ID giriniz.', true);
+
+            showToast("GA4 verileri çekiliyor, lütfen bekleyin...");
+            
+            try {
+                const overviewResponse = await gapi.client.analyticsdata.properties.runReport({
+                    property: `properties/${propertyId}`,
+                    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+                    metrics: [
+                        { name: 'activeUsers' }, { name: 'totalUsers' }, { name: 'newUsers' }, 
+                        { name: 'sessions' }, { name: 'screenPageViews' }, { name: 'averageSessionDuration' }
+                    ]
+                });
+                updateOverviewUI(overviewResponse.result);
+
+                const rtResponse = await gapi.client.analyticsdata.properties.runRealtimeReport({
+                    property: `properties/${propertyId}`,
+                    metrics: [{ name: 'activeUsers' }],
+                    dimensions: [{ name: 'unifiedScreenName' }]
+                });
+                updateRealtimeUI(rtResponse.result);
+
+                const eventsResponse = await gapi.client.analyticsdata.properties.runReport({
+                    property: `properties/${propertyId}`,
+                    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+                    dimensions: [{ name: 'eventName' }, { name: 'customEvent:calculator_type' }],
+                    metrics: [{ name: 'eventCount' }]
+                });
+                updateEventsUI(eventsResponse.result);
+                
+                showToast("Tüm GA4 panelleri güncellendi!");
+            } catch (error) {
+                console.error("GA4 Fetch Error: ", error);
+                showToast("GA4 veri çekim hatası. Yetkileri kontrol edin.", true);
+            }
+        }
+
+        function updateOverviewUI(data) {
+            if(!data.rows) return;
+            const metrics = data.rows[0].metricValues;
+            
+            const els = ['ga-active-users', 'ga-total-users', 'ga-new-users', 'ga-sessions', 'ga-page-views', 'ga-avg-time'];
+            els.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.classList.remove('metric-value');
+                el.innerText = parseFloat(metrics[i].value).toLocaleString('tr-TR');
+            });
+            document.getElementById('dash-calculations').classList.remove('metric-value');
+        }
+
+        function updateRealtimeUI(data) {
+            const activeEl = document.getElementById('ga-rt-active');
+            activeEl.classList.remove('metric-value');
+            if(!data.rows) { activeEl.innerText = '0'; return; }
+            
+            let totalActive = data.rows.reduce((sum, row) => sum + parseInt(row.metricValues[0].value), 0);
+            activeEl.innerText = totalActive;
+
+            const ul = document.getElementById('ga-rt-pages');
+            ul.innerHTML = '';
+            data.rows.slice(0,5).forEach(row => {
+                ul.innerHTML += `<li class="flex justify-between items-center bg-[var(--apple-sidebar-bg)] p-2 rounded truncate"><span class="truncate">${row.dimensionValues[0].value}</span> <span class="font-black text-[var(--apple-yellow)]">${row.metricValues[0].value}</span></li>`;
             });
         }
 
-        window.saveAnalyticsConfig = function() {
-            analyticsConfig.enabled = document.getElementById('ga-enabled').checked;
-            analyticsConfig.measurementId = document.getElementById('ga-id').value.trim();
-            analyticsConfig.events = {};
-            ALL_EVENTS.forEach(evName => {
-                let enCheck = document.querySelector(`.ev-enable[data-ev="${evName}"]`).checked;
-                analyticsConfig.events[evName] = { enabled: enCheck };
+        function updateEventsUI(data) {
+            if(!data.rows) return;
+            let calcTotal = 0, calcToday = 0; 
+            let adImp = 0, adClick = 0, pdfDown = 0;
+
+            data.rows.forEach(row => {
+                const evName = row.dimensionValues[0].value;
+                const count = parseInt(row.metricValues[0].value);
+                if(evName === 'calculation_complete') calcTotal += count;
+                if(evName === 'ad_impression') adImp += count;
+                if(evName === 'ad_click') adClick += count;
+                if(evName === 'pdf_download') pdfDown += count;
             });
-            localStorage.setItem('vhesap_analytics_config', JSON.stringify(analyticsConfig));
-            showToast("Analytics yapılandırması kaydedildi.");
+
+            const safeSet = (id, val) => { const e = document.getElementById(id); if(e){ e.classList.remove('metric-value'); e.innerText = val.toLocaleString('tr-TR'); } };
+            
+            safeSet('ga-calc-total', calcTotal);
+            safeSet('dash-calculations', calcTotal);
+            safeSet('ga-ad-imp', adImp);
+            safeSet('ga-ad-click', adClick);
+            safeSet('dash-ad-clicks', adClick);
+            safeSet('ga-pdf-down', pdfDown);
+            if(adImp > 0) safeSet('ga-ad-ctr', ((adClick / adImp) * 100).toFixed(2) + '%');
+        }
+
+        function initGA4Charts() {
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.color = '#71717a';
+            const gridColor = 'rgba(128, 128, 128, 0.1)';
+
+            trafficChartInstance = new Chart(document.getElementById('trafficChart').getContext('2d'), {
+                type: 'line', data: { labels: [], datasets: [] }, 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: gridColor } } } }
+            });
+
+            trafficSourcesChart = new Chart(document.getElementById('trafficSourcesChart').getContext('2d'), {
+                type: 'doughnut', data: { labels: [], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '70%' }
+            });
+
+            deviceCategoryChart = new Chart(document.getElementById('deviceCategoryChart').getContext('2d'), {
+                type: 'bar', data: { labels: [], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: gridColor } } } }
+            });
+
+            calculationTrendChart = new Chart(document.getElementById('calculationTrendChart').getContext('2d'), {
+                type: 'line', data: { labels: [], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false, elements: { line: { tension: 0.4 } }, scales: { y: { grid: { color: gridColor } } } }
+            });
+
+            calculatorTypeChart = new Chart(document.getElementById('calculatorTypeChart').getContext('2d'), {
+                type: 'pie', data: { labels: [], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+        
+        function updateAllChartsTheme() {
+            [trafficChartInstance, trafficSourcesChart, deviceCategoryChart, calculationTrendChart, calculatorTypeChart].forEach(chart => { if(chart) chart.update(); });
         }
     </script>
 </body>
