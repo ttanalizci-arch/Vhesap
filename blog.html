@@ -106,12 +106,16 @@
         .search-input { width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--text-strong); padding: 0 15px 0 40px; font-size: 14px; transition: 0.2s; }
         .search-input:focus { border-color: var(--amber); }
 
-        .admin-panel { display: none; gap: 10px; margin-bottom: 20px; }
-        .admin-btn { flex: 1; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: 1px solid; transition: 0.2s; }
+        .admin-panel { display: none; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .admin-btn { flex: 1 1 calc(50% - 10px); min-width: 140px; height: 44px; border-radius: 12px; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; border: 1px solid; transition: 0.2s; }
         .admin-btn.add { border-color: var(--amber); color: var(--amber); background: var(--amber-light); }
         .admin-btn.add:hover { background: var(--amber); color: #000; }
         .admin-btn.manage { border-color: var(--blue); color: var(--blue); background: rgba(59, 130, 246, 0.1); }
         .admin-btn.manage:hover { background: var(--blue); color: #fff; }
+        .admin-btn.vanaliz { border-color: #8b5cf6; color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
+        .admin-btn.vanaliz:hover { background: #8b5cf6; color: #fff; }
+        .admin-btn.panel { border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .admin-btn.panel:hover { background: #10b981; color: #fff; }
 
         .index-bar { position: sticky; top: -1px; background: var(--nav-bg); backdrop-filter: blur(15px); z-index: 50; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
         .index-bar::-webkit-scrollbar { display: none; }
@@ -366,6 +370,9 @@
                 <div id="adminPanelControls" class="admin-panel">
                     <button id="adminPanelBtn" class="admin-btn add"><i class="fa-solid fa-pen-nib"></i> Yeni Makale Ekle</button>
                     <button id="writerManageBtn" class="admin-btn manage"><i class="fa-solid fa-users-gear"></i> Yazar Yönetimi</button>
+                    <!-- Sadece Kurucu Admin (Super Admin) görecek -->
+                    <a href="vanaliz.html" id="vanalizNavBtn" class="admin-btn vanaliz" style="display:none;"><i class="fa-solid fa-chart-pie"></i> Vanaliz'e Git</a>
+                    <a href="vhesap.html" id="panelNavBtn" class="admin-btn panel" style="display:none;"><i class="fa-solid fa-bolt"></i> Panel'e Git</a>
                 </div>
 
                 <div id="postsContent">
@@ -905,14 +912,21 @@
             }
 
             const roleBadge = document.getElementById("userRoleBadge");
+            const vanalizBtn = document.getElementById("vanalizNavBtn");
+            const panelBtn = document.getElementById("panelNavBtn");
+            
             if(isSuperAdmin) {
                 roleBadge.innerHTML = '<span style="color:var(--danger);">Kurucu Admin</span>';
                 document.getElementById("adminPanelControls").style.display = "flex";
                 document.getElementById("writerManageBtn").style.display = "flex";
+                if(vanalizBtn) vanalizBtn.style.display = "flex";
+                if(panelBtn) panelBtn.style.display = "flex";
             } else if (isWriter) {
                 roleBadge.innerHTML = '<span style="color:var(--amber);">Yazar</span>';
                 document.getElementById("adminPanelControls").style.display = "flex";
                 document.getElementById("writerManageBtn").style.display = "none";
+                if(vanalizBtn) vanalizBtn.style.display = "none";
+                if(panelBtn) panelBtn.style.display = "none";
             } else {
                 roleBadge.innerHTML = 'Okuyucu';
                 document.getElementById("adminPanelControls").style.display = "none";
