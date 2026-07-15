@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vanaliz PRO - Gelişmiş Finansal Analiz & CFO Portalı</title>
+    <title>Vanaliz - Gelişmiş Finansal Analiz</title>
     
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
@@ -75,12 +75,6 @@
 
         @keyframes fadeInScale { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .animate-fade-in-scale { animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        .pro-badge {
-            background: linear-gradient(45deg, #f59e0b, #d97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
 
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
@@ -109,6 +103,35 @@
         .pdf-mode #app-content { display: none !important; }
         #pdf-template-wrapper { display: none; }
         .pdf-mode #pdf-template-wrapper { display: block !important; background: #ffffff; color: #1f2937; padding: 20px; width: 100%; min-height: 100vh; }
+
+        /* Enflasyon Slider Özel Tasarımı */
+        input[type=range].inf-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range].inf-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #a855f7;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 1px 3px rgba(168, 85, 247, 0.4);
+            transition: transform 0.1s ease;
+        }
+        input[type=range].inf-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        input[type=range].inf-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: var(--k-border);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="dark selection:bg-amber-500/30">
@@ -121,13 +144,12 @@
     <div id="app-content" class="pb-24">
         <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-4 pb-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm" style="padding-top: max(0.75rem, env(safe-area-inset-top));">
             <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ff9f0a] to-[#d97c00] flex items-center justify-center shadow-lg shadow-[#ff9f0a]/20 border border-white/10">
                         <i data-lucide="bar-chart-2" class="text-white w-5 h-5"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg font-black tracking-tight text-[var(--k-text)] leading-tight">Vanaliz <span class="pro-badge text-xs uppercase ml-1">PRO</span></h1>
-                        <span class="text-[9px] text-[var(--k-text-muted)] uppercase tracking-widest font-semibold">CFO Seviyesi Analiz</span>
+                        <h1 class="text-lg font-black tracking-tight text-[var(--k-text)] leading-tight">Vanaliz</h1>
                     </div>
                 </div>
                 <div class="sm:hidden">
@@ -190,13 +212,13 @@
                             <i data-lucide="shield-alert" class="w-4 h-4"></i>
                         </div>
                         <div>
-                            <h2 class="text-base font-black text-[var(--k-text)] tracking-tight">Akıllı Kurtarma Asistanı PRO</h2>
+                            <h2 class="text-base font-black text-[var(--k-text)] tracking-tight">Akıllı Kurtarma Asistanı</h2>
                             <p class="text-[10px] text-[var(--k-text-muted)] uppercase tracking-wider">Risk Yönetimi & Yapılandırma</p>
                         </div>
                     </div>
                     
                     <div id="rescue-content" class="bg-[var(--k-input)] border border-[var(--k-border)]/50 rounded-xl p-5 min-h-[90px] flex items-center relative z-10 shadow-inner">
-                        <p class="text-xs text-[var(--k-text-muted)] leading-relaxed font-medium">Gelir bilginizi girin ve simülasyona dahil edilecek kredilerinizi seçin. T/G oranınız %50'yi aşarsa pro sistem size özel, kullandırımları hesaba katan yapılandırma reçetesi sunacaktır.</p>
+                        <p class="text-xs text-[var(--k-text-muted)] leading-relaxed font-medium">Gelir bilginizi girin ve simülasyona dahil edilecek kredilerinizi seçin. T/G oranınız %50'yi aşarsa sistem size özel, kullandırımları hesaba katan yapılandırma reçetesi sunacaktır.</p>
                     </div>
                     
                     <div id="ad-container-rescue" class="mt-4 relative z-10 w-full"></div>
@@ -390,12 +412,100 @@
                 </div>
             </div>
             
+            <!-- Enflasyon vs Reel Borç Analizi (Konsolide Verilerden Beslenir) -->
+            <div class="bg-[var(--k-card)] rounded-2xl p-6 border border-[var(--k-border)] shadow-xl mt-5 relative overflow-hidden transition-all hover:border-purple-500/30">
+                <div class="absolute -right-5 -bottom-10 opacity-[0.03] pointer-events-none">
+                     <i class="fa-solid fa-fire-flame-curved text-[14rem]"></i>
+                </div>
+                <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-6 md:gap-10 items-center relative z-10">
+                    <div class="flex-1 w-full">
+                         <h2 class="text-sm font-black text-[var(--k-text)] mb-2 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center border border-purple-500/30">
+                                <i data-lucide="flame" class="w-3.5 h-3.5 text-purple-500"></i>
+                            </div>
+                            Enflasyon vs Reel Borç Analizi
+                        </h2>
+                        <p class="text-[11px] text-[var(--k-text-muted)] mb-5 leading-relaxed">
+                            Mevcut konsolide borcunuzu kapatmak yerine, beklenen enflasyon karşısındaki reel değer kaybını analiz eder. 
+                            <strong>Aynı anapara ve vade tutarını girdiğiniz enflasyon oranında yeni bir kredi olarak çekseydiniz</strong> ne kadar kâr veya zarar edeceğinizi gösterir.
+                        </p>
+                        
+                        <div class="bg-[var(--k-input)] rounded-xl p-3.5 border border-[var(--k-border)] flex justify-between items-center text-[12px] mb-5 shadow-inner">
+                            <div class="flex flex-col">
+                                <span class="text-[var(--k-text-muted)] text-[9px] font-bold uppercase tracking-widest mb-0.5">Ağır. Ortalama Maliyet (Yıllık)</span>
+                                <strong id="inf-annualInterestText" class="text-[var(--k-text)] text-sm font-black">%0.00</strong>
+                            </div>
+                            <div class="h-8 w-px bg-[var(--k-border)]"></div>
+                            <div class="flex flex-col text-right">
+                                <span class="text-[var(--k-text-muted)] text-[9px] font-bold uppercase tracking-widest mb-0.5">Baz Alınan Kalan Anapara</span>
+                                <strong id="inf-principalText" class="text-[var(--k-text)] text-sm font-black">₺0,00</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-2">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-[10px] font-bold text-[var(--k-text-muted)] uppercase tracking-widest">Beklenen Yıllık Enflasyon</label>
+                                <div class="text-lg font-black text-purple-500 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20" id="inf-inflationValueText">%50.0</div>
+                            </div>
+                            <div class="relative pt-1 pb-4">
+                                <input type="range" id="inf-inflationSlider" class="inf-slider" min="0" max="150" step="1" value="50" oninput="runInflationSim()">
+                                <!-- Başa Baş Noktası İşaretçisi -->
+                                <div id="inf-breakevenMarker" class="absolute top-0.5 w-[2px] h-4 bg-rose-500/70 z-10 transition-all duration-300 pointer-events-none rounded-full" style="left: 0%; transform: translateX(-50%);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-[320px] shrink-0 bg-[var(--k-bg)] border border-[var(--k-border)] rounded-2xl p-5 flex flex-col justify-center shadow-inner relative">
+                        <div class="text-center mb-4">
+                            <span class="text-[9px] text-[var(--k-text-muted)] uppercase tracking-widest font-bold">Vade Sonu Reel Projeksiyon</span>
+                        </div>
+                        
+                        <!-- Sonuç Rozeti -->
+                        <div class="flex justify-center mb-3">
+                            <div id="inf-resultBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--k-border)] bg-[var(--k-input)] text-[var(--k-text-muted)] text-[11px] font-bold transition-all">
+                                <span id="inf-resultIcon"></span>
+                                <span id="inf-resultMessage">Veri Bekleniyor...</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Kâr/Zarar Tutarı -->
+                        <div class="text-center bg-[var(--k-card)] rounded-xl py-3 border border-[var(--k-border)] shadow-sm">
+                            <div id="inf-profitLossAmount" class="text-2xl font-black text-[var(--k-text-muted)] tracking-tight">₺0,00</div>
+                            <div class="text-[9px] uppercase tracking-widest text-[var(--k-text-muted)] mt-1 font-bold">Reel Kâr/Zarar Tutarı</div>
+                        </div>
+                        
+                        <!-- Barlar -->
+                        <div class="space-y-3 mt-5 px-1">
+                            <div>
+                                <div class="flex justify-between text-[9px] font-bold text-[var(--k-text-muted)] mb-1.5 uppercase tracking-wider">
+                                    <span>Yıllık Maliyet</span>
+                                    <span id="inf-barAnnualText" class="text-[var(--k-text)]">%0.0</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-[var(--k-border)] rounded-full overflow-hidden">
+                                    <div id="inf-barAnnual" class="h-full bg-slate-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[9px] font-bold text-[var(--k-text-muted)] mb-1.5 uppercase tracking-wider">
+                                    <span class="text-purple-500">Enflasyon</span>
+                                    <span id="inf-barInflationText" class="text-purple-500">%50.0</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-[var(--k-border)] rounded-full overflow-hidden">
+                                    <div id="inf-barInflation" class="h-full bg-purple-500 rounded-full transition-all duration-300" style="width: 50%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- // BİTİŞ: Enflasyon vs Reel Borç Analizi -->
+
             <div id="ad-container-result" class="mt-6"></div>
 
             <div class="pt-8 pb-8 flex justify-center">
                 <button onclick="generateGlobalPDF()" class="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-black text-sm px-10 py-4 rounded-2xl shadow-xl shadow-red-500/30 flex items-center gap-3 transition-all transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-red-500/40 w-full sm:w-auto justify-center border border-red-400/50">
                     <i class="fa-solid fa-file-pdf text-xl"></i>
-                    PRO CFO RAPORUNU İNDİR
+                    RAPORU İNDİR
                 </button>
             </div>
             
@@ -405,7 +515,7 @@
     </div>
 
     <div id="temp-loan-modal" class="fixed inset-0 z-[2000] bg-black/70 backdrop-blur-md hidden flex-col items-center justify-center p-4">
-        <div class="bg-[var(--k-card)] w-full max-w-md rounded-2xl border border-[var(--k-border)] shadow-2xl flex flex-col overflow-hidden animate-fade-in-scale">
+        <div class="bg-[var(--k-card)] w-full max-w-md max-h-[95vh] rounded-2xl border border-[var(--k-border)] shadow-2xl flex flex-col overflow-hidden animate-fade-in-scale">
             <div class="px-6 py-4 border-b border-[var(--k-border)] flex justify-between items-center bg-[var(--k-input)]">
                 <h3 class="text-sm font-black text-[var(--k-text)] flex items-center gap-2">
                     <div class="w-6 h-6 rounded-md bg-[#ff9f0a]/20 flex items-center justify-center text-[#ff9f0a]">
@@ -418,7 +528,7 @@
                 </button>
             </div>
             
-            <div class="p-6 space-y-4">
+            <div class="p-6 space-y-4 overflow-y-auto">
                 <div class="bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] p-3 rounded-xl flex items-start gap-2.5 font-medium leading-relaxed shadow-sm">
                     <i data-lucide="zap" class="w-4 h-4 shrink-0 mt-0.5 text-blue-500"></i>
                     <p>Faiz oranını girdiğinizde <strong>Taksit</strong>; Taksit tutarını girdiğinizde bankanın uyguladığı <strong>Faiz Oranı</strong> otomatik hesaplanır. Kullandırım tarihi hesaplama doğruluğu için çok önemlidir.</p>
@@ -958,6 +1068,7 @@
             updateTGRatio(selectedLoans);
             runAlternativeInvestment();
             runRefinanceSim();
+            runInflationSim(); // ENFLASYON HESAPLAYICIYI TETİKLE
             
             if(document.getElementById('lumpsum-input').value) runDebtClosureSim(document.getElementById('lumpsum-input').value);
             
@@ -979,7 +1090,7 @@
                 
                 let badges = '';
                 if(loan.isTemporary) badges += `<span class="ml-1 text-[9px] font-black bg-amber-500/20 text-amber-600 px-1.5 py-0.5 rounded shadow-sm border border-amber-500/30">GEÇİCİ</span>`;
-                if(loan._isCustomPlan) badges += `<span class="ml-1 text-[9px] font-black bg-purple-500/20 text-purple-600 px-1.5 py-0.5 rounded shadow-sm border border-purple-500/30" title="Bireysel HTML tablosu tespit edildi">PRO PLAN</span>`;
+                if(loan._isCustomPlan) badges += `<span class="ml-1 text-[9px] font-black bg-purple-500/20 text-purple-600 px-1.5 py-0.5 rounded shadow-sm border border-purple-500/30" title="Bireysel HTML tablosu tespit edildi">ÖZEL PLAN</span>`;
                 else if(loan.esnekKurRules && loan.esnekKurRules.odemesizDonem > 0) badges += `<span class="ml-1 text-[9px] font-black bg-blue-500/20 text-blue-600 px-1.5 py-0.5 rounded shadow-sm border border-blue-500/30">+${loan.esnekKurRules.odemesizDonem} Ay Ödemesiz</span>`;
                 if(isFinished) badges += `<span class="ml-1 text-[9px] font-black bg-green-500/20 text-green-600 px-1.5 py-0.5 rounded shadow-sm border border-green-500/30">KAPANDI</span>`;
                 
@@ -1125,6 +1236,8 @@
         };
 
         window.runAlternativeInvestment = () => {
+            gtagTrack('feature_use', 'Vanaliz', 'Investment_Sim');
+            
             const pv = summary.kalanAnapara, pmtTotal = summary.taksit, n = summary.ortVade;
             const elBasabasOran = document.getElementById('alt-basabas-oran'), elBasabasTutar = document.getElementById('alt-basabas-tutar'), elResultBadge = document.getElementById('alt-result-badge');
 
@@ -1171,6 +1284,8 @@
         };
 
         window.runRefinanceSim = () => {
+            gtagTrack('feature_use', 'Vanaliz', 'Refinance_Sim');
+            
             let simOran = Math.max(0, parseFloat(document.getElementById('ref-oran-input').value) || 0);
             let simVade = Math.max(1, parseInt(document.getElementById('ref-vade-input').value) || 1);
             const r = (simOran / 100) * VERGI_CARPANI;
@@ -1196,12 +1311,112 @@
             else badge.innerHTML = `<span class="text-white/50 text-[10px] font-bold uppercase tracking-widest">BAŞA BAŞ</span>`; 
         };
 
+        // ENFLASYON HESAPLAMA MOTORU (ANALİTİK İLE BİRLİKTE)
+        window.runInflationSim = () => {
+            const pv = summary.kalanAnapara; // Güncel Kapama Tutarı
+            const n = summary.ortVade; // Ortalama Vade
+            const ortOranAylik = summary.ortOran; // Ağırlıklı Ortalama Faiz (Aylık - Nominal)
+            const currentTotalOdeme = summary.kalanOdeme; // Vade sonuna kadar ödenecek toplam çıkış
+            const currentTotalCost = currentTotalOdeme - pv; // Şu anki koşullarda ödenecek toplam MALIYET (Faiz + Vergi)
+            
+            const inflationSlider = document.getElementById('inf-inflationSlider');
+            const inflationRateAnnual = parseFloat(inflationSlider.value) || 0; 
+            
+            // BSMV ve KKDF (VERGI_CARPANI) dahil efektif yıllık maliyet
+            const annualRate = (ortOranAylik * VERGI_CARPANI) * 12; 
+
+            // GÖRÜNMEZ ANALİTİK (Debounced - Arka planda sessiz çalışır)
+            // Slider çok hızlı değiştiği için her hareketi göndermez, kullanıcı kaydırmayı bıraktıktan 1.5 saniye sonra pürüzsüzce GA4'e iletir.
+            if (window.infSimTimer) clearTimeout(window.infSimTimer);
+            window.infSimTimer = setTimeout(() => {
+                gtagTrack('feature_use', 'Vanaliz', 'Inflation_Sim', inflationRateAnnual);
+                // Vhesap yönetici panelindeki sayacı da besleyelim
+                trackEvent('calculation_complete', { module: 'vanaliz_inflation' });
+            }, 1500);
+
+            // Arayüz metinlerini güncelle
+            document.getElementById('inf-inflationValueText').innerText = `%${inflationRateAnnual.toFixed(1)}`;
+            document.getElementById('inf-annualInterestText').innerText = `%${annualRate.toFixed(2)}`;
+            document.getElementById('inf-principalText').innerText = formatMoney(pv);
+            
+            document.getElementById('inf-barAnnualText').innerText = `%${annualRate.toFixed(1)}`;
+            document.getElementById('inf-barInflationText').innerText = `%${inflationRateAnnual.toFixed(1)}`;
+
+            // Bar Genişlikleri
+            const maxChartValue = 150;
+            const annualWidth = Math.min((annualRate / maxChartValue) * 100, 100);
+            const inflationWidth = Math.min((inflationRateAnnual / maxChartValue) * 100, 100);
+            
+            document.getElementById('inf-barAnnual').style.width = `${annualWidth}%`;
+            document.getElementById('inf-barInflation').style.width = `${inflationWidth}%`;
+            document.getElementById('inf-breakevenMarker').style.left = `${annualWidth}%`;
+
+            // Element Seçimleri
+            const resultBadge = document.getElementById('inf-resultBadge');
+            const resultIcon = document.getElementById('inf-resultIcon');
+            const resultMessage = document.getElementById('inf-resultMessage');
+            const profitLossAmount = document.getElementById('inf-profitLossAmount');
+
+            // İkonlar
+            const iconUp = `<i class="fa-solid fa-arrow-trend-up"></i>`;
+            const iconDown = `<i class="fa-solid fa-arrow-trend-down"></i>`;
+            const iconEqual = `<i class="fa-solid fa-equals"></i>`;
+
+            // Veri yoksa sıfırla ve dön
+            if (pv <= 0 || n <= 0) {
+                resultIcon.innerHTML = iconEqual;
+                resultMessage.innerText = "Aktif Kredi Bulunamadı";
+                resultBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[var(--k-border)] bg-[var(--k-input)] text-[var(--k-text-muted)] text-[11px] font-bold transition-all";
+                profitLossAmount.innerText = "₺0,00";
+                profitLossAmount.className = "text-2xl font-black text-[var(--k-text-muted)] tracking-tight";
+                return;
+            }
+
+            // Enflasyon Oranında Hayali Kredi Hesabı
+            const r_inf = (inflationRateAnnual / 100) / 12; // Yıllık enflasyonun aylık izdüşümü
+            let hypotheticalTotalCost = 0;
+            
+            if (r_inf > 0) {
+                // Hayali enflasyon taksiti = P * [ r*(1+r)^n ] / [ (1+r)^n - 1 ]
+                const hypotheticalTaksit = pv * (r_inf * Math.pow(1 + r_inf, n)) / (Math.pow(1 + r_inf, n) - 1);
+                hypotheticalTotalCost = (hypotheticalTaksit * n) - pv; // Hayali toplam MALIYET (Sadece enflasyon bazlı)
+            }
+
+            // Reel Fark: Enflasyonla alınmış maliyet eksi Şu an ödenmesi gereken gerçek maliyet (Faiz+Vergi)
+            const netDifference = hypotheticalTotalCost - currentTotalCost;
+
+            if (inflationRateAnnual > annualRate) {
+                // KÂR
+                resultIcon.innerHTML = iconUp;
+                resultMessage.innerText = "Borcunuz Eriyor (Kâr)";
+                resultBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-500 text-[11px] font-bold transition-all shadow-sm";
+                profitLossAmount.innerText = `+${formatMoney(Math.abs(netDifference))}`;
+                profitLossAmount.className = "text-2xl font-black text-emerald-500 tracking-tight";
+            } 
+            else if (inflationRateAnnual < annualRate) {
+                // ZARAR
+                resultIcon.innerHTML = iconDown;
+                resultMessage.innerText = "Reel Faiz Ödeniyor (Zarar)";
+                resultBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose-500/40 bg-rose-500/10 text-rose-500 text-[11px] font-bold transition-all shadow-sm";
+                profitLossAmount.innerText = `-${formatMoney(Math.abs(netDifference))}`;
+                profitLossAmount.className = "text-2xl font-black text-rose-500 tracking-tight";
+            } 
+            else {
+                // BAŞA BAŞ
+                resultIcon.innerHTML = iconEqual;
+                resultMessage.innerText = "Başa Baş (Nötr)";
+                resultBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-500 text-[11px] font-bold transition-all";
+                profitLossAmount.innerText = "₺0,00";
+                profitLossAmount.className = "text-2xl font-black text-purple-500 tracking-tight";
+            }
+        };
+
         window.shareDeepLink = (id) => {
             gtagTrack('feature_use', 'Vanaliz', 'Share_Link');
             const loan = activeLoans.find(l => l.id === id); if(!loan) return;
             const link = `${window.location.origin}${window.location.pathname}?dna=${btoa(JSON.stringify(loan))}`;
-            navigator.clipboard.writeText(link).then(() => showToast("PRO Kredi DNA linki kopyalandı!")).catch(e => {
-                const temp = document.createElement("input"); document.body.appendChild(temp); temp.value = link; temp.select(); document.execCommand("copy"); document.body.removeChild(temp); showToast("PRO Kredi DNA linki kopyalandı!");
+            navigator.clipboard.writeText(link).then(() => showToast("Kredi bağlantısı kopyalandı!")).catch(e => {
+                const temp = document.createElement("input"); document.body.appendChild(temp); temp.value = link; temp.select(); document.execCommand("copy"); document.body.removeChild(temp); showToast("Kredi bağlantısı kopyalandı!");
             });
         };
 
@@ -1215,7 +1430,7 @@
             const dStr = new Date().toLocaleDateString('tr-TR') + ' ' + new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             
             let extraInfo = '';
-            if(loan._isCustomPlan) extraInfo = '<tr><td style="padding: 12px; border: 1px solid #e5e7eb; background:#f9fafb;" colspan="4"><strong style="color:#8b5cf6;">Not:</strong> Bu rapor Bireysel Hesaplayıcıda oluşturulmuş esnek (PRO) bir plana dayanmaktadır.</td></tr>';
+            if(loan._isCustomPlan) extraInfo = '<tr><td style="padding: 12px; border: 1px solid #e5e7eb; background:#f9fafb;" colspan="4"><strong style="color:#8b5cf6;">Not:</strong> Bu rapor Bireysel Hesaplayıcıda oluşturulmuş esnek bir plana dayanmaktadır.</td></tr>';
             else if(loan.esnekKurRules && loan.esnekKurRules.odemesizDonem > 0) extraInfo = `<tr><td style="padding: 12px; border: 1px solid #e5e7eb; background:#f9fafb;"><strong>Ödemesiz Dönem:</strong></td><td style="padding: 12px; border: 1px solid #e5e7eb;" colspan="3">${loan.esnekKurRules.odemesizDonem} Ay</td></tr>`;
 
             let htmlContent = `
@@ -1223,7 +1438,7 @@
                 <div style="font-family: Arial, sans-serif; color: #1f2937; max-width: 800px; margin: 0 auto;">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid #ff9f0a; padding-bottom: 15px; margin-bottom:10px;">
                         <h1 style="color: #ff9f0a; margin:0; font-size:24px;">${loan.isim}</h1>
-                        <span style="background:#111827; color:#fff; padding: 4px 8px; border-radius: 4px; font-size:10px; font-weight:bold; letter-spacing:1px;">VANALIZ PRO RAPORU</span>
+                        <span style="background:#111827; color:#fff; padding: 4px 8px; border-radius: 4px; font-size:10px; font-weight:bold; letter-spacing:1px;">VANALIZ RAPORU</span>
                     </div>
                     <p style="font-size: 11px; color: #6b7280; margin-bottom: 25px;">Oluşturulma: ${dStr} | Tarih Referanslı Tam Doğrulanmış Analiz</p>
                     
@@ -1314,11 +1529,11 @@
             setTimeout(() => {
                 html2pdf().set({ 
                     margin: 15, 
-                    filename: `${loan.isim.replace(/ /g,'_')}_PRO_Plan.pdf`, 
+                    filename: `${loan.isim.replace(/ /g,'_')}_Plan.pdf`, 
                     html2canvas: { scale: 2, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
                 }).from(wrapper).save().then(() => {
-                    document.body.classList.remove('pdf-mode'); showToast("PRO Rapor ve Ödeme Planı indirildi.");
+                    document.body.classList.remove('pdf-mode'); showToast("Rapor ve Ödeme Planı indirildi.");
                 });
             }, 300);
         };
@@ -1332,7 +1547,7 @@
             let html = `
                 <div style="font-family: Arial, sans-serif; color: #1f2937; max-width: 800px; margin: 0 auto;">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid #ef4444; padding-bottom: 15px; margin-bottom:10px;">
-                        <h1 style="color: #ef4444; margin:0; font-size:24px;">Vanaliz PRO - Konsolide CFO Raporu</h1>
+                        <h1 style="color: #ef4444; margin:0; font-size:24px;">Vanaliz - Konsolide Rapor</h1>
                     </div>
                     <p style="font-size: 11px; color: #6b7280; margin-bottom: 25px;">Oluşturulma: ${dStr}</p>
                     
@@ -1361,7 +1576,7 @@
             
             activeLoans.filter(l => l.isSelected && l._kalanAnapara > 0).forEach(l => {
                 html += `<tr>
-                    <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight:bold;">${l.isim} ${l._isCustomPlan ? '(PRO Plan)' : ''}</td>
+                    <td style="padding: 8px; border: 1px solid #e5e7eb; font-weight:bold;">${l.isim} ${l._isCustomPlan ? '(Özel Plan)' : ''}</td>
                     <td style="padding: 8px; border: 1px solid #e5e7eb;">${l.tarih.split('-').reverse().join('.')}</td>
                     <td style="padding: 8px; border: 1px solid #e5e7eb; color:#3b82f6;">${l._monthsPassed}</td>
                     <td style="padding: 8px; border: 1px solid #e5e7eb;">${formatMoney(l._taksit)}</td>
@@ -1371,19 +1586,29 @@
             });
             
             html += `</tbody></table>
-                    <h2 style="font-size: 15px; margin-top: 25px; background:#111827; color:#fff; padding:10px; border-radius:4px;">3. Alternatif Yatırım Simülasyonu PRO</h2>
+                    <h2 style="font-size: 15px; margin-top: 25px; background:#111827; color:#fff; padding:10px; border-radius:4px;">3. Alternatif Yatırım Simülasyonu</h2>
                     <p style="font-size:12px; line-height:1.5;">Mevcut borçlarınızı tek seferde kapatmak yerine, aynı fonu mevduat/yatırıma yönlendirerek taksitleri bu hesaptan ödemeniz durumunda matematiksel olarak sıfıra sıfır çıkmanız için elde etmeniz gereken <strong>Başa Baş Faiz Oranı Yıllık ${document.getElementById('alt-basabas-oran').innerText}</strong> olarak hesaplanmıştır.</p>
                     
                     <h2 style="font-size: 15px; margin-top: 25px; background:#111827; color:#fff; padding:10px; border-radius:4px;">4. Refinansman (Kredi Birleştirme) Simülasyonu</h2>
                     <p style="font-size:12px; line-height:1.5;">Tüm mevcut borçlarınızı tek bir kredi altında konsolide etmek amacıyla <strong>%${document.getElementById('ref-oran-input').value}</strong> faiz oranı ve <strong>${document.getElementById('ref-vade-input').value} Ay</strong> vade ile yeni bir yapılandırma kredisi kullanmanız durumunda simülasyon sonucu (net durum): <strong style="padding:2px 6px; background:#f3f4f6; border-radius:4px; border:1px solid #d1d5db;">${document.getElementById('ref-result-badge').innerText}</strong>.</p>
+                `;
+
+            // YENİ EKLENEN: PDF'E ENFLASYON ANALİZİ DAHİL EDİLMESİ
+            let infRate = document.getElementById('inf-inflationSlider').value;
+            let infResult = document.getElementById('inf-resultMessage').innerText;
+            let infAmount = document.getElementById('inf-profitLossAmount').innerText;
+
+            html += `
+                    <h2 style="font-size: 15px; margin-top: 25px; background:#111827; color:#fff; padding:10px; border-radius:4px;">5. Enflasyon vs Reel Borç Analizi (Projeksiyon)</h2>
+                    <p style="font-size:12px; line-height:1.5;">Kalan konsolide borcunuzu bugün kapatmak yerine, beklenen <strong>%${infRate}</strong> yıllık enflasyon ortamında mevcut vadelerinizle ödemeye devam ederseniz; anaparanızın enflasyon karşısındaki reel değer kaybı/kazancı hesaplanmıştır. Net durumunuz: <strong style="padding:2px 6px; background:#f3f4f6; border-radius:4px; border:1px solid #d1d5db; color:#7e22ce;">${infResult} (${infAmount})</strong>.</p>
                 </div>`;
             
             wrapper.innerHTML = html;
             document.body.classList.add('pdf-mode');
             
             setTimeout(() => {
-                html2pdf().set({ margin: 15, filename: `Vanaliz_PRO_Raporu_${Date.now()}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(wrapper).save().then(() => {
-                    document.body.classList.remove('pdf-mode'); showToast("PRO Genel Rapor indirildi.");
+                html2pdf().set({ margin: 15, filename: `Vanaliz_Raporu_${Date.now()}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(wrapper).save().then(() => {
+                    document.body.classList.remove('pdf-mode'); showToast("Genel Rapor indirildi.");
                 });
             }, 300);
         };
