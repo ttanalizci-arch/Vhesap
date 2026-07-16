@@ -379,17 +379,49 @@
                                     Analytics (GA4) Dashboard 
                                     <span id="ga-live-badge" class="bg-red-500/10 text-red-500 border border-red-500/30 px-2.5 py-1 rounded-lg text-[10px] uppercase tracking-widest font-black hidden"><i class="fa-solid fa-circle-dot animate-pulse mr-1"></i> GA4 Aktif</span>
                                 </h2>
-                                <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Vhesap verileri doğrudan Google Analytics Data API üzerinden canlı çekilmektedir.</p>
+                                <p class="text-sm md:text-base text-[var(--apple-text-muted)] mt-2">Vhesap verilerini toplayın (Tracking) ve canlı raporlayın (Data API).</p>
                             </div>
                             <button id="btn-ga-auth" onclick="handleGAAuth()" class="btn-primary w-full md:w-auto flex-shrink-0 text-base md:text-lg bg-blue-600 text-white hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)]">
                                 <i class="fa-brands fa-google"></i> Yetkilendir
                             </button>
                         </div>
 
+                        <div class="content-card p-5 md:p-8 mb-8 border-l-4 border-l-[var(--apple-yellow)]">
+                            <div class="flex items-center justify-between mb-6 pb-6 border-b border-[var(--apple-card-border)]">
+                                <div>
+                                    <h3 class="font-black text-lg md:text-xl"><i class="fa-solid fa-satellite-dish text-[var(--apple-yellow)] mr-2"></i> Veri Toplama (Tracking)</h3>
+                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium mt-1">Ziyaretçi verilerinin Google Analytics'e gönderilmesi için ayarlar.</p>
+                                </div>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox" id="ga-enabled" class="hidden peer" onchange="toggleGAFields()">
+                                    <div class="w-14 h-8 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-6 after:h-6 after:rounded-full peer-checked:after:translate-x-6 transition-all bg-[var(--apple-card-border)] peer-checked:bg-[var(--apple-yellow)]"></div>
+                                </label>
+                            </div>
+
+                            <div id="ga-settings-area" class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                                <div>
+                                    <label class="block text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">Measurement ID (Ölçüm Kimliği)</label>
+                                    <input type="text" id="ga-id" class="apple-input font-mono text-base md:text-lg" value="G-H0WX0KCEM6">
+                                    
+                                    <p class="text-[10px] text-[var(--apple-text-muted)] font-medium leading-relaxed mt-4">
+                                        <strong class="text-[var(--apple-text)]">Etkileşimler / Olaylar:</strong> Kullanıcıların sitedeki eylemlerini (hesaplama, PDF indirme vs.) açıp kapatabilirsiniz. Sağ taraftaki listeden takip edilecek olayları belirleyin.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h4 class="text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-3">İzlenecek Dönüşüm Olayları (Events)</h4>
+                                    <div class="bg-[var(--apple-sidebar-bg)] rounded-2xl border border-[var(--apple-card-border)] p-4 md:p-6 space-y-4 max-h-60 overflow-y-auto" id="ga-events-list">
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="content-card p-5 md:p-8 mb-8 border-[var(--apple-card-border)] bg-[var(--apple-sidebar-bg)]">
                             <div class="flex items-center justify-between mb-6 pb-6 border-b border-[var(--apple-card-border)]">
-                                <h3 class="font-black text-lg md:text-xl"><i class="fa-solid fa-key text-[var(--apple-yellow)] mr-2"></i> API Yapılandırması</h3>
-                                <p class="text-xs text-[var(--apple-text-muted)] font-medium">Raporları çekebilmek için Data API v1 yetkisine sahip bir Client ID ve GA4 Mülk No gereklidir.</p>
+                                <div>
+                                    <h3 class="font-black text-lg md:text-xl"><i class="fa-solid fa-key text-[var(--apple-yellow)] mr-2"></i> Veri Okuma (Data API)</h3>
+                                    <p class="text-xs text-[var(--apple-text-muted)] font-medium mt-1">Raporları çekebilmek için Data API v1 yetkisine sahip bir Client ID ve GA4 Mülk No gereklidir.</p>
+                                </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -400,8 +432,8 @@
                                     <label class="block text-[10px] md:text-xs font-black uppercase tracking-widest text-[var(--apple-text-muted)] mb-2">OAuth Client ID</label>
                                     <input type="text" id="ga-client-id" class="apple-input font-mono text-xs" value="192875788685-4jjcnail09heeq2aoppt614efgnp9f6q.apps.googleusercontent.com">
                                 </div>
-                                <div class="col-span-1 md:col-span-2 pt-2 border-t border-[var(--apple-card-border)]">
-                                     <button onclick="saveAnalyticsConfig()" class="btn-outline text-xs px-4 py-2 mt-2"><i class="fa-solid fa-floppy-disk"></i> Ayarları Kaydet</button>
+                                <div class="col-span-1 md:col-span-2 pt-2 border-t border-[var(--apple-card-border)] flex gap-4">
+                                     <button onclick="saveAnalyticsConfig()" class="btn-primary flex-1 text-sm md:text-base px-4 py-3 mt-2"><i class="fa-solid fa-floppy-disk"></i> Tüm Analitik Ayarlarını Kaydet</button>
                                 </div>
                             </div>
                         </div>
@@ -714,9 +746,26 @@
             vadeli: { title: "Vadeli Mevduat", items: { tl: "TL Mevduat", usd: "Döviz (USD)", eur: "Döviz (EUR)", altin: "Altın" } }
         };
 
+        const ALL_EVENTS = [
+            'page_view', 'calculate', 'calculate_complete', 'calculation_error', 'pdf_download',
+            'share', 'copy_result', 'ad_impression', 'ad_click', 'loan_compare',
+            'deposit_compare', 'currency_convert', 'live_rate_refresh', 'calculator_open',
+            'calculator_close', 'blog_open', 'blog_read', 'vanaliz_open', 'search',
+            'filter', 'payment_plan_open', 'payment_plan_download_pdf', 'theme_change',
+            'login_success', 'logout'
+        ];
+
         let activeAdsList = [];
         let activeRates = {};
-        let analyticsConfig = { propertyId: "539908008", clientId: "192875788685-4jjcnail09heeq2aoppt614efgnp9f6q.apps.googleusercontent.com" };
+        
+        // BİRLEŞTİRİLMİŞ CONFIG YAPISI
+        let analyticsConfig = { 
+            enabled: true, 
+            measurementId: "G-H0WX0KCEM6", 
+            propertyId: "539908008", 
+            clientId: "192875788685-4jjcnail09heeq2aoppt614efgnp9f6q.apps.googleusercontent.com", 
+            events: {} 
+        };
         
         let trafficChartInstance = null;
         let realtimeSyncInterval = null;
@@ -730,6 +779,7 @@
             
             renderRatesForm();
             renderAdsTable();
+            renderAnalyticsEvents(); // Eventleri geri getiren fonksiyon tetiklendi
             generateExportCode();
             initChart();
             setupLivePreviewListeners();
@@ -1153,7 +1203,7 @@
             showToast(`${fileName} bilgisayarınıza indirildi.`);
         }
 
-        // --- 9 BÖLÜMLÜK ANALYTICS (GA4) DATA YÖNETİMİ ---
+        // --- BİRLEŞTİRİLMİŞ ANALYTICS (GA4) YÖNETİMİ ---
         function loadAnalyticsConfig() {
             const saved = localStorage.getItem('vhesap_analytics_api_config');
             if (saved) { 
@@ -1162,23 +1212,62 @@
                     analyticsConfig = { ...analyticsConfig, ...parsed }; 
                 } catch(e){} 
             }
+            
+            // UI Doldurma
+            document.getElementById('ga-enabled').checked = analyticsConfig.enabled;
+            document.getElementById('ga-id').value = analyticsConfig.measurementId || "G-H0WX0KCEM6";
             document.getElementById('ga-property-id').value = analyticsConfig.propertyId || "539908008";
             document.getElementById('ga-client-id').value = analyticsConfig.clientId || "192875788685-4jjcnail09heeq2aoppt614efgnp9f6q.apps.googleusercontent.com";
+            
+            toggleGAFields();
+        }
+
+        window.toggleGAFields = function() {
+            const isEnabled = document.getElementById('ga-enabled').checked;
+            const area = document.getElementById('ga-settings-area');
+            if(isEnabled) { area.classList.remove('opacity-50', 'pointer-events-none'); } else { area.classList.add('opacity-50', 'pointer-events-none'); }
+        }
+
+        function renderAnalyticsEvents() {
+            const container = document.getElementById('ga-events-list');
+            container.innerHTML = '';
+            ALL_EVENTS.forEach(evName => {
+                const conf = analyticsConfig.events[evName] || { enabled: true };
+                container.innerHTML += `
+                    <div class="flex items-center justify-between pb-3 md:pb-4 border-b border-[var(--apple-card-border)] last:border-0 last:pb-0">
+                        <span class="font-mono text-xs md:text-sm text-[var(--apple-yellow)] font-bold truncate max-w-[200px] md:max-w-none pr-2">${evName}</span>
+                        <label class="flex items-center cursor-pointer shrink-0">
+                            <input type="checkbox" class="hidden peer ev-enable" data-ev="${evName}" ${conf.enabled ? 'checked' : ''}>
+                            <div class="w-10 h-6 rounded-full relative apple-toggle-bg after:absolute after:top-1 after:left-1 after:w-4 after:h-4 after:rounded-full peer-checked:after:translate-x-4 transition-all bg-[var(--apple-card-border)] peer-checked:bg-[var(--apple-yellow)]"></div>
+                        </label>
+                    </div>`;
+            });
         }
 
         window.saveAnalyticsConfig = function() {
+            // Tracking Bilgileri
+            analyticsConfig.enabled = document.getElementById('ga-enabled').checked;
+            analyticsConfig.measurementId = document.getElementById('ga-id').value.trim();
+            
+            analyticsConfig.events = {};
+            ALL_EVENTS.forEach(evName => {
+                let enCheck = document.querySelector(`.ev-enable[data-ev="${evName}"]`).checked;
+                analyticsConfig.events[evName] = { enabled: enCheck };
+            });
+
+            // Data API Bilgileri
             analyticsConfig.propertyId = document.getElementById('ga-property-id').value.trim();
             analyticsConfig.clientId = document.getElementById('ga-client-id').value.trim();
+            
             localStorage.setItem('vhesap_analytics_api_config', JSON.stringify(analyticsConfig));
-            showToast("Data API yapılandırması kaydedildi.");
+            showToast("Tüm analitik ayarları (Tracking & Data API) kaydedildi.");
         }
 
-        // Dummy Auth Function (Google API Entegrasyon Yapısı)
+        // Data API OAuth
         window.handleGAAuth = function() {
             const btn = document.getElementById('btn-ga-auth');
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Bağlanıyor...`;
             
-            // Gerçek OAuth Akışı yerine UI/UX simülasyonu (Data API Client Logic Placeholder)
             setTimeout(() => {
                 btn.classList.replace('bg-blue-600', 'bg-green-600');
                 btn.innerHTML = `<i class="fa-solid fa-check"></i> Yetkilendirildi`;
@@ -1190,11 +1279,8 @@
             }, 1500);
         }
 
-        // Dummy Fetch Function (Analytics ekranını local datalarla dolduran simülasyon)
+        // Dummy Fetch Data API Simulasyon
         function fetchAndPopulateGA4Data() {
-            // Gerçek projede gapi.client.analyticsdata.properties.runReport(...) çalışacaktır.
-            
-            // 1. Genel Bakış
             document.getElementById('ga-metric-active-users').innerText = "12,450";
             document.getElementById('ga-metric-total-users').innerText = "15,890";
             document.getElementById('ga-metric-new-users').innerText = "4,200";
@@ -1202,7 +1288,6 @@
             document.getElementById('ga-metric-pageviews').innerText = "45,600";
             document.getElementById('ga-metric-engagement').innerText = "1m 45s";
 
-            // 2. Gerçek Zamanlı
             document.getElementById('ga-realtime-active').innerText = Math.floor(Math.random() * 50) + 10;
             document.getElementById('ga-realtime-pages').innerHTML = `
                 <li class="flex justify-between border-b border-[var(--apple-card-border)] pb-1"><span>/bireysel-kredi-hesaplama</span> <span class="font-bold text-[var(--apple-yellow)]">32</span></li>
@@ -1210,7 +1295,6 @@
                 <li class="flex justify-between"><span>/mevduat-getirisi</span> <span class="font-bold text-[var(--apple-yellow)]">8</span></li>
             `;
 
-            // 3. Sayfa Analizi
             document.getElementById('ga-table-pages').innerHTML = `
                 <tr class="hover:bg-[var(--apple-sidebar-hover)]"><td class="p-3 font-mono text-[var(--apple-yellow)]">/</td><td class="p-3 text-right font-bold">12,500</td><td class="p-3 text-right">01:15</td></tr>
                 <tr class="hover:bg-[var(--apple-sidebar-hover)]"><td class="p-3 font-mono text-[var(--apple-yellow)]">/bireysel</td><td class="p-3 text-right font-bold">9,800</td><td class="p-3 text-right">02:30</td></tr>
@@ -1219,26 +1303,24 @@
                 <tr class="hover:bg-[var(--apple-sidebar-hover)]"><td class="p-3 font-mono text-[var(--apple-yellow)]">/blog/kredi-karti-asgari</td><td class="p-3 text-right font-bold">2,900</td><td class="p-3 text-right">01:50</td></tr>
             `;
 
-            // 4. Trafik ve 5. Cihazlar
             document.getElementById('ga-list-sources').innerHTML = `
                 <li class="flex justify-between text-xs font-bold border-b border-[var(--apple-card-border)] pb-2"><span class="flex items-center gap-2"><i class="fa-brands fa-google text-blue-500"></i> Google / Organic</span> <span>65%</span></li>
                 <li class="flex justify-between text-xs font-bold border-b border-[var(--apple-card-border)] pb-2"><span class="flex items-center gap-2"><i class="fa-solid fa-link text-[var(--apple-text-muted)]"></i> Direct / None</span> <span>20%</span></li>
                 <li class="flex justify-between text-xs font-bold"><span class="flex items-center gap-2"><i class="fa-brands fa-instagram text-pink-500"></i> Social / Instagram</span> <span>15%</span></li>
             `;
+            
             document.getElementById('ga-list-devices').innerHTML = `
                 <li class="flex items-center justify-between text-xs font-bold"><div class="flex items-center gap-2 w-1/3"><i class="fa-solid fa-mobile-screen text-[var(--apple-text)]"></i> Mobil</div> <div class="w-1/2 bg-[var(--apple-card-border)] h-2 rounded-full overflow-hidden"><div class="bg-blue-500 w-[70%] h-full"></div></div> <span class="w-1/6 text-right">70%</span></li>
                 <li class="flex items-center justify-between text-xs font-bold"><div class="flex items-center gap-2 w-1/3"><i class="fa-solid fa-desktop text-[var(--apple-text)]"></i> Desktop</div> <div class="w-1/2 bg-[var(--apple-card-border)] h-2 rounded-full overflow-hidden"><div class="bg-[var(--apple-yellow)] w-[25%] h-full"></div></div> <span class="w-1/6 text-right">25%</span></li>
                 <li class="flex items-center justify-between text-xs font-bold"><div class="flex items-center gap-2 w-1/3"><i class="fa-solid fa-tablet-screen-button text-[var(--apple-text)]"></i> Tablet</div> <div class="w-1/2 bg-[var(--apple-card-border)] h-2 rounded-full overflow-hidden"><div class="bg-purple-500 w-[5%] h-full"></div></div> <span class="w-1/6 text-right">5%</span></li>
             `;
 
-            // 6. Hesaplama Analizi
             document.getElementById('ga-calc-total').innerText = "142,500";
             document.getElementById('ga-calc-today').innerText = "1,240";
             document.getElementById('ga-calc-7d').innerText = "8,450";
             document.getElementById('ga-calc-top').innerText = "Bireysel İhtiyaç";
             document.getElementById('ga-calc-chart-placeholder').innerHTML = `<canvas id="miniCalcChart" class="w-full h-32"></canvas>`;
             
-            // Mini Grafiği Çiz (Trend)
             new Chart(document.getElementById('miniCalcChart').getContext('2d'), {
                 type: 'bar',
                 data: { labels: ['H1', 'H2', 'H3', 'H4'], datasets: [{ data: [1200, 1900, 1500, 2200], backgroundColor: '#f59e0b', borderRadius: 4 }] },
@@ -1252,7 +1334,6 @@
                 <li class="flex justify-between text-xs font-bold"><span class="text-[var(--apple-yellow)]">V-Analiz</span> <span>5%</span></li>
             `;
 
-            // 7. Events, 8. Ads, 9. PDF
             document.getElementById('ev-calc-start').innerText = "14,500";
             document.getElementById('ev-calc-complete').innerText = "13,900";
             document.getElementById('ev-plan-view').innerText = "9,200";
