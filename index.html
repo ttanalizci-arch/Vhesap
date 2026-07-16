@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vhesap & Vanaliz - Finans Portalı</title>
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vhesap">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
+
+    <!-- Yönetim Panelinden Çıktı Alınan Reklam Veritabanı -->
+    <!-- Merkezi Analytics ve Tracking Entegrasyonu -->
+    <script src="analytics.js" onerror="console.log('analytics.js yüklenemedi.')"></script>
+    <script src="ads.js" onerror="console.log('ads.js henüz canlıya alınmamış, yerel taslak (localStorage) kullanılacak.');"></script>
+
+    <script>
+      try {
+          if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                      registration.unregister().then(function(isUnregistered) {
+                          if(isUnregistered) { console.log('Eski ServiceWorker silindi, güncel sürüm çekiliyor.'); }
+                      }).catch(function(e) { console.warn('ServiceWorker unregister hatası:', e); });
+                  }
+              }).catch(function(e) { console.warn('ServiceWorker kayıtları alınamadı:', e); });
+          }
+      } catch (e) { console.warn('ServiceWorker erişimi engellendi:', e); }
+      
+      if ('caches' in window) {
+          try {
+              caches.keys().then(names => { names.forEach(name => { caches.delete(name); }); }).catch(function(e) { console.warn('Cache temizleme hatası:', e); });
+          } catch(e) {}
+      }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Light Theme */
+            --apple-bg: #f4f4f5;
+            --apple-container-bg: radial-gradient(circle at top, #ffffff 0%, #f9fafb 100%);
+            --apple-card: #ffffff;
+            --apple-card-border: rgba(0, 0, 0, 0.06);
+            --apple-text: #18181b;
+            --apple-text-muted: #71717a;
+            --apple-yellow: #d97706; 
+            --apple-yellow-hover: #b45309;
+            --apple-yellow-light: #fef08a;
+            --apple-border: rgba(217, 119, 6, 0.15);
+            --apple-glow: rgba(217, 119, 6, 0.08);
+            --apple-badge-bg: rgba(217, 119, 6, 0.05);
+            --apple-badge-text: #b45309;
+            --apple-badge-border: rgba(217, 119, 6, 0.15);
+            --apple-nav-bg: rgba(255, 255, 255, 0.85);
+            --apple-nav-border: rgba(0, 0, 0, 0.08);
+            --apple-modal-bg: #ffffff;
+            --apple-input-text: #d97706;
+            --apple-input-bg: #f4f4f5;
+            --apple-input-border: rgba(0, 0, 0, 0.04);
+            --menu-shadow: 0 10px 40px rgba(0,0,0,0.1);
+
+            /* --- TICKER LIGHT THEME --- */
+            --ticker-bg: transparent;
+            --ticker-text: var(--apple-text);
+            --ticker-muted: var(--apple-text-muted);
+            --ticker-glow: var(--apple-glow);
+            --ticker-bright: var(--apple-yellow);
+            --ticker-btn-bg: var(--apple-yellow);
+            --ticker-btn-text: #000000;
+        }
+
+        body.dark {
+            /* Dark Theme */
+            --apple-bg: #000000;
+            --apple-container-bg: radial-gradient(circle at top, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+            --apple-card: rgba(24, 24, 27, 0.7);
+            --apple-card-border: rgba(255, 255, 255, 0.04);
+            --apple-text: #f4f4f5;
+            --apple-text-muted: #a1a1aa;
+            --apple-yellow: #f59e0b;
+            --apple-yellow-hover: #d97706;
+            --apple-yellow-light: #fef08a;
+            --apple-border: rgba(245, 158, 11, 0.15);
+            --apple-glow: rgba(245, 158, 11, 0.25);
+            --apple-badge-bg: rgba(161, 161, 170, 0.12);
+            --apple-badge-text: #f59e0b;
+            --apple-badge-border: rgba(161, 161, 170, 0.25);
+            --apple-nav-bg: rgba(39, 39, 42, 0.75);
+            --apple-nav-border: rgba(255, 255, 255, 0.06);
+            --apple-modal-bg: #121214;
+            --apple-input-text: #f59e0b;
+            --apple-input-bg: #18181b;
+            --apple-input-border: rgba(255, 255, 255, 0.04);
+            --menu-shadow: 0 15px 50px rgba(0,0,0,0.5);
+
+            /* --- TICKER DARK THEME --- */
+            --ticker-bg: transparent;
+            --ticker-text: var(--apple-text);
+            --ticker-muted: var(--apple-text-muted);
+            --ticker-glow: var(--apple-glow);
+            --ticker-bright: var(--apple-yellow);
+            --ticker-btn-bg: var(--apple-yellow);
+            --ticker-btn-text: #000000;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; 
+            height: 100vh; height: 100dvh;
+            overflow: hidden; 
+            background-color: var(--apple-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        #vhesap-viewport {
+            color: var(--apple-text); display: flex; justify-content: center; align-items: flex-start;
+            position: absolute; top: 0; left: 0; width: 100vw; 
+            height: 100vh; height: 100dvh; overflow-y: auto;
+            background-color: var(--apple-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        input, select, textarea, button {
+            -webkit-appearance: none; appearance: none; outline: none; background: transparent; font-family: inherit; touch-action: manipulation;
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--apple-card-border); border-radius: 10px; }
+
+        .apple-container {
+            background: var(--apple-container-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            width: 100%; max-width: 500px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative;
+            padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (min-width: 641px) {
+            #vhesap-viewport { padding: 40px 0; }
+            .apple-container { height: auto; min-height: 890px; max-height: none; border-radius: 36px; border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); overflow: hidden; }
+        }
+
+        .input-card { background: var(--apple-card); border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; border: 1px solid var(--apple-card-border); transition: all 0.3s; }
+        .input-card:focus-within { border-color: var(--apple-yellow); box-shadow: 0 0 15px var(--apple-glow); transform: translateY(-1px); }
+        .apple-input, .apple-select { width: 100%; border: none; color: var(--apple-yellow); font-size: 16px; font-weight: 600; padding: 4px 0; background: transparent; }
+        .apple-select option { background: var(--apple-card); color: var(--apple-text); }
+        .label-text { color: var(--apple-text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; display: block; font-weight: 700; }
+        
+        .action-btn { background: linear-gradient(135deg, var(--apple-yellow) 0%, var(--apple-yellow-hover) 100%); width: 100%; min-height: 50px; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 14px; margin-top: 12px; color: #000000; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px -10px var(--apple-glow); transition: all 0.2s; }
+        .action-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; }
+        .modal-content { background: var(--apple-card); height: 100%; width: 100%; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(128, 128, 128, 0.1); padding-top: env(safe-area-inset-top); }
+        .modal-content-feedback { height: auto; max-height: 90vh; border-top-left-radius: 24px; border-top-right-radius: 24px; }
+        
+        /* Apple Style Glass Menu */
+        .global-theme-btn { position: absolute; top: max(24px, calc(env(safe-area-inset-top) + 16px)); right: 24px; width: 44px; height: 44px; border-radius: 50%; background: var(--apple-card); border: 1px solid var(--apple-card-border); color: var(--apple-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; }
+        .global-theme-btn:active { transform: scale(0.9); }
+        
+        .glass-dropdown { position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 16px; width: 220px; background: var(--apple-nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--apple-nav-border); border-radius: 20px; padding: 6px; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform-origin: top right; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; box-shadow: var(--menu-shadow); }
+        .glass-dropdown.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .glass-menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; color: var(--apple-text); font-size: 13px; font-weight: 600; text-align: left; transition: background 0.2s; cursor: pointer; }
+        .glass-menu-item:hover, .glass-menu-item:active { background: var(--apple-badge-bg); }
+        .glass-menu-item i { width: 18px; text-align: center; color: var(--apple-text-muted); font-size: 14px; }
+
+        /* --- FİNANS ŞERİDİ (TICKER) CSS --- */
+        .ticker-wrapper {
+            position: absolute;
+            top: calc(max(24px, env(safe-area-inset-top) + 16px) + 5px); 
+            left: 24px; 
+            right: 80px; /* Menü butonuna taşmaması için sağ boşluk bırakıldı */
+            background-color: transparent;
+            border: none;
+            display: flex; 
+            align-items: center;
+            height: 34px; 
+            box-shadow: none;
+            z-index: 50; 
+        }
+
+        .ticker-content {
+            flex: 1; overflow: hidden; position: relative; height: 100%;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+        }
+
+        .ticker-track { 
+            display: flex; height: 100%; width: max-content; 
+            /* Sürekli, kusursuz akış animasyonu */
+            animation: scroll 40s linear infinite; 
+        }
+        .ticker-content:hover .ticker-track { animation-play-state: paused; }
+
+        .ticker-item {
+            display: flex; align-items: center; padding: 0 15px; 
+            white-space: nowrap; font-size: 0.85rem;
+            transition: text-shadow 0.3s, color 0.3s;
+            color: var(--apple-text);
+            border-right: none; 
+        }
+
+        .ticker-item.flash .ticker-price, .ticker-item.flash .ticker-symbol-name {
+            color: var(--ticker-bright);
+            text-shadow: 0 0 8px var(--ticker-glow);
+        }
+
+        .ticker-symbol-name { font-weight: 700; margin-right: 6px; color: var(--ticker-muted); }
+        .ticker-price { font-weight: 600; margin-right: 6px; color: var(--apple-text); font-variant-numeric: tabular-nums; transition: color 0.3s; }
+        .ticker-change { font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; color: var(--ticker-bright); }
+
+        /* 4 set eleman olduğu için %50'lik kayma tam olarak 2 seti başa sararak pürüzsüzleştirir */
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        @media (max-width: 600px) {
+            .ticker-wrapper { left: 16px; right: 70px; } 
+            .ticker-item { padding: 0 10px; font-size: 0.8rem; }
+            .ticker-symbol-name { font-size: 0.75rem; }
+            .ticker-price { font-size: 0.8rem; }
+            .ticker-change { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body class="dark selection:bg-amber-500/30">
+
+    <div id="offline-blocker" style="display: none;" class="fixed inset-0 bg-black/95 z-[9999] flex-col items-center justify-center text-white backdrop-blur-md">
+        <i class="fa-solid fa-wifi text-6xl text-[var(--apple-yellow)] mb-6 opacity-50"></i>
+        <h2 class="text-2xl font-black mb-2 tracking-tight">Bağlantı Koptu</h2>
+        <p class="text-center text-[#a1a1aa] max-w-xs text-xs font-semibold leading-relaxed">Analitik veri akışı ve güncel hesaplamalar için aktif bir internet bağlantısı gereklidir. Lütfen ağınızı kontrol edin.</p>
+    </div>
+
+    <!-- Modallar -->
+    <div id="feedback-modal" class="modal" onclick="closeFeedbackOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-2" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-yellow)] flex items-center gap-2" id="feedback-title"><i class="fa-solid fa-comment-dots text-amber-500"></i> Hata / Öneri Bildir</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Uygulama Geri Bildirimi</p>
+                </div>
+                <button onclick="closeFeedback()" class="w-10 h-10 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom">
+                <form action="https://formsubmit.co/ttanalizci@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-4" onsubmit="gtagTrack('submit', 'Feedback', 'Hata_Oneri_Formu')">
+                    <input type="hidden" name="_subject" value="Vhesap & Vanaliz - Yeni Geri Bildirim!">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="Bildirim_Turu" id="feedback-type" value="Hata / Öneri Bildirimi">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="input-card !mb-0 !p-3">
+                            <span class="label-text">Ad Soyad (İsteğe Bağlı)</span>
+                            <input type="text" name="Ad_Soyad" class="apple-input text-sm" placeholder="İsim">
+                        </div>
+                        <div class="input-card !mb-0 !p-3">
+                            <span class="label-text">Telefon (İsteğe Bağlı)</span>
+                            <input type="tel" name="Telefon" class="apple-input text-sm" placeholder="5xx">
+                        </div>
+                    </div>
+
+                    <div class="input-card !p-3">
+                        <span class="label-text">E-posta (Zorunlu - Yanıt için)</span>
+                        <input type="email" name="email" required class="apple-input text-sm" placeholder="mail@ornek.com">
+                    </div>
+
+                    <div id="hata-fields" class="space-y-4">
+                        <div class="input-card !p-3">
+                            <span class="label-text">Hangi Ekranda Sorun / Öneri Var?</span>
+                            <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg mt-1 px-3 py-1.5 flex items-center">
+                                <select name="İlgili_Ekran" class="apple-select text-sm w-full outline-none appearance-none bg-transparent">
+                                    <option value="Belirtilmedi">Seçiniz...</option>
+                                    <option value="Bireysel - İhtiyaç">Bireysel - İhtiyaç</option>
+                                    <option value="Bireysel - Konut">Bireysel - Konut</option>
+                                    <option value="Bireysel - Taşıt">Bireysel - Taşıt</option>
+                                    <option value="Ticari - Taksitli">Ticari - Taksitli</option>
+                                    <option value="Ticari - Rotatif">Ticari - Rotatif</option>
+                                    <option value="Ticari - Spot">Ticari - Spot</option>
+                                    <option value="Ticari - İskonto">Ticari - İskonto</option>
+                                    <option value="Vadeli / Mevduat">Vadeli / Mevduat</option>
+                                    <option value="Vanaliz Portalı">Vanaliz Portalı</option>
+                                    <option value="Diğer (Genel)">Diğer (Genel)</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-4 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div class="input-card !p-3">
+                            <span class="label-text">Mevcut Durum / Hata Nedir?</span>
+                            <textarea name="Mevcut_Durum" rows="2" class="apple-input text-sm w-full resize-none" placeholder="Örn: Uygulama taksiti hatalı hesaplıyor / Şu özellik eksik..."></textarea>
+                        </div>
+
+                        <div class="input-card !p-3">
+                            <span class="label-text">Nasıl Olmalı / Öneriniz Nedir?</span>
+                            <textarea name="Beklenti_Oneri" rows="2" class="apple-input text-sm w-full resize-none" placeholder="Örn: Taksit tutarının böyle çıkması gerekiyor / Şöyle bir buton olmalı..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-card !p-3">
+                        <span class="label-text">Ek Açıklama / Detaylar</span>
+                        <textarea name="Aciklama" required rows="3" class="apple-input text-sm w-full resize-none" placeholder="Lütfen durumu detaylıca açıklayın..."></textarea>
+                    </div>
+
+                    <div class="input-card !p-3 border-dashed border-2 border-[var(--apple-border)] bg-[var(--apple-badge-bg)]">
+                        <span class="label-text flex items-center gap-1.5"><i class="fa-solid fa-cloud-arrow-up"></i> Ekran Görüntüsü Yükle (Faydalı Olur)</span>
+                        <input type="file" name="attachment" accept="image/*" class="w-full text-xs text-[var(--apple-text-muted)] mt-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-[var(--apple-yellow)] file:text-black hover:file:opacity-90 transition-all cursor-pointer">
+                    </div>
+
+                    <button type="submit" class="action-btn !mt-2 mb-2"><i class="fa-regular fa-paper-plane mr-2"></i> GÖNDER</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-modal" class="modal" onclick="closeAboutOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-3" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-text)] flex items-center gap-2"><i class="fa-solid fa-circle-info text-amber-500"></i> Hakkında</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Hakkında & Metodoloji</p>
+                </div>
+                <button onclick="closeAbout()" class="w-10 h-10 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom space-y-5">
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--apple-yellow)] mb-1.5">Vhesap Ne Yapmayı Amaçlıyor?</h3>
+                    <p class="text-xs text-[var(--apple-text)] leading-relaxed opacity-90">Vhesap; kredi, mevduat ve diğer bankacılık hesaplamalarını herkes için anlaşılır, hızlı ve erişilebilir hâle getirmeyi amaçlayan bir finansal hesaplama platformudur. Amacımız, karmaşık bankacılık hesaplamalarını sadeleştirerek finansal okuryazarlığı desteklemek ve kullanıcılarımızın karar süreçlerine güvenilir simülasyonlar ile katkı sağlamaktır.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--apple-yellow)] mb-1.5">Hesaplama Metodolojimiz</h3>
+                    <p class="text-xs text-[var(--apple-text)] leading-relaxed opacity-90">Platformumuzdaki hesaplamalar; güncel BDDK düzenlemeleri, yürürlükteki vergi mevzuatı (BSMV, KKDF ve stopaj oranları), kıstelyevm esasları ve bankacılık sektöründe yaygın olarak kullanılan faiz hesaplama yöntemleri dikkate alınarak geliştirilmiştir.<br><br>Mevzuat ve piyasa koşullarındaki değişiklikler doğrultusunda hesaplama modellerimiz düzenli olarak gözden geçirilmekte ve güncellenmektedir.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--apple-yellow)] mb-1.5">Geri Bildirim</h3>
+                    <p class="text-xs text-[var(--apple-text)] leading-relaxed opacity-90">Doğru ve güvenilir sonuçlar sunabilmek için hesaplama altyapımızı sürekli geliştiriyoruz. Bununla birlikte, finansal ürünler ve mevzuatlar zaman içinde değişebildiğinden farklı sonuçlarla karşılaşırsanız bizimle iletişime geçebilirsiniz.<br><br>Önerileriniz, eleştirileriniz ve hata bildirimleriniz platformumuzun gelişimine önemli katkı sağlar. Geri bildirimleriniz için şimdiden teşekkür ederiz.</p>
+                </div>
+
+                <div class="p-3 bg-[var(--apple-badge-bg)] border border-[var(--apple-badge-border)] rounded-xl mt-2 mb-2">
+                    <p class="text-[10px] text-[var(--apple-text-muted)] leading-relaxed"><strong class="text-[var(--apple-text)]">Not:</strong> Platformda sunulan hesaplamalar bilgilendirme ve simülasyon amacı taşımaktadır. Nihai finansal koşullar ilgili banka veya finans kuruluşunun uygulamaları ile yürürlükteki mevzuata göre farklılık gösterebilir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="converter-modal" class="modal" onclick="closeConverterOutside(event)">
+        <div class="modal-content modal-content-feedback" onclick="event.stopPropagation()">
+            <div id="sheet-handle-4" class="w-12 h-1.5 bg-zinc-500 rounded-full mx-auto mt-3 mb-2 flex-shrink-0"></div>
+            <div class="flex justify-between items-center px-5 pb-4 border-b border-zinc-500/20 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-bold text-[var(--apple-text)] flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer text-blue-500"></i> Canlı Çevirici</h2>
+                    <p class="text-[10px] text-[var(--apple-text-muted)] uppercase tracking-tighter mt-0.5">Döviz & Maden Çapraz Çeviri</p>
+                </div>
+                <button onclick="closeConverter()" class="w-10 h-10 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-5 py-4 overscroll-contain pb-safe-bottom space-y-4">
+                <div class="input-card !p-3">
+                    <span class="label-text">Miktar</span>
+                    <input type="number" id="conv-amount" class="apple-input text-sm w-full" value="1" min="0" step="any">
+                </div>
+
+                <div class="input-card !p-3">
+                    <span class="label-text">Çeviri Yönü</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg flex-1 px-3 py-1.5 flex items-center">
+                            <select id="conv-from" class="apple-select text-sm w-full outline-none appearance-none bg-transparent"></select>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-3 pointer-events-none"></i>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-[var(--apple-text-muted)] text-xs"></i>
+                        <div class="relative bg-[var(--apple-input-bg)] border border-[var(--apple-input-border)] rounded-lg flex-1 px-3 py-1.5 flex items-center">
+                            <select id="conv-to" class="apple-select text-sm w-full outline-none appearance-none bg-transparent"></select>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-[var(--apple-text-muted)] absolute right-3 pointer-events-none"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-5 bg-[var(--apple-input-bg)] border border-dashed border-[var(--apple-border)] rounded-2xl text-center mt-2 mb-4">
+                    <span class="text-[10px] text-[var(--apple-text-muted)] uppercase font-bold tracking-widest mb-1 block">Sonuç</span>
+                    <div id="conv-result" class="text-3xl font-black text-[var(--apple-text)] break-all">0.00</div>
+                </div>
+                
+                <div id="ad-slot-converterBottom" class="w-full mt-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
+        <div id="vhesap-viewport">
+            <div class="apple-container" id="main-container">
+
+                <div id="view-portal" class="flex flex-col flex-1 w-full p-6 text-center justify-center relative">
+                    
+                    <div class="ticker-wrapper">
+                        <div class="ticker-content">
+                            <div class="ticker-track" id="ticker-track">
+                                <!-- JS ile Doldurulacak -->
+                            </div>
+                        </div>
+                    </div>
+                    <button id="main-menu-toggle" class="global-theme-btn" onclick="toggleMenu(event)" title="Menü">
+                        <i class="fa-solid fa-ellipsis text-xl text-[var(--apple-text)]"></i>
+                    </button>
+
+                    <div id="glass-menu" class="glass-dropdown">
+                        <button class="glass-menu-item" onclick="toggleGlobalThemeFromMenu(event)">
+                            <i id="menu-theme-icon" class="fa-solid fa-sun"></i>
+                            <span id="menu-theme-text">Gündüz Moduna Geç</span>
+                        </button>
+                        
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+
+                        <button class="glass-menu-item group" onclick="openConverterModal(event)">
+                            <i class="fa-solid fa-money-bill-transfer group-hover:text-blue-500 transition-colors"></i>
+                            <span>Canlı Çevirici</span>
+                        </button>
+                        
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+
+                        <button class="glass-menu-item group" onclick="gtagTrack('nav_click', 'Menu', 'Blog'); window.location.href='blog.html'">
+                            <i class="fa-solid fa-book-open group-hover:text-amber-500 transition-colors"></i>
+                            <span>Finans Rehberi</span>
+                        </button>
+                        
+                        <button class="glass-menu-item group" onclick="gtagTrack('nav_click', 'Menu', 'Vanaliz'); window.location.href='vanaliz.html'">
+                            <i class="fa-solid fa-chart-line group-hover:text-amber-500 transition-colors"></i>
+                            <span>Vanaliz'e Geç</span>
+                        </button>
+                        
+                        <div class="w-full h-px bg-[var(--apple-nav-border)] my-1"></div>
+                        
+                        <button class="glass-menu-item group" onclick="openFeedbackModal(event)">
+                            <i class="fa-solid fa-comment-dots group-hover:text-amber-500 transition-colors"></i>
+                            <span>Hata / Öneri Bildir</span>
+                        </button>
+
+                        <button class="glass-menu-item group" onclick="openAboutModal(event)">
+                            <i class="fa-solid fa-circle-info group-hover:text-amber-500 transition-colors"></i>
+                            <span>Hakkında</span>
+                        </button>
+                    </div>
+
+                    <!-- mt-[85px] ile başlık yukarı çekilerek mobil ekranlarda taşma önlendi -->
+                    <div class="mb-8 mt-[85px]">
+                        <h1 class="text-4xl font-black tracking-tight text-[var(--apple-text)]">Vhesap</h1>
+                        <p class="text-xs text-amber-500/80 uppercase font-extrabold tracking-widest mt-1.5">GELİŞMİŞ FİNANSAL SİMÜLASYON</p>
+                    </div>
+
+                    <p class="text-[var(--apple-text-muted)] text-xs px-2 mb-8 leading-relaxed font-medium">
+                        Lütfen gerçekleştirmek istediğiniz finansal analiz ve kredi amortisman türüne göre ilgili kokpiti seçiniz.
+                    </p>
+
+                    <div class="space-y-4">
+                        <button onclick="gtagTrack('nav_click', 'Home', 'Bireysel'); window.location.href='bireysel.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-user-tie text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Bireysel Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">İhtiyaç, Konut, Taşıt, Ek Hesap</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+
+                        <button onclick="gtagTrack('nav_click', 'Home', 'Ticari'); window.location.href='ticari.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-briefcase text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Ticari Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Taksitli, Rotatif, Spot, İskonto</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+
+                        <button onclick="gtagTrack('nav_click', 'Home', 'Vadeli'); window.location.href='vadeli.html'" class="w-full p-5 bg-[var(--apple-card)] border border-[rgba(128,128,128,0.1)] rounded-3xl text-left flex items-center justify-between group hover:border-[var(--apple-yellow)] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-all">
+                                    <i class="fa-solid fa-vault text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-[var(--apple-text)] tracking-wide">Vadeli Finans</h3>
+                                    <p class="text-[var(--apple-text-muted)] text-[10px] uppercase font-bold tracking-wider mt-0.5">Mevduat: TL, USD, EUR, ALTIN</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[var(--apple-text-muted)] group-hover:text-amber-500 transition-colors"></i>
+                        </button>
+                    </div>
+
+                    <div id="ad-slot-homeBottom" class="w-full mt-4"></div>
+
+                    <div class="mt-auto pt-8 pb-4 sm:pt-12 sm:pb-4 w-full flex justify-center">
+                        <div class="text-[10px] text-[var(--apple-text-muted)] font-semibold uppercase tracking-widest">
+                            Hassas Hesaplama & Karar Destek Altyapısı © 2026
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- YÖNETİM PANELİ (VHESAP.HTML) ENTEGRASYONU ---
+        
+        let localAnalyticsConfig = { enabled: true, measurementId: 'G-H0WX0KCEM6', events: {} };
+
+        // 2. Faiz Oranları (Rates)
+        async function loadGlobalRates() {
+            try {
+                const response = await fetch('rates.json');
+                if (response.ok) {
+                    window.GLOBAL_RATES = await response.json();
+                    return; 
+                }
+            } catch (e) {
+                console.log("rates.json canlı sunucuda bulunamadı, yerel taslak (localStorage) kullanılacak.");
+            }
+
+            try {
+                const draftRates = localStorage.getItem('vhesap_rates_draft_v2');
+                if (draftRates) {
+                    window.GLOBAL_RATES = JSON.parse(draftRates);
+                } else {
+                    window.GLOBAL_RATES = null;
+                }
+            } catch(e) { console.warn("Faiz oranları okunamadı.", e); }
+        }
+
+        // Analitik ve İstatistik Yönetimi
+        function updateLocalStats(eventName, params = {}) {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                let stats = {};
+                const rawStats = localStorage.getItem('vhesap_analytics_stats');
+                if (rawStats) stats = JSON.parse(rawStats);
+                
+                if (!stats[today]) {
+                    stats[today] = { users: 0, calculations: 0, ad_impressions: 0, ad_clicks: 0, affiliate_clicks: 0, pdf_downloads: 0, modules: {}, events: {} };
+                }
+
+                if (eventName === 'session_start' && !sessionStorage.getItem('vhesap_session')) {
+                    stats[today].users++;
+                    sessionStorage.setItem('vhesap_session', 'true');
+                }
+                if (eventName === 'ad_impression') stats[today].ad_impressions++;
+                if (eventName === 'ad_click') stats[today].ad_clicks++;
+                if (eventName === 'affiliate_click') stats[today].affiliate_clicks++;
+                
+                stats[today].events[eventName] = (stats[today].events[eventName] || 0) + 1;
+
+                localStorage.setItem('vhesap_analytics_stats', JSON.stringify(stats));
+            } catch (e) {}
+        }
+
+        function gtagTrack(action, category, label, value) {
+            if (!localAnalyticsConfig.enabled) return;
+
+            let isEventEnabled = localAnalyticsConfig.events[action] ? localAnalyticsConfig.events[action].enabled : true;
+            
+            updateLocalStats(action, { category, label, value });
+
+            if (isEventEnabled && typeof window.gtag !== 'undefined') {
+                let params = { 'event_category': category };
+                if (label) params['event_label'] = label;
+                if (value !== undefined) params['value'] = value;
+                window.gtag('event', action, params);
+            }
+        }
+
+        // 3. Reklam Entegrasyonu
+        function loadAndInjectAds() {
+            try {
+                let ads = [];
+                if (typeof window.GLOBAL_ADS !== 'undefined' && Array.isArray(window.GLOBAL_ADS)) {
+                    ads = window.GLOBAL_ADS;
+                } else {
+                    const draftAds = localStorage.getItem('vhesap_ads_draft_vamber_2');
+                    if (draftAds) {
+                        ads = JSON.parse(draftAds);
+                    }
+                }
+
+                if (!ads || ads.length === 0) return;
+
+                const placements = {
+                    'homeBottom': document.getElementById('ad-slot-homeBottom'),
+                    'converterBottom': document.getElementById('ad-slot-converterBottom')
+                };
+
+                for (let placement in placements) {
+                    const container = placements[placement];
+                    if (!container) continue;
+
+                    const eligibleAds = ads.filter(ad => 
+                        ad.active && ad.placement === placement
+                    ).sort((a, b) => (b.priority || 1) - (a.priority || 1));
+
+                    if (eligibleAds.length > 0) {
+                        renderAd(container, eligibleAds[0]);
+                    }
+                }
+            } catch (e) { console.error('Reklam yükleme hatası:', e); }
+        }
+
+        function renderAd(container, ad) {
+            gtagTrack('ad_impression', 'Ads', ad.id);
+            
+            if (ad.type === 'AdSense') {
+                const wrapper = document.createElement('div');
+                wrapper.className = "w-full overflow-hidden flex justify-center mt-4 cursor-pointer";
+                wrapper.onclick = () => handleAdClick(ad.id, ad.type);
+                
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = ad.scriptCode;
+                
+                Array.from(tempDiv.childNodes).forEach(node => {
+                    if (node.tagName === 'SCRIPT') {
+                        const script = document.createElement('script');
+                        Array.from(node.attributes).forEach(attr => script.setAttribute(attr.name, attr.value));
+                        script.appendChild(document.createTextNode(node.innerHTML));
+                        wrapper.appendChild(script);
+                    } else {
+                        wrapper.appendChild(node.cloneNode(true));
+                    }
+                });
+
+                container.innerHTML = '';
+                container.appendChild(wrapper);
+                return;
+            }
+
+            const bgClass = ad.transparentBg ? 'bg-[rgba(128,128,128,0.03)]' : 'bg-[var(--apple-card)]';
+            const borderClass = 'border border-[var(--apple-card-border)]';
+
+            container.innerHTML = `
+                <div class="relative w-full rounded-2xl ${bgClass} ${borderClass} p-4 mt-4 transition-all hover:border-[var(--apple-yellow)] group cursor-pointer" onclick="handleAdClick('${ad.id}', '${ad.type}', '${ad.link}')">
+                    ${ad.badge ? `<span class="absolute -top-2.5 left-4 px-2 py-0.5 bg-[var(--apple-badge-bg)] border border-[var(--apple-badge-border)] text-[var(--apple-badge-text)] text-[9px] font-black uppercase tracking-wider rounded-md shadow-sm z-10">${ad.badge}</span>` : ''}
+                    <div class="flex items-start gap-3 relative z-0">
+                        <div class="w-10 h-10 rounded-xl bg-[var(--apple-input-bg)] flex items-center justify-center text-[var(--apple-yellow)] flex-shrink-0 border border-[var(--apple-input-border)] group-hover:scale-105 transition-transform">
+                            <i class="${ad.icon || 'fa-solid fa-star'} text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-bold text-[var(--apple-text)] leading-tight mb-1 group-hover:text-[var(--apple-yellow)] transition-colors">${ad.title}</h4>
+                            <div class="text-[11px] text-[var(--apple-text-muted)] leading-snug mb-3">${ad.description}</div>
+                            <div class="inline-flex items-center gap-1.5 text-[10px] font-bold text-[var(--apple-text)] bg-[var(--apple-input-bg)] px-2.5 py-1.5 rounded-lg border border-[var(--apple-input-border)] group-hover:bg-[var(--apple-yellow)] group-hover:text-black transition-colors">
+                                ${ad.buttonText || 'İncele'} <i class="fa-solid fa-arrow-right text-[8px]"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleAdClick(adId, adType, link) {
+            gtagTrack('ad_click', 'Ads', adId);
+            if (adType === 'Affiliate') gtagTrack('affiliate_click', 'Ads', adId);
+            if (link && link !== '#') window.open(link, '_blank');
+        }
+
+        let pageStartTime = Date.now();
+        window.addEventListener('beforeunload', () => {
+            let timeSpent = Math.round((Date.now() - pageStartTime) / 1000);
+            gtagTrack('time_spent', 'Engagement', window.location.pathname, timeSpent);
+        });
+
+        // Menü Yönetimi
+        let menuTimeout;
+        function toggleMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('glass-menu');
+            if (menu.classList.contains('active')) closeMenu();
+            else {
+                menu.classList.add('active');
+                gtagTrack('menu_open', 'Navigation', 'Main_Menu');
+                resetMenuTimer();
+            }
+        }
+        function closeMenu() {
+            document.getElementById('glass-menu').classList.remove('active');
+            clearTimeout(menuTimeout);
+        }
+        function resetMenuTimer() {
+            clearTimeout(menuTimeout);
+            menuTimeout = setTimeout(() => { closeMenu(); }, 3000);
+        }
+        document.getElementById('glass-menu').addEventListener('click', (e) => { e.stopPropagation(); resetMenuTimer(); });
+        document.addEventListener('click', (e) => { if (!e.target.closest('#glass-menu') && !e.target.closest('#main-menu-toggle')) closeMenu(); });
+
+        // Tema ve Modallar
+        function toggleGlobalThemeFromMenu(e) {
+            if (e) e.stopPropagation();
+            const isDark = document.body.classList.toggle('dark');
+            localStorage.setItem('vhesap_global_theme', isDark ? 'dark' : 'light');
+            updateMenuThemeIcon(isDark);
+            gtagTrack('theme_toggle', 'Preference', isDark ? 'Dark' : 'Light');
+            closeMenu();
+        }
+        function updateMenuThemeIcon(isDark) {
+            const icon = document.getElementById('menu-theme-icon');
+            const text = document.getElementById('menu-theme-text');
+            if (isDark) { icon.className = 'fa-solid fa-sun'; text.textContent = 'Gündüz Moduna Geç'; }
+            else { icon.className = 'fa-solid fa-moon'; text.textContent = 'Gece Moduna Geç'; }
+        }
+        function initTheme() {
+            const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
+            if (savedTheme === 'light') { document.body.classList.remove('dark'); updateMenuThemeIcon(false); }
+            else { document.body.classList.add('dark'); updateMenuThemeIcon(true); }
+        }
+
+        function openFeedbackModal(e) {
+            if (e) e.stopPropagation(); closeMenu();
+            document.getElementById('hata-fields').style.display = 'block';
+            gtagTrack('modal_open', 'Feedback', 'Hata_Oneri');
+            document.getElementById('feedback-modal').style.display = 'flex';
+        }
+        function closeFeedback() { document.getElementById('feedback-modal').style.display = 'none'; }
+        function closeFeedbackOutside(e) { if(e.target.id === 'feedback-modal') closeFeedback(); }
+
+        function openAboutModal(e) {
+            if (e) e.stopPropagation(); closeMenu();
+            gtagTrack('modal_open', 'Info', 'About');
+            document.getElementById('about-modal').style.display = 'flex';
+        }
+        function closeAbout() { document.getElementById('about-modal').style.display = 'none'; }
+        function closeAboutOutside(e) { if(e.target.id === 'about-modal') closeAbout(); }
+
+        function openConverterModal(e) {
+            if (e) e.stopPropagation(); closeMenu();
+            gtagTrack('modal_open', 'Tool', 'Converter');
+            document.getElementById('converter-modal').style.display = 'flex';
+            calculateConversion();
+        }
+        function closeConverter() { document.getElementById('converter-modal').style.display = 'none'; }
+        function closeConverterOutside(e) { if(e.target.id === 'converter-modal') closeConverter(); }
+
+        function checkConnection() {
+            const blocker = document.getElementById('offline-blocker');
+            if(blocker) { blocker.style.display = navigator.onLine ? 'none' : 'flex'; }
+        }
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+
+
+        // --- YENİ: CANLI FİNANS ŞERİDİ VE ÇEVİRİCİ JS ---
+        // basePrice: Açık kaynaktan çekilen asıl değer. price: Arayüzdeki hafif titreşimli canlı hissi veren değer
+        let marketData = [
+            { id: 'usd', name: 'USD', price: 34.25, basePrice: 34.25, suffix: '₺', change: 0 },
+            { id: 'eur', name: 'EUR', price: 37.15, basePrice: 37.15, suffix: '₺', change: 0 },
+            { id: 'gbp', name: 'GBP', price: 44.50, basePrice: 44.50, suffix: '₺', change: 0 },
+            { id: 'gld', name: 'Altın', price: 3010.50, basePrice: 3010.50, suffix: '₺', change: 0 },
+            { id: 'slv', name: 'Gümüş', price: 35.40, basePrice: 35.40, suffix: '₺', change: 0 }
+        ];
+
+        const tickerTrack = document.getElementById('ticker-track');
+
+        async function fetchLiveCurrencyData() {
+            try {
+                // Güvenilir, sayfa başı tek seferlik açık kaynak veri çekimi (USD bazlı kurlar)
+                const response = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+                if(!response.ok) throw new Error('API erişilemiyor');
+                
+                const data = await response.json();
+                const rates = data.usd;
+                const tryRate = rates.try;
+
+                marketData = [
+                    { id: 'usd', name: 'USD', basePrice: tryRate, price: tryRate, suffix: '₺', change: 0 },
+                    { id: 'eur', name: 'EUR', basePrice: tryRate / rates.eur, price: tryRate / rates.eur, suffix: '₺', change: 0 },
+                    { id: 'gbp', name: 'GBP', basePrice: tryRate / rates.gbp, price: tryRate / rates.gbp, suffix: '₺', change: 0 },
+                    // XAU ve XAG ons fiyatı USD bazlı dönüyor. Bunu TL'ye ve ardından 31.1034768 ile Gram'a çeviriyoruz.
+                    { id: 'gld', name: 'Altın', basePrice: (tryRate / rates.xau) / 31.1034768, price: (tryRate / rates.xau) / 31.1034768, suffix: '₺', change: 0 },
+                    { id: 'slv', name: 'Gümüş', basePrice: (tryRate / rates.xag) / 31.1034768, price: (tryRate / rates.xag) / 31.1034768, suffix: '₺', change: 0 }
+                ];
+                
+                // İlk yüklemede sıfır durmaması için sahte anlık ivmeler
+                marketData.forEach(item => item.change = (Math.random() * 0.4) - 0.2);
+
+            } catch (error) {
+                console.warn('Canlı döviz verisi çekilemedi, varsayılan sabit değerlerle devam ediliyor.', error);
+                // marketData tanımlı olduğu için fallback otomatik devrededir.
+            }
+            
+            // Veri geldiğinde (veya hata ile fallback durumunda) UI'ı bas
+            createTickerHtml();
+            populateConverterOptions();
+        }
+
+        function formatTickerNumber(num) {
+            if(num > 1000000) return num.toLocaleString('tr-TR', { maximumFractionDigits: 0 });
+            return num.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function createTickerHtml() {
+            let html = '';
+            // Kesintisiz pürüzsüz animasyon için eleman grubunu 4 defa kopyalayarak yerleştiriyoruz.
+            // CSS'teki translateX(-50%) sayesinde 2. setin sonuna gelindiğinde ekran titremesiz başa sarar.
+            for(let i=0; i<4; i++) {
+                marketData.forEach(item => {
+                    const isUp = item.change >= 0;
+                    const icon = isUp ? '▲' : '▼';
+                    const changeText = `${icon} %${Math.abs(item.change).toFixed(2)}`;
+
+                    html += `
+                        <div class="ticker-item" id="item-${item.id}-${i}">
+                            <span class="ticker-symbol-name">${item.name}</span>
+                            <span class="ticker-price" id="price-${item.id}-${i}">${formatTickerNumber(item.price)}${item.suffix}</span>
+                            <span class="ticker-change" id="change-${item.id}-${i}">${changeText}</span>
+                        </div>
+                    `;
+                });
+            }
+            if(tickerTrack) tickerTrack.innerHTML = html;
+        }
+
+        const convInputAmount = document.getElementById('conv-amount');
+        const convSelectFrom = document.getElementById('conv-from');
+        const convSelectTo = document.getElementById('conv-to');
+        const convResultEl = document.getElementById('conv-result');
+
+        function populateConverterOptions() {
+            if(!convSelectFrom) return;
+            let optionsHtml = `<option value="try">TL (Türk Lirası)</option>`;
+            marketData.forEach(item => {
+                optionsHtml += `<option value="${item.id}">${item.name}</option>`;
+            });
+            
+            convSelectFrom.innerHTML = optionsHtml;
+            convSelectTo.innerHTML = optionsHtml;
+
+            convSelectFrom.value = 'usd';
+            convSelectTo.value = 'try';
+        }
+
+        function calculateConversion() {
+            if(!convInputAmount) return;
+            const amount = parseFloat(convInputAmount.value) || 0;
+            const fromId = convSelectFrom.value;
+            const toId = convSelectTo.value;
+
+            // Çeviricide canlı simülasyon yerine API'den gelen asıl "basePrice"ı kullanıyoruz.
+            const fromPrice = fromId === 'try' ? 1 : marketData.find(i => i.id === fromId).basePrice;
+            const toPrice = toId === 'try' ? 1 : marketData.find(i => i.id === toId).basePrice;
+
+            const result = (amount * fromPrice) / toPrice;
+
+            let decimals = 2;
+            if (result < 1 && result > 0) decimals = 6;
+            else if (result > 1000) decimals = 0;
+
+            convResultEl.innerText = result.toLocaleString('tr-TR', { 
+                minimumFractionDigits: decimals, 
+                maximumFractionDigits: decimals 
+            });
+        }
+
+        if(convInputAmount) {
+            convInputAmount.addEventListener('input', calculateConversion);
+            convSelectFrom.addEventListener('change', calculateConversion);
+            convSelectTo.addEventListener('change', calculateConversion);
+        }
+
+        function simulateMarket() {
+            marketData.forEach(item => {
+                // Rakamların canlı gibi durması için %0.1'lik çok küçük görsel bir dalgalanma efekti
+                const randomFluc = (Math.random() - 0.5) * 0.001;
+                
+                // Çekilen asıl fiyattan (basePrice) çok ufak sapmalar hesapla. (Drift engellenir)
+                item.price = item.basePrice + (item.basePrice * randomFluc);
+                item.change = ((item.price - item.basePrice) / item.basePrice) * 100;
+
+                // 4 setin (kopya grubunun) her birindeki DOM elemanını bul ve güncelle
+                for(let i=0; i<4; i++) {
+                    const priceEl = document.getElementById(`price-${item.id}-${i}`);
+                    const changeEl = document.getElementById(`change-${item.id}-${i}`);
+                    const itemEl = document.getElementById(`item-${item.id}-${i}`);
+
+                    if(priceEl && changeEl && itemEl) {
+                        priceEl.innerText = `${formatTickerNumber(item.price)}${item.suffix}`;
+                        const isUp = item.change >= 0;
+                        changeEl.innerText = `${isUp ? '▲' : '▼'} %${Math.abs(item.change).toFixed(2)}`;
+
+                        itemEl.classList.add('flash');
+                        setTimeout(() => { itemEl.classList.remove('flash'); }, 400);
+                    }
+                }
+            });
+
+            // Eğer çevirici penceresi açıksa o anki duruma göre minik tazelemeyi ona da yansıt (isteğe bağlı).
+            if(document.getElementById('converter-modal') && document.getElementById('converter-modal').style.display === 'flex') {
+                calculateConversion(); 
+            }
+        }
+        // --- FİNANS ŞERİDİ BİTİŞ ---
+
+
+        window.onload = async () => {
+            checkConnection();
+            initTheme();
+            
+                  
+            await loadGlobalRates();    
+            
+            // 1) Canlı verileri bir kez yükle
+            await fetchLiveCurrencyData(); 
+            
+            // 2) Şeridi ve Çeviriciyi anlık dalgalandırmak (canlı hissiyatı) için simülasyonu başlat
+            setInterval(simulateMarket, 3500);
+            
+            gtagTrack('session_start', 'System', 'Session');
+            gtagTrack('page_view', 'System', 'Home_Page');
+            loadAndInjectAds();   
+        };
+    </script>
+</body>
+</html>
