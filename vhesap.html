@@ -1280,7 +1280,7 @@
         }
 
         // ==========================================
-        // YENİ: GERÇEK GOOGLE DATA API V1 ENTEGRASYONU
+        // GOOGLE DATA API V1 ENTEGRASYONU
         // ==========================================
         
         window.handleGAAuth = function() {
@@ -1325,7 +1325,6 @@
             const propertyId = document.getElementById('ga-property-id').value.trim();
             if(!propertyId || !gaAccessToken) return;
 
-            // Güçlü ve Modüler API Çağrıcı Fonksiyonumuz
             const fetchReport = async (endpoint, requestBody) => {
                 const response = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:${endpoint}`, {
                     method: 'POST',
@@ -1337,7 +1336,7 @@
             };
 
             try {
-                // 1. GENEL BAKIŞ (Overview - Son 30 Gün)
+                // 1. GENEL BAKIŞ
                 const overviewData = await fetchReport('runReport', {
                     dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
                     metrics: [
@@ -1360,7 +1359,7 @@
                     document.getElementById('ga-metric-engagement').innerText = `${Math.floor(avgSec / 60)}m ${avgSec % 60}s`;
                 }
 
-                // 2. GERÇEK ZAMANLI RAPOR (Son 30 Dakika)
+                // 2. GERÇEK ZAMANLI RAPOR
                 const realtimeData = await fetchReport('runRealtimeReport', {
                     metrics: [{ name: 'activeUsers' }],
                     dimensions: [{ name: 'unifiedScreenName' }]
@@ -1380,33 +1379,106 @@
                 document.getElementById('ga-realtime-active').innerText = rtActive;
                 document.getElementById('ga-realtime-pages').innerHTML = rtPagesHtml;
 
-                // 3. SAYFA ANALİZİ (Top 10 Pages)
+                // 3. SAYFA ANALİZİ & MODÜL DAĞILIMI
                 const pagesData = await fetchReport('runReport', {
                     dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
                     dimensions: [{ name: 'pagePath' }],
                     metrics: [{ name: 'screenPageViews' }, { name: 'userEngagementDuration' }],
                     orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
-                    limit: 10
+                    limit: 15
                 });
 
                 let pagesHtml = '';
+                let modBireysel = 0, modTicari = 0, modVadeli = 0, modVanaliz = 0, totalMod = 0;
+                
                 if(pagesData.rows && pagesData.rows.length > 0) {
                     pagesData.rows.forEach(row => {
-                        const path = row.dimensionValues[0].value;
+                        const path = row.dimensionValues[0].value.toLowerCase();
                         const views = parseInt(row.metricValues[0].value);
                         const duration = parseInt(row.metricValues[1].value);
                         const avg = views > 0 ? Math.floor(duration / views) : 0;
                         
-                        pagesHtml += `<tr class="hover:bg-[var(--apple-sidebar-hover)]"><td class="p-3 font-mono text-[var(--apple-yellow)] truncate max-w-[150px] md:max-w-[300px] block">${path}</td><td class="p-3 text-right font-bold">${views.toLocaleString('tr-TR')}</td><td class="p-3 text-right">${Math.floor(avg / 60).toString().padStart(2, '0')}:${(avg % 60).toString().padStart(2, '0')}</td></tr>`;
+                        // Tablo için (İlk 10)
+                        if(pagesHtml.split('<tr>').length <= 10) {
+                            pagesHtml += `<tr class="hover:bg-[var(--apple-sidebar-hover)]"><td class="p-3 font-mono text-[var(--apple-yellow)] truncate max-w-[150px] md:max-w-[300px] block">${path}</td><td class="p-3 text-right font-bold">${views.toLocaleString('tr-TR')}</td><td class="p-3 text-right">${Math.floor(avg / 60).toString().padStart(2, '0')}:${(avg % 60).toString().padStart(2, '0')}</td></tr>`;
+                        }
+
+                        // Modül Analizi İçin Hesaplama
+                        if(path.includes('bireysel')) modBireysel += views;
+                        if(path.includes('ticari')) modTicari += views;
+                        if(path.includes('vadeli') || path.includes('mevduat')) modVadeli += views;
+                        if(path.includes('vanaliz')) modVanaliz += views;
                     });
+                    
+                    totalMod = modBireysel + modTicari + modVadeli + modVanaliz;
                 }
                 document.getElementById('ga-table-pages').innerHTML = pagesHtml || '<tr><td colspan="3" class="p-4 text-center text-xs">Veri bulunamadı.</td></tr>';
 
-                // ==========================================
-                // 4. TRAFİK VE DİĞER EVENTLERİN DİNAMİK ÇEKİMİ
-                // ==========================================
-                // (Custom eventler için Event Count metriği ile Dimension filter uygulanır)
+                // Modül Dağılımını Ekrana Bas
+                if(totalMod > 0) {
+                    document.getElementById('ga-list-modules').innerHTML = `
+                        <li class="flex justify-between text-xs font-bold border-b border-[var(--apple-card-border)] pb-2"><span class="text-[var(--apple-yellow)]">Bireysel Kredi</span> <span>${Math.round((modBireysel/totalMod)*100)}%</span></li>
+                        <li class="flex justify-between text-xs font-bold border-b border-[var(--apple-card-border)] pb-2"><span class="text-[var(--apple-yellow)]">Ticari Kredi</span> <span>${Math.round((modTicari/totalMod)*100)}%</span></li>
+                        <li class="flex justify-between text-xs font-bold border-b border-[var(--apple-card-border)] pb-2"><span class="text-[var(--apple-yellow)]">Vadeli / Mevduat</span> <span>${Math.round((modVadeli/totalMod)*100)}%</span></li>
+                        <li class="flex justify-between text-xs font-bold"><span class="text-[var(--apple-yellow)]">V-Analiz Modülü</span> <span>${Math.round((modVanaliz/totalMod)*100)}%</span></li>
+                    `;
+                } else {
+                    document.getElementById('ga-list-modules').innerHTML = '<li class="text-xs italic text-[var(--apple-text-muted)] text-center">Yeterli sayfa verisi yok.</li>';
+                }
+
+                // 4. TRAFİK KAYNAKLARI
+                const trafficData = await fetchReport('runReport', {
+                    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+                    dimensions: [{ name: 'sessionSource' }],
+                    metrics: [{ name: 'sessions' }],
+                    orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+                    limit: 5
+                });
+
+                let trafficHtml = '';
+                let totalTrafSessions = 0;
+                if(trafficData.rows) trafficData.rows.forEach(r => totalTrafSessions += parseInt(r.metricValues[0].value));
                 
+                if(trafficData.rows && trafficData.rows.length > 0) {
+                    trafficData.rows.forEach(row => {
+                        const source = row.dimensionValues[0].value;
+                        const sessions = parseInt(row.metricValues[0].value);
+                        const percent = totalTrafSessions > 0 ? Math.round((sessions/totalTrafSessions)*100) : 0;
+                        let icon = 'fa-link text-[var(--apple-text-muted)]';
+                        if(source.includes('google')) icon = 'fa-google text-blue-500';
+                        else if(source.includes('instagram') || source.includes('facebook')) icon = 'fa-instagram text-pink-500';
+                        trafficHtml += `<li class="flex justify-between text-xs font-bold border-b border-[var(--apple-card-border)] pb-2 last:border-0 last:pb-0"><span class="flex items-center gap-2"><i class="fa-brands ${icon}"></i> ${source}</span> <span>${percent}%</span></li>`;
+                    });
+                }
+                document.getElementById('ga-list-sources').innerHTML = trafficHtml || '<li class="text-xs italic text-center text-[var(--apple-text-muted)]">Veri bulunamadı.</li>';
+
+                // 5. CİHAZLAR
+                const deviceData = await fetchReport('runReport', {
+                    dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+                    dimensions: [{ name: 'deviceCategory' }],
+                    metrics: [{ name: 'sessions' }],
+                    orderBys: [{ metric: { metricName: 'sessions' }, desc: true }]
+                });
+
+                let deviceHtml = '';
+                let totalDevSessions = 0;
+                if(deviceData.rows) deviceData.rows.forEach(r => totalDevSessions += parseInt(r.metricValues[0].value));
+
+                if(deviceData.rows && deviceData.rows.length > 0) {
+                    deviceData.rows.forEach(row => {
+                        const device = row.dimensionValues[0].value.toLowerCase();
+                        const sessions = parseInt(row.metricValues[0].value);
+                        const percent = totalDevSessions > 0 ? Math.round((sessions/totalDevSessions)*100) : 0;
+                        let icon = 'fa-mobile-screen'; let color = 'bg-blue-500';
+                        if(device === 'desktop') { icon = 'fa-desktop'; color = 'bg-[var(--apple-yellow)]'; }
+                        else if(device === 'tablet') { icon = 'fa-tablet-screen-button'; color = 'bg-purple-500'; }
+                        
+                        deviceHtml += `<li class="flex items-center justify-between text-xs font-bold"><div class="flex items-center gap-2 w-1/3 uppercase"><i class="fa-solid ${icon} text-[var(--apple-text)] text-sm w-4"></i> ${device}</div> <div class="w-1/2 bg-[var(--apple-card-border)] h-2 rounded-full overflow-hidden"><div class="${color} h-full transition-all" style="width:${percent}%"></div></div> <span class="w-1/6 text-right">${percent}%</span></li>`;
+                    });
+                }
+                document.getElementById('ga-list-devices').innerHTML = deviceHtml || '<li class="text-xs italic text-center text-[var(--apple-text-muted)]">Veri bulunamadı.</li>';
+
+                // 6. - 9. EVENTS (ÖZEL OLAYLAR)
                 const eventsData = await fetchReport('runReport', {
                     dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
                     dimensions: [{ name: 'eventName' }],
@@ -1414,23 +1486,24 @@
                 });
 
                 if(eventsData.rows) {
-                    let totalCalc = 0, calcComplete = 0, calcError = 0, adImp = 0, adClick = 0, pdfDown = 0;
+                    let totalCalc = 0, calcComplete = 0, planView = 0, calcError = 0, adImp = 0, adClick = 0, pdfDown = 0;
                     eventsData.rows.forEach(row => {
                         const evName = row.dimensionValues[0].value;
                         const evCount = parseInt(row.metricValues[0].value);
                         
                         if(evName === 'calculate') totalCalc += evCount;
-                        if(evName === 'calculate_complete') calcComplete += evCount;
+                        if(evName === 'calculation_complete') calcComplete += evCount;
+                        if(evName === 'payment_plan_view') planView += evCount;
                         if(evName === 'calculation_error') calcError += evCount;
                         if(evName === 'ad_impression') adImp += evCount;
                         if(evName === 'ad_click') adClick += evCount;
                         if(evName === 'pdf_download') pdfDown += evCount;
                     });
 
-                    // UI Doldurma
                     document.getElementById('ev-calc-total').innerText = totalCalc.toLocaleString('tr-TR');
                     document.getElementById('ev-calc-start').innerText = totalCalc.toLocaleString('tr-TR');
                     document.getElementById('ev-calc-complete').innerText = calcComplete.toLocaleString('tr-TR');
+                    document.getElementById('ev-plan-view').innerText = planView.toLocaleString('tr-TR');
                     document.getElementById('ev-calc-error').innerText = calcError.toLocaleString('tr-TR');
                     
                     document.getElementById('ev-ad-imp').innerText = adImp.toLocaleString('tr-TR');
@@ -1441,11 +1514,11 @@
                     document.getElementById('ev-pdf-download').innerText = pdfDown.toLocaleString('tr-TR');
                 }
                 
-                showToast("Canlı GA4 Verileri Başarıyla Çekildi!");
+                showToast("Tüm Veriler (Trafik ve Cihazlar Dahil) Canlı Olarak Çekildi!");
 
             } catch (error) {
                 console.error("GA4 Data API Hatası:", error);
-                showToast("Veri çekilirken bir yetki hatası oluştu. Konsolu inceleyin.", true);
+                showToast("Veri çekilirken bir hata oluştu. Konsolu inceleyin.", true);
             }
         }
     </script>
