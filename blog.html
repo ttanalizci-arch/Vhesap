@@ -52,7 +52,7 @@
         a { text-decoration: none; color: inherit; }
 
         .viewport { width: 100%; min-height: 100vh; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 900px; padding: 20px; display: flex; flex-direction: column; }
+        .container { width: 100%; max-width: 1500px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; }
         #progressBar { position: fixed; top: 0; left: 0; height: 4px; background: var(--amber); z-index: 9999; width: 0%; transition: width 0.2s ease; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -175,7 +175,6 @@
         .btn-del-comment { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--danger); cursor: pointer; font-size: 14px; opacity: 0.5; }
         .btn-del-comment:hover { opacity: 1; }
 
-        /* MODALLAR & FORM GENEL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; width: 100%; max-width: 450px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
@@ -345,6 +344,7 @@
     <div id="toast"></div>
 
     <div class="viewport" id="vhesap-viewport">
+        <!-- Tüm bileşenleri içeren merkezi Container -->
         <div class="container">
             
             <div id="progressBar"></div>
