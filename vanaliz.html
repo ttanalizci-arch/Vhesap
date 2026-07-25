@@ -154,9 +154,12 @@
     </div>
 
     <div id="app-content" class="pb-12">
-        <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-4 pb-3 pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm" style="padding-top: max(0.5rem, env(safe-area-inset-top));">
-            <div class="flex items-center gap-3 w-full sm:w-auto justify-between">
-                <div class="flex items-center gap-3">
+        <nav class="sticky top-0 z-50 bg-[var(--k-nav-bg)] backdrop-blur-2xl border-b border-[var(--k-border)] px-4 pb-3 pt-2 shadow-sm" style="padding-top: max(0.5rem, env(safe-area-inset-top));">
+            
+            <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-3 w-full">
+                
+                <!-- SOL SÜTUN: Logo -->
+                <div class="flex items-center gap-3 shrink-0 order-1 sm:w-1/3 justify-start">
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#ff9f0a] to-[#d97c00] flex items-center justify-center shadow-lg shadow-[#ff9f0a]/20 border border-white/10">
                         <i data-lucide="bar-chart-2" class="text-white w-4 h-4"></i>
                     </div>
@@ -164,60 +167,59 @@
                         <h1 class="text-lg font-black tracking-tight text-[var(--k-text)] leading-tight">Vanaliz</h1>
                     </div>
                 </div>
-                <div class="sm:hidden">
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center border border-[var(--k-border)] text-[var(--k-text-muted)] hover:text-[var(--k-text)] hover:bg-[var(--k-hover)] transition-all" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfa">
+                
+                <!-- SAĞ SÜTUN: Kontroller (Mobil: Logoyla aynı satırda, Masaüstü: Sağda) -->
+                <div class="flex items-center justify-end gap-2 shrink-0 order-2 sm:order-3 sm:w-1/3">
+                    
+                    <!-- Google Giriş Butonu -->
+                    <div id="googleLoginWrapper" class="relative group shrink-0">
+                        <button id="googleLoginBtn" class="flex items-center gap-2 h-10 px-3 sm:px-4 rounded-xl bg-[#ff9f0a] text-black font-bold hover:scale-95 transition-all shadow-sm text-[11px] sm:text-[13px]">
+                            <i class="fa-brands fa-google text-black"></i> 
+                            <span class="hidden sm:inline">Giriş Yap</span>
+                        </button>
+                        <!-- İsteğe bağlı olduğunu belirten Tooltip -->
+                        <div class="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 top-full mt-2 w-64 bg-[var(--k-card)] text-[var(--k-text)] text-[10px] p-3 rounded-xl shadow-2xl border border-[var(--k-border)] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                            <strong class="text-[#ff9f0a] block mb-1 text-[11px]">Giriş & Bulut Yedekleme</strong>
+                            Giriş yapmak zorunlu değildir. İsterseniz Google ile güvenli giriş yapabilirsiniz. Bu sayede portföyünüz ve finansal verileriniz otomatik olarak <b>Google Drive</b> hesabınıza yedeklenir, verileriniz asla kaybolmaz.
+                        </div>
+                    </div>
+
+                    <!-- Kullanıcı Profili (Giriş Başarılı Olduğunda Gösterilecek) -->
+                    <div id="userProfileArea" class="hidden items-center gap-2 h-10 bg-[var(--k-card)] border border-[var(--k-border)] rounded-xl p-1 shrink-0 shadow-sm pr-2">
+                        <img id="userPhoto" src="" alt="Profil" class="w-8 h-8 rounded-lg object-cover bg-[var(--k-input)]">
+                        <div class="hidden sm:flex flex-col justify-center min-w-[70px]">
+                            <span id="userName" class="text-[10px] font-black text-[var(--k-text)] truncate max-w-[80px]"></span>
+                            <span id="syncStatus" class="text-[8px] text-green-500 font-bold tracking-wider uppercase"><i class="fa-solid fa-cloud-check"></i> Eşitlendi</span>
+                        </div>
+                        <button id="googleLogoutBtn" class="text-[var(--k-text-muted)] hover:text-red-500 ml-1 px-1 transition-colors" title="Çıkış Yap">
+                            <i class="fa-solid fa-right-from-bracket text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Ana Sayfa (Ev) İkonu -->
+                    <button class="flex w-10 h-10 shrink-0 rounded-xl items-center justify-center bg-[var(--k-card)] border border-[var(--k-border)] text-[var(--k-text)] hover:text-[#ff9f0a] hover:border-[#ff9f0a] transition-all shadow-sm" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfaya Dön">
                         <i class="fa-solid fa-house text-base"></i>
                     </button>
                 </div>
+
+                <!-- ORTA SÜTUN: Gelir Alanı (Mobil: Logoların altında tam genişlik, Masaüstü: Ortada) -->
+                <div class="w-full sm:w-1/3 flex justify-center order-3 sm:order-2">
+                    <div class="w-full relative bg-[var(--k-input)] rounded-lg p-2 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors flex items-center gap-2 shadow-inner">
+                        <i data-lucide="wallet" class="w-4 h-4 text-[var(--k-text-muted)] shrink-0"></i>
+                        <div class="flex flex-col w-full">
+                            <label class="text-[8px] uppercase tracking-widest text-[var(--k-text-muted)] font-bold">Aylık Net Geliriniz (TL)</label>
+                            <input type="text" id="income-input" inputmode="numeric" class="w-full bg-transparent text-[var(--k-text)] text-sm font-black focus:outline-none" placeholder="0,00" onblur="updateIncome(this.value)" onfocus="this.value = this.value.replace(/\D/g, '')" />
+                        </div>
+                    </div>
+                </div>
+                
             </div>
             
-            <div class="main-nav w-full lg:hidden mt-2 mb-1">
+            <!-- Mobil Görünüm İçin Sekmeler -->
+            <div class="main-nav w-full lg:hidden mt-3 mb-1">
                 <button data-target="ozet" onclick="switchTab('ozet')" class="nav-btn active">ÖZET</button>
                 <button data-target="portfoy" onclick="switchTab('portfoy')" class="nav-btn">PORTFÖY</button>
                 <button data-target="asistan" onclick="switchTab('asistan')" class="nav-btn">ASİSTAN</button>
-            </div>
-
-            <!-- GÜNCELLENMİŞ SAĞ TARAFTAKİ HEADER KONTROLLERİ (Blog Konsepti) -->
-            <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
-                
-                <!-- Gelir Input -->
-                <div class="flex-1 sm:flex-none relative bg-[var(--k-input)] rounded-lg p-2 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors flex items-center gap-2 shadow-inner">
-                    <i data-lucide="wallet" class="w-4 h-4 text-[var(--k-text-muted)]"></i>
-                    <div class="flex flex-col w-full">
-                        <label class="text-[8px] uppercase tracking-widest text-[var(--k-text-muted)] font-bold">Aylık Net Geliriniz (TL)</label>
-                        <input type="text" id="income-input" inputmode="numeric" class="w-full bg-transparent text-[var(--k-text)] text-sm font-black focus:outline-none" placeholder="0,00" onblur="updateIncome(this.value)" onfocus="this.value = this.value.replace(/\D/g, '')" />
-                    </div>
-                </div>
-
-                <!-- Google Giriş Butonu (Blog Tasarımı Benzeri) -->
-                <div id="googleLoginWrapper" class="relative group shrink-0">
-                    <button id="googleLoginBtn" class="flex items-center gap-2 h-10 px-4 rounded-xl bg-[#ff9f0a] text-black font-bold hover:scale-95 transition-all shadow-sm text-[11px] sm:text-[13px]">
-                        <i class="fa-brands fa-google text-black"></i> 
-                        <span class="hidden sm:inline">Giriş Yap</span>
-                    </button>
-                    <!-- İsteğe bağlı olduğunu belirten Tooltip -->
-                    <div class="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 top-full mt-2 w-64 bg-[var(--k-card)] text-[var(--k-text)] text-[10px] p-3 rounded-xl shadow-2xl border border-[var(--k-border)] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-                        <strong class="text-[#ff9f0a] block mb-1 text-[11px]">Giriş & Bulut Yedekleme</strong>
-                        Giriş yapmak zorunlu değildir. İsterseniz Google ile güvenli giriş yapabilirsiniz. Bu sayede portföyünüz ve finansal verileriniz otomatik olarak <b>Google Drive</b> hesabınıza yedeklenir, verileriniz asla kaybolmaz.
-                    </div>
-                </div>
-
-                <!-- Kullanıcı Profili (Giriş Başarılı Olduğunda Gösterilecek) -->
-                <div id="userProfileArea" class="hidden items-center gap-2 h-10 bg-[var(--k-card)] border border-[var(--k-border)] rounded-xl p-1 shrink-0 shadow-sm pr-2">
-                    <img id="userPhoto" src="" alt="Profil" class="w-8 h-8 rounded-lg object-cover bg-[var(--k-input)]">
-                    <div class="hidden sm:flex flex-col justify-center min-w-[70px]">
-                        <span id="userName" class="text-[10px] font-black text-[var(--k-text)] truncate max-w-[80px]"></span>
-                        <span id="syncStatus" class="text-[8px] text-green-500 font-bold tracking-wider uppercase"><i class="fa-solid fa-cloud-check"></i> Eşitlendi</span>
-                    </div>
-                    <button id="googleLogoutBtn" class="text-[var(--k-text-muted)] hover:text-red-500 ml-1 px-1 transition-colors" title="Çıkış Yap">
-                        <i class="fa-solid fa-right-from-bracket text-sm"></i>
-                    </button>
-                </div>
-
-                <!-- Ana Sayfa (Ev) İkonu - HER ZAMAN EN SAĞDA -->
-                <button class="hidden sm:flex w-10 h-10 shrink-0 rounded-xl items-center justify-center bg-[var(--k-card)] border border-[var(--k-border)] text-[var(--k-text)] hover:text-[#ff9f0a] hover:border-[#ff9f0a] transition-all shadow-sm" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfaya Dön">
-                    <i class="fa-solid fa-house text-base"></i>
-                </button>
             </div>
         </nav>
 
