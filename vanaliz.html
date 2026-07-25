@@ -109,7 +109,7 @@
             width: 16px;
             border-radius: 50%;
             background: #ffffff;
-            border: 2px solid #f59e0b; /* Amber */
+            border: 2px solid #f59e0b;
             cursor: pointer;
             margin-top: -6px;
             box-shadow: 0 1px 3px rgba(245, 158, 11, 0.4);
@@ -177,7 +177,10 @@
                 <button data-target="asistan" onclick="switchTab('asistan')" class="nav-btn">ASİSTAN</button>
             </div>
 
-            <div class="flex items-center gap-4 w-full sm:w-auto">
+            <!-- GÜNCELLENMİŞ SAĞ TARAFTAKİ HEADER KONTROLLERİ (Blog Konsepti) -->
+            <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
+                
+                <!-- Gelir Input -->
                 <div class="flex-1 sm:flex-none relative bg-[var(--k-input)] rounded-lg p-2 border border-[var(--k-border)]/50 focus-within:border-[#ff9f0a]/50 transition-colors flex items-center gap-2 shadow-inner">
                     <i data-lucide="wallet" class="w-4 h-4 text-[var(--k-text-muted)]"></i>
                     <div class="flex flex-col w-full">
@@ -185,7 +188,34 @@
                         <input type="text" id="income-input" inputmode="numeric" class="w-full bg-transparent text-[var(--k-text)] text-sm font-black focus:outline-none" placeholder="0,00" onblur="updateIncome(this.value)" onfocus="this.value = this.value.replace(/\D/g, '')" />
                     </div>
                 </div>
-                <button class="hidden sm:flex w-10 h-10 rounded-full items-center justify-center border border-[var(--k-border)] text-[var(--k-text-muted)] hover:text-[#ff9f0a] hover:bg-[var(--k-hover)] transition-all" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfa">
+
+                <!-- Google Giriş Butonu (Blog Tasarımı Benzeri) -->
+                <div id="googleLoginWrapper" class="relative group shrink-0">
+                    <button id="googleLoginBtn" class="flex items-center gap-2 h-10 px-4 rounded-xl bg-[#ff9f0a] text-black font-bold hover:scale-95 transition-all shadow-sm text-[11px] sm:text-[13px]">
+                        <i class="fa-brands fa-google text-black"></i> 
+                        <span class="hidden sm:inline">Giriş Yap</span>
+                    </button>
+                    <!-- İsteğe bağlı olduğunu belirten Tooltip -->
+                    <div class="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 top-full mt-2 w-64 bg-[var(--k-card)] text-[var(--k-text)] text-[10px] p-3 rounded-xl shadow-2xl border border-[var(--k-border)] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                        <strong class="text-[#ff9f0a] block mb-1 text-[11px]">Giriş & Bulut Yedekleme</strong>
+                        Giriş yapmak zorunlu değildir. İsterseniz Google ile güvenli giriş yapabilirsiniz. Bu sayede portföyünüz ve finansal verileriniz otomatik olarak <b>Google Drive</b> hesabınıza yedeklenir, verileriniz asla kaybolmaz.
+                    </div>
+                </div>
+
+                <!-- Kullanıcı Profili (Giriş Başarılı Olduğunda Gösterilecek) -->
+                <div id="userProfileArea" class="hidden items-center gap-2 h-10 bg-[var(--k-card)] border border-[var(--k-border)] rounded-xl p-1 shrink-0 shadow-sm pr-2">
+                    <img id="userPhoto" src="" alt="Profil" class="w-8 h-8 rounded-lg object-cover bg-[var(--k-input)]">
+                    <div class="hidden sm:flex flex-col justify-center min-w-[70px]">
+                        <span id="userName" class="text-[10px] font-black text-[var(--k-text)] truncate max-w-[80px]"></span>
+                        <span id="syncStatus" class="text-[8px] text-green-500 font-bold tracking-wider uppercase"><i class="fa-solid fa-cloud-check"></i> Eşitlendi</span>
+                    </div>
+                    <button id="googleLogoutBtn" class="text-[var(--k-text-muted)] hover:text-red-500 ml-1 px-1 transition-colors" title="Çıkış Yap">
+                        <i class="fa-solid fa-right-from-bracket text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Ana Sayfa (Ev) İkonu - HER ZAMAN EN SAĞDA -->
+                <button class="hidden sm:flex w-10 h-10 shrink-0 rounded-xl items-center justify-center bg-[var(--k-card)] border border-[var(--k-border)] text-[var(--k-text)] hover:text-[#ff9f0a] hover:border-[#ff9f0a] transition-all shadow-sm" onclick="gtagTrack('nav_click', 'Menu', 'Home'); window.location.href='index.html'" title="Ana Sayfaya Dön">
                     <i class="fa-solid fa-house text-base"></i>
                 </button>
             </div>
@@ -594,7 +624,189 @@
 
     <div id="pdf-template-wrapper"></div>
 
-    <script>
+    <script type="module">
+        // GEREKLİ FIREBASE MODÜLLERİ (Blogla Aynı Ayarlar)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXCeJn7Nyz1hfYt0RRcW5yPOtDxgDpE_4",
+            authDomain: "vhesap-tr.firebaseapp.com",
+            projectId: "vhesap-tr",
+            storageBucket: "vhesap-tr.firebasestorage.app",
+            messagingSenderId: "705403983274",
+            appId: "1:705403983274:web:497f04d17ef59465eb07d3"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
+        // ÖNEMLİ: Google Drive Dosya Oluşturma ve Düzenleme İzni (Scope)
+        provider.addScope('https://www.googleapis.com/auth/drive.file');
+
+        let googleAccessToken = sessionStorage.getItem('vhesap_gdrive_token');
+        let currentUser = null;
+
+        // AUTH UI YÖNETİMİ
+        const loginWrapper = document.getElementById("googleLoginWrapper");
+        const profileArea = document.getElementById("userProfileArea");
+        
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUser = user;
+                loginWrapper.classList.add("hidden");
+                profileArea.classList.remove("hidden");
+                profileArea.classList.add("flex");
+                
+                document.getElementById("userPhoto").src = user.photoURL;
+                document.getElementById("userName").innerText = user.displayName;
+                
+                // Eğer sayfa yenilendiyse ve token duruyorsa otomatik yedeklemeyi tetikle
+                if (googleAccessToken) {
+                    window.triggerAutoBackup();
+                } else {
+                    // Sayfa yenilendiğinde Google API token'ı kaybolabilir, durum ikonunu güncelle
+                    document.getElementById('syncStatus').innerHTML = '<i class="fa-solid fa-cloud"></i> BAĞLI';
+                    document.getElementById('syncStatus').className = 'text-[8px] text-gray-400 font-bold tracking-wider uppercase';
+                }
+            } else {
+                currentUser = null;
+                googleAccessToken = null;
+                sessionStorage.removeItem('vhesap_gdrive_token');
+                
+                profileArea.classList.remove("flex");
+                profileArea.classList.add("hidden");
+                loginWrapper.classList.remove("hidden");
+            }
+        });
+
+        // GOOGLE GİRİŞ YAP
+        document.getElementById("googleLoginBtn").onclick = async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                
+                if (credential && credential.accessToken) {
+                    googleAccessToken = credential.accessToken;
+                    sessionStorage.setItem('vhesap_gdrive_token', googleAccessToken); // Geçici sakla
+                }
+                
+                showToast("Google ile giriş yapıldı.");
+                window.triggerAutoBackup(); // Giriş sonrası ilk yedeği al
+            } catch (error) {
+                console.error("Giriş hatası:", error);
+                if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+                    showToast("Giriş işlemi iptal edildi veya başarısız.");
+                }
+            }
+        };
+
+        // GOOGLE ÇIKIŞ YAP
+        document.getElementById("googleLogoutBtn").onclick = async () => {
+            try {
+                await signOut(auth);
+                showToast("Güvenli çıkış yapıldı.");
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        // GOOGLE DRIVE OTOMATİK YEDEKLEME SİSTEMİ
+        window.triggerAutoBackup = () => {
+            if (!currentUser || !googleAccessToken) return; // Kullanıcı veya token yoksa iptal et
+            
+            const syncStatus = document.getElementById('syncStatus');
+            if (syncStatus) {
+                syncStatus.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i> YEDEKLEMEDE';
+                syncStatus.className = 'text-[8px] text-amber-500 font-bold tracking-wider uppercase';
+            }
+
+            if (window.autoSyncTimer) clearTimeout(window.autoSyncTimer);
+            
+            // Veri çok hızlı değişirse sistemi yormamak için 2.5 saniye debounce (gecikme) süresi
+            window.autoSyncTimer = setTimeout(async () => {
+                await executeDriveBackup();
+            }, 2500);
+        };
+
+        async function executeDriveBackup() {
+            // Yedeklenecek veriler paketleniyor
+            const dataToBackup = {
+                krediler: localStorage.getItem('vhesap_saved_krediler') || localStorage.getItem('vhesap_loans_dna') || "[]",
+                gelir: localStorage.getItem('vanaliz_income') || "0",
+                tema: localStorage.getItem('vhesap_global_theme') || "dark",
+                son_guncelleme: new Date().toISOString()
+            };
+            const fileContent = JSON.stringify(dataToBackup);
+            const metadata = {
+                name: 'vhesap_vanaliz_yedek.json',
+                mimeType: 'application/json'
+            };
+
+            try {
+                // 1. Kullanıcının Drive'ında daha önce oluşturduğumuz yedek dosyası var mı kontrol edelim
+                let searchRes = await fetch('https://www.googleapis.com/drive/v3/files?q=name="vhesap_vanaliz_yedek.json" and trashed=false', {
+                    headers: { 'Authorization': 'Bearer ' + googleAccessToken }
+                });
+                
+                if (!searchRes.ok) throw new Error("Google Drive erişim reddi.");
+                let searchData = await searchRes.json();
+                
+                let fileId = null;
+                if (searchData.files && searchData.files.length > 0) {
+                    fileId = searchData.files[0].id;
+                }
+
+                // 2. Dosya varsa Üzerine Yaz (PATCH), Yoksa Yeni Oluştur (POST)
+                let uploadUrl = fileId 
+                    ? `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart` 
+                    : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
+                
+                let method = fileId ? 'PATCH' : 'POST';
+                let boundary = 'vhesap_yedek_siniri';
+                let body = '--' + boundary + '\r\n' +
+                           'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+                           JSON.stringify(metadata) + '\r\n' +
+                           '--' + boundary + '\r\n' +
+                           'Content-Type: application/json\r\n\r\n' +
+                           fileContent + '\r\n' +
+                           '--' + boundary + '--';
+
+                let response = await fetch(uploadUrl, {
+                    method: method,
+                    headers: {
+                        'Authorization': 'Bearer ' + googleAccessToken,
+                        'Content-Type': 'multipart/related; boundary=' + boundary
+                    },
+                    body: body
+                });
+                
+                if(response.ok) {
+                    const syncStatus = document.getElementById('syncStatus');
+                    if(syncStatus) {
+                        syncStatus.innerHTML = '<i class="fa-solid fa-cloud-check"></i> EŞİTLENDİ';
+                        syncStatus.className = 'text-[8px] text-green-500 font-bold tracking-wider uppercase';
+                    }
+                } else {
+                    throw new Error("Yedek dosyası yüklenemedi.");
+                }
+            } catch (err) {
+                console.error("Yedekleme başarısız:", err);
+                const syncStatus = document.getElementById('syncStatus');
+                if(syncStatus) {
+                    syncStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> HATA';
+                    syncStatus.className = 'text-[8px] text-red-500 font-bold tracking-wider uppercase';
+                }
+                
+                // Eğer Token zaman aşımına uğramışsa temizle
+                if(err.message.includes('401') || err.message.includes('erişim')) {
+                    sessionStorage.removeItem('vhesap_gdrive_token');
+                    googleAccessToken = null;
+                }
+            }
+        }
+
+        // ESKİ JS MANTIKLARI (Tüm yapı global window nesnesine aktarıldı)
         window.switchTab = (tabId) => {
             document.body.setAttribute('data-active-tab', tabId);
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -640,7 +852,7 @@
             } catch(e) { console.warn("Analytics error", e); }
         }
 
-        function getAdHtml(placement) {
+        window.getAdHtml = function(placement) {
             try {
                 let ads = [];
                 if (window.GLOBAL_ADS) {
@@ -682,25 +894,25 @@
                     </a>`;
                 }
             } catch(e) { return ''; }
-        }
+        };
 
-        function renderAds(placement, containerId) {
+        window.renderAds = function(placement, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            container.innerHTML = getAdHtml(placement);
-        }
+            container.innerHTML = window.getAdHtml(placement);
+        };
         
-        function gtagTrack(action, category, label, value) {
+        window.gtagTrack = function(action, category, label, value) {
             let params = { 'event_category': category };
             if (label) params['event_label'] = label;
             if (value !== undefined) params['value'] = value;
             trackEvent(action, params);
-        }
+        };
 
         let pageStartTime = Date.now();
         window.addEventListener('beforeunload', () => {
             let timeSpent = Math.round((Date.now() - pageStartTime) / 1000);
-            gtagTrack('time_spent', 'Engagement', window.location.pathname, timeSpent);
+            window.gtagTrack('time_spent', 'Engagement', window.location.pathname, timeSpent);
         });
 
         const VERGI_CARPANI = 1.30;
@@ -762,39 +974,39 @@
 
         const formatMoney = (amount) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 2 }).format(amount);
         
-        function showToast(msg) {
+        window.showToast = function(msg) {
             const toast = document.getElementById('toast-container');
             document.getElementById('toast-message').innerText = msg;
             toast.style.transform = 'translate(-50%, 0)'; toast.style.opacity = '1';
             setTimeout(() => { toast.style.transform = 'translate(-50%, -20px)'; toast.style.opacity = '0'; }, 3000);
-        }
+        };
 
         window.onload = () => {
-            initTheme();
-            loadIncome();
-            loadLoansFromLocalStorage();
-            calculateEngine();
+            window.initTheme();
+            window.loadIncome();
+            window.loadLoansFromLocalStorage();
+            window.calculateEngine();
             lucide.createIcons();
             
-            renderAds('blogTop', 'ad-container-rescue');
-            renderAds('blogMid', 'ad-container-dna');
-            renderAds('blogBottom', 'ad-container-result');
-            renderAds('homeBottom', 'ad-container-bottom');
+            window.renderAds('blogTop', 'ad-container-rescue');
+            window.renderAds('blogMid', 'ad-container-dna');
+            window.renderAds('blogBottom', 'ad-container-result');
+            window.renderAds('homeBottom', 'ad-container-bottom');
             
             trackEvent('page_view', { page: 'vanaliz' });
         };
 
-        function initTheme() {
+        window.initTheme = function() {
             const savedTheme = localStorage.getItem('vhesap_global_theme') || 'dark';
             document.body.classList.toggle('dark', savedTheme !== 'light');
-        }
+        };
 
-        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme') initTheme(); });
+        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme') window.initTheme(); });
 
-        function loadIncome() {
+        window.loadIncome = function() {
             const inc = localStorage.getItem('vanaliz_income');
             if (inc) { globalIncome = parseFloat(inc); document.getElementById('income-input').value = new Intl.NumberFormat('tr-TR').format(globalIncome); }
-        }
+        };
 
         window.updateIncome = (val) => {
             let numericVal = parseFloat(val.toString().replace(/\./g, '').replace(',', '.'));
@@ -805,10 +1017,13 @@
             }
             localStorage.setItem('vanaliz_income', globalIncome);
             document.getElementById('income-input').value = globalIncome > 0 ? new Intl.NumberFormat('tr-TR').format(globalIncome) : '';
-            calculateEngine();
+            window.calculateEngine();
+            
+            // Kullanıcı veri değiştirdi, yedeklemeyi tetikle (sadece giriş yapmışsa çalışır)
+            window.triggerAutoBackup(); 
         };
 
-        function loadLoansFromLocalStorage() {
+        window.loadLoansFromLocalStorage = function() {
             let dbLoans = [];
             let foundData = null;
             globalActiveStorageKey = null;
@@ -866,7 +1081,7 @@
                     isTemporary: false
                 };
             }).filter(l => l.tutar > 0 && (l.vade > 0 || (l.savedPlan && l.savedPlan.length > 0)));
-        }
+        };
 
         window.openTempLoanModal = () => {
             trackEvent('payment_plan_open', { module: 'vanaliz_new_loan' });
@@ -911,13 +1126,13 @@
         };
 
         window.saveTempLoan = () => {
-            gtagTrack('feature_use', 'Vanaliz', 'Add_Temp_Loan');
+            window.gtagTrack('feature_use', 'Vanaliz', 'Add_Temp_Loan');
             const tutar = parseFloat(document.getElementById('temp-tutar').value) || 0;
             const vade = parseInt(document.getElementById('temp-vade').value) || 0;
             
             if(tutar <= 0 || vade <= 0 || isNaN(tutar) || isNaN(vade)) { 
                 trackEvent('calculation_error', { module: 'vanaliz', error_type: 'invalid_temp_loan_inputs' });
-                showToast("Tutar ve vade sıfırdan büyük olmalıdır."); 
+                window.showToast("Tutar ve vade sıfırdan büyük olmalıdır."); 
                 return; 
             }
             
@@ -931,18 +1146,23 @@
                 tarih: normalizeToISO(rawTarih),
                 esnekKurRules: {}, savedPlan: null, isSelected: true, isTemporary: true
             });
-            calculateEngine(); closeTempLoanModal(); showToast("Geçici kredi analize dahil edildi.");
+            window.calculateEngine(); 
+            window.closeTempLoanModal(); 
+            window.showToast("Geçici kredi analize dahil edildi.");
+            
+            // Veri güncellendiği için yedeklemeyi tetikle
+            window.triggerAutoBackup(); 
         };
 
         window.toggleLoanSelection = (id) => {
             const loan = activeLoans.find(l => l.id === id);
-            if(loan) { loan.isSelected = !loan.isSelected; calculateEngine(); }
+            if(loan) { loan.isSelected = !loan.isSelected; window.calculateEngine(); }
         };
 
         window.removeLoan = (id) => {
             const loanToRemove = activeLoans.find(l => l.id === id);
             activeLoans = activeLoans.filter(l => l.id !== id);
-            calculateEngine();
+            window.calculateEngine();
             
             if (loanToRemove && !loanToRemove.isTemporary && globalActiveStorageKey) {
                 try {
@@ -950,22 +1170,25 @@
                     if (Array.isArray(rawData)) {
                         rawData = rawData.filter(l => (l.id || l.krediId || l.uuid) !== id);
                         localStorage.setItem(globalActiveStorageKey, JSON.stringify(rawData));
-                        showToast("Kredi yerel veritabanından kalıcı olarak silindi.");
+                        window.showToast("Kredi yerel veritabanından kalıcı olarak silindi.");
                     } else if (typeof rawData === 'object') {
                         let arrayKey = Object.keys(rawData).find(k => Array.isArray(rawData[k]));
                         if(arrayKey) {
                             rawData[arrayKey] = rawData[arrayKey].filter(l => (l.id || l.krediId || l.uuid) !== id);
                             localStorage.setItem(globalActiveStorageKey, JSON.stringify(rawData));
-                            showToast("Kredi yerel veritabanından kalıcı olarak silindi.");
+                            window.showToast("Kredi yerel veritabanından kalıcı olarak silindi.");
                         }
                     }
                 } catch(e) { console.error("Localstorage silme hatası:", e); }
             } else if (loanToRemove && loanToRemove.isTemporary) {
-                showToast("Geçici kredi listeden kaldırıldı.");
+                window.showToast("Geçici kredi listeden kaldırıldı.");
             }
+            
+            // Veri silindiği için Drive yedeğini güncelle
+            window.triggerAutoBackup(); 
         };
 
-        function calculateEngine() {
+        window.calculateEngine = function() {
             trackEvent('calculation_start', { module: 'vanaliz' });
             
             summary = { kalanAnapara: 0, taksit: 0, kalanOdeme: 0, ortVade: 0, ortOran: 0 };
@@ -1097,18 +1320,18 @@
             document.getElementById('sum-oran').innerText = summary.ortOran.toFixed(2);
             document.getElementById('alt-kapama-tutar').innerText = formatMoney(summary.kalanAnapara);
 
-            renderLoansList();
-            updateTGRatio(selectedLoans);
-            runAlternativeInvestment();
-            runRefinanceSim();
-            runInflationSim();
+            window.renderLoansList();
+            window.updateTGRatio(selectedLoans);
+            window.runAlternativeInvestment();
+            window.runRefinanceSim();
+            window.runInflationSim();
             
-            if(document.getElementById('lumpsum-input').value) runDebtClosureSim(document.getElementById('lumpsum-input').value);
+            if(document.getElementById('lumpsum-input').value) window.runDebtClosureSim(document.getElementById('lumpsum-input').value);
             
             trackEvent('calculation_complete', { module: 'vanaliz', active_loans: selectedLoans.length });
-        }
+        };
 
-        function renderLoansList() {
+        window.renderLoansList = function() {
             const container = document.getElementById('dna-loans-container');
             container.innerHTML = '';
             
@@ -1166,9 +1389,9 @@
                 container.appendChild(card);
             });
             lucide.createIcons();
-        }
+        };
 
-        function updateTGRatio(selectedLoans) {
+        window.updateTGRatio = function(selectedLoans) {
             const gaugePath = document.getElementById('gauge-path');
             const pctText = document.getElementById('tg-percentage');
             const statusText = document.getElementById('tg-status-text');
@@ -1239,10 +1462,10 @@
                     </div>
                     ${smartSuggestionHtml}
                 </div>`;
-        }
+        };
 
         window.runDebtClosureSim = (valStr) => {
-            gtagTrack('feature_use', 'Vanaliz', 'Debt_Closure_Sim');
+            window.gtagTrack('feature_use', 'Vanaliz', 'Debt_Closure_Sim');
             const avRes = document.getElementById('avalanche-result'); const snRes = document.getElementById('snowball-result');
             let amount = parseFloat(valStr.toString().replace(/\./g, '').replace(',', '.'));
             
@@ -1268,9 +1491,8 @@
             snRes.innerHTML = snClosedNames.length > 0 ? `Psikolojik motivasyon için küçük bakiyeli <span class="text-[var(--k-text)] font-black">${snClosedNames.join(', ')}</span> kapatılır. <br><div class="mt-1">Aylık nakit akışınız <strong class="text-amber-500 text-xs">${formatMoney(snFreedCashflow)}</strong> rahatlar.</div>` : `Bu tutar en küçük kredinizi (${snLoans[0].isim}) tam kapatmaya yetmiyor. Kapatmak için ${formatMoney(snLoans[0]._kalanAnapara)} gerekir.`;
         };
 
-        // Kapsamlı ve Gerçek Nakit Akışı Bazlı NPV (Net Bugünkü Değer) Hesaplaması
         window.runAlternativeInvestment = () => {
-            gtagTrack('feature_use', 'Vanaliz', 'Investment_Sim');
+            window.gtagTrack('feature_use', 'Vanaliz', 'Investment_Sim');
             
             const pv = summary.kalanAnapara;
             const cfs = window.globalCashFlows || [];
@@ -1278,7 +1500,6 @@
             const elBasabasTutar = document.getElementById('alt-basabas-tutar');
             const elResultBadge = document.getElementById('alt-result-badge');
 
-            // Eğer nakit akışı veya tutar sıfırsa hesaplama yapma
             if (pv <= 0 || cfs.length === 0) {
                 elBasabasOran.innerText = "%0.00"; 
                 elBasabasTutar.innerText = "₺0,00"; 
@@ -1286,7 +1507,6 @@
                 return;
             }
 
-            // 1. IRR (Başa Baş Oranı) Hesaplama - NPV = pv yapan r değerini bul
             let low = 0.0, high = 1.0, r_bb = 0.05;
             for(let i=0; i<50; i++) {
                 r_bb = (low + high) / 2;
@@ -1302,7 +1522,6 @@
             let r_bb_annual_brut = r_bb_annual_net / 0.825; 
             elBasabasOran.innerText = `%${(r_bb_annual_brut * 100).toFixed(2)}`;
 
-            // 2. Kullanıcı Girişli Simülasyon Hesaplama
             let girilenOran = parseFloat(document.getElementById('alt-oran-input').value) || 0;
             let faizTipi = document.getElementById('alt-faiz-tipi').value;
             let netOranYillik = faizTipi === 'brut' ? girilenOran * 0.825 : girilenOran;
@@ -1316,20 +1535,18 @@
             let userAylikNet = netOranYillik / 100 / 12;
 
             if (userAylikNet > 0) {
-                // Gereken minimum fon (Taksitlerin kullanıcı oranındaki NPV'si)
                 let requiredFund = 0;
                 for(let t = 0; t < cfs.length; t++) {
                     if(cfs[t]) requiredFund += cfs[t] / Math.pow(1 + userAylikNet, t + 1);
                 }
                 elBasabasTutar.innerText = formatMoney(requiredFund);
                 
-                // Vade Sonu (Tüm taksitler bitinceki) Net Durum
                 let balance = pv;
                 for(let t = 0; t < cfs.length; t++) {
                     if(cfs[t]) {
                         balance = balance * (1 + userAylikNet) - cfs[t];
                     } else {
-                        balance = balance * (1 + userAylikNet); // Eğer o ay taksit yoksa da faiz işler
+                        balance = balance * (1 + userAylikNet);
                     }
                 }
                 
@@ -1344,7 +1561,7 @@
         };
 
         window.runRefinanceSim = () => {
-            gtagTrack('feature_use', 'Vanaliz', 'Refinance_Sim');
+            window.gtagTrack('feature_use', 'Vanaliz', 'Refinance_Sim');
             
             let simOran = Math.max(0, parseFloat(document.getElementById('ref-oran-input').value) || 0);
             let simVade = Math.max(1, parseInt(document.getElementById('ref-vade-input').value) || 1);
@@ -1385,7 +1602,7 @@
 
             if (window.infSimTimer) clearTimeout(window.infSimTimer);
             window.infSimTimer = setTimeout(() => {
-                gtagTrack('feature_use', 'Vanaliz', 'Inflation_Sim', inflationRateAnnual);
+                window.gtagTrack('feature_use', 'Vanaliz', 'Inflation_Sim', inflationRateAnnual);
                 trackEvent('calculation_complete', { module: 'vanaliz_inflation' });
             }, 1500);
 
@@ -1456,11 +1673,11 @@
         };
 
         window.shareDeepLink = (id) => {
-            gtagTrack('feature_use', 'Vanaliz', 'Share_Link');
+            window.gtagTrack('feature_use', 'Vanaliz', 'Share_Link');
             const loan = activeLoans.find(l => l.id === id); if(!loan) return;
             const link = `${window.location.origin}${window.location.pathname}?dna=${btoa(JSON.stringify(loan))}`;
-            navigator.clipboard.writeText(link).then(() => showToast("Kredi bağlantısı kopyalandı!")).catch(e => {
-                const temp = document.createElement("input"); document.body.appendChild(temp); temp.value = link; temp.select(); document.execCommand("copy"); document.body.removeChild(temp); showToast("Kredi bağlantısı kopyalandı!");
+            navigator.clipboard.writeText(link).then(() => window.showToast("Kredi bağlantısı kopyalandı!")).catch(e => {
+                const temp = document.createElement("input"); document.body.appendChild(temp); temp.value = link; temp.select(); document.execCommand("copy"); document.body.removeChild(temp); window.showToast("Kredi bağlantısı kopyalandı!");
             });
         };
 
@@ -1576,7 +1793,7 @@
                     html2canvas: { scale: 2, useCORS: true }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
                 }).from(wrapper).save().then(() => {
-                    document.body.classList.remove('pdf-mode'); showToast("Rapor ve Ödeme Planı indirildi.");
+                    document.body.classList.remove('pdf-mode'); window.showToast("Rapor ve Ödeme Planı indirildi.");
                 });
             }, 300);
         };
@@ -1650,7 +1867,7 @@
             
             setTimeout(() => {
                 html2pdf().set({ margin: 15, filename: `Vanaliz_Raporu_${Date.now()}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(wrapper).save().then(() => {
-                    document.body.classList.remove('pdf-mode'); showToast("Genel Rapor indirildi.");
+                    document.body.classList.remove('pdf-mode'); window.showToast("Genel Rapor indirildi.");
                 });
             }, 300);
         };
