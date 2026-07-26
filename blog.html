@@ -47,7 +47,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background: var(--bg); color: var(--text); line-height: 1.6; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-        button, input, textarea { border: none; outline: none; font-family: inherit; }
+        button, input, textarea, select { border: none; outline: none; font-family: inherit; }
         a { text-decoration: none; color: inherit; }
 
         .viewport { width: 100%; min-height: 100vh; display: flex; justify-content: center; }
@@ -237,7 +237,6 @@
             document.body.classList.add("light-mode");
         }
 
-        // --- VHESAP ANALYTICS & ADS SYSTEM ---
         window.trackEvent = function(eventName, params = {}) {
             try {
                 const analyticsConf = JSON.parse(localStorage.getItem('vhesap_analytics_config') || '{"enabled":true}');
@@ -411,7 +410,6 @@
                 </div>
             </div>
 
-            <!-- Özel Silme Onay Modalı (Browser'ın sinir bozucu alert'ini kullanmamak için) -->
             <div id="confirmModal" class="modal">
                 <div class="modal-content" style="max-width: 350px; text-align:center;">
                     <h3 style="margin-bottom: 15px; color: var(--text-strong);">Emin misiniz?</h3>
@@ -439,7 +437,22 @@
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom: 15px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label">Kategori Seçimi</label>
-                            <input type="text" id="editCategory" class="form-input" placeholder="Örn: Bireysel Finans, Yatırım">
+                            <select id="editCategory" class="form-input">
+                                <option value="">Kategori Seçin...</option>
+                                <option value="Bireysel Finans">Bireysel Finans</option>
+                                <option value="Ticari Finans">Ticari Finans</option>
+                                <option value="Mevduat">Mevduat</option>
+                                <option value="Yatırım">Yatırım</option>
+                                <option value="Analiz">Analiz</option>
+                                <option value="Kredi Kartı">Kredi Kartı</option>
+                                <option value="Kredi">Kredi</option>
+                                <option value="Finansal Rehber">Finansal Rehber</option>
+                                <option value="Vergi">Vergi</option>
+                                <option value="Sigorta">Sigorta</option>
+                                <option value="Ekonomi">Ekonomi</option>
+                                <option value="Hukuk">Hukuk</option>
+                                <option value="Gayrimenkul">Gayrimenkul</option>
+                            </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label">Vitrin İkonu</label>
@@ -553,21 +566,18 @@
         let loadedPosts = []; 
         const SPAM_COOLDOWN_MS = 60000; 
 
-        // Tema Yönetimi
         function updateThemeUI(theme) {
             if (theme === "light") { document.body.classList.remove("dark"); document.body.classList.add("light-mode"); } 
             else { document.body.classList.remove("light-mode"); document.body.classList.add("dark"); }
         }
         window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
 
-        // Zaman Aşımı (Idle Timeout) için aktivite dinleyici
         document.addEventListener("click", () => {
             if (currentUser) {
                 localStorage.setItem("vhesap_last_activity", Date.now().toString());
             }
         });
 
-        // HATA DÜZELTİLDİ: Progress bar'ı artık en üst window seviyesinden takip ediyoruz.
         window.addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
                 const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -585,7 +595,6 @@
             toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
-        // Özelleştirilmiş Alert / Confirm (Onay) fonksiyonu
         window.customConfirm = function(message, onConfirmCallback) {
             document.getElementById('confirmText').innerText = message;
             const modal = document.getElementById('confirmModal');
@@ -601,7 +610,6 @@
             };
         };
 
-        // ZENGİN METİN EDİTÖRÜ (WYSIWYG) FONKSİYONLARI
         window.formatDoc = function(cmd, value=null) {
             document.execCommand(cmd, false, value);
             document.getElementById('editBody').focus();
@@ -621,7 +629,6 @@
             else { this.setAttribute('empty', 'false'); }
         });
 
-        // GÖRSEL İKON SEÇİCİ
         const fontAwesomeIcons = [
             'fa-file-lines', 'fa-calculator', 'fa-coins', 'fa-chart-pie', 'fa-chart-line', 
             'fa-money-bill', 'fa-money-bill-transfer', 'fa-wallet', 'fa-house', 'fa-house-user', 
@@ -650,8 +657,6 @@
         };
         initIconPicker();
 
-        // KÖKTEN ÇÖZÜM: Koda gömülü sahte makaleler (hayalet veriler) tamamen silindi!
-        // Sadece Firebase veritabanında ne varsa o baz alınacak.
         const initialPosts = [];
 
         function getReadTime(htmlContent) {
@@ -721,7 +726,6 @@
             renderGroupedPosts(filtered);
         });
 
-        // HATA DÜZELTİLDİ: Veritabanı okuma bloğu tamamen güncellendi.
         async function fetchAndRenderPosts() {
             try {
                 const q = query(collection(db, "posts"));
@@ -730,17 +734,13 @@
                 let serverPosts = []; 
                 querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
                 
-                // Firestore'dan gelen güncel listeyi (kaç tane olursa olsun) ekrana yansıt.
                 loadedPosts = serverPosts;
                 renderGroupedPosts(loadedPosts);
-                
                 checkUrlParams(); 
-                
             } catch (error) {
-                console.warn("Çevrimdışı mod veya bağlantı hatası:", error);
-                // Çevrimdışıysak yerelde kalanları gösterebilir.
+                console.warn("Bağlantı hatası:", error);
                 if (loadedPosts.length === 0) {
-                    document.getElementById("postsContent").innerHTML = `<div style="text-align:center; padding: 50px; color:var(--danger);">Bağlantı sorunu yaşandı veya yetkiniz reddedildi.</div>`;
+                    document.getElementById("postsContent").innerHTML = `<div style="text-align:center; padding: 50px; color:var(--danger);">Bağlantı sorunu yaşandı.</div>`;
                 }
             }
         }
@@ -778,27 +778,19 @@
             
             if (window.trackEvent) window.trackEvent('page_view', { page: 'blog_article', article_id: id });
             
-            // HATA DÜZELTİLDİ: Makale açıldığında sayfa mutlaka en tepeden başlayacak.
             window.scrollTo({ top: 0, behavior: 'smooth' });
             loadComments(); 
         }
 
-        // HATA DÜZELTİLDİ: Silme işlemi Firebase tarafında ve önbellekte eşzamanlı çalışıyor.
         window.deletePost = function(id) {
             window.customConfirm("Bu makaleyi kalıcı olarak silmek istediğinize emin misiniz?", async () => {
                 try { 
                     await deleteDoc(doc(db, "posts", id)); 
                     toast("Makale başarıyla silindi."); 
-                    
-                    // Silinen makaleyi yerel önbellek listesinden anında çıkar.
                     loadedPosts = loadedPosts.filter(p => p.id !== id);
-                    
-                    // Geri dönüşte yeni listeyi göstermesini tetikle.
                     document.getElementById("backBtn").click(); 
-                    
-                } catch (e) {
-                    console.error("Firebase Silme Hatası:", e);
-                    toast("Yetkiniz reddedildi. (Firebase Rules)"); 
+                } catch (e) { 
+                    toast("Hata: " + e.message); 
                 }
             });
         }
@@ -810,15 +802,11 @@
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
-            
-            // HATA DÜZELTİLDİ: Geri dönüldüğünde sayfanın başında / tepesinde olmasını garantile
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
             document.getElementById('searchInput').value = "";
             renderGroupedPosts(loadedPosts);
         };
 
-        // --- ADMİN PANELİ KONTROLLERİ ---
         document.getElementById("adminPanelBtn").onclick = () => { document.getElementById("homePage").style.display = "none"; document.getElementById("adminEditor").style.display = "flex"; window.scrollTo({ top: 0, behavior: 'smooth' }); };
         document.getElementById("closeEditorBtn").onclick = () => { document.getElementById("adminEditor").style.display = "none"; document.getElementById("homePage").style.display = "flex"; window.scrollTo({ top: 0, behavior: 'smooth' }); };
         document.getElementById("writerManageBtn").onclick = () => { document.getElementById("writerManagerModal").style.display = "flex"; loadWriters(); };
@@ -837,7 +825,6 @@
             
             const btn = document.getElementById("publishPostBtn"); btn.disabled = true; btn.innerHTML = "Kaydediliyor...";
             try {
-                // Tümü toLowerCase yapıldı
                 const userMailStr = currentUser?.email ? currentUser.email.toLowerCase() : "";
                 await addDoc(collection(db, "posts"), { title: title, category: cat, icon: icon, body: bodyHtml, authorEmail: userMailStr, createdAt: serverTimestamp() });
                 toast("Makale yayına alındı!"); 
@@ -851,10 +838,7 @@
                 
                 document.getElementById("closeEditorBtn").click(); 
                 fetchAndRenderPosts();
-            } catch(e) {
-                console.error("Firebase Ekleme Hatası:", e);
-                toast("Hata. Yetkiniz reddedildi."); 
-            } 
+            } catch(e) { toast("Hata: " + e.message); } 
             finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al`; }
         };
 
@@ -890,7 +874,6 @@
             } catch(e) { toast("Hata. Yetkiniz yok."); }
         };
 
-        // --- YORUMLAR ---
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -925,9 +908,7 @@
             });
         }
 
-        // --- AUTH & ROL KONTROLÜ ---
         async function checkUserRole(user) {
-            // Tümü toLowerCase yapıldı
             const userEmail = user.email ? user.email.toLowerCase() : "";
             isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
             isWriter = false;
@@ -1064,7 +1045,6 @@
             } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
         };
 
-        // Tarayıcı Geri/İleri butonları için URL-Ekran Senkronizasyonu (Popstate)
         window.addEventListener('popstate', (event) => {
             const yaziId = new URLSearchParams(window.location.search).get('yazi');
             if (yaziId && loadedPosts.length > 0) {
@@ -1080,10 +1060,8 @@
             }
         });
 
-        // Sayfa Yüklendiğinde Gönderileri Çek ve Başlat
         fetchAndRenderPosts();
         
-        // Sayfa reklamı ilk açılışta
         if (window.renderAds) window.renderAds('homeBottom', 'ad-container-bottom');
         if (window.trackEvent) window.trackEvent('page_view', { page: 'blog' });
     </script>
