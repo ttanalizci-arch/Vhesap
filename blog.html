@@ -757,15 +757,11 @@
                 const querySnapshot = await getDocs(q);
                 
                 if (querySnapshot.empty) {
-                    // Eğer veritabanı tamamen boşsa varsayılanları GERİ YÜKLEME, sadece ekranı temizle.
                     loadedPosts = [];
                     renderGroupedPosts(loadedPosts);
                 } else {
                     let serverPosts = []; 
                     querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
-                    
-                    // MANTIK HATASI DÜZELTİLDİ: Sayı karşılaştırması tamamen kaldırıldı!
-                    // Veritabanındaki güncel liste her koşulda ekrana yansıtılır.
                     loadedPosts = serverPosts;
                     renderGroupedPosts(loadedPosts);
                 }
@@ -819,8 +815,7 @@
                 await deleteDoc(doc(db, "posts", id)); 
                 toast("Makale silindi."); 
                 
-                // Senkronizasyon düzeltmesi: Firebase'den silindiğinde, eski listenin ekrana
-                // tekrar basılmasını önlemek için yerel diziden de anında siliyoruz.
+                // Silinen makaleyi yerel listeden de (önbellekten) çıkar ki anında kaybolsun
                 loadedPosts = loadedPosts.filter(p => p.id !== id);
                 
                 document.getElementById("backBtn").click(); 
@@ -828,7 +823,7 @@
             } 
             catch (e) { 
                 console.error("Silme Hatası:", e);
-                toast("Yetkiniz reddedildi veya bağlantı hatası."); 
+                toast("Yetkiniz reddedildi veya hata oluştu."); 
             }
         }
 
