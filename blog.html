@@ -757,15 +757,18 @@
                 const querySnapshot = await getDocs(q);
                 
                 if (querySnapshot.empty) {
+                    // Veritabanı sıfırlanmışsa, orijinal verileri yükler (Seed)
                     const promises = initialPosts.map(post => setDoc(doc(db, "posts", post.id), post));
                     Promise.all(promises).catch(e => console.warn(e));
                 } else {
                     let serverPosts = []; 
                     querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
-                    if (serverPosts.length !== initialPosts.length) {
-                        loadedPosts = serverPosts;
-                        renderGroupedPosts(loadedPosts);
-                    }
+                    
+                    // --- MANTIK HATASI DÜZELTİLDİ ---
+                    // if (serverPosts.length !== initialPosts.length) koşulu kaldırıldı. 
+                    // Artık sayı eşit olsa bile veri değişmiş/silinmişse anında ekrana yansıtılacak.
+                    loadedPosts = serverPosts;
+                    renderGroupedPosts(loadedPosts);
                 }
             } catch (error) {
                 console.warn("Çevrimdışı mod: Sistem yerel verilerle çalışıyor.");
