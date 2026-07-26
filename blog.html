@@ -796,8 +796,9 @@
                     // Geri dönüşte yeni listeyi göstermesini tetikle.
                     document.getElementById("backBtn").click(); 
                     
-                } catch (e) { 
-                    toast("Yetkiniz reddedildi veya bağlantı hatası."); 
+                } catch (e) {
+                    console.error("Firebase Silme Hatası:", e);
+                    toast("Yetkiniz reddedildi. (Firebase Rules)"); 
                 }
             });
         }
@@ -836,6 +837,7 @@
             
             const btn = document.getElementById("publishPostBtn"); btn.disabled = true; btn.innerHTML = "Kaydediliyor...";
             try {
+                // Tümü toLowerCase yapıldı
                 const userMailStr = currentUser?.email ? currentUser.email.toLowerCase() : "";
                 await addDoc(collection(db, "posts"), { title: title, category: cat, icon: icon, body: bodyHtml, authorEmail: userMailStr, createdAt: serverTimestamp() });
                 toast("Makale yayına alındı!"); 
@@ -849,7 +851,10 @@
                 
                 document.getElementById("closeEditorBtn").click(); 
                 fetchAndRenderPosts();
-            } catch(e) { toast("Hata. Yetkiniz reddedildi."); } 
+            } catch(e) {
+                console.error("Firebase Ekleme Hatası:", e);
+                toast("Hata. Yetkiniz reddedildi."); 
+            } 
             finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al`; }
         };
 
@@ -922,6 +927,7 @@
 
         // --- AUTH & ROL KONTROLÜ ---
         async function checkUserRole(user) {
+            // Tümü toLowerCase yapıldı
             const userEmail = user.email ? user.email.toLowerCase() : "";
             isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
             isWriter = false;
