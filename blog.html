@@ -757,16 +757,15 @@
                 const querySnapshot = await getDocs(q);
                 
                 if (querySnapshot.empty) {
-                    // Veritabanı sıfırlanmışsa, orijinal verileri yükler (Seed)
-                    const promises = initialPosts.map(post => setDoc(doc(db, "posts", post.id), post));
-                    Promise.all(promises).catch(e => console.warn(e));
+                    // Eğer veritabanı tamamen boşsa varsayılanları GERİ YÜKLEME, sadece ekranı temizle.
+                    loadedPosts = [];
+                    renderGroupedPosts(loadedPosts);
                 } else {
                     let serverPosts = []; 
                     querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
                     
-                    // --- MANTIK HATASI DÜZELTİLDİ ---
-                    // if (serverPosts.length !== initialPosts.length) koşulu kaldırıldı. 
-                    // Artık sayı eşit olsa bile veri değişmiş/silinmişse anında ekrana yansıtılacak.
+                    // MANTIK HATASI DÜZELTİLDİ: Sayı karşılaştırması tamamen kaldırıldı!
+                    // Veritabanındaki güncel liste her koşulda ekrana yansıtılır.
                     loadedPosts = serverPosts;
                     renderGroupedPosts(loadedPosts);
                 }
@@ -816,8 +815,21 @@
 
         window.deletePost = async function(id) {
             if(!confirm("Kalıcı olarak silmek istediğinize emin misiniz?")) return;
-            try { await deleteDoc(doc(db, "posts", id)); toast("Makale silindi."); document.getElementById("backBtn").click(); fetchAndRenderPosts(); } 
-            catch (e) { toast("Yetkiniz reddedildi."); }
+            try { 
+                await deleteDoc(doc(db, "posts", id)); 
+                toast("Makale silindi."); 
+                
+                // Senkronizasyon düzeltmesi: Firebase'den silindiğinde, eski listenin ekrana
+                // tekrar basılmasını önlemek için yerel diziden de anında siliyoruz.
+                loadedPosts = loadedPosts.filter(p => p.id !== id);
+                
+                document.getElementById("backBtn").click(); 
+                fetchAndRenderPosts(); 
+            } 
+            catch (e) { 
+                console.error("Silme Hatası:", e);
+                toast("Yetkiniz reddedildi veya bağlantı hatası."); 
+            }
         }
 
         document.getElementById("backBtn").onclick = () => {
