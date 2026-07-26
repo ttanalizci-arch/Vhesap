@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Merkezi Analytics ve Tracking Entegrasyonu -->
     <script src="analytics.js" onerror="console.log('analytics.js yüklenemedi.')"></script>
     <script src="ads.js" onerror="console.log('ads.js henüz oluşturulmamış veya yerel ortamda çalışılıyor.')"></script>
 
@@ -213,7 +212,6 @@
 
         @media (max-width: 768px) {
             .header {
-                /* Mobilde Grid mantığını 2 satıra bölüyoruz */
                 grid-template-columns: 1fr auto;
                 grid-template-areas:
                     "logo actions"
@@ -223,21 +221,11 @@
             
             .logo-area { grid-area: logo; }
             
-            .header-right { 
-                grid-area: actions; 
-                width: auto; 
-                justify-content: flex-end; 
-            }
+            .header-right { grid-area: actions; width: auto; justify-content: flex-end; }
             
-            .header-search { 
-                grid-area: search; 
-                width: 100%; 
-                margin-top: 5px;
-            }
+            .header-search { grid-area: search; width: 100%; margin-top: 5px; }
             
-            .search-wrapper { 
-                max-width: 100%; /* Mobilde arama çubuğu ekranı kaplar */
-            }
+            .search-wrapper { max-width: 100%; }
         }
     </style>
 </head>
@@ -344,13 +332,11 @@
     <div id="toast"></div>
 
     <div class="viewport" id="vhesap-viewport">
-        <!-- Tüm bileşenleri içeren merkezi Container -->
         <div class="container">
             
             <div id="progressBar"></div>
 
             <header class="header">
-                <!-- SÜTUN 1: Logo -->
                 <div class="logo-area">
                     <div class="logo-icon"><i class="fa-solid fa-book-open"></i></div>
                     <div class="logo-text">
@@ -359,7 +345,6 @@
                     </div>
                 </div>
                 
-                <!-- SÜTUN 2: Arama Çubuğu (Orta) -->
                 <div class="header-search">
                     <div class="search-wrapper">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -367,7 +352,6 @@
                     </div>
                 </div>
                 
-                <!-- SÜTUN 3: Aksiyon Butonları (Sağ) -->
                 <div class="header-right">
                     <button id="loginBtn" class="btn-primary" disabled>
                         <i class="fa-brands fa-google"></i> <span class="btn-text">Giriş Yap</span>
@@ -390,14 +374,12 @@
 
             <div id="homePage">
                 <div class="home-top">
-                    <!-- Arama çubuğu header'a taşındı, sadece açıklama kaldı -->
                     <p class="home-desc">Kredi, mevduat, yatırım ve bireysel finans yönetimi üzerine hazırlanan detaylı analiz ve okuma kütüphanesi.</p>
                 </div>
 
                 <div id="adminPanelControls" class="admin-panel">
                     <button id="adminPanelBtn" class="admin-btn add"><i class="fa-solid fa-pen-nib"></i> Yeni Makale Ekle</button>
                     <button id="writerManageBtn" class="admin-btn manage"><i class="fa-solid fa-users-gear"></i> Yazar Yönetimi</button>
-                    <!-- Sadece Kurucu Admin (Super Admin) görecek -->
                     <a href="vanaliz.html" id="vanalizNavBtn" class="admin-btn vanaliz" style="display:none;"><i class="fa-solid fa-chart-pie"></i> Vanaliz'e Git</a>
                     <a href="vhesap.html" id="panelNavBtn" class="admin-btn panel" style="display:none;"><i class="fa-solid fa-bolt"></i> Panel'e Git</a>
                 </div>
@@ -425,6 +407,18 @@
                     <div>
                         <label class="form-label" style="border-bottom: 1px solid var(--border); padding-bottom: 8px;">Sistemdeki Yazarlar</label>
                         <ul id="writersList" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Özel Silme Onay Modalı (Browser'ın sinir bozucu alert'ini kullanmamak için) -->
+            <div id="confirmModal" class="modal">
+                <div class="modal-content" style="max-width: 350px; text-align:center;">
+                    <h3 style="margin-bottom: 15px; color: var(--text-strong);">Emin misiniz?</h3>
+                    <p style="margin-bottom: 25px; font-size:14px; color:var(--muted);" id="confirmText">Bu işlemi geri alamazsınız. Kalıcı olarak silinsin mi?</p>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <button id="confirmCancel" class="btn-back" style="flex:1; justify-content:center;">İptal</button>
+                        <button id="confirmOk" class="btn-primary" style="flex:1; justify-content:center; background:var(--danger); color:white;">Evet, Sil</button>
                     </div>
                 </div>
             </div>
@@ -573,10 +567,11 @@
             }
         });
 
-        document.getElementById('vhesap-viewport').addEventListener('scroll', function() {
+        // HATA DÜZELTİLDİ: Progress bar'ı artık en üst window seviyesinden takip ediyoruz.
+        window.addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
-                const winScroll = this.scrollTop;
-                const height = this.scrollHeight - this.clientHeight;
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                 let scrolled = (winScroll / height) * 100;
                 if(isNaN(scrolled)) scrolled = 0;
                 document.getElementById('progressBar').style.width = scrolled + "%";
@@ -589,6 +584,22 @@
             if (toastTimeout) clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => { t.style.display = "none"; }, 3000);
         }
+
+        // Özelleştirilmiş Alert / Confirm (Onay) fonksiyonu
+        window.customConfirm = function(message, onConfirmCallback) {
+            document.getElementById('confirmText').innerText = message;
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'flex';
+            
+            document.getElementById('confirmOk').onclick = () => {
+                modal.style.display = 'none';
+                if(onConfirmCallback) onConfirmCallback();
+            };
+            
+            document.getElementById('confirmCancel').onclick = () => {
+                modal.style.display = 'none';
+            };
+        };
 
         // ZENGİN METİN EDİTÖRÜ (WYSIWYG) FONKSİYONLARI
         window.formatDoc = function(cmd, value=null) {
@@ -639,47 +650,9 @@
         };
         initIconPicker();
 
-        const initialPosts = [
-            { id: "p1", category: "Bireysel Finans", title: "Bireysel Finans Hesaplama: Kredinizi Almadan Önce Mutlaka Simülasyon Yapın", icon: "fa-calculator", body: `<p>Bireysel kredi kullanmak, ev, araç veya acil nakit ihtiyaçlarının karşılanmasında en önemli yöntemdir. Ancak birçok tüketici sadece aylık faiz oranına bakarak büyük bir hata yapar.</p><h2>Kredi Seçerken Nelere Dikkat Edilmeli?</h2><ul><li><strong>Aylık Taksit Tutarı:</strong> Bütçenizi sarsmayacak, sürdürülebilir bir ödeme olmalıdır.</li><li><strong>Toplam Geri Ödeme:</strong> Vade uzadıkça aylık taksit düşer ancak bankaya ödeyeceğiniz toplam tutar devasa boyutlara ulaşır.</li><li><strong>Tahsis Ücreti ve Sigortalar:</strong> Kredi tahsis ücreti (dosya masrafı) ve zorunlu tutulan hayat sigortaları maliyeti artırır.</li></ul><p>Vhesap Bireysel Finans modülü sayesinde kredi kullanmadan önce tüm bu değişkenleri tek ekranda görebilir, erken ödeme senaryolarını saniyeler içerisinde simüle edebilirsiniz.</p>` },
-            { id: "p2", category: "Bireysel Finans", title: "KMH (Ek Hesap) Faizleri ve Gizli Maliyetler", icon: "fa-money-bill-transfer", body: `<p>Kredili Mevduat Hesabı (Avans Hesap veya Ek Hesap), banka hesabınızda para kalmadığında acil nakit ihtiyaçlarınızı karşılamak için size tanımlanan kredili bir limittir.</p><h2>Günlük Faiz Mantığı Nasıl Çalışır?</h2><p>İhtiyaç kredilerinin aksine, KMH limitinden harcadığınız her tutar için faiz "günlük" olarak işlemeye başlar. Cuma günü çekilen bir nakit, pazartesi geri yatırılsa dahi hafta sonu için tam faiz ödenir.</p><h2>Dikkat Edilmesi Gerekenler</h2><ul><li>Ay sonunda kesilen faiz üzerinden ayrıca %15 BSMV ve %15 KKDF vergisi alınır.</li><li>Hesaba giren ilk para, otomatik olarak KMH borcunuzu ve faizini keser.</li><li>KMH, uzun vadeli borçlanma aracı değil, sadece birkaç günlük acil nakit aracı olarak kullanılmalıdır.</li></ul>` },
-            { id: "p3", category: "Bireysel Finans", title: "Taşıt Kredisi Tahsis Ücretleri ve Kasko Maliyeti", icon: "fa-car", body: `<p>Araç alımlarında kullanılan taşıt kredileri, genellikle ipotekli (araç rehinli) olduğu için ihtiyaç kredilerine göre daha düşük faiz oranları sunar. Ancak görünmeyen maliyetler oldukça yüksektir.</p><h2>Görünmeyen Maliyetler Nelerdir?</h2><ul><li><strong>Zorunlu Kasko:</strong> Bankalar, kredi süresi boyunca araca kasko yapılmasını zorunlu tutar. Hatta bazı bankalar kaskonun kendi sigorta şirketlerinden yapılmasını şart koşabilir.</li><li><strong>Rehin Tesis Ücreti:</strong> Aracın ruhsatına banka tarafından satılamaz (rehin) ibaresi konulması için ödenen ücrettir.</li><li><strong>Dosya Masrafı:</strong> Kredi tutarının binde 5'i kadar kesilen yasal masraftır.</li></ul><p>Taşıt kredisi çekerken sadece aylık faiz oranına değil, bankanın size sunduğu <strong>Yıllık Maliyet Oranına</strong> bakarak karar vermelisiniz.</p>` },
-            { id: "p4", category: "Bireysel Finans", title: "Konut Kredilerinde Ekspertiz Değeri ve Limitler", icon: "fa-house-user", body: `<p>Hayalinizdeki evi bulduğunuzda, satış fiyatının tamamına konut kredisi çekemezsiniz. Kredi limiti, evin satış fiyatına değil, bankanın atadığı bağımsız değerleme uzmanının (eksperin) belirlediği değere göre verilir.</p><h2>BDDK Kredi Sınırlandırmaları</h2><p>Bankacılık Düzenleme ve Denetleme Kurumu (BDDK), enerji sınıfına (A, B, C) ve evin değerine göre kredi kullanım oranlarını sınırlar.</p><ul><li>Enerji kimlik belgesi iyi olan sıfır konutlarda, ekspertiz değerinin %90'ına kadar kredi kullanılabilir.</li><li>İkinci el konutlarda ise evin değerine bağlı olarak bu oran %80 veya daha aşağıya düşebilir.</li></ul><p>Kredi çekmeden önce ekspertiz sürecinin masraflı olduğunu ve rapor çıkmadan kesin kredi limitinin belli olmayacağını unutmamalısınız.</p>` },
-            { id: "p5", category: "Ticari Finans", title: "Ticari Finans Yönetimi: İşletmeler İçin Profesyonel Kredi Analizi", icon: "fa-briefcase", body: `<p>İşletmeler için finansman yönetimi sadece kredi çekmekten ibaret değildir. Yanlış finansman modeli seçimi, şirketin tüm kârlılığını faiz giderlerine kurban etmesine neden olabilir.</p><h2>Ticari Kredilerde Yapılan En Büyük Hata</h2><p>Birçok KOBİ, sadece aylık faiz oranına odaklanarak kredi çeker. Oysa ticari finansmanda:</p><ul><li><strong>Rotatif Krediler:</strong> Kullanılan gün kadar faiz ödenir, erken kapanabilir.</li><li><strong>Spot Krediler:</strong> Vade sonuna kadar faiz sabittir ancak erken kapanması genellikle zordur veya maliyetlidir.</li><li><strong>İskonto/İştira:</strong> Çek ve senetlerin vadesinden önce nakde çevrilmesidir, kesinti (iskonto) oranları gizli maliyet barındırır.</li></ul><p>İşletmeler nakit akış tablolarına uygun olarak doğru kredi türünü seçmelidir.</p>` },
-            { id: "p6", category: "Ticari Finans", title: "Ticari Kredi Kartı vs Bireysel Kredi Kartı", icon: "fa-building", body: `<p>Şirket sahipleri, işletme harcamalarını kesinlikle şahsi kredi kartlarından yapmamalıdır. Bunun hem vergisel hem de finansal ciddi dezavantajları vardır.</p><h2>Neden Ticari Kredi Kartı?</h2><ul><li><strong>Taksit Esnekliği:</strong> BDDK'nın bireysel kartlara uyguladığı sert taksit sınırlamaları ticari kartlar için geçerli değildir. Ticari kartlarda uzun taksit imkanları bulunur.</li><li><strong>Vergi Avantajı:</strong> Ticari kartla yapılan ve faturalandırılan harcamalar, doğrudan şirket gideri olarak gösterilip vergiden düşülebilir.</li><li><strong>Şirket Kredi Notu:</strong> Ticari kartın düzenli ödenmesi, şirketinizin bankalar nezdindeki KKB notunu hızla yükseltir.</li></ul>` },
-            { id: "p7", category: "Ticari Finans", title: "Esnaf Kredileri ve Hazine Destekli Krediler", icon: "fa-store", body: `<p>Esnaf ve sanatkarlar, standart banka kredileri kullanmak yerine, devlet destekli esnaf kredilerini tercih ederek çok ciddi finansman avantajı sağlayabilirler.</p><h2>Hazine Destekli Krediler Nasıl Alınır?</h2><p>Bu krediler Esnaf ve Sanatkarlar Kredi ve Kefalet Kooperatifleri (ESKKK) aracılığıyla verilir. Devlet (Hazine), faizin %50'sini sübvanse eder. Bu sayede piyasaya göre yarı yarıya ucuz kredi kullanmış olursunuz. Ancak üyelik, kesintiler ve kefil bulma zorunluluğu gibi katı şartları vardır.</p>` },
-            { id: "p8", category: "Ticari Finans", title: "Döviz Kredisi Kimler Kullanabilir?", icon: "fa-earth-europe", body: `<p>Türkiye'de kur riskinden korunmak amacıyla bireylerin (tüketicilerin) Döviz (Dolar, Euro vb.) cinsinden kredi kullanması kanunen yasaklanmıştır. Sadece belirli şartları taşıyan ticari işletmeler bu krediye erişebilir.</p><h2>İhracatçı ve Döviz Geliri Şartı</h2><p>Bir şirketin döviz kredisi kullanabilmesi için döviz kazandırıcı faaliyetinin (ihracat, turizm geliri vb.) olması şarttır. Bu kuralın amacı, şirketin bilançosunda oluşabilecek kur şoklarını önlemektir. Geliri TL, borcu Dolar olan bir şirket kur artışında iflas edebilir.</p>` },
-            { id: "p9", category: "Ticari Finans", title: "Enflasyon Muhasebesinin Kobilere Etkisi", icon: "fa-book-open", body: `<p>Yüksek enflasyon dönemlerinde şirket bilançoları gerçek değerini yitirir. Yıllar önce alınmış bir makinenin veya deponun defter değeri komik rakamlarda kalırken, satıldığında oluşan devasa fark üzerinden haksız vergi ödenir.</p><h2>Enflasyon Muhasebesi Ne İşe Yarar?</h2><p>Bu sistem, şirket aktifinde bulunan stokların, demirbaşların ve gayrimenkullerin güncel enflasyon oranlarına göre yeniden değerlenmesini sağlar. Böylece işletmeler "fiktif (sanal) kârlar" üzerinden değil, gerçek kârları üzerinden vergilendirilir.</p>` },
-            { id: "p10", category: "Ticari Finans", title: "Tedarikçi Finansmanı ve Açık Hesap", icon: "fa-truck-fast", body: `<p>Ticarette mal alımında peşin ödeme yapmak nakit akışını yorar. Bu nedenle "Açık Hesap" veya "Tedarikçi Finansmanı" modelleri kullanılır.</p><h2>Açık Hesap vs Tedarikçi Finansmanı</h2><ul><li><strong>Açık Hesap:</strong> Alıcı ve satıcının aralarında anlaştığı vadeli çalışma şeklidir. Banka devrede yoktur. Tahsilat riski satıcıdadır.</li><li><strong>Tedarikçi Finansmanı (DBS vb.):</strong> Banka araya girer. Satıcı, faturasını bankaya verir ve parasını hemen alır. Alıcı ise malın bedelini vade sonunda bankaya öder. Her iki taraf için de güvenlidir.</li></ul>` },
-            { id: "p11", category: "Ticari Finans", title: "İşletmeler İçin POS Komisyonları ve Bloke Gün", icon: "fa-cash-register", body: `<p>Mağazalar veya e-ticaret siteleri, tahsilat yaparken bankaların sunduğu POS cihazlarını kullanırlar. Burada iki farklı maliyet modeli vardır:</p><h2>Ertesi Gün vs Blokeli Çalışma</h2><ul><li><strong>Ertesi Gün Hesaba Geçme:</strong> Müşterinin çektiği tutar ertesi gün yatar ancak banka yüksek oranda POS komisyonu keser.</li><li><strong>Blokeli (Vadeli) Çalışma:</strong> Tutar üzerinden komisyon kesilmez veya çok az kesilir ancak banka parayı 30-45 gün boyunca bloke eder. Nakit akışı güçlü firmalar blokeli çalışarak kârlılıklarını artırabilirler.</li></ul>` },
-            { id: "p12", category: "Mevduat", title: "Vadeli Mevduat Hesaplama: Birikimlerinizden Maksimum Getiri", icon: "fa-coins", body: `<p>Vadeli mevduat, anapara garantisi sunduğu için en popüler düşük riskli yatırım aracıdır. Ancak sadece bankanın vitrine koyduğu faiz oranına bakmak yanıltıcıdır.</p><h2>Mevduatta Net Kazanç Nasıl Bulunur?</h2><p>Bankanın verdiği oran "Brüt Yıllık Faiz"dir. Vade sonunda faiz geliri üzerinden devlet stopaj (vergi) kesintisi yapar. Geriye kalan "Net Kazanç"tır. Elde ettiğiniz net kazanç enflasyonun altındaysa, paranız alım gücü olarak eriyor demektir.</p>` },
-            { id: "p13", category: "Yatırım", title: "Konut Kredisi mi, Kirada Kalmak mı?", icon: "fa-house", body: `<p>Ev almak en temel yatırım aracıdır. Ancak faizlerin ve ev fiyatlarının çok yüksek olduğu dönemlerde "Kredi çekip ev almak mı, yoksa kirada kalıp parayı işletmek mi?" sorusu gündeme gelir.</p><h2>Kira Çarpanı Analizi</h2><p>Bir evin satış fiyatını, o evin aylık kira getirisine böldüğünüzde amortisman ayını verir. Eğer bir ev kendini 250 - 300 aydan uzun sürede amorti ediyorsa finansal olarak "pahalı" kabul edilir. Bu durumda nakit paranızı mevduatta veya fonlarda değerlendirip o evin kirasını ödemek matematiksel olarak daha mantıklı olabilir.</p>` },
-            { id: "p14", category: "Yatırım", title: "Enflasyon Korumalı Yatırım Araçları", icon: "fa-shield-halved", body: `<p>Enflasyon oranının banka faizlerini aştığı dönemlerde "nakitte kalmak" servetin erimesi anlamına gelir. Paranın satın alma gücünü korumak için enflasyona endeksli araçlar seçilmelidir.</p><h2>Enflasyon Kalkanları Nelerdir?</h2><ul><li><strong>Hisse Senetleri:</strong> Enflasyon şirketlerin kârını nominal olarak artırdığı için hisse piyasaları uzun vadede enflasyonu yener.</li><li><strong>Fiziki Varlıklar:</strong> Altın, gümüş ve gayrimenkul arzı kısıtlı olduğu için değer kaybına karşı koruma sağlar.</li><li><strong>Dövize Endeksli Fonlar:</strong> Yabancı para birimlerine yatırım yapan fonlar, kur artışlarından pozitif etkilenir.</li></ul>` },
-            { id: "p15", category: "Yatırım", title: "Kur Korumalı Mevduatın (KKM) Alternatifleri", icon: "fa-money-bill-trend-up", body: `<p>Kur Korumalı Mevduat (KKM) sisteminin sonlandırılmasıyla, yatırımcılar yeni risksiz getiri arayışlarına girdiler.</p><h2>Parayı Nereye Yönlendirmeli?</h2><ul><li><strong>Para Piyasası Fonları:</strong> Gecelik faiz oranlarına endeksli çalışırlar. Likiditesi yüksektir, istediğiniz gün bozabilirsiniz.</li><li><strong>Yüksek Faizli TL Mevduat:</strong> Merkez Bankası'nın faiz artırımlarıyla cazip hale gelmiş ve reel getiri sunmaya başlamıştır.</li></ul>` },
-            { id: "p16", category: "Yatırım", title: "BES (Bireysel Emeklilik) ve %30 Devlet Katkısı", icon: "fa-piggy-bank", body: `<p>Bireysel Emeklilik Sistemi (BES), uzun vadeli tasarruf yapma disiplini kazandıran ve devlet teşvikiyle desteklenen bir araçtır.</p><h2>%30 Devlet Katkısının Şartları</h2><p>Sisteme yatırdığınız her 100 TL için devlet 30 TL katkı payı yatırır. Bu katkının tamamını hak etmek için sistemde en az 10 yıl kalmanız ve 56 yaşınızı doldurarak emekli olmanız gerekir.</p>` },
-            { id: "p17", category: "Yatırım", title: "Fiziki Altın mı, Banka Altın Hesabı mı?", icon: "fa-gem", body: `<p>Altın yatırımı yapacak kişilerin önünde iki ana seçenek vardır: Kuyumcudan fiziki altın almak veya bankadan gram altın hesabı açmak.</p><h2>Karşılaştırma</h2><ul><li><strong>Fiziki Altın:</strong> Saklama ve çalınma riski vardır. İşçilikli altın alınırsa satarken zarar edilir.</li><li><strong>Banka Altın Hesabı:</strong> Hırsızlık riski sıfırdır. İnternetten 7/24 alınıp satılabilir. Ancak bankaların alış ve satış kurları arasındaki fark (makas) bazen çok yüksek olabilir.</li></ul>` },
-            { id: "p18", category: "Yatırım", title: "Yeni Başlayanlar İçin Yatırım Fonları", icon: "fa-chart-line", body: `<p>Borsaya girmek istiyor ancak şirket bilançosu okumayı bilmiyorsanız, en iyi çözüm Yatırım Fonlarıdır.</p><h2>Yatırım Fonu Nedir?</h2><p>Yatırımcıların parasının bir havuzda toplanarak, finans uzmanları tarafından yönetildiği sistemdir. TEFAS (Türkiye Elektronik Fon Alım Satım Platformu) üzerinden tüm fonlar her bankadan kolayca alınıp satılabilir. Riskinizi profesyonellere devretmiş olursunuz.</p>` },
-            { id: "p19", category: "Yatırım", title: "Borsada Hisse Senedi vs Borsa Yatırım Fonu (ETF)", icon: "fa-arrow-trend-up", body: `<p>Yatırımcılar tek bir şirketin hissesini almak yerine ETF (Borsa Yatırım Fonu) alarak risklerini minimize edebilirler.</p><h2>ETF'lerin Avantajı Nedir?</h2><p>Örneğin teknoloji sektörüne inanıyorsunuz. Hangi şirketin büyüyeceğini seçmek risktir. "Teknoloji Endeksi ETF'i" aldığınızda, sektördeki en büyük 20 şirketin hissesine aynı anda ortak olursunuz. ETF'ler borsa saatleri içerisinde hisse senedi gibi anında alınıp satılabilir.</p>` },
-            { id: "p20", category: "Yatırım", title: "Mevduat Merdiveni Stratejisi", icon: "fa-stairs", body: `<p>Faiz oranlarının sürekli değiştiği dönemlerde tüm birikiminizi tek bir vadeye bağlamak fırsatları kaçırmanıza neden olabilir.</p><h2>Merdiven Stratejisi Nasıl Uygulanır?</h2><p>Yatırımınızı bölün. Bir kısmını 32 günlük, bir kısmını 92 günlük, diğer kısmını 181 günlük mevduata bağlayın. Böylece her ay nakde dönen bir tutarınız olur. Faizler artarsa kısa vadeden dönen parayı yüksek faizle bağlar, düşerse uzun vadedeki kısımlarla yüksek getiriyi korursunuz.</p>` },
-            { id: "p21", category: "Analiz", title: "Vanaliz Nedir? Kararlarınızı Veriye Dayalı Analiz Edin", icon: "fa-chart-pie", body: `<p>Vanaliz, Vhesap platformu içerisinde yer alan akıllı, veriye dayalı finansal analiz modülüdür.</p><h2>Neleri Analiz Eder?</h2><ul><li><strong>Finansal Stres Oranı:</strong> Kredi taksitinin, aylık net gelirinize oranını hesaplar. %40'ın üzeri riskli kabul edilir.</li><li><strong>Alternatif Getiri Karşılaştırması:</strong> Peşin almak ile kredi çekmek arasındaki matematiksel farkı hesaplar ve en kârlı seçeneği sunar.</li></ul>` },
-            { id: "p22", category: "Kredi Kartı", title: "Kredi Kartı Asgari Ödeme Tuzağı", icon: "fa-credit-card", body: `<p>Kredi kartı ekstrenizin tamamını ödeyemediğinizde sadece "Asgari Ödeme Tutarını" ödemek büyük bir tuzaktır.</p><h2>Asgari Ödeme Neden Tehlikelidir?</h2><p>Asgari tutarı ödediğinizde, kalan borç üzerinden yüksek akdi faiz ve vergiler işler. Aylar boyunca asgari öderseniz anapara azalmaz, borcunuz kartopu gibi büyür. Kapatamıyorsanız düşük faizli ihtiyaç kredisi çekip kartı sıfırlamak en iyisidir.</p>` },
-            { id: "p23", category: "Kredi Kartı", title: "Nakit Avans ve Taksitli Nakit Avans Farkı", icon: "fa-money-bill", body: `<p>Kredi kartı limitinden ATM'den nakit para çekmek kullanım türüne göre farklı maliyetler yaratır.</p><h2>Tek Çekim vs Taksitli Avans</h2><ul><li><strong>Tek Çekim Nakit Avans:</strong> Çektiğiniz günden itibaren ekstre kesilene kadar günlük faiz işler, pahalıdır.</li><li><strong>Taksitli Nakit Avans:</strong> Çekilen nakdi aylara bölersiniz. İhtiyaç kredisi mantığıyla çalışır, faiz sabittir ve sürpriz maliyet çıkarmaz.</li></ul>` },
-            { id: "p24", category: "Kredi Kartı", title: "Kredi Kartı Puanları ve Mil Stratejileri", icon: "fa-plane-departure", body: `<p>Doğru kredi kartı kullanımı size bedava tatiller ve uçak biletleri kazandırabilir.</p><h2>Mil ve Puan Stratejisi</h2><p>Havayolu ortaklı kartlarla zorunlu harcamalarınızı (market, yakıt) yapıp ekstreyi vadesinde öderseniz sıfır faizle mil biriktirirsiniz. Bankaların sektör kampanyalarını takip ederek kazancınızı katlayabilirsiniz.</p>` },
-            { id: "p25", category: "Kredi", title: "Ara Ödeme (Balon Ödeme) ile Kredi Kısaltma", icon: "fa-scissors", body: `<p>Kredi öderken, elinize geçen toplu bir parayı kredinize "Ara Ödeme" olarak yatırmak faiz yükünüzü çok azaltır.</p><h2>Taksit mi, Vade mi Düşmeli?</h2><p>Aylık ödemelerde zorlanmıyorsanız, ara ödeme yaptıktan sonra taksit tutarını sabit tutup kredi vadesini kısaltmak finansal açıdan en kârlı yöntemdir. Bankaya ödeyeceğiniz toplam faizi minimuma indirir.</p>` },
-            { id: "p26", category: "Kredi", title: "Refinansman (Kredi Yapılandırma) Rehberi", icon: "fa-rotate", body: `<p>Faiz oranlarının yüksek olduğu bir dönemde kredi çektiniz, ancak daha sonra faizler düştü. Bu durumda eski krediyi kapatıp yeni ucuz oranla devam etmeye Refinansman denir.</p><h2>Ne Zaman Kârlıdır?</h2><p>Konut kredilerinde banka %1-2 erken kapama cezası alır. Faiz indiriminin size sağlayacağı kâr, ödeyeceğiniz ceza ve yeni dosya masraflarından yüksekse refinansman yapmak mantıklıdır.</p>` },
-            { id: "p27", category: "Kredi", title: "İpotekli İhtiyaç Kredisi Şartları", icon: "fa-key", body: `<p>Standart ihtiyaç kredisi limitlerinin (örn: 200 bin TL) yetersiz kaldığı büyük nakit ihtiyaçlarında İpotekli Kredi kullanılır.</p><h2>Nasıl Çalışır?</h2><p>Kendinize ait olan konutu bankaya rehin vererek, evin ekspertiz değerine kadar yüksek tutarlı ve uzun vadeli kredi çekebilirsiniz. Ancak borç ödenmezse bankanın evi satma hakkı vardır.</p>` },
-            { id: "p28", category: "Kredi", title: "Teminatlı vs Teminatsız Kredi Seçimi", icon: "fa-scale-unbalanced", body: `<p>Bankalar kredi verirken aldıkları riske göre faiz belirler.</p><ul><li><strong>Teminatsız Krediler:</strong> Sadece gelir belgenize dayalı standart kredilerdir. Bankanın riski yüksek olduğu için faizleri yüksektir.</li><li><strong>Teminatlı Krediler:</strong> Konut, taşıt veya mevduat karşılığı verilir. Banka riski garanti altına aldığı için piyasadaki en düşük faizli kredilerdir.</li></ul>` },
-            { id: "p29", category: "Finansal Rehber", title: "KKB Puanı (Kredi Notu) Nasıl Yükselir?", icon: "fa-arrow-trend-up", body: `<p>Findeks Kredi Notu, bankacılık sistemindeki karnenizdir ve 0-1900 arası değişir.</p><h2>Notu Hızlı Yükseltmenin Yolları</h2><ul><li>Kredi kartı ekstrelerinizin asgarisini değil, tamamını vadesinde ödeyin.</li><li>Kredi limitlerinizi sonuna kadar doldurmayın, %30-%40 kullanım oranında kalın.</li><li>Kısa sürede çok fazla kredi başvurusu yapmayın, ret almak notu düşürür.</li></ul>` },
-            { id: "p30", category: "Finansal Rehber", title: "Findeks Risk Raporu Okuma Sanatı", icon: "fa-file-invoice", body: `<p>Banka sadece skora değil, Findeks Risk Raporunuzun detaylarına bakar.</p><h2>Raporda Neler Görünür?</h2><p>Açık ve kapalı tüm borçlarınız görünür. En önemlisi Gecikme Takvimidir. 1-30 gün arası gecikme sarı uyarı, 90 gün ve üzeri yasal takiptir. Temiz bir geçmiş kredi almayı çok kolaylaştırır.</p>` },
-            { id: "p31", category: "Finansal Rehber", title: "50/30/20 Bütçe Kuralı ile Finans Yönetimi", icon: "fa-wallet", body: `<p>Kişisel finans yönetiminin en basit ve etkili kuralıdır.</p><h2>Nasıl Dağıtılır?</h2><ul><li><strong>%50 İhtiyaçlar:</strong> Kira, fatura, mutfak gibi zorunlu giderler.</li><li><strong>%30 İstekler:</strong> Dışarıda yemek, tatil, hobiler gibi esnek harcamalar.</li><li><strong>%20 Birikim/Yatırım:</strong> Geleceğiniz için BES, borsa veya mevduata ayrılan zorunlu pay.</li></ul>` },
-            { id: "p32", category: "Finansal Rehber", title: "Finansal Okuryazarlığın 5 Altın Kuralı", icon: "fa-graduation-cap", body: `<p>Finansal bağımsızlığa ulaşmak için şu kuralları uygulayın:</p><ol><li><strong>Acil Durum Fonu:</strong> En az 3 aylık giderinizi güvenli bir yerde hazır tutun.</li><li><strong>Bütçe Yapın:</strong> Paranızın nereye gittiğini takip edin.</li><li><strong>Kötü Borçtan Kaçının:</strong> Sadece tüketim için borçlanmayın.</li><li><strong>Bileşik Faizi Kullanın:</strong> Kazanılan faizin üzerine faiz işleterek erken yatırım yapın.</li><li><strong>Çeşitlendirme:</strong> Tüm yatırımı tek bir araca bağlamayın, riski dağıtın.</li></ol>` },
-            { id: "p33", category: "Vergi", title: "BSMV ve KKDF Nedir? Ne Zaman Kesilir?", icon: "fa-scale-balanced", body: `<p>Bireysel krediler (ihtiyaç, taşıt) kullandığınızda bankaya ödediğiniz faiz tutarı üzerinden devlet iki vergi keser:</p><ul><li><strong>KKDF:</strong> Kaynak Kullanımını Destekleme Fonu (%15).</li><li><strong>BSMV:</strong> Banka ve Sigorta Muameleleri Vergisi (%15). Toplamda %30 vergi ödersiniz.</li></ul><p>Not: Devlet konut alımını desteklemek için konut kredilerini bu vergilerden tamamen muaf tutmuştur.</p>` },
-            { id: "p34", category: "Vergi", title: "Erken Kredi Kapatma Cezası (Konut Kredisi)", icon: "fa-gavel", body: `<p>İhtiyaç ve taşıt kredilerini vadesinden önce kapatırsanız banka ceza (tazminat) alamaz. Ancak <strong>Konut Kredilerinde</strong> durum farklıdır.</p><p>Tüketici Kanununa göre banka; kalan vadesi 36 aya kadar olan konut kredilerinde kalan anaparanın %1'i, 36 aydan uzun olanlarda ise %2'si oranında Erken Ödeme Cezası alma hakkına sahiptir.</p>` },
-            { id: "p35", category: "Sigorta", title: "Kredi Hayat Sigortası İptali ve İade Süreci", icon: "fa-heart-pulse", body: `<p>Kredi kullanırken vefat durumuna karşı yapılan Hayat Sigortası peşin tahsil edilir. Ancak kredinizi örneğin yarısında erken kapatırsanız, sigortanın geri kalan kısmı boşa düşer.</p><h2>Nasıl İade Alınır?</h2><p>Otomatik iade olmaz. Krediyi kapattıktan hemen sonra sigorta şirketini veya bankanızı arayarak poliçe iptali talep etmelisiniz. Kullanılmayan günlerin primi yasal olarak hesabınıza iade edilir.</p>` },
-            { id: "p36", category: "Ekonomi", title: "Merkez Bankası (TCMB) Faiz Kararları", icon: "fa-building-columns", body: `<p>TCMB'nin politika faizi kararları ekonomideki paranın maliyetini belirler.</p><ul><li><strong>Faiz Artırımı:</strong> Mevduat getirisi yükselir, kredi çekmek pahalanır, tüketim düşer ve enflasyonun yavaşlaması hedeflenir.</li><li><strong>Faiz İndirimi:</strong> Krediler ucuzlar, tüketim ve yatırım artar, ancak enflasyon ve kur artışı riski doğar.</li></ul><p>Not: Daha önce çektiğiniz sabit taksitli kredilerin ödemesi bu değişimlerden etkilenmez.</p>` },
-            { id: "p37", category: "Hukuk", title: "Kredi Kefaletinde Yasal Sorumluluklar", icon: "fa-handshake", body: `<p>Birine kefil olmak, sadece imza atmak değil borcun altına hukuken girmektir.</p><h2>Müteselsil Kefalet</h2><p>Bankalar sözleşmelerde "Müteselsil (Zincirleme) Kefil" ibaresini kullanır. Bu sayede, asıl borçlu bir taksiti bile geciktirdiği an, banka asıl borçluya gitmek zorunda kalmadan doğrudan kefilin maaşına haciz koyma ve parayı tahsil etme hakkına sahip olur.</p>` },
-            { id: "p38", category: "Hukuk", title: "Senetle Araç veya Ev Almanın Hukuki Riskleri", icon: "fa-file-signature", body: `<p>Bankadan kredi onayı alamayanlar genellikle senetle satış yapan yerlere yönelirler. Ancak bu büyük riskler barındırır.</p><p>Senet hukuki yaptırımı çok güçlü bir evraktır. Ödenmediği gün doğrudan hızlı icra takibi (haciz) başlatılabilir. Ayrıca boş senede imza atılması veya rakamlarda tahrifat yapılması riski yüksektir. Bankacılık sistemi çok daha güvenlidir.</p>` },
-            { id: "p39", category: "Gayrimenkul", title: "Tersine İpotek (Reverse Mortgage) Sistemi", icon: "fa-house-chimney", body: `<p>Türkiye'de yeni yaygınlaşan, genellikle emekliler için geliştirilmiş bir finansman sistemidir.</p><h2>Sistem Nasıl Çalışır?</h2><p>Sahip olduğunuz evi bankaya ipotek ederek ömür boyu aylık maaş bağlanmasını sağlarsınız. Evinizde kira ödemeden yaşamaya devam edersiniz. Vefat durumunda banka evi satar, ödediği parayı tahsil edip kalanı mirasçılara devreder.</p>` }
-        ];
+        // KÖKTEN ÇÖZÜM: Koda gömülü sahte makaleler (hayalet veriler) tamamen silindi!
+        // Sadece Firebase veritabanında ne varsa o baz alınacak.
+        const initialPosts = [];
 
         function getReadTime(htmlContent) {
             const text = htmlContent.replace(/<[^>]*>?/gm, '');
@@ -700,6 +673,11 @@
             const container = document.getElementById("postsContent");
             container.innerHTML = ""; 
             
+            if (uniquePosts.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 50px 20px; color:var(--muted);">Henüz hiç makale yayınlanmamış.</div>`;
+                return;
+            }
+
             let indexHtml = `<div class="index-bar">`;
             categories.forEach(cat => { 
                 indexHtml += `<button class="cat-pill" onclick="document.getElementById('cat-${cat.replace(/\s+/g, '-').toLowerCase()}').scrollIntoView({behavior:'smooth', block:'start'})">${cat}</button>`; 
@@ -723,7 +701,6 @@
                     </div>`;
                 });
                 
-                // Panel standardı doğrultusunda slot ID'si blogCategoryEnd olarak güncellendi.
                 const adHtmlTop = window.getAdHtml ? window.getAdHtml('blogCategoryEnd', true) : '';
                 if (adHtmlTop) {
                     contentHtml += adHtmlTop;
@@ -735,7 +712,6 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            // Zeka Eklentisi: Kullanıcı makale okurken yukarıdan arama yaparsa otomatik anasayfaya dön!
             if(document.getElementById("viewer").style.display === "flex") {
                 document.getElementById("backBtn").click();
             }
@@ -745,28 +721,27 @@
             renderGroupedPosts(filtered);
         });
 
+        // HATA DÜZELTİLDİ: Veritabanı okuma bloğu tamamen güncellendi.
         async function fetchAndRenderPosts() {
-            if (loadedPosts.length === 0) {
-                loadedPosts = [...initialPosts];
-                renderGroupedPosts(loadedPosts); 
-                checkUrlParams(); 
-            }
-
             try {
                 const q = query(collection(db, "posts"));
                 const querySnapshot = await getDocs(q);
                 
-                if (querySnapshot.empty) {
-                    loadedPosts = [];
-                    renderGroupedPosts(loadedPosts);
-                } else {
-                    let serverPosts = []; 
-                    querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
-                    loadedPosts = serverPosts;
-                    renderGroupedPosts(loadedPosts);
-                }
+                let serverPosts = []; 
+                querySnapshot.forEach(doc => { serverPosts.push({ id: doc.id, ...doc.data() }); });
+                
+                // Firestore'dan gelen güncel listeyi (kaç tane olursa olsun) ekrana yansıt.
+                loadedPosts = serverPosts;
+                renderGroupedPosts(loadedPosts);
+                
+                checkUrlParams(); 
+                
             } catch (error) {
-                console.warn("Çevrimdışı mod: Sistem yerel verilerle çalışıyor.");
+                console.warn("Çevrimdışı mod veya bağlantı hatası:", error);
+                // Çevrimdışıysak yerelde kalanları gösterebilir.
+                if (loadedPosts.length === 0) {
+                    document.getElementById("postsContent").innerHTML = `<div style="text-align:center; padding: 50px; color:var(--danger);">Bağlantı sorunu yaşandı veya yetkiniz reddedildi.</div>`;
+                }
             }
         }
 
@@ -795,36 +770,36 @@
                 window.history.pushState({path:newUrl}, '', newUrl);
             }
             
-            // Reklam Renderlama
             if (window.renderAds) {
                 window.renderAds('blogTop', 'ad-container-blog-top');
                 window.renderAds('blogMid', 'ad-container-blog-mid');
                 window.renderAds('blogBottom', 'ad-container-blog-bottom');
             }
             
-            // ANALİTİK: page_view olarak gönderiliyor. Paneldeki listeye uygun entegrasyon.
             if (window.trackEvent) window.trackEvent('page_view', { page: 'blog_article', article_id: id });
             
-            document.getElementById('vhesap-viewport').scrollTop = 0;
+            // HATA DÜZELTİLDİ: Makale açıldığında sayfa mutlaka en tepeden başlayacak.
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             loadComments(); 
         }
 
-        window.deletePost = async function(id) {
-            if(!confirm("Kalıcı olarak silmek istediğinize emin misiniz?")) return;
-            try { 
-                await deleteDoc(doc(db, "posts", id)); 
-                toast("Makale silindi."); 
-                
-                // Silinen makaleyi yerel listeden de (önbellekten) çıkar ki anında kaybolsun
-                loadedPosts = loadedPosts.filter(p => p.id !== id);
-                
-                document.getElementById("backBtn").click(); 
-                fetchAndRenderPosts(); 
-            } 
-            catch (e) { 
-                console.error("Silme Hatası:", e);
-                toast("Yetkiniz reddedildi veya hata oluştu."); 
-            }
+        // HATA DÜZELTİLDİ: Silme işlemi Firebase tarafında ve önbellekte eşzamanlı çalışıyor.
+        window.deletePost = function(id) {
+            window.customConfirm("Bu makaleyi kalıcı olarak silmek istediğinize emin misiniz?", async () => {
+                try { 
+                    await deleteDoc(doc(db, "posts", id)); 
+                    toast("Makale başarıyla silindi."); 
+                    
+                    // Silinen makaleyi yerel önbellek listesinden anında çıkar.
+                    loadedPosts = loadedPosts.filter(p => p.id !== id);
+                    
+                    // Geri dönüşte yeni listeyi göstermesini tetikle.
+                    document.getElementById("backBtn").click(); 
+                    
+                } catch (e) { 
+                    toast("Yetkiniz reddedildi veya bağlantı hatası."); 
+                }
+            });
         }
 
         document.getElementById("backBtn").onclick = () => {
@@ -834,15 +809,17 @@
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
-            document.getElementById('vhesap-viewport').scrollTop = 0;
-            // Geri dönüldüğünde arama çubuğunu temizle
+            
+            // HATA DÜZELTİLDİ: Geri dönüldüğünde sayfanın başında / tepesinde olmasını garantile
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
             document.getElementById('searchInput').value = "";
             renderGroupedPosts(loadedPosts);
         };
 
         // --- ADMİN PANELİ KONTROLLERİ ---
-        document.getElementById("adminPanelBtn").onclick = () => { document.getElementById("homePage").style.display = "none"; document.getElementById("adminEditor").style.display = "flex"; };
-        document.getElementById("closeEditorBtn").onclick = () => { document.getElementById("adminEditor").style.display = "none"; document.getElementById("homePage").style.display = "flex"; };
+        document.getElementById("adminPanelBtn").onclick = () => { document.getElementById("homePage").style.display = "none"; document.getElementById("adminEditor").style.display = "flex"; window.scrollTo({ top: 0, behavior: 'smooth' }); };
+        document.getElementById("closeEditorBtn").onclick = () => { document.getElementById("adminEditor").style.display = "none"; document.getElementById("homePage").style.display = "flex"; window.scrollTo({ top: 0, behavior: 'smooth' }); };
         document.getElementById("writerManageBtn").onclick = () => { document.getElementById("writerManagerModal").style.display = "flex"; loadWriters(); };
         document.getElementById("closeWriterModal").onclick = () => { document.getElementById("writerManagerModal").style.display = "none"; };
 
@@ -883,8 +860,8 @@
                 let html = "";
                 snap.forEach(doc => {
                     if(doc.data().role === 'writer') {
-                        html += `<li class="writer-item">
-                            <span>${doc.id}</span>
+                        html += `<li class="writer-item" style="display:flex; justify-content:space-between; padding: 10px; border-bottom: 1px solid var(--border);">
+                            <span style="color:var(--text-strong); font-size:13px;">${doc.id}</span>
                             <button onclick="removeWriter('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:16px;"><i class="fa-solid fa-trash"></i></button>
                         </li>`;
                     }
@@ -893,9 +870,10 @@
             } catch(e) { document.getElementById("writersList").innerHTML = "<li style='color:var(--danger); text-align:center; font-size:13px;'>Liste yüklenemedi.</li>"; }
         }
 
-        window.removeWriter = async function(email) {
-            if(!confirm(email + " yetkisini almak istediğinize emin misiniz?")) return;
-            try { await deleteDoc(doc(db, "roles", email)); toast("Yazar silindi."); loadWriters(); } catch(e) { toast("Hata oluştu."); }
+        window.removeWriter = function(email) {
+            window.customConfirm(email + " adresinin yazar yetkisini iptal etmek istediğinize emin misiniz?", async () => {
+                try { await deleteDoc(doc(db, "roles", email)); toast("Yazar silindi."); loadWriters(); } catch(e) { toast("Hata oluştu."); }
+            });
         }
 
         document.getElementById("addWriterBtn").onclick = async () => {
@@ -936,9 +914,10 @@
             });
         }
 
-        window.deleteComment = async function(commentId) {
-            if(!confirm("Yorumu silmek istediğinize emin misiniz?")) return;
-            try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
+        window.deleteComment = function(commentId) {
+            window.customConfirm("Yorumu kalıcı olarak silmek istediğinize emin misiniz?", async () => {
+                try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
+            });
         }
 
         // --- AUTH & ROL KONTROLÜ ---
@@ -1090,10 +1069,12 @@
                 document.getElementById("adminEditor").style.display = "none";
                 document.getElementById("homePage").style.display = "flex"; 
                 document.title = "Vhesap | Finans Rehberi";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
             }
         });
 
+        // Sayfa Yüklendiğinde Gönderileri Çek ve Başlat
         fetchAndRenderPosts();
         
         // Sayfa reklamı ilk açılışta
