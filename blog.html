@@ -438,7 +438,6 @@
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label">Kategori Seçimi</label>
                             <select id="editCategory" class="form-input">
-                                <option value="">Kategori Seçin...</option>
                                 <option value="Bireysel Finans">Bireysel Finans</option>
                                 <option value="Ticari Finans">Ticari Finans</option>
                                 <option value="Mevduat">Mevduat</option>
@@ -739,9 +738,6 @@
                 checkUrlParams(); 
             } catch (error) {
                 console.warn("Bağlantı hatası:", error);
-                if (loadedPosts.length === 0) {
-                    document.getElementById("postsContent").innerHTML = `<div style="text-align:center; padding: 50px; color:var(--danger);">Bağlantı sorunu yaşandı.</div>`;
-                }
             }
         }
 
@@ -790,7 +786,7 @@
                     loadedPosts = loadedPosts.filter(p => p.id !== id);
                     document.getElementById("backBtn").click(); 
                 } catch (e) { 
-                    toast("Hata: " + e.message); 
+                    toast("Hata: " + e.code); 
                 }
             });
         }
@@ -838,7 +834,7 @@
                 
                 document.getElementById("closeEditorBtn").click(); 
                 fetchAndRenderPosts();
-            } catch(e) { toast("Hata: " + e.message); } 
+            } catch(e) { toast("Hata: " + e.code); } 
             finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al`; }
         };
 
@@ -871,7 +867,7 @@
             try {
                 await setDoc(doc(db, "roles", email), { role: 'writer', email: email, addedAt: serverTimestamp() });
                 toast("Yazar başarıyla eklendi."); document.getElementById("newWriterEmail").value = ""; loadWriters();
-            } catch(e) { toast("Hata. Yetkiniz yok."); }
+            } catch(e) { toast("Hata: " + e.code); }
         };
 
         function loadComments() {
