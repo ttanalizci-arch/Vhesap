@@ -378,6 +378,22 @@
             return !(publicHolidays.includes(mmdd) || publicHolidays.includes(yyyymmdd));
         }
 
+        // --- YENİ VALÖR KURALLARI YARDIMCI FONKSİYONLARI ---
+        function getStrictNextBusinessDay(date) {
+            // Ödeme tarihi her zaman kendisinden sonraki İLK İŞ GÜNÜNE sarkar.
+            let d = new Date(date);
+            d.setDate(d.getDate() + 1); // Mutlaka bir sonraki güne geç
+            while (!isBusinessDay(d)) d.setDate(d.getDate() + 1);
+            return d;
+        }
+
+        function getPreviousBusinessDay(date) {
+            // Kullanım tarihi tatilse valör bir önceki İLK İŞ GÜNÜNE sarkar.
+            let d = new Date(date);
+            while (!isBusinessDay(d)) d.setDate(d.getDate() - 1);
+            return d;
+        }
+
         function getNextBusinessDay(date) {
             let d = new Date(date);
             while (!isBusinessDay(d)) d.setDate(d.getDate() + 1);
@@ -657,6 +673,9 @@
             } else if (s === 'ihtiyac') {
                 id('info-area').innerHTML = `<div class="info-badge mb-3"><i class="fa-solid fa-circle-info"></i> BDDK: <=125k(36 Ay), 125-250k(24 Ay), >250k(12 Ay)</div>`;
                 id('info-area').classList.remove('hidden');
+            } else if (s === 'ekhesap') {
+                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-circle-info"></i> Yeni Valör Kuralları Aktif</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım tatil gününe gelirse valör bir önceki iş günü, ödemede ise takip eden ilk iş günüdür.</div></div>`;
+                id('info-area').classList.remove('hidden');
             }
 
             let lStart = 'Kullandırım Tarihi'; let lEnd = (s === 'ekhesap' ? 'Ödeme Tarihi' : 'İlk Taksit Tarihi');
@@ -812,14 +831,30 @@
                 if(devreGunu < 1 || devreGunu > 31) return showToast("Lütfen 1 ile 31 arasında geçerli bir devre günü giriniz.");
 
                 const { kkdf, bsmv } = getTaxes();
-                let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
                 
-                if (endD <= startD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden sonra olmalıdır.");
+                let inputStartD = new Date(id('date-start').value);
+                let inputEndD = new Date(id('date-first').value);
+                
+                if (inputEndD <= inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden sonra olmalıdır.");
 
-                let originalEndD = new Date(endD);
-                endD = getNextBusinessDay(endD);
-                if (originalEndD.getTime() !== endD.getTime()) { 
-                    showToast("Uyarı: Bitiş tarihi tatil gününe denk geldiği için ilk iş gününe ötelendi!"); 
+                // --- YENİ VALÖR KURALLARI UYGULAMASI ---
+                
+                let startD = new Date(inputStartD);
+                let isStartShifted = false;
+                // Kural 1: Kullanım günü tatil ise valör bir önceki iş günüdür.
+                if (!isBusinessDay(startD)) {
+                    startD = getPreviousBusinessDay(startD);
+                    isStartShifted = true;
+                }
+
+                // Kural 2: Ödeme günü (iş günü/tatil fark etmeksizin) valör takip eden ilk iş günüdür.
+                let endD = getStrictNextBusinessDay(inputEndD);
+
+                // Kullanıcıya şeffaf bildirim (Start Date değiştiyse sadece bilgi verilir)
+                if (isStartShifted) {
+                    setTimeout(() => {
+                        showToast("Bilgi: Kullanım tatil gününe denk geldiği için valör önceki iş gününe ayarlandı.");
+                    }, 300);
                 }
 
                 state.lastParams = {
@@ -868,7 +903,7 @@
                 
                 id('result-rows').innerHTML = [
                     {l: "Toplam Borç", v: format(totalBorc), h:true}, 
-                    {l: "Toplam Gün Sayısı", v: totalDays}, 
+                    {l: "Valörlü Gün Sayısı", v: totalDays}, 
                     {l: "Toplam İşleyen Faiz", v: format(totalF)}, 
                     {l: "Vergi Toplamı", v: format(totalV)}
                 ].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
