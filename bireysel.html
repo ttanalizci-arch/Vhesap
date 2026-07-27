@@ -432,6 +432,7 @@
             const s = state.sub; const isDayBased = (s === 'ekhesap');
             if (isDayBased) {
                 let st = new Date(id('date-start').value); let end = new Date(id('date-first').value);
+                // Aynı güne (end >= st) artık izin veriyoruz.
                 if(end >= st) { id('val-vade').value = Math.round((end - st) / 86400000); } 
                 else { id('date-first').value = id('date-start').value; id('val-vade').value = 0; }
             }
@@ -674,7 +675,7 @@
                 id('info-area').innerHTML = `<div class="info-badge mb-3"><i class="fa-solid fa-circle-info"></i> BDDK: <=125k(36 Ay), 125-250k(24 Ay), >250k(12 Ay)</div>`;
                 id('info-area').classList.remove('hidden');
             } else if (s === 'ekhesap') {
-                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-circle-info"></i> Yeni Valör Kuralları Aktif</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım tatil gününe gelirse valör bir önceki iş günü, ödemede ise takip eden ilk iş günüdür.</div></div>`;
+                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-circle-info"></i> Yeni Valör Kuralları Aktif</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Aynı gün ödemelerinde dahi valör kuralı gereği faiz işletilir. Kullanım tatil gününe gelirse valör bir önceki iş günü, ödemede ise takip eden ilk iş günüdür.</div></div>`;
                 id('info-area').classList.remove('hidden');
             }
 
@@ -835,12 +836,16 @@
                 let inputStartD = new Date(id('date-start').value);
                 let inputEndD = new Date(id('date-first').value);
                 
-                if (inputEndD <= inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden sonra olmalıdır.");
+                // ESKİ KOD: if (inputEndD <= inputStartD) return showToast(...)
+                // YENİ KOD: Artık "Aynı Gün" işlemine izin veriyoruz ( < kontrolü).
+                if (inputEndD < inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden önce olamaz.");
 
                 // --- YENİ VALÖR KURALLARI UYGULAMASI ---
                 
                 let startD = new Date(inputStartD);
                 let isStartShifted = false;
+                let isSameDay = inputStartD.getTime() === inputEndD.getTime();
+
                 // Kural 1: Kullanım günü tatil ise valör bir önceki iş günüdür.
                 if (!isBusinessDay(startD)) {
                     startD = getPreviousBusinessDay(startD);
@@ -850,11 +855,17 @@
                 // Kural 2: Ödeme günü (iş günü/tatil fark etmeksizin) valör takip eden ilk iş günüdür.
                 let endD = getStrictNextBusinessDay(inputEndD);
 
-                // Kullanıcıya şeffaf bildirim (Start Date değiştiyse sadece bilgi verilir)
+                // Kullanıcıya şeffaf bildirimler
                 if (isStartShifted) {
                     setTimeout(() => {
                         showToast("Bilgi: Kullanım tatil gününe denk geldiği için valör önceki iş gününe ayarlandı.");
                     }, 300);
+                }
+                
+                if (isSameDay) {
+                    setTimeout(() => {
+                        showToast("Bilgi: Aynı gün çekilip yatırılan tutarlara, valör kuralı gereği faiz işletilir.");
+                    }, isStartShifted ? 4500 : 300);
                 }
 
                 state.lastParams = {
