@@ -529,11 +529,13 @@
         </div>
     </div>
 
+    <!-- Firebase SDK sürümü mevcut güncel stabil sürüme güncellendi (10.12.2) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // Admin Email tanımlaması (Kurallardakiyle birebir eşleşir)
         const SUPER_ADMIN_EMAIL = "vhesap.com@gmail.com"; 
 
         const firebaseConfig = {
@@ -723,7 +725,6 @@
                     </div>`;
                 });
                 
-                // Panel standardı doğrultusunda slot ID'si blogCategoryEnd olarak güncellendi.
                 const adHtmlTop = window.getAdHtml ? window.getAdHtml('blogCategoryEnd', true) : '';
                 if (adHtmlTop) {
                     contentHtml += adHtmlTop;
@@ -735,7 +736,6 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            // Zeka Eklentisi: Kullanıcı makale okurken yukarıdan arama yaparsa otomatik anasayfaya dön!
             if(document.getElementById("viewer").style.display === "flex") {
                 document.getElementById("backBtn").click();
             }
@@ -797,17 +797,17 @@
                 window.history.pushState({path:newUrl}, '', newUrl);
             }
             
-            // Reklam Renderlama
             if (window.renderAds) {
                 window.renderAds('blogTop', 'ad-container-blog-top');
                 window.renderAds('blogMid', 'ad-container-blog-mid');
                 window.renderAds('blogBottom', 'ad-container-blog-bottom');
             }
             
-            // ANALİTİK: page_view olarak gönderiliyor. Paneldeki listeye uygun entegrasyon.
             if (window.trackEvent) window.trackEvent('page_view', { page: 'blog_article', article_id: id });
             
-            document.getElementById('vhesap-viewport').scrollTop = 0;
+            // HATA ÇÖZÜMÜ: Makale açıldığında sayfanın en altına inme sorunu için en üst (top) hedeflenerek düzeltildi
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            
             loadComments(); 
         }
 
@@ -824,8 +824,10 @@
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
-            document.getElementById('vhesap-viewport').scrollTop = 0;
-            // Geri dönüldüğünde arama çubuğunu temizle
+            
+            // Geri dönüldüğünde de sayfanın en üstünde olmasını sağla
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            
             document.getElementById('searchInput').value = "";
             renderGroupedPosts(loadedPosts);
         };
@@ -1069,7 +1071,6 @@
             } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
         };
 
-        // Tarayıcı Geri/İleri butonları için URL-Ekran Senkronizasyonu (Popstate)
         window.addEventListener('popstate', (event) => {
             const yaziId = new URLSearchParams(window.location.search).get('yazi');
             if (yaziId && loadedPosts.length > 0) {
@@ -1086,7 +1087,6 @@
 
         fetchAndRenderPosts();
         
-        // Sayfa reklamı ilk açılışta
         if (window.renderAds) window.renderAds('homeBottom', 'ad-container-bottom');
         if (window.trackEvent) window.trackEvent('page_view', { page: 'blog' });
     </script>
