@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <!-- Merkezi Analytics ve Tracking Entegrasyonu -->
     <script src="analytics.js" onerror="console.log('analytics.js yüklenemedi.')"></script>
     <script src="ads.js" onerror="console.log('ads.js henüz oluşturulmamış veya yerel ortamda çalışılıyor.')"></script>
 
@@ -9,12 +10,17 @@
     <title>Vhesap | Finans Rehberi</title>
     <meta name="description" content="Kredi, faiz, mevduat ve finansal okuryazarlık rehberi.">
     
+    <!-- FontAwesome & Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
-    
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://apis.google.com">
+
+    <!-- Jodit Editor (Gelişmiş WYSIWYG Editör) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jodit/3.24.9/jodit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jodit/3.24.9/jodit.min.js"></script>
     
     <style>
+        /* %100 SAF CSS TASARIM SİSTEMİ */
         :root {
             --bg: #050505; 
             --card: #111111; 
@@ -41,6 +47,7 @@
             --text: #374151;
             --text-strong: #111827;
             --muted: #6b7280;
+            --amber-light: rgba(245, 158, 11, 0.15);
             --nav-bg: rgba(244,244,245,0.85);
         }
 
@@ -57,16 +64,8 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        .header { 
-            display: grid; 
-            grid-template-columns: auto 1fr auto; 
-            align-items: center; 
-            gap: 20px; 
-            margin-bottom: 30px; 
-            border-bottom: 1px solid var(--border); 
-            padding-bottom: 20px; 
-        }
-        
+        /* HEADER YAPI */
+        .header { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
         .logo-area { display: flex; align-items: center; gap: 15px; }
         .logo-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--amber); }
         .logo-text h1 { font-size: 22px; font-weight: 800; color: var(--text-strong); letter-spacing: -0.5px; line-height: 1.2; }
@@ -94,6 +93,7 @@
         .btn-home { width: 40px; height: 40px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
         .btn-home:hover { border-color: var(--amber); color: var(--amber); }
 
+        /* ANA SAYFA */
         #homePage { display: flex; flex-direction: column; width: 100%; }
         
         .home-top { margin-bottom: 25px; text-align: center; }
@@ -110,49 +110,61 @@
         .admin-btn.panel { border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1); }
         .admin-btn.panel:hover { background: #10b981; color: #fff; }
 
-        .index-bar { position: sticky; top: -1px; background: var(--nav-bg); backdrop-filter: blur(15px); z-index: 50; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; cursor: grab; user-select: none; }
-        .index-bar.active { cursor: grabbing; }
+        /* KATEGORİ ÇUBUĞU - DOKUNMATİK VE FARE İLE KAYDIRILABİLİR */
+        .index-bar { position: sticky; top: -1px; background: var(--nav-bg); backdrop-filter: blur(15px); z-index: 50; padding: 15px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; cursor: grab; user-select: none; }
+        .index-bar.active { cursor: grabbing; scroll-behavior: auto; }
         .index-bar::-webkit-scrollbar { display: none; }
         .cat-pill { padding: 8px 16px; border-radius: 20px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s; pointer-events: auto; }
-        .cat-pill:hover { border-color: var(--amber); color: var(--amber); }
+        .cat-pill:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-light); }
 
         .cat-header { font-size: 20px; font-weight: 800; color: var(--text-strong); margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
         .cat-header::before { content: ""; width: 4px; height: 20px; background: var(--amber); border-radius: 4px; }
         .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         .post-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; }
-        .post-card:hover { border-color: var(--amber); transform: translateY(-3px); }
+        .post-card:hover { border-color: var(--amber); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         .post-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .post-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--amber-light); color: var(--amber); display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0; }
         .post-card-title { font-size: 15px; font-weight: 700; color: var(--text-strong); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .post-card-desc { font-size: 13px; color: var(--muted); margin-bottom: 15px; line-height: 1.5; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .post-card-footer { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--amber); text-transform: uppercase; }
 
+        /* OKUMA EKRANI & GECE/GÜNDÜZ MODU UYUMU */
         #viewer { display: none; flex-direction: column; }
         .viewer-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-back { background: var(--card); border: 1px solid var(--border); color: var(--text-strong); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
         .btn-back:hover { border-color: var(--amber); color: var(--amber); }
         
-        .article-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 30px; }
+        .article-box { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; margin-bottom: 30px; overflow: hidden;}
         .article-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
         .badge { background: var(--amber-light); color: var(--amber); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .article-title { font-size: 26px; font-weight: 900; color: var(--text-strong); line-height: 1.2; margin-bottom: 30px; }
         
+        /* Tema Entegrasyon Koruması (Dark/Light mode switch için akıllı zorlamalar) */
         .article-body { font-size: 16px; line-height: 1.75; text-align: left; word-wrap: break-word; color: var(--text); }
-        .article-body * { background-color: transparent !important; }
-        .article-body span, .article-body p, .article-body div, .article-body ul, .article-body li, .article-body table, .article-body td { color: var(--text) !important; }
-        .article-body h1, .article-body h2, .article-body h3, .article-body h4, .article-body h5, .article-body h6, .article-body strong, .article-body b { color: var(--text-strong) !important; }
+        .article-body h1, .article-body h2, .article-body h3, .article-body h4, .article-body h5, .article-body h6 { color: var(--text-strong); font-weight: 800; margin: 25px 0 15px; }
+        .article-body p { margin-bottom: 15px; opacity: 0.95; }
+        .article-body ul, .article-body ol { padding-left: 20px; margin-bottom: 15px; }
+        .article-body li { margin-bottom: 8px; }
+        .article-body strong, .article-body b { color: var(--text-strong); font-weight: 700; }
+        .article-body a { color: var(--amber); text-decoration: underline; }
         
-        .article-body h2 { font-size: 22px; font-weight: 800; margin: 35px 0 15px; }
-        .article-body p { margin-bottom: 20px; opacity: 0.9; }
-        .article-body ul { padding-left: 20px; margin-bottom: 20px; }
-        .article-body li { margin-bottom: 8px; opacity: 0.9; }
+        /* Tablo ve Medya Uyumları */
+        .article-body table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; background: var(--card); }
+        .article-body table td, .article-body table th { border: 1px solid var(--border) !important; padding: 10px; }
+        .article-body table th { background: var(--input-bg); color: var(--text-strong); }
+        .article-body img { max-width: 100%; height: auto !important; border-radius: 12px; display: block; margin: 15px 0; }
+        .article-body iframe { max-width: 100%; border-radius: 12px; }
+        .article-body blockquote { border-left: 4px solid var(--amber); padding: 10px 15px; margin: 15px 0; background: var(--input-bg); border-radius: 0 8px 8px 0; font-style: italic; }
+        .article-body pre { background: var(--input-bg) !important; padding: 15px; border-radius: 12px; overflow-x: auto; border: 1px solid var(--border); }
+        .article-body code { font-family: monospace; color: var(--amber); }
 
         @media (min-width: 600px) {
             .article-box { padding: 40px; }
             .article-title { font-size: 32px; }
-            .article-body { font-size: 17px; text-align: justify; }
+            .article-body { font-size: 17px; }
         }
 
+        /* YORUMLAR */
         .comments-section { background: var(--input-bg); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
         .comments-title { font-size: 20px; font-weight: 800; color: var(--text-strong); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .comments-title i { color: var(--amber); }
@@ -177,11 +189,14 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-title { font-size: 18px; font-weight: 800; color: var(--text-strong); }
         .btn-close { background: var(--input-bg); border: none; width: 32px; height: 32px; border-radius: 50%; color: var(--text-strong); cursor: pointer; }
+        
         .form-group { margin-bottom: 15px; }
         .form-label { display: block; font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
         .form-input { width: 100%; height: 44px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 0 15px; color: var(--text-strong); font-size: 14px; }
         .form-input:focus { border-color: var(--amber); }
+        select.form-input { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; cursor: pointer;}
 
+        /* ADMİN EDİTÖR EKRANI */
         #adminEditor { display: none; flex-direction: column; }
         .editor-container { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 25px; }
         
@@ -190,39 +205,29 @@
         .icon-item { height: 40px; border-radius: 8px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; transition: 0.2s; }
         .icon-item:hover { border-color: var(--amber); color: var(--amber); }
         .icon-item.selected { background: var(--amber); color: #000; border-color: var(--amber); }
-
-        .toolbar { display: flex; gap: 5px; background: var(--input-bg); padding: 8px; border: 1px solid var(--border); border-bottom: none; border-radius: 12px 12px 0 0; overflow-x: auto; scrollbar-width: none; }
-        .toolbar::-webkit-scrollbar { display: none; }
-        .toolbar-btn { min-width: 32px; height: 32px; padding: 0 8px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text-strong); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: flex-shrink: 0; transition: 0.2s; }
-        .toolbar-btn:hover { background: var(--border); color: var(--amber); }
-        .toolbar-divider { width: 1px; background: var(--border); margin: 0 4px; }
         
-        .rich-textarea { width: 100%; min-height: 300px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 0 0 12px 12px; padding: 15px; color: var(--text-strong); font-size: 15px; line-height: 1.7; overflow-y: auto; outline: none; }
-        .rich-textarea:focus { border-color: var(--amber); }
-        .rich-textarea[empty="true"]::before { content: attr(placeholder); color: var(--muted); pointer-events: none; display: block; }
-        .rich-textarea h2 { font-size: 22px; font-weight: 800; margin: 15px 0 10px; color: var(--text-strong); }
-        .rich-textarea h3 { font-size: 18px; font-weight: 800; margin: 15px 0 10px; color: var(--text-strong); }
-        .rich-textarea ul, .rich-textarea ol { padding-left: 20px; margin-bottom: 15px; }
+        /* Jodit Editörün Köşelerini Yumuşat */
+        .jodit-container { border-radius: 12px !important; overflow: hidden; border: 1px solid var(--border) !important; }
+        .jodit-toolbar__box { background: var(--input-bg) !important; border-bottom: 1px solid var(--border) !important; }
 
         #toast { position: fixed; bottom: 20px; right: 20px; background: var(--card); border: 1px solid var(--border); color: var(--text-strong); padding: 15px 20px; border-radius: 16px; font-size: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001; display: none; }
-        .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 16px; font-weight: 600; }
+        .loading { text-align: center; padding: 50px; color: var(--muted); font-size: 16px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .loading i { font-size: 30px; color: var(--amber); }
 
         @media (max-width: 768px) {
-            .header {
-                grid-template-columns: 1fr auto;
-                grid-template-areas: "logo actions" "search search";
-                gap: 15px;
-            }
+            .header { grid-template-columns: 1fr auto; grid-template-areas: "logo actions" "search search"; gap: 15px; }
             .logo-area { grid-area: logo; }
             .header-right { grid-area: actions; width: auto; justify-content: flex-end; }
             .header-search { grid-area: search; width: 100%; margin-top: 5px; }
             .search-wrapper { max-width: 100%; }
+            .editor-container { padding: 15px; }
         }
     </style>
 </head>
 <body class="dark">
 
     <script>
+        // Tema Okuma
         if (localStorage.getItem("vhesap_global_theme") === "light" || localStorage.getItem("vhesap_theme") === "light") {
             document.body.classList.remove("dark");
             document.body.classList.add("light-mode");
@@ -232,49 +237,24 @@
             try {
                 const analyticsConf = JSON.parse(localStorage.getItem('vhesap_analytics_config') || '{"enabled":true}');
                 if (!analyticsConf.enabled) return;
-                
                 const evConf = analyticsConf.events && analyticsConf.events[eventName];
                 if (evConf && evConf.enabled === false) return;
-                
                 if (typeof gtag === 'function') gtag('event', eventName, params);
-                
-                const today = new Date().toISOString().split('T')[0];
-                const rawStats = localStorage.getItem('vhesap_analytics_stats') || '{}';
-                let stats = JSON.parse(rawStats);
-                
-                if (!stats[today]) {
-                    stats[today] = { users: 1, calculations: 0, ad_impressions: 0, ad_clicks: 0, affiliate_clicks: 0, pdf_downloads: 0, modules: {}, events: {} };
-                }
-                
-                if (eventName === 'calculation_complete') {
-                    stats[today].calculations++;
-                    let mod = params.module || 'blog_genel';
-                    stats[today].modules[mod] = (stats[today].modules[mod] || 0) + 1;
-                } else if (eventName === 'ad_impression') stats[today].ad_impressions++;
-                else if (eventName === 'ad_click') stats[today].ad_clicks++;
-                else if (eventName === 'affiliate_click') stats[today].affiliate_clicks++;
-                else if (eventName === 'payment_plan_download_pdf') stats[today].pdf_downloads++;
-                
-                stats[today].events[eventName] = (stats[today].events[eventName] || 0) + 1;
-                localStorage.setItem('vhesap_analytics_stats', JSON.stringify(stats));
-            } catch(e) { console.warn("Analytics error", e); }
+            } catch(e) {}
         };
 
         window.getAdHtml = function(placement, asPostCard = false) {
             try {
                 const localAds = JSON.parse(localStorage.getItem('vhesap_ads_draft_vamber_2') || '[]');
                 const ads = window.GLOBAL_ADS || localAds;
-                
                 const activeAds = ads.filter(a => a.active && a.placement === placement);
                 if (activeAds.length === 0) return '';
-                
                 activeAds.sort((a,b) => b.priority - a.priority);
                 const ad = activeAds[0];
-                
                 setTimeout(() => window.trackEvent('ad_impression', { placement: placement }), 200);
 
                 if(ad.type === 'AdSense') {
-                    return `<div class="w-full my-2 text-center" style="margin: 15px 0;" onclick="window.trackEvent('ad_click', { type: 'adsense' })">${ad.scriptCode}</div>`;
+                    return `<div class="w-full my-2 text-center" style="margin: 15px 0;">${ad.scriptCode}</div>`;
                 } else {
                     let cleanDesc = ad.description ? ad.description.replace(/<[^>]*>?/gm, '') : '';
                     if (asPostCard) {
@@ -291,17 +271,14 @@
                         </a>`;
                     }
                     return `
-                    <a href="${ad.link}" target="_blank" onclick="window.trackEvent('ad_click', { placement: '${placement}' })" style="display:block; width:100%; margin: 10px 0; background: ${ad.transparentBg ? 'var(--card)' : 'var(--input-bg)'}; border: 1px solid var(--border); border-radius: 16px; padding: 15px; transition: all 0.2s; text-decoration: none;">
+                    <a href="${ad.link}" target="_blank" style="display:block; width:100%; margin: 10px 0; background: ${ad.transparentBg ? 'var(--card)' : 'var(--input-bg)'}; border: 1px solid var(--border); border-radius: 16px; padding: 15px; text-decoration: none;">
                         <div style="display:flex; align-items:center; gap: 15px;">
                             <div style="width:40px; height:40px; border-radius:10px; background:var(--amber-light); display:flex; align-items:center; justify-content:center; color:var(--amber); font-size:18px; flex-shrink:0;">
                                 <i class="${ad.icon || 'fa-solid fa-star'}"></i>
                             </div>
                             <div style="flex:1; text-align:left;">
-                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                                    <span style="background:var(--amber-light); color:var(--amber); padding:2px 6px; border-radius:4px; font-size:9px; font-weight:800; letter-spacing:1px; text-transform:uppercase;">${ad.badge || 'Sponsor'}</span>
-                                </div>
                                 <h4 style="font-size:14px; font-weight:800; color:var(--text-strong); line-height:1.2; margin-bottom:4px;">${ad.title}</h4>
-                                <div style="font-size:11px; color:var(--muted); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${cleanDesc}</div>
+                                <div style="font-size:11px; color:var(--muted);">${cleanDesc}</div>
                             </div>
                             <div style="display:flex; align-items:center; justify-content:center; background:var(--amber); color:#000; padding:8px 12px; border-radius:10px; font-size:11px; font-weight:800; flex-shrink:0;">
                                 ${ad.buttonText || 'İncele'}
@@ -375,17 +352,17 @@
                 </div>
 
                 <div id="postsContent">
-                    <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+                    <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Firebase Bağlantısı Kuruluyor...</div>
                 </div>
             </div>
 
+            <!-- Yazar Modal -->
             <div id="writerManagerModal" class="modal">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2 class="modal-title"><i class="fa-solid fa-users-gear" style="color:var(--blue); margin-right:8px;"></i> Yazar Yönetimi</h2>
                         <button id="closeWriterModal" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    
                     <div class="form-group" style="margin-bottom: 24px;">
                         <label class="form-label">Yeni Yazar Ekle (Gmail)</label>
                         <div style="display: flex; gap: 8px;">
@@ -393,7 +370,6 @@
                             <button id="addWriterBtn" style="width: 44px; height: 44px; border-radius: 12px; background: var(--blue); color: white; cursor: pointer; font-size: 16px;"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
-                    
                     <div>
                         <label class="form-label" style="border-bottom: 1px solid var(--border); padding-bottom: 8px;">Sistemdeki Yazarlar</label>
                         <ul id="writersList" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
@@ -401,6 +377,7 @@
                 </div>
             </div>
 
+            <!-- Gelişmiş Jodit Editör Ekranı -->
             <div id="adminEditor">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <button id="closeEditorBtn" class="btn-back" style="background:none; border:none; padding:0;"><i class="fa-solid fa-arrow-left"></i> Vazgeç & Dön</button>
@@ -418,20 +395,7 @@
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="form-label">Kategori Seçimi</label>
                             <select id="editCategory" class="form-input">
-                                <option value="Bireysel Finans">Bireysel Finans</option>
-                                <option value="Ticari Finans">Ticari Finans</option>
-                                <option value="Mevduat">Mevduat</option>
-                                <option value="Yatırım">Yatırım</option>
-                                <option value="Analiz">Analiz</option>
-                                <option value="Kredi Kartı">Kredi Kartı</option>
-                                <option value="Kredi">Kredi</option>
-                                <option value="Finansal Rehber">Finansal Rehber</option>
-                                <option value="Vergi">Vergi</option>
-                                <option value="Sigorta">Sigorta</option>
-                                <option value="Ekonomi">Ekonomi</option>
-                                <option value="Hukuk">Hukuk</option>
-                                <option value="Gayrimenkul">Gayrimenkul</option>
-                                <option value="Diğer">Diğer</option>
+                                <!-- JS ile Firestore'dan veya temellerden doldurulacak -->
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
@@ -442,23 +406,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Makale İçeriği</label>
-                        <div class="toolbar">
-                            <button type="button" class="toolbar-btn" onclick="formatDoc('bold')" title="Kalın (Bold)"><i class="fa-solid fa-bold"></i></button>
-                            <button type="button" class="toolbar-btn" onclick="formatDoc('italic')" title="İtalik"><i class="fa-solid fa-italic"></i></button>
-                            <button type="button" class="toolbar-btn" onclick="formatDoc('underline')" title="Altı Çizili"><i class="fa-solid fa-underline"></i></button>
-                            <div class="toolbar-divider"></div>
-                            <button type="button" class="toolbar-btn" onclick="formatBlock('H2')" title="Ana Alt Başlık">H2</button>
-                            <button type="button" class="toolbar-btn" onclick="formatBlock('H3')" title="Küçük Başlık">H3</button>
-                            <button type="button" class="toolbar-btn" onclick="formatBlock('P')" title="Normal Paragraf">P</button>
-                            <div class="toolbar-divider"></div>
-                            <button type="button" class="toolbar-btn" onclick="formatDoc('insertUnorderedList')" title="Maddeli Liste"><i class="fa-solid fa-list-ul"></i></button>
-                            <button type="button" class="toolbar-btn" onclick="formatDoc('insertOrderedList')" title="Numaralı Liste"><i class="fa-solid fa-list-ol"></i></button>
-                            <div class="toolbar-divider"></div>
-                            <button type="button" class="toolbar-btn" onclick="addLink()" title="Link Ekle"><i class="fa-solid fa-link"></i></button>
-                            <button type="button" class="toolbar-btn" onclick="formatDoc('removeFormat')" title="Biçimlendirmeyi Temizle"><i class="fa-solid fa-eraser"></i></button>
-                        </div>
-                        <div id="editBody" contenteditable="true" class="rich-textarea" placeholder="Makale içeriğinizi buraya yazmaya başlayın..."></div>
+                        <label class="form-label">Gelişmiş İçerik Editörü</label>
+                        <!-- Yeni Jodit Textarea -->
+                        <textarea id="editBody"></textarea>
                     </div>
                     
                     <button id="publishPostBtn" class="btn-primary" style="height: 48px; font-size: 15px; justify-content: center; width: 100%; margin-top: 10px;">
@@ -467,6 +417,7 @@
                 </div>
             </div>
 
+            <!-- Okuma Ekranı -->
             <div id="viewer">
                 <div class="viewer-actions">
                     <button id="backBtn" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Geri Dön</button>
@@ -485,7 +436,7 @@
                         <span id="articleReadTime" style="font-size:12px; color:var(--muted); font-weight:600;"><i class="fa-regular fa-clock"></i></span>
                     </div>
                     <h1 id="articleTitle" class="article-title"></h1>
-                    <div id="articleBody" class="article-body prose"></div>
+                    <div id="articleBody" class="article-body"></div>
                 </article>
                 
                 <div id="ad-container-blog-mid" style="margin-bottom: 30px;"></div>
@@ -511,9 +462,7 @@
                 
                 <div id="ad-container-blog-bottom" style="margin-top: 30px;"></div>
             </div>
-
             <div id="ad-container-bottom" style="margin-top: 40px; margin-bottom: 20px;"></div>
-
         </div>
     </div>
 
@@ -522,6 +471,7 @@
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, collection, query, where, serverTimestamp, onSnapshot, addDoc, getDocs, doc, deleteDoc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // YETKİLENDİRME (Admin Mail)
         const SUPER_ADMIN_EMAIL = "vhesap.com@gmail.com"; 
 
         const firebaseConfig = {
@@ -546,20 +496,27 @@
         let unsubscribeComments = null;
         
         let loadedPosts = []; 
-        const SPAM_COOLDOWN_MS = 60000; 
+        let globalJoditEditor = null; // Gelişmiş Editör Referansı
 
-        function updateThemeUI(theme) {
-            if (theme === "light") { document.body.classList.remove("dark"); document.body.classList.add("light-mode"); } 
-            else { document.body.classList.remove("light-mode"); document.body.classList.add("dark"); }
-        }
-        window.addEventListener('storage', (e) => { if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') updateThemeUI(e.newValue); });
+        // Temel Kategoriler (Firestore'da varsa üzerine eklenecek)
+        const baseCategories = ["Bireysel Finans", "Ticari Finans", "Mevduat", "Yatırım", "Analiz", "Kredi Kartı", "Kredi", "Finansal Rehber", "Vergi", "Sigorta", "Ekonomi", "Hukuk", "Gayrimenkul", "Diğer"];
 
-        document.addEventListener("click", () => {
-            if (currentUser) {
-                localStorage.setItem("vhesap_last_activity", Date.now().toString());
-            }
+        // Dinamik Tema Takibi
+        window.addEventListener('storage', (e) => { 
+            if (e.key === 'vhesap_global_theme' || e.key === 'vhesap_theme') {
+                if(e.newValue === "light") {
+                    document.body.classList.remove("dark"); document.body.classList.add("light-mode");
+                } else {
+                    document.body.classList.remove("light-mode"); document.body.classList.add("dark");
+                }
+                // Editör açıkken tema değişirse Jodit temasını da tetikle
+                if(globalJoditEditor) {
+                    globalJoditEditor.setTheme(e.newValue === "light" ? "default" : "dark");
+                }
+            } 
         });
 
+        // Scroll Bar Animasyonları & Etkileşim
         document.getElementById('vhesap-viewport').addEventListener('scroll', function() {
             if(document.getElementById('viewer').style.display === 'flex' || document.getElementById('viewer').style.display === 'block') {
                 const winScroll = this.scrollTop;
@@ -574,28 +531,10 @@
             const t = document.getElementById("toast");
             t.innerHTML = text; t.style.display = "block";
             if (toastTimeout) clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => { t.style.display = "none"; }, 5000); // Süreyi uzattım ki hata okunsun
+            toastTimeout = setTimeout(() => { t.style.display = "none"; }, 5000);
         }
 
-        window.formatDoc = function(cmd, value=null) {
-            document.execCommand(cmd, false, value);
-            document.getElementById('editBody').focus();
-        };
-        window.formatBlock = function(blockType) {
-            document.execCommand('formatBlock', false, `<${blockType}>`);
-            document.getElementById('editBody').focus();
-        };
-        window.addLink = function() {
-            const url = prompt('Bağlantı (Link) adresini girin:', 'https://');
-            if(url) { document.execCommand('createLink', false, url); }
-        };
-
-        const richTextarea = document.getElementById('editBody');
-        richTextarea.addEventListener('input', function() {
-            if(this.innerHTML.trim() === '' || this.innerHTML === '<br>') { this.setAttribute('empty', 'true'); } 
-            else { this.setAttribute('empty', 'false'); }
-        });
-
+        // Görsel İkon Seçici Kurulumu
         const fontAwesomeIcons = [
             'fa-file-lines', 'fa-calculator', 'fa-coins', 'fa-chart-pie', 'fa-chart-line', 
             'fa-money-bill', 'fa-money-bill-transfer', 'fa-wallet', 'fa-house', 'fa-house-user', 
@@ -637,27 +576,18 @@
             }
         }
         
+        // Kategori Çubuğu (Drag, Touch & Scroll Wheel)
         function attachDragScroll() {
             const slider = document.querySelector('.index-bar');
             if (!slider) return;
-            let isDown = false;
-            let startX;
-            let scrollLeft;
+            let isDown = false; let startX; let scrollLeft;
 
             slider.addEventListener('mousedown', (e) => {
-                isDown = true;
-                slider.classList.add('active');
-                startX = e.pageX - slider.offsetLeft;
-                scrollLeft = slider.scrollLeft;
+                isDown = true; slider.classList.add('active');
+                startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft;
             });
-            slider.addEventListener('mouseleave', () => {
-                isDown = false;
-                slider.classList.remove('active');
-            });
-            slider.addEventListener('mouseup', () => {
-                isDown = false;
-                slider.classList.remove('active');
-            });
+            slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+            slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
             slider.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
@@ -665,6 +595,20 @@
                 const walk = (x - startX) * 2; 
                 slider.scrollLeft = scrollLeft - walk;
             });
+            // Mouse Wheel ile yatay kaydırma
+            slider.addEventListener('wheel', (e) => {
+                if(e.deltaY !== 0) { e.preventDefault(); slider.scrollLeft += e.deltaY; }
+            });
+        }
+
+        // Kategori Dropdown Güncelleme (Sabit + Firebase Gelenler)
+        function updateCategoryDropdown(postsArray) {
+            let catSet = new Set(baseCategories);
+            postsArray.forEach(p => catSet.add(p.category)); // Varsa yeni olanları ekle
+            
+            let html = "";
+            Array.from(catSet).sort().forEach(c => { html += `<option value="${c}">${c}</option>`; });
+            document.getElementById("editCategory").innerHTML = html;
         }
 
         function renderGroupedPosts(postsArray) {
@@ -672,11 +616,17 @@
             const container = document.getElementById("postsContent");
             
             if (uniquePosts.length === 0) {
-                container.innerHTML = "<div class='loading' style='color:var(--muted); font-size: 14px;'><i class='fa-solid fa-pen-nib'></i> Henüz sistemde ekli bir makale bulunmuyor.</div>";
+                container.innerHTML = `<div class='loading'>
+                    <i class='fa-solid fa-pen-nib'></i> 
+                    <span>Henüz sistemde ekli bir makale bulunmuyor.<br><small style="opacity:0.7">Firebase'e makale eklendiğinde burada görünecektir.</small></span>
+                </div>`;
+                updateCategoryDropdown([]); 
                 return;
             }
 
             const categories = [...new Set(uniquePosts.map(p => p.category))];
+            updateCategoryDropdown(uniquePosts); // Select Kutusunu Güncelle
+
             container.innerHTML = ""; 
             
             let indexHtml = `<div class="index-bar">`;
@@ -701,12 +651,8 @@
                         </div>
                     </div>`;
                 });
-                
                 const adHtmlTop = window.getAdHtml ? window.getAdHtml('blogCategoryEnd', true) : '';
-                if (adHtmlTop) {
-                    contentHtml += adHtmlTop;
-                }
-
+                if (adHtmlTop) contentHtml += adHtmlTop;
                 contentHtml += `</div>`;
             });
             container.innerHTML = indexHtml + contentHtml;
@@ -714,14 +660,13 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            if(document.getElementById("viewer").style.display === "flex") {
-                document.getElementById("backBtn").click();
-            }
+            if(document.getElementById("viewer").style.display === "flex") { document.getElementById("backBtn").click(); }
             const val = e.target.value.toLowerCase();
             const filtered = loadedPosts.filter(p => p.title.toLowerCase().includes(val) || p.category.toLowerCase().includes(val));
             renderGroupedPosts(filtered);
         });
 
+        // TAMAMEN FIREBASE TABANLI FETCH FONKSİYONU
         async function fetchAndRenderPosts() {
             try {
                 const q = query(collection(db, "posts"));
@@ -736,7 +681,7 @@
                 
             } catch (error) {
                 console.error("Firebase Çekme Hatası:", error);
-                document.getElementById("postsContent").innerHTML = `<div class='loading' style='color:var(--danger); font-size:14px;'><i class='fa-solid fa-triangle-exclamation'></i> Sunucuya bağlanılamadı. Hata: ${error.code}</div>`;
+                document.getElementById("postsContent").innerHTML = `<div class='loading' style='color:var(--danger);'><i class='fa-solid fa-triangle-exclamation'></i> Sunucuya bağlanılamadı. Hata: ${error.code}</div>`;
             }
         }
 
@@ -755,7 +700,10 @@
             const editBtn = document.getElementById("editActivePostBtn");
             
             const userMailStr = currentUser?.email ? currentUser.email.toLowerCase() : "";
-            if (isSuperAdmin || (isWriter && p.authorEmail === userMailStr)) {
+            
+            // YETKİ KONTROLÜ (Admin her şeyi, yazar sadece kendininkini düzenleyip silebilir)
+            let currentPostAuthorMail = p.authorEmail ? p.authorEmail.toLowerCase() : "";
+            if (isSuperAdmin || (isWriter && currentPostAuthorMail === userMailStr)) {
                 delBtn.style.display = "flex"; delBtn.onclick = () => { deletePost(p.id); };
                 editBtn.style.display = "flex";
             } else { 
@@ -763,7 +711,12 @@
                 editBtn.style.display = "none"; 
             }
 
-            document.getElementById("articleBody").innerHTML = p.body;
+            // TEMA KORUMASI: Editörden kopyalanan "beyaz" veya "siyah" satıriçi arkaplan renklerini temizle, tema bozulmasın.
+            let safeBody = p.body;
+            safeBody = safeBody.replace(/background-color:\s*(rgb\(255,\s*255,\s*255\)|#ffffff|#fff|rgb\(0,\s*0,\s*0\)|#000000|#000)[;"]/gi, 'background-color: transparent;"');
+            safeBody = safeBody.replace(/color:\s*(rgb\(255,\s*255,\s*255\)|#ffffff|#fff|rgb\(0,\s*0,\s*0\)|#000000|#000)[;"]/gi, 'color: inherit;"');
+            document.getElementById("articleBody").innerHTML = safeBody;
+            
             document.title = `${p.title} | Vhesap`;
             
             if(changeUrl) {
@@ -778,13 +731,10 @@
             }
             
             if (window.trackEvent) window.trackEvent('page_view', { page: 'blog_article', article_id: id });
-            
             window.scrollTo({ top: 0, behavior: 'instant' });
-            
             loadComments(); 
         }
 
-        // GELİŞMİŞ HATA YAKALAMALI SİLME FONKSİYONU
         window.deletePost = async function(id) {
             if(!confirm("Kalıcı olarak silmek istediğinize emin misiniz?")) return;
             try { 
@@ -794,11 +744,31 @@
                 fetchAndRenderPosts(); 
             } 
             catch (e) { 
-                console.error("FİREBASE SİLME HATASI DETAYI:", e);
-                toast(`Silme Hatası: ${e.code || "Bilinmeyen yetki sorunu"}`); 
+                console.error("Firebase Silme Hatası:", e);
+                toast(`Silme Hatası: Yetkiniz reddedildi.`); 
             }
         }
 
+        // JODIT EDİTÖRÜ BAŞLATMA FONKSİYONU
+        function initJodit() {
+            if (globalJoditEditor) return;
+            const isLight = document.body.classList.contains('light-mode');
+            globalJoditEditor = Jodit.make('#editBody', {
+                theme: isLight ? 'default' : 'dark',
+                language: 'tr',
+                height: 600,
+                uploader: { insertImageAsBase64URI: true }, // Resimleri doğrudan veritabanına kaydetmek için (Base64)
+                controls: {
+                    fontsize: {
+                        list: "10,12,14,16,18,20,22,24,28,32,36,48,64".split(",") // İstenilen Boyut Listesi
+                    }
+                },
+                buttons: "source,|,bold,strikethrough,underline,italic,|,superscript,subscript,|,ul,ol,|,outdent,indent,|,font,fontsize,brush,paragraph,|,image,video,table,link,|,align,undo,redo,|,hr,eraser,copyformat,|,symbol,fullsize",
+                useSplitMode: true
+            });
+        }
+
+        // MAKALE DÜZENLEME (EDİT) BUTONUNA TIKLANINCA
         document.getElementById("editActivePostBtn").onclick = () => {
             const p = loadedPosts.find(x => x.id === activePost);
             if(!p) return;
@@ -806,13 +776,12 @@
             document.getElementById("viewer").style.display = "none";
             document.getElementById("adminEditor").style.display = "flex";
             
+            initJodit(); // Editör oluşturulmamışsa oluştur.
+            
             document.getElementById("editTitle").value = p.title;
             let catSelect = document.getElementById("editCategory");
-            if([...catSelect.options].some(o => o.value === p.category)) {
-                catSelect.value = p.category;
-            } else {
-                catSelect.value = "Diğer";
-            }
+            if([...catSelect.options].some(o => o.value === p.category)) { catSelect.value = p.category; } 
+            else { catSelect.value = "Diğer"; }
             
             document.getElementById("selectedIconInput").value = p.icon;
             
@@ -820,8 +789,8 @@
             const iconEl = document.querySelector(`.icon-item[data-icon="${p.icon}"]`);
             if(iconEl) iconEl.classList.add('selected');
             
-            document.getElementById("editBody").innerHTML = p.body;
-            document.getElementById("editBody").setAttribute("empty", "false");
+            // Makale verisini Gelişmiş Editöre bas
+            globalJoditEditor.value = p.body;
             
             const btn = document.getElementById("publishPostBtn");
             btn.innerHTML = `<i class="fa-solid fa-save"></i> Değişiklikleri Güncelle`;
@@ -836,21 +805,22 @@
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.pushState({path:cleanUrl}, '', cleanUrl);
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
-            
             window.scrollTo({ top: 0, behavior: 'instant' });
-            
             document.getElementById('searchInput').value = "";
             renderGroupedPosts(loadedPosts);
         };
 
+        // YENİ MAKALE EKLEME PANELİNİ AÇMA
         document.getElementById("adminPanelBtn").onclick = () => { 
             document.getElementById("homePage").style.display = "none"; 
             document.getElementById("adminEditor").style.display = "flex"; 
             
+            initJodit(); // Editör oluşturulmamışsa oluştur.
+            
             document.getElementById("editTitle").value = "";
-            document.getElementById("editCategory").value = "Bireysel Finans";
-            document.getElementById("editBody").innerHTML = "";
-            document.getElementById("editBody").setAttribute("empty", "true");
+            let catSelect = document.getElementById("editCategory");
+            if (catSelect.options.length > 0) catSelect.selectedIndex = 0;
+            globalJoditEditor.value = ""; // Editörü temizle
             
             const btn = document.getElementById("publishPostBtn");
             btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al`;
@@ -862,12 +832,12 @@
         document.getElementById("writerManageBtn").onclick = () => { document.getElementById("writerManagerModal").style.display = "flex"; loadWriters(); };
         document.getElementById("closeWriterModal").onclick = () => { document.getElementById("writerManagerModal").style.display = "none"; };
 
-        // GELİŞMİŞ HATA YAKALAMALI YAYINLAMA/GÜNCELLEME FONKSİYONU
+        // FIREBASE MAKALE YAYINLAMA / GÜNCELLEME
         document.getElementById("publishPostBtn").onclick = async function() {
             const title = document.getElementById("editTitle").value.trim(); 
             const cat = document.getElementById("editCategory").value.trim();
             const icon = document.getElementById("selectedIconInput").value.trim(); 
-            const bodyHtml = document.getElementById("editBody").innerHTML.trim();
+            const bodyHtml = globalJoditEditor ? globalJoditEditor.value.trim() : ""; // Değeri Jodit'ten çekiyoruz
             
             if(!title || !cat || bodyHtml === "" || bodyHtml === "<br>") {
                 if (window.trackEvent) window.trackEvent('calculation_error', { module: 'blog_publish', error_type: 'empty_fields' });
@@ -895,12 +865,13 @@
                 document.getElementById("closeEditorBtn").click(); 
                 fetchAndRenderPosts();
             } catch(e) { 
-                console.error("FİREBASE YAYINLAMA HATASI DETAYI:", e);
-                toast(`İşlem Hatası: ${e.code || "Bilinmeyen yetki sorunu"}`); 
+                console.error("Yayınlama Hatası:", e);
+                toast(`İşlem Hatası: Yetkiniz reddedildi.`); 
             } 
             finally { btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Zengin Metni Yayına Al`; }
         };
 
+        // YAZAR YÖNETİMİ
         async function loadWriters() {
             if(!isSuperAdmin) return;
             try {
@@ -908,7 +879,7 @@
                 let html = "";
                 snap.forEach(doc => {
                     if(doc.data().role === 'writer') {
-                        html += `<li class="writer-item">
+                        html += `<li class="writer-item" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);">
                             <span>${doc.id}</span>
                             <button onclick="removeWriter('${doc.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:16px;"><i class="fa-solid fa-trash"></i></button>
                         </li>`;
@@ -932,6 +903,7 @@
             } catch(e) { toast("Hata. Yetkiniz yok."); }
         };
 
+        // YORUM YÖNETİMİ
         function loadComments() {
             if (unsubscribeComments) unsubscribeComments(); 
             const q = query(collection(db, "comments"), where("postId", "==", activePost));
@@ -965,6 +937,7 @@
             try { await deleteDoc(doc(db, "comments", commentId)); toast("Yorum silindi."); } catch (err) {}
         }
 
+        // ROL KONTROLÜ
         async function checkUserRole(user) {
             const userEmail = user.email ? user.email.toLowerCase() : "";
             isSuperAdmin = (userEmail === SUPER_ADMIN_EMAIL.toLowerCase());
@@ -1010,7 +983,6 @@
                     toast("Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
                     return;
                 }
-                
                 localStorage.setItem("vhesap_last_activity", Date.now().toString());
 
                 currentUser = user;
@@ -1025,9 +997,7 @@
                 currentUser = null; isSuperAdmin = false; isWriter = false;
                 
                 const loginBtn = document.getElementById("loginBtn");
-                loginBtn.style.display = "flex"; 
-                loginBtn.disabled = false; 
-                
+                loginBtn.style.display = "flex"; loginBtn.disabled = false; 
                 const warningLoginBtn = document.getElementById("warningLoginBtn");
                 warningLoginBtn.disabled = false;
                 
@@ -1040,22 +1010,16 @@
 
         const handleLogin = async () => { 
             if(currentUser) return; 
-            
             const btn = document.getElementById("loginBtn");
             if(btn.disabled) return;
             btn.disabled = true;
-            
             try { 
                 await signInWithPopup(auth, provider); 
                 localStorage.setItem("vhesap_last_activity", Date.now().toString());
                 toast("Giriş yapıldı."); 
             } catch (e) { 
-                if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-                    toast("Giriş iptal edildi veya hata oluştu."); 
-                }
-            } finally {
-                if(!currentUser) btn.disabled = false;
-            }
+                if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') { toast("Giriş iptal edildi veya hata oluştu."); }
+            } finally { if(!currentUser) btn.disabled = false; }
         };
         document.getElementById("loginBtn").onclick = handleLogin; 
         document.getElementById("warningLoginBtn").onclick = handleLogin;
@@ -1074,21 +1038,11 @@
         document.getElementById("sendComment").onclick = async () => {
             if (!currentUser) return;
             const text = document.getElementById("commentText").value.trim();
-            
-            if (text.length < 5) {
-                if (window.trackEvent) window.trackEvent('calculation_error', { module: 'blog_comment', error_type: 'too_short' });
-                return toast("Yorumunuz çok kısa.");
-            }
-            if (text.length > 500) {
-                if (window.trackEvent) window.trackEvent('calculation_error', { module: 'blog_comment', error_type: 'too_long' });
-                return toast("Yorumunuz sınırı aşıyor.");
-            }
+            if (text.length < 5) return toast("Yorumunuz çok kısa.");
+            if (text.length > 500) return toast("Yorumunuz sınırı aşıyor.");
 
             const lastTime = localStorage.getItem("vhesap_last_comment_time");
-            if (lastTime && (Date.now() - parseInt(lastTime, 10) < SPAM_COOLDOWN_MS)) {
-                if (window.trackEvent) window.trackEvent('calculation_error', { module: 'blog_comment', error_type: 'spam_cooldown' });
-                return toast(`Lütfen bekleyin.`);
-            }
+            if (lastTime && (Date.now() - parseInt(lastTime, 10) < SPAM_COOLDOWN_MS)) return toast(`Lütfen bekleyin.`);
 
             const btn = document.getElementById("sendComment"); btn.disabled = true; btn.innerHTML = "Gönderiliyor...";
             try {
@@ -1096,9 +1050,6 @@
                 localStorage.setItem("vhesap_last_comment_time", Date.now().toString());
                 document.getElementById("commentText").value = ""; document.getElementById("charCount").innerText = "0/500";
                 toast("Yorum eklendi.");
-                
-                if (window.trackEvent) window.trackEvent('calculation_complete', { module: 'blog_comment' });
-                
             } catch (e) { toast("Hata."); } finally { btn.disabled = false; btn.innerHTML = "Yorumu Gönder"; }
         };
 
@@ -1116,6 +1067,7 @@
             }
         });
 
+        // BAŞLANGIÇ YÜKLEMESİ
         fetchAndRenderPosts();
         
         if (window.renderAds) window.renderAds('homeBottom', 'ad-container-bottom');
