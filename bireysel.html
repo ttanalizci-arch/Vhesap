@@ -67,14 +67,21 @@
             --apple-input-border: rgba(255, 255, 255, 0.04);
         }
 
+        /* Desktop Scrollbar Fix: Changed from vw/vh to % to prevent horizontal scroll layout break */
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100vh; height: 100dvh;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             overflow: hidden; background-color: var(--apple-bg); transition: background-color 0.3s ease;
+        }
+
+        #swipe-wrapper { 
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            width: 100%; height: 100%; overflow: hidden; 
         }
 
         #vhesap-viewport {
             color: var(--apple-text); display: flex; justify-content: center; align-items: flex-start;
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; overflow-y: auto;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden;
             background-color: var(--apple-bg); transition: background-color 0.3s ease;
         }
 
@@ -85,14 +92,14 @@
 
         .apple-container {
             background: var(--apple-container-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            width: 100%; max-width: 500px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative;
+            width: 100%; max-width: 500px; min-height: 100%; display: flex; flex-direction: column; position: relative;
             padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @media (min-width: 641px) {
             #vhesap-viewport { padding: 40px 0; }
-            .apple-container { height: auto; min-height: 890px; max-height: none; border-radius: 36px; border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); overflow: hidden; }
+            .apple-container { height: auto; min-height: 700px; max-height: none; border-radius: 36px; border: 1px solid var(--apple-border); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); }
         }
 
         .main-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); background: rgba(128, 128, 128, 0.1); margin: 4px 16px; padding: 3px; border-radius: 12px; flex-shrink: 0; border: 1px solid rgba(128, 128, 128, 0.08); overflow-x: auto; }
@@ -175,7 +182,7 @@
         </div>
     </div>
 
-    <div id="swipe-wrapper" style="position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;">
+    <div id="swipe-wrapper">
         <div id="vhesap-viewport">
             <div class="apple-container" id="main-container">
                 
@@ -380,15 +387,13 @@
 
         // --- YENİ VALÖR KURALLARI YARDIMCI FONKSİYONLARI ---
         function getStrictNextBusinessDay(date) {
-            // Ödeme tarihi her zaman kendisinden sonraki İLK İŞ GÜNÜNE sarkar.
             let d = new Date(date);
-            d.setDate(d.getDate() + 1); // Mutlaka bir sonraki güne geç
+            d.setDate(d.getDate() + 1); 
             while (!isBusinessDay(d)) d.setDate(d.getDate() + 1);
             return d;
         }
 
         function getPreviousBusinessDay(date) {
-            // Kullanım tarihi tatilse valör bir önceki İLK İŞ GÜNÜNE sarkar.
             let d = new Date(date);
             while (!isBusinessDay(d)) d.setDate(d.getDate() - 1);
             return d;
@@ -635,17 +640,15 @@
             }
             
             let limitVal = T * oran;
-            let badgeHtml = `<div class="flex flex-col w-full gap-1.5">
+            let badgeHtml = `
                 <div class="flex justify-between items-center w-full">
-                    <span>Azami Limit: %${oran*100} - ${format(limitVal)}</span>`;
-            if (limitVal > 0) {
-                badgeHtml += `<button type="button" onclick="aktarTutar(${limitVal})" class="bg-[var(--apple-yellow)] text-black px-2 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-1 whitespace-nowrap">AKTAR</button>`;
-            }
-            badgeHtml += `</div>
-                <div class="text-[9px] font-medium border-t border-[var(--apple-badge-border)] pt-1.5 opacity-90 w-full text-left">
+                    <span>Azami Limit: %${oran*100} - ${format(limitVal)}</span>
+                    ${limitVal > 0 ? `<button type="button" onclick="aktarTutar(${limitVal})" class="bg-[var(--apple-yellow)] text-black px-2 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-1 whitespace-nowrap">AKTAR</button>` : ''}
+                </div>
+                <div class="text-[9px] font-medium border-t border-[var(--apple-badge-border)] pt-1.5 mt-1.5 opacity-90 w-full text-left">
                     <i class="fa-solid fa-circle-info mr-0.5"></i> ${bsmvInfo}
                 </div>
-            </div>`;
+            `;
             id('limit-badge').innerHTML = badgeHtml;
         }
 
@@ -658,12 +661,12 @@
             }
             
             let limitVal = T * oran;
-            let badgeHtml = `<div class="flex justify-between items-center w-full">
-                <span>Azami Limit: ${format(limitVal)} | Azami Vade: ${vade} Ay</span>`;
-            if (limitVal > 0) {
-                badgeHtml += `<button type="button" onclick="aktarTutar(${limitVal}, ${vade})" class="bg-[var(--apple-yellow)] text-black px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-2">TUTARA AKTAR</button>`;
-            }
-            badgeHtml += `</div>`;
+            let badgeHtml = `
+                <div class="flex justify-between items-center w-full">
+                    <span>Azami Limit: ${format(limitVal)} | Azami Vade: ${vade} Ay</span>
+                    ${limitVal > 0 ? `<button type="button" onclick="aktarTutar(${limitVal}, ${vade})" class="bg-[var(--apple-yellow)] text-black px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-2">TUTARA AKTAR</button>` : ''}
+                </div>
+            `;
             id('limit-badge').innerHTML = badgeHtml;
         }
 
@@ -675,18 +678,18 @@
                 id('info-area').innerHTML = `<div class="input-card"><span class="label-text">Ekspertiz Değeri (TL)</span><input type="text" id="val-deger" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this); checkKonut()"></div>
                     <div class="grid grid-cols-2 gap-3 mb-3"><div class="input-card"><span class="label-text">Enerji Sınıfı</span><select id="val-ekb" class="apple-select" onchange="checkKonut()"><option value="AB">A-B</option><option value="C">C</option><option value="D">D ve Altı</option></select></div>
                     <div class="input-card"><span class="label-text">Mülkiyet Durumu</span><select id="val-mulkiyet" class="apple-select" onchange="checkKonut()"><option value="ilk">İlk Kez Alacak</option><option value="diger">2. ve Sonrası</option></select></div></div>
-                    <div id="limit-badge" class="info-badge">Azami Kredi Oranı: Lütfen değer giriniz.</div>`;
+                    <div id="limit-badge" class="info-badge !flex-col !items-start w-full">Azami Kredi Oranı: Lütfen değer giriniz.</div>`;
                 id('info-area').classList.remove('hidden');
             } else if(s === 'tasit') {
                 id('info-area').innerHTML = `<div class="input-card"><span class="label-text">Kasko/Fatura Değeri (TL)</span><input type="text" id="val-deger" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this); checkTasit()"></div>
                     <div class="input-card mb-3"><span class="label-text">Araç Türü</span><select id="val-arac-turu" class="apple-select" onchange="checkTasit()"><option value="icten">İçten Yanmalı</option><option value="elektrikli">Tam Elektrikli</option></select></div>
-                    <div id="limit-badge" class="info-badge">Azami Vade/Oran: Lütfen değer giriniz.</div>`;
+                    <div id="limit-badge" class="info-badge !flex-col !items-start w-full">Azami Vade/Oran: Lütfen değer giriniz.</div>`;
                 id('info-area').classList.remove('hidden');
             } else if (s === 'ihtiyac') {
                 id('info-area').innerHTML = `<div class="info-badge mb-3"><i class="fa-solid fa-circle-info"></i> BDDK: <=125k(36 Ay), 125-250k(24 Ay), >250k(12 Ay)</div>`;
                 id('info-area').classList.remove('hidden');
             } else if (s === 'ekhesap') {
-                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-building-columns"></i> Standart Valör Uygulaması</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım tatil gününe rastlarsa valör önceki iş günü, ödemede ise takip eden ilk iş günüdür. Aynı gün içindeki (0 gün) işlemlerde asgari 1 günlük valör işler.</div></div>`;
+                id('info-area').innerHTML = `<div class="info-badge mb-3 !flex-col !items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-building-columns"></i> Standart Valör Uygulaması</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight w-full">Kullanım tatil gününe rastlarsa valör önceki iş günü, ödemede ise takip eden ilk iş günüdür. Aynı gün içindeki (0 gün) işlemlerde asgari 1 günlük valör işler.</div></div>`;
                 id('info-area').classList.remove('hidden');
             }
 
@@ -819,7 +822,7 @@
             if(state.sub === 'konut') {
                 const mulkiyet = id('val-mulkiyet')?.value;
                 if (mulkiyet === 'diger') {
-                    return { kkdf: 0, bsmv: 0.15 }; // 2. ev ve sonrası için BSMV muafiyeti kalkar
+                    return { kkdf: 0, bsmv: 0.15 };
                 }
                 return { kkdf: 0, bsmv: 0 };
             }
@@ -855,20 +858,16 @@
                 
                 if (inputEndD < inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden önce olamaz.");
 
-                // --- YENİ VALÖR KURALLARI UYGULAMASI ---
-                
                 let startD = new Date(inputStartD);
                 let isStartShifted = false;
-                // Kural 1: Kullanım günü tatil ise valör bir önceki iş günüdür.
+                
                 if (!isBusinessDay(startD)) {
                     startD = getPreviousBusinessDay(startD);
                     isStartShifted = true;
                 }
 
-                // Kural 2: Ödeme günü (iş günü/tatil fark etmeksizin) valör takip eden ilk iş günüdür.
                 let endD = getStrictNextBusinessDay(inputEndD);
 
-                // Kullanıcıya şeffaf bildirim
                 if (isStartShifted) {
                     setTimeout(() => {
                         showToast("Bilgi: Kullanım tatil gününe denk geldiği için valör önceki iş gününe ayarlandı.");
