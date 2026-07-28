@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="BLOCKEDcdn[.]tailwindcss[.]com"BLOCKED;></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
@@ -432,7 +432,6 @@
             const s = state.sub; const isDayBased = (s === 'ekhesap');
             if (isDayBased) {
                 let st = new Date(id('date-start').value); let end = new Date(id('date-first').value);
-                // Aynı güne (end >= st) artık izin veriyoruz.
                 if(end >= st) { id('val-vade').value = Math.round((end - st) / 86400000); } 
                 else { id('date-first').value = id('date-start').value; id('val-vade').value = 0; }
             }
@@ -626,15 +625,27 @@
             else if(T <= 10000000) oran = ekb==='AB'?0.70:(ekb==='C'?0.60:0.50);
             else if(T <= 20000000) oran = ekb==='AB'?0.50:(ekb==='C'?0.40:0.30);
             else oran = ekb==='AB'?0.40:(ekb==='C'?0.30:0.20);
-            if(mulkiyet === 'diger') oran *= 0.25;
+            
+            let bsmvInfo = "";
+            if(mulkiyet === 'diger') {
+                oran *= 0.25;
+                bsmvInfo = "2. ve sonrası konut alımlarında %15 BSMV uygulanmaktadır.";
+            } else {
+                bsmvInfo = "İlk konut edinimlerinde BSMV muafiyeti uygulanmaktadır.";
+            }
             
             let limitVal = T * oran;
-            let badgeHtml = `<div class="flex justify-between items-center w-full">
-                <span>Azami Kredi Oranı: %${oran*100} (${format(limitVal)})</span>`;
+            let badgeHtml = `<div class="flex flex-col w-full gap-1.5">
+                <div class="flex justify-between items-center w-full">
+                    <span>Azami Limit: %${oran*100} - ${format(limitVal)}</span>`;
             if (limitVal > 0) {
-                badgeHtml += `<button type="button" onclick="aktarTutar(${limitVal})" class="bg-[var(--apple-yellow)] text-black px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-2">TUTARA AKTAR</button>`;
+                badgeHtml += `<button type="button" onclick="aktarTutar(${limitVal})" class="bg-[var(--apple-yellow)] text-black px-2 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-1 whitespace-nowrap">AKTAR</button>`;
             }
-            badgeHtml += `</div>`;
+            badgeHtml += `</div>
+                <div class="text-[9px] font-medium border-t border-[var(--apple-badge-border)] pt-1.5 opacity-90 w-full text-left">
+                    <i class="fa-solid fa-circle-info mr-0.5"></i> ${bsmvInfo}
+                </div>
+            </div>`;
             id('limit-badge').innerHTML = badgeHtml;
         }
 
@@ -675,7 +686,7 @@
                 id('info-area').innerHTML = `<div class="info-badge mb-3"><i class="fa-solid fa-circle-info"></i> BDDK: <=125k(36 Ay), 125-250k(24 Ay), >250k(12 Ay)</div>`;
                 id('info-area').classList.remove('hidden');
             } else if (s === 'ekhesap') {
-                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-building-columns"></i> Standart Valör Uygulaması</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım işlemlerinde tatil günleri için valör tarihi bir önceki iş günü; tahsilat ve ödeme işlemlerinde ise takip eden ilk iş günü olarak dikkate alınmaktadır.</div></div>`;
+                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-building-columns"></i> Standart Valör Uygulaması</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım tatil gününe rastlarsa valör önceki iş günü, ödemede ise takip eden ilk iş günüdür. Aynı gün içindeki (0 gün) işlemlerde asgari 1 günlük valör işler.</div></div>`;
                 id('info-area').classList.remove('hidden');
             }
 
@@ -805,7 +816,13 @@
         }
 
         function getTaxes() {
-            if(state.sub === 'konut') return { kkdf: 0, bsmv: 0 };
+            if(state.sub === 'konut') {
+                const mulkiyet = id('val-mulkiyet')?.value;
+                if (mulkiyet === 'diger') {
+                    return { kkdf: 0, bsmv: 0.15 }; // 2. ev ve sonrası için BSMV muafiyeti kalkar
+                }
+                return { kkdf: 0, bsmv: 0 };
+            }
             return { kkdf: 0.15, bsmv: 0.15 };
         }
 
@@ -836,16 +853,12 @@
                 let inputStartD = new Date(id('date-start').value);
                 let inputEndD = new Date(id('date-first').value);
                 
-                // ESKİ KOD: if (inputEndD <= inputStartD) return showToast(...)
-                // YENİ KOD: Artık "Aynı Gün" işlemine izin veriyoruz ( < kontrolü).
                 if (inputEndD < inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden önce olamaz.");
 
                 // --- YENİ VALÖR KURALLARI UYGULAMASI ---
                 
                 let startD = new Date(inputStartD);
                 let isStartShifted = false;
-                let isSameDay = inputStartD.getTime() === inputEndD.getTime();
-
                 // Kural 1: Kullanım günü tatil ise valör bir önceki iş günüdür.
                 if (!isBusinessDay(startD)) {
                     startD = getPreviousBusinessDay(startD);
@@ -855,17 +868,11 @@
                 // Kural 2: Ödeme günü (iş günü/tatil fark etmeksizin) valör takip eden ilk iş günüdür.
                 let endD = getStrictNextBusinessDay(inputEndD);
 
-                // Kullanıcıya şeffaf bildirimler
+                // Kullanıcıya şeffaf bildirim
                 if (isStartShifted) {
                     setTimeout(() => {
                         showToast("Bilgi: Kullanım tatil gününe denk geldiği için valör önceki iş gününe ayarlandı.");
                     }, 300);
-                }
-                
-                if (isSameDay) {
-                    setTimeout(() => {
-                        showToast("Bilgi: Aynı gün çekilip yatırılan tutarlara, valör kuralı gereği faiz işletilir.");
-                    }, isStartShifted ? 4500 : 300);
                 }
 
                 state.lastParams = {
