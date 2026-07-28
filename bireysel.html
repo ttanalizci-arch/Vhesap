@@ -638,8 +638,8 @@
             badgeHtml += `</div>`;
             
             let subText = mulkiyet === 'diger' 
-                ? '2. ve sonrası konut alımlarında azami oran %75 daraltılmış olup BSMV muafiyeti uygulanmaz.' 
-                : 'İlk konut alımlarında güncel ekspertiz dilim limitleri ve BSMV muafiyeti uygulanmaktadır.';
+                ? '2. ve sonrası konut alımlarında azami oran %75 daraltılmış olup BSMV uygulanır (KKDF muaftır).' 
+                : 'İlk konut alımlarında güncel ekspertiz dilim limitleri ile BSMV ve KKDF muafiyeti uygulanmaktadır.';
                 
             badgeHtml += `<div class="text-[9.5px] text-[var(--apple-yellow)] opacity-90 font-medium leading-tight"><i class="fa-solid fa-circle-info mr-1"></i>${subText}</div>`;
             
@@ -678,7 +678,7 @@
                             <div class="flex justify-between items-center w-full">
                                 <span>Azami Kredi Oranı: Lütfen değer giriniz.</span>
                             </div>
-                            <div class="text-[9.5px] text-[var(--apple-yellow)] opacity-90 font-medium leading-tight"><i class="fa-solid fa-circle-info mr-1"></i>İlk konut alımlarında güncel ekspertiz dilim limitleri ve BSMV muafiyeti uygulanmaktadır.</div>
+                            <div class="text-[9.5px] text-[var(--apple-yellow)] opacity-90 font-medium leading-tight"><i class="fa-solid fa-circle-info mr-1"></i>İlk konut alımlarında güncel ekspertiz dilim limitleri ile BSMV ve KKDF muafiyeti uygulanmaktadır.</div>
                         </div>
                     </div>`;
                 id('info-area').classList.remove('hidden');
