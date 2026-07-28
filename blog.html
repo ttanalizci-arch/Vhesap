@@ -148,10 +148,20 @@
         .article-body strong, .article-body b { color: var(--text-strong); font-weight: 700; }
         .article-body a { color: var(--amber); text-decoration: underline; }
         
-        /* Tablo ve Medya Uyumları */
-        .article-body table { width: 100% !important; border-collapse: collapse; margin-bottom: 20px; background: var(--card); }
-        .article-body table td, .article-body table th { border: 1px solid var(--border) !important; padding: 10px; }
-        .article-body table th { background: var(--input-bg); color: var(--text-strong); }
+        /* MOBİL UYUMLU TABLO VE MEDYA TASARIMLARI */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+        .table-responsive::-webkit-scrollbar { height: 6px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 10px; }
+        
+        .article-body table { width: 100% !important; border-collapse: collapse; margin-bottom: 0; background: transparent; }
+        .article-body table td, .article-body table th { border: 1px solid var(--border) !important; padding: 12px 15px; }
+        .article-body table th { background: var(--input-bg); color: var(--text-strong); font-weight: 700; text-align: left; }
+        /* Dış kenarlıkları kaldır ki wrapper'ın kendi yuvarlak kenarlığı bozmasın */
+        .article-body table tr:first-child th, .article-body table tr:first-child td { border-top: none !important; }
+        .article-body table tr:last-child td { border-bottom: none !important; }
+        .article-body table tr th:first-child, .article-body table tr td:first-child { border-left: none !important; }
+        .article-body table tr th:last-child, .article-body table tr td:last-child { border-right: none !important; }
+        
         .article-body img { max-width: 100%; height: auto !important; border-radius: 12px; display: block; margin: 15px 0; }
         .article-body iframe { max-width: 100%; border-radius: 12px; }
         .article-body blockquote { border-left: 4px solid var(--amber); padding: 10px 15px; margin: 15px 0; background: var(--input-bg); border-radius: 0 8px 8px 0; font-style: italic; }
@@ -715,13 +725,34 @@
             let safeBody = p.body;
             safeBody = safeBody.replace(/background-color:\s*(rgb\(255,\s*255,\s*255\)|#ffffff|#fff|rgb\(0,\s*0,\s*0\)|#000000|#000)[;"]/gi, 'background-color: transparent;"');
             safeBody = safeBody.replace(/color:\s*(rgb\(255,\s*255,\s*255\)|#ffffff|#fff|rgb\(0,\s*0,\s*0\)|#000000|#000)[;"]/gi, 'color: inherit;"');
-            document.getElementById("articleBody").innerHTML = safeBody;
+            
+            const articleBodyEl = document.getElementById("articleBody");
+            articleBodyEl.innerHTML = safeBody;
+
+            // MOBİL UYUMLU TABLO DÜZENLEMESİ (Responsive Table Wrapper Algoritması)
+            const tables = articleBodyEl.querySelectorAll("table");
+            tables.forEach(table => {
+                // Eğer daha önce sarmalanmışsa işlemi atla
+                if (table.parentElement && table.parentElement.classList.contains('table-responsive')) return;
+                
+                // Tablo için yeni bir scroll wrapper (sarmalayıcı) oluştur
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-responsive';
+                
+                // Tabloyu DOM'da sarmalayıcının içine yerleştir
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
             
             document.title = `${p.title} | Vhesap`;
             
             if(changeUrl) {
-                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?yazi=' + p.id;
-                window.history.pushState({path:newUrl}, '', newUrl);
+                try {
+                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?yazi=' + p.id;
+                    window.history.pushState({path:newUrl}, '', newUrl);
+                } catch(e) {
+                    console.warn("History API (pushState) bu önizleme ortamında engellendi.");
+                }
             }
             
             if (window.renderAds) {
@@ -802,8 +833,14 @@
             document.getElementById("viewer").style.display = "none"; 
             document.getElementById("homePage").style.display = "flex"; 
             document.title = "Vhesap | Finans Rehberi";
-            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            window.history.pushState({path:cleanUrl}, '', cleanUrl);
+            
+            try {
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.pushState({path:cleanUrl}, '', cleanUrl);
+            } catch(e) {
+                console.warn("History API (pushState) bu önizleme ortamında engellendi.");
+            }
+            
             if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
             window.scrollTo({ top: 0, behavior: 'instant' });
             document.getElementById('searchInput').value = "";
@@ -1030,6 +1067,7 @@
             toast("Çıkış yapıldı."); 
         };
 
+        const SPAM_COOLDOWN_MS = 10000; // 10 Saniye
         document.getElementById("commentText").addEventListener("input", function() {
             const length = this.value.length; document.getElementById("charCount").innerText = `${length}/500`;
             document.getElementById("charCount").style.color = (length >= 500) ? "var(--amber)" : "var(--muted)";
