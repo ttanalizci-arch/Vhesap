@@ -432,6 +432,7 @@
             const s = state.sub; const isDayBased = (s === 'ekhesap');
             if (isDayBased) {
                 let st = new Date(id('date-start').value); let end = new Date(id('date-first').value);
+                // Aynı güne (end >= st) artık izin veriyoruz.
                 if(end >= st) { id('val-vade').value = Math.round((end - st) / 86400000); } 
                 else { id('date-first').value = id('date-start').value; id('val-vade').value = 0; }
             }
@@ -628,11 +629,20 @@
             if(mulkiyet === 'diger') oran *= 0.25;
             
             let limitVal = T * oran;
-            let badgeHtml = `<div class="flex justify-between items-center w-full">
-                <span>Azami Kredi Oranı: %${oran*100} (${format(limitVal)})</span>`;
+            let badgeHtml = `<div class="flex flex-col w-full gap-1.5">
+                <div class="flex justify-between items-center w-full">
+                    <span>Azami Kredi Oranı: %${oran*100} (${format(limitVal)})</span>`;
             if (limitVal > 0) {
                 badgeHtml += `<button type="button" onclick="aktarTutar(${limitVal})" class="bg-[var(--apple-yellow)] text-black px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase shadow-sm hover:scale-105 transition-transform shrink-0 ml-2">TUTARA AKTAR</button>`;
             }
+            badgeHtml += `</div>`;
+            
+            let subText = mulkiyet === 'diger' 
+                ? '2. ve sonrası konut alımlarında azami oran %75 daraltılmış olup BSMV muafiyeti uygulanmaz.' 
+                : 'İlk konut alımlarında güncel ekspertiz dilim limitleri ve BSMV muafiyeti uygulanmaktadır.';
+                
+            badgeHtml += `<div class="text-[9.5px] text-[var(--apple-yellow)] opacity-90 font-medium leading-tight"><i class="fa-solid fa-circle-info mr-1"></i>${subText}</div>`;
+            
             badgeHtml += `</div>`;
             id('limit-badge').innerHTML = badgeHtml;
         }
@@ -663,7 +673,14 @@
                 id('info-area').innerHTML = `<div class="input-card"><span class="label-text">Ekspertiz Değeri (TL)</span><input type="text" id="val-deger" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this); checkKonut()"></div>
                     <div class="grid grid-cols-2 gap-3 mb-3"><div class="input-card"><span class="label-text">Enerji Sınıfı</span><select id="val-ekb" class="apple-select" onchange="checkKonut()"><option value="AB">A-B</option><option value="C">C</option><option value="D">D ve Altı</option></select></div>
                     <div class="input-card"><span class="label-text">Mülkiyet Durumu</span><select id="val-mulkiyet" class="apple-select" onchange="checkKonut()"><option value="ilk">İlk Kez Alacak</option><option value="diger">2. ve Sonrası</option></select></div></div>
-                    <div id="limit-badge" class="info-badge">Azami Kredi Oranı: Lütfen değer giriniz.</div>`;
+                    <div id="limit-badge" class="info-badge">
+                        <div class="flex flex-col w-full gap-1.5">
+                            <div class="flex justify-between items-center w-full">
+                                <span>Azami Kredi Oranı: Lütfen değer giriniz.</span>
+                            </div>
+                            <div class="text-[9.5px] text-[var(--apple-yellow)] opacity-90 font-medium leading-tight"><i class="fa-solid fa-circle-info mr-1"></i>İlk konut alımlarında güncel ekspertiz dilim limitleri ve BSMV muafiyeti uygulanmaktadır.</div>
+                        </div>
+                    </div>`;
                 id('info-area').classList.remove('hidden');
             } else if(s === 'tasit') {
                 id('info-area').innerHTML = `<div class="input-card"><span class="label-text">Kasko/Fatura Değeri (TL)</span><input type="text" id="val-deger" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this); checkTasit()"></div>
@@ -674,7 +691,7 @@
                 id('info-area').innerHTML = `<div class="info-badge mb-3"><i class="fa-solid fa-circle-info"></i> BDDK: <=125k(36 Ay), 125-250k(24 Ay), >250k(12 Ay)</div>`;
                 id('info-area').classList.remove('hidden');
             } else if (s === 'ekhesap') {
-                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-circle-info"></i> Yeni Valör Kuralları Aktif</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım tatil gününe gelirse valör bir önceki iş günü, ödemede ise takip eden ilk iş günüdür.</div></div>`;
+                id('info-area').innerHTML = `<div class="info-badge mb-3 flex-col items-start gap-1"><div class="flex items-center gap-1.5 text-[var(--apple-yellow)]"><i class="fa-solid fa-building-columns"></i> Standart Valör Uygulaması</div><div class="text-[9px] text-[var(--apple-text-muted)] font-normal leading-tight">Kullanım işlemlerinde tatil günleri için valör tarihi bir önceki iş günü; tahsilat ve ödeme işlemlerinde ise takip eden ilk iş günü olarak dikkate alınmaktadır.</div></div>`;
                 id('info-area').classList.remove('hidden');
             }
 
@@ -804,7 +821,10 @@
         }
 
         function getTaxes() {
-            if(state.sub === 'konut') return { kkdf: 0, bsmv: 0 };
+            if(state.sub === 'konut') {
+                let mulkiyet = id('val-mulkiyet') ? id('val-mulkiyet').value : 'ilk';
+                return { kkdf: 0, bsmv: (mulkiyet === 'diger' ? 0.15 : 0) };
+            }
             return { kkdf: 0.15, bsmv: 0.15 };
         }
 
@@ -835,12 +855,16 @@
                 let inputStartD = new Date(id('date-start').value);
                 let inputEndD = new Date(id('date-first').value);
                 
-                if (inputEndD <= inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden sonra olmalıdır.");
+                // ESKİ KOD: if (inputEndD <= inputStartD) return showToast(...)
+                // YENİ KOD: Artık "Aynı Gün" işlemine izin veriyoruz ( < kontrolü).
+                if (inputEndD < inputStartD) return showToast("Bitiş (Ödeme) tarihi, başlangıç tarihinden önce olamaz.");
 
                 // --- YENİ VALÖR KURALLARI UYGULAMASI ---
                 
                 let startD = new Date(inputStartD);
                 let isStartShifted = false;
+                let isSameDay = inputStartD.getTime() === inputEndD.getTime();
+
                 // Kural 1: Kullanım günü tatil ise valör bir önceki iş günüdür.
                 if (!isBusinessDay(startD)) {
                     startD = getPreviousBusinessDay(startD);
@@ -850,11 +874,17 @@
                 // Kural 2: Ödeme günü (iş günü/tatil fark etmeksizin) valör takip eden ilk iş günüdür.
                 let endD = getStrictNextBusinessDay(inputEndD);
 
-                // Kullanıcıya şeffaf bildirim (Start Date değiştiyse sadece bilgi verilir)
+                // Kullanıcıya şeffaf bildirimler
                 if (isStartShifted) {
                     setTimeout(() => {
                         showToast("Bilgi: Kullanım tatil gününe denk geldiği için valör önceki iş gününe ayarlandı.");
                     }, 300);
+                }
+                
+                if (isSameDay) {
+                    setTimeout(() => {
+                        showToast("Bilgi: Aynı gün çekilip yatırılan tutarlara, valör kuralı gereği faiz işletilir.");
+                    }, isStartShifted ? 4500 : 300);
                 }
 
                 state.lastParams = {
