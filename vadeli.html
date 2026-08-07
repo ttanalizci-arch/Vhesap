@@ -94,9 +94,9 @@
 
         .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; }
         .modal-content { background: var(--apple-card); height: 100%; width: 100%; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; box-shadow: 0 -15px 30px rgba(0, 0, 0, 0.7); border-top: 1px solid rgba(128, 128, 128, 0.1); padding-top: env(safe-area-inset-top); }
-        .plan-table { width: 100%; font-size: 12px; border-collapse: separate; border-spacing: 0; }
-        .plan-table th { color: var(--apple-text-muted); text-align: center; padding: 12px 6px; border-bottom: 2px solid rgba(128, 128, 128, 0.2); text-transform: uppercase; font-size: 10px; font-weight: 700; position: sticky; top: 0; z-index: 10; background: var(--apple-card); }
-        .plan-table td { padding: 12px 6px; border-bottom: 1px solid rgba(128, 128, 128, 0.08); text-align: center; color: var(--apple-text); }
+        .plan-table { width: 100%; font-size: 11px; border-collapse: separate; border-spacing: 0; }
+        .plan-table th { color: var(--apple-text-muted); text-align: center; padding: 12px 4px; border-bottom: 2px solid rgba(128, 128, 128, 0.2); text-transform: uppercase; font-size: 9px; font-weight: 700; position: sticky; top: 0; z-index: 10; background: var(--apple-card); white-space: nowrap; }
+        .plan-table td { padding: 12px 4px; border-bottom: 1px solid rgba(128, 128, 128, 0.08); text-align: center; color: var(--apple-text); }
         
         .global-theme-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--apple-card); border: 1px solid rgba(128, 128, 128, 0.2); color: var(--apple-yellow); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         
@@ -364,12 +364,10 @@
         window.onload = () => {
             applyTheme();
             
-            // Diğer sekmelerden tema değiştirilirse burayı anında güncelle
             window.addEventListener('storage', (e) => {
                 if (e.key === 'vhesap_global_theme') applyTheme();
             });
             
-            // Panel entegrasyonu: Önce rates.json dene, hata olursa yerel taslağa (vhesap_rates_draft_v2) bak
             fetch('rates.json', { cache: 'no-store' })
             .then(r => {
                 if (!r.ok) throw new Error('rates.json bulunamadı');
@@ -470,44 +468,45 @@
             
             let html = `<div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="input-card mb-0"><span class="label-text">Başlangıç</span><input type="date" id="date-start" class="apple-input text-base" value="${startDateStr}" onchange="onStartDateChange()"></div>
-                <div class="input-card mb-0"><span class="label-text">Bitiş</span><input type="date" id="date-first" class="apple-input text-base" value="${firstDateStr}" onchange="onDateFirstChange()"></div>
+                <div class="input-card mb-0"><span class="label-text">İlk Vade Bitiş</span><input type="date" id="date-first" class="apple-input text-base" value="${firstDateStr}" onchange="onDateFirstChange()"></div>
             </div>
             <div class="input-card"><span class="label-text">Anapara (${currSymbol})</span><input type="text" id="val-tutar" inputmode="numeric" class="apple-input" placeholder="0" oninput="mask(this)"></div>`;
 
-            html += `<div class="grid grid-cols-2 gap-3 mb-3">
-                <div class="input-card mb-0"><span class="label-text">Gün</span><input type="number" id="val-vade" class="apple-input" value="${vDays}" oninput="onVadeChange()"></div>
-                <div class="input-card mb-0"><span class="label-text">Faiz Oranı (%)</span>
-                    <div class="flex items-center justify-between gap-1 mt-0.5"><input type="text" id="val-faiz" inputmode="numeric" class="apple-input flex-1 min-w-[50px]" value="${dFaiz}">
-                    <div class="flex bg-[rgba(128,128,128,0.1)] p-0.5 rounded-lg border border-[rgba(128,128,128,0.2)] flex-shrink-0">
-                        <button id="faiz-tip-aylik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${state.faizTipi === 'aylik' ? 'bg-amber-500 text-black' : 'text-[var(--apple-text-muted)]'} transition-all" onclick="setFaizTipi('aylik')">AYLIK</button>
-                        <button id="faiz-tip-yillik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${state.faizTipi === 'yillik' ? 'bg-amber-500 text-black' : 'text-[var(--apple-text-muted)]'} transition-all" onclick="setFaizTipi('yillik')">YILLIK</button>
-                    </div></div>
-                </div>
+            html += `<div class="grid grid-cols-2 gap-3 mb-3 mt-3">
+                <div class="input-card mb-0"><span class="label-text">Gün (Vade)</span><input type="number" id="val-vade" class="apple-input" value="${vDays}" oninput="onVadeChange()"></div>
+                <div class="input-card mb-0"><span class="label-text">Tekrar Sayısı</span><input type="number" id="val-tekrar" class="apple-input" value="1" min="1" placeholder="Opsiyonel"></div>
+            </div>
+            <div class="input-card mb-3"><span class="label-text">Faiz Oranı (%)</span>
+                <div class="flex items-center justify-between gap-1 mt-0.5"><input type="text" id="val-faiz" inputmode="numeric" class="apple-input flex-1 min-w-[50px]" value="${dFaiz}">
+                <div class="flex bg-[rgba(128,128,128,0.1)] p-0.5 rounded-lg border border-[rgba(128,128,128,0.2)] flex-shrink-0">
+                    <button id="faiz-tip-aylik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${state.faizTipi === 'aylik' ? 'bg-amber-500 text-black' : 'text-[var(--apple-text-muted)]'} transition-all" onclick="setFaizTipi('aylik')">AYLIK</button>
+                    <button id="faiz-tip-yillik" type="button" class="px-2 py-1 text-[10px] font-bold rounded-md ${state.faizTipi === 'yillik' ? 'bg-amber-500 text-black' : 'text-[var(--apple-text-muted)]'} transition-all" onclick="setFaizTipi('yillik')">YILLIK</button>
+                </div></div>
             </div>`;
 
             html += `<button type="button" class="action-btn" onmousedown="event.preventDefault()" onclick="executeCalculation()">HESAPLA</button>`;
             id('form-content').innerHTML = html;
         }
 
-        // ==========================================
-        // GÜNCELLENMİŞ HESAPLAMA FONKSİYONU
-        // ==========================================
         function executeCalculation() {
             if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
             
             const T = getRaw('val-tutar');
-            const G = parseInt(id('val-vade').value);
+            let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
+            let G_from_dates = Math.round((endD - startD) / 86400000);
+            const G = G_from_dates > 0 ? G_from_dates : parseInt(id('val-vade').value);
+            const tekrar = parseInt(id('val-tekrar').value) || 1;
+            
             const moduleName = 'vadeli_' + state.sub.replace('vadeli-', '');
-
-            // 1. Hesaplama başlangıç eventini panele bildir
             trackEvent('calculation_start', { module: moduleName });
 
-            // 2. Validasyon ve Hata (Error) Event Entegrasyonu
             if (T <= 0 || G <= 0 || isNaN(T) || isNaN(G)) {
                 trackEvent('calculation_error', { module: moduleName, error_type: 'invalid_input' });
                 showToast("Lütfen geçerli bir tutar ve vade süresi giriniz!");
-                return; // Hesaplamayı durdur
+                return;
             }
+
+            if (!isBusinessDay(endD)) { showToast("Uyarı: İlk vade bitiş tarihi hafta sonu veya tatil gününe denk gelmektedir!"); }
 
             let F = parseFloat(id('val-faiz').value.replace(',','.'))/100;
             if (state.faizTipi === 'aylik') { F = F * 12; } 
@@ -515,38 +514,77 @@
             let stopaj = 0.25;
             if(state.sub === 'vadeli-tl') { stopaj = G < 180 ? 0.175 : (G < 365 ? 0.15 : 0.10); }
 
-            let startD = new Date(id('date-start').value), endD = new Date(id('date-first').value);
-            if (!isBusinessDay(endD)) { showToast("Uyarı: Vade bitiş tarihi hafta sonu veya tatil gününe denk gelmektedir!"); }
+            let currentBalance = T;
+            let totalBrut = 0;
+            let totalNet = 0;
+            let totalKesinti = 0;
+            let calcRows = [];
+            let loopStartDate = new Date(startD);
 
-            const totalDays = Math.round((endD - startD) / 86400000);
-            const brut = (T*F*totalDays)/365, kesinti = brut * stopaj, net = brut - kesinti;
+            for (let i = 1; i <= tekrar; i++) {
+                let periodBrut = (currentBalance * F * G) / 365;
+                let periodKesinti = periodBrut * stopaj;
+                let periodNet = periodBrut - periodKesinti;
+
+                let prevBalance = currentBalance;
+                currentBalance += periodNet;
+
+                totalBrut += periodBrut;
+                totalNet += periodNet;
+                totalKesinti += periodKesinti;
+
+                let periodEndDate = new Date(loopStartDate);
+                periodEndDate.setDate(periodEndDate.getDate() + G);
+
+                calcRows.push({
+                    i: i,
+                    date: periodEndDate.toLocaleDateString('tr-TR'),
+                    oran: (F * 100).toFixed(2),
+                    ana: prevBalance,
+                    f: periodBrut,
+                    k: periodKesinti,
+                    bak: currentBalance
+                });
+
+                loopStartDate = periodEndDate;
+            }
+
+            const totalDays = tekrar * G;
+            const esdegerYillikBrut = (totalBrut / T) * (365 / totalDays) * 100;
+
+            state.lastCalc = calcRows;
+            state.calcMeta = { cat: 'Vadeli Finans', tur: NAV_LABELS[state.sub], faiz: id('val-faiz').value, tutar: T, aylik: totalNet, toplam: currentBalance, tekrar: tekrar, totalDays: totalDays };
             
-            state.lastCalc = [{i: 1, date: endD.toLocaleDateString('tr-TR'), taksit: T+net, ana: T, f: brut, kom: 0, k: kesinti, bak: 0}];
-            state.calcMeta = { cat: 'Vadeli Finans', tur: NAV_LABELS[state.sub], faiz: id('val-faiz').value, tutar: T, aylik: net, toplam: T + net };
+            let resultHtml = [
+                {l: (tekrar > 1 ? "Toplam Bileşik Getiri (Net)" : "Net Getiri"), v: format(totalNet), h:true}, 
+                {l: "Toplam Süre (Gün)", v: totalDays}, 
+                {l: "Toplam Brüt Faiz", v: format(totalBrut)}
+            ];
+
+            if (tekrar > 1) {
+                resultHtml.push({l: "Eşdeğer Yıllık Oran (Brüt)", v: "%" + fN(esdegerYillikBrut), highlight: true});
+                resultHtml.push({l: `Toplam Stopaj (%${stopaj*100})`, v: format(totalKesinti)});
+            } else {
+                resultHtml.push({l: `Stopaj Kesintisi (%${stopaj*100})`, v: format(totalKesinti)});
+            }
+
+            resultHtml.push({l: "Vade Sonu Bakiye", v: format(currentBalance)});
+
+            id('result-rows').innerHTML = resultHtml.map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''} ${d.highlight ? 'bg-amber-500/10 rounded-lg' : ''}"><span class="text-[10px] uppercase ${d.highlight ? 'text-amber-600' : 'text-[var(--apple-text-muted)]'} font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
             
-            id('result-rows').innerHTML = [
-                {l: "Net Getiri", v: format(net), h:true}, 
-                {l: "Valör Gün Sayısı", v: totalDays}, 
-                {l: "Brüt Faiz", v: format(brut)}, 
-                {l: `Stopaj Kesintisi (%${stopaj*100})`, v: format(kesinti)}, 
-                {l: "Vade Sonu Bakiye", v: format(T+net)}
-            ].map(d => `<div class="flex justify-between px-3 py-1.5 border-b border-[var(--apple-table-border)] ${d.h?'bg-[var(--apple-badge-bg)] rounded-xl':''}"><span class="text-[10px] uppercase text-[var(--apple-text-muted)] font-bold">${d.l}</span><span class="font-bold text-[var(--apple-yellow)]">${d.v}</span></div>`).join('');
-            
-            id('plan-thead').innerHTML = `<tr><th>No</th><th>Tarih</th><th>Tutar</th><th>Brüt Faiz</th><th>Stopaj</th><th class="text-right">Bakiye</th></tr>`;
+            id('plan-thead').innerHTML = `<tr><th>No</th><th>Tarih</th><th>Oran</th><th>Anapara</th><th>Brüt Faiz</th><th>Stopaj</th><th class="text-right">Bakiye</th></tr>`;
             
             renderAds('vadeliResult', 'ad-container-vadeli-result');
-            
-            // 3. İşlem başarılı bitiş eventini bildir
             trackEvent('calculation_complete', { module: moduleName });
             id('results').classList.remove('hidden'); 
             
-            state.currentVadeliNet = net; state.currentVadeliDays = totalDays; state.currentVadeliTutar = T; state.currentVadeliOran = F * 100;
+            state.currentVadeliNet = totalNet; state.currentVadeliDays = totalDays; state.currentVadeliTutar = T; state.currentVadeliOran = (tekrar > 1) ? esdegerYillikBrut : (F * 100);
             setTimeout(() => id('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
 
         function addVadeliKarsilastirma() {
             state.vadeliKarsilastirmalar.push({
-                tutar: state.currentVadeliTutar, net: state.currentVadeliNet, days: state.currentVadeliDays, oran: state.currentVadeliOran, id: state.vadeliKarsilastirmalar.length + 1
+                tutar: state.currentVadeliTutar, net: state.currentVadeliNet, days: state.currentVadeliDays, oran: state.currentVadeliOran, tekrar: state.calcMeta.tekrar, id: state.vadeliKarsilastirmalar.length + 1
             });
             renderVadeliKarsilastirma(); showToast("Seçenek karşılaştırmaya eklendi!");
         }
@@ -557,7 +595,7 @@
             container.style.display = 'block';
 
             id('karsilastirma-body').innerHTML = state.vadeliKarsilastirmalar.map(item => `
-                <tr><td class="text-center font-bold text-[var(--apple-text-muted)]">${item.id}</td><td>${format(item.tutar)}</td><td>${item.days}</td><td>%${fN(item.oran)}</td><td class="text-right font-bold" style="color:var(--apple-yellow);">${format(item.net)}</td></tr>
+                <tr><td class="text-center font-bold text-[var(--apple-text-muted)]">${item.id}</td><td>${format(item.tutar)}</td><td>${item.days}</td><td>%${fN(item.oran)}${item.tekrar > 1 ? '<br><span style="font-size:7px;color:var(--apple-yellow);">BİLEŞİK</span>' : ''}</td><td class="text-right font-bold" style="color:var(--apple-yellow);">${format(item.net)}</td></tr>
             `).join('');
             
             const farklarDiv = id('karsilastirma-farklar');
@@ -580,11 +618,13 @@
         function clearVadeliKarsilastirma() { state.vadeliKarsilastirmalar = []; renderVadeliKarsilastirma(); showToast("Karşılaştırma tablosu temizlendi."); }
         
         function addToCalendar() {
-            const endDateStr = id('date-first').value; if (!endDateStr) return;
-            const dateParts = endDateStr.split('-'); if (dateParts.length !== 3) return;
+            if(!state.lastCalc) return;
+            const finalRow = state.lastCalc[state.lastCalc.length - 1];
+            const dateParts = finalRow.date.split('.'); 
+            if (dateParts.length !== 3) return;
 
-            const dtStart = `${dateParts[0]}${dateParts[1]}${dateParts[2]}T090000`;
-            const dtEnd = `${dateParts[0]}${dateParts[1]}${dateParts[2]}T100000`;
+            const dtStart = `${dateParts[2]}${dateParts[1]}${dateParts[0]}T090000`;
+            const dtEnd = `${dateParts[2]}${dateParts[1]}${dateParts[0]}T100000`;
             const tutar = format(state.currentVadeliTutar); const net = format(state.currentVadeliNet);
             const title = `Vhesap: ${NAV_LABELS[state.sub]} Vade Sonu`;
             const description = `Mevduat vade sonu geldi.\\n\\nAnapara: ${tutar}\\nNet Getiri: ${net}`;
@@ -597,21 +637,17 @@
             showToast("Takvim dosyası oluşturuldu. Tıklayarak takvime kaydedebilirsiniz.");
         }
 
-        // ==========================================
-        // GÜNCELLENMİŞ PLAN AÇILIŞ FONKSİYONU
-        // ==========================================
         function openPlan() {
             if(!state.lastCalc) return;
             
-            // YENİ: Vade detayları modalı açıldığında analitik eventini fırlat
             trackEvent('payment_plan_open', { module: 'vadeli_' + state.sub.replace('vadeli-', '') });
 
             id('plan-subtitle').innerText = "Vadeli Finans / " + NAV_LABELS[state.sub];
             let planAdHtml = getAdHtml('planMid');
             id('plan-body').innerHTML = state.lastCalc.map((r, idx) => {
-                let rowHtml = `<tr><td>${r.i}</td><td>${r.date}</td><td>${format(r.taksit)}</td><td style="color:var(--apple-yellow);">${format(r.f)}</td><td class="text-red-500">${format(r.k)}</td><td class="text-right">${format(r.bak)}</td></tr>`;
+                let rowHtml = `<tr><td>${r.i}</td><td>${r.date}</td><td class="font-bold">%\u200B${r.oran}</td><td>${format(r.ana)}</td><td style="color:var(--apple-yellow);">${format(r.f)}</td><td class="text-red-500">${format(r.k)}</td><td class="text-right font-bold">${format(r.bak)}</td></tr>`;
                 if ((idx + 1) % 20 === 0 && planAdHtml) {
-                    rowHtml += `<tr><td colspan="6" class="p-0 border-b border-[rgba(128,128,128,0.08)]"><div class="px-3 py-1 bg-[rgba(128,128,128,0.02)]">${planAdHtml}</div></td></tr>`;
+                    rowHtml += `<tr><td colspan="7" class="p-0 border-b border-[rgba(128,128,128,0.08)]"><div class="px-3 py-1 bg-[rgba(128,128,128,0.02)]">${planAdHtml}</div></td></tr>`;
                 }
                 return rowHtml;
             }).join('');
@@ -657,6 +693,10 @@
                                 <td style="padding: 6px 0;"><strong>Faiz/Getiri Oranı:</strong> %${m.faiz}</td>
                                 <td style="padding: 6px 0;"><strong>Vade Sonu Bakiye:</strong> <span style="font-weight:bold;">${format(m.toplam)}</span></td>
                             </tr>
+                            <tr>
+                                <td style="padding: 6px 0;"><strong>Tekrar Sayısı:</strong> ${m.tekrar}</td>
+                                <td style="padding: 6px 0;"><strong>Toplam Süre:</strong> ${m.totalDays} Gün</td>
+                            </tr>
                         </table>
                     </div>
 
@@ -666,9 +706,10 @@
                             <tr style="background-color: #f3f4f6; color: #374151;">
                                 <th style="padding: 8px; border: 1px solid #e5e7eb;">No</th>
                                 <th style="padding: 8px; border: 1px solid #e5e7eb;">Tarih</th>
-                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Tutar</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Oran</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Anapara</th>
                                 <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Brüt Faiz</th>
-                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Stopaj Kesintisi</th>
+                                <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Stopaj</th>
                                 <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Bakiye</th>
                             </tr>
                         </thead>
@@ -680,7 +721,8 @@
                     contentHtml += `<tr style="background-color: ${bg};">
                         <td style="padding: 8px; border: 1px solid #e5e7eb;">${r.i}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb;">${r.date}</td>
-                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.taksit)}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center; font-weight:bold;">%${r.oran}</td>
+                        <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.ana)}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; color:#b45309;">${format(r.f)}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${format(r.k)}</td>
                         <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right; font-weight:bold;">${format(r.bak)}</td>
